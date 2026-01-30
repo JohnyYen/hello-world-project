@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Inicialización al abrir VS Code",
+      "type": "shell",
+      "command": "docker compose -f ./infraestructure/docker/docker-compose.dev.yml up -d --build",
+      "problemMatcher": [],
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
+    }
+  ]
+}
