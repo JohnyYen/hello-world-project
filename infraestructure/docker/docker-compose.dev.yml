@@ -10,11 +10,18 @@ services:
     container_name: backend
     ports:
       - "8000:8000"
+    volumes:
+      - ../../apps/hello-world-backend:/app
+      - /app/__pycache__
+      - /app/.venv
 
   teacher-web:
     build:
       context: ../../apps/hello-world-nextjs
       dockerfile: Dockerfile.dev
+    volumes:
+      - ../../apps/hello-world-nextjs:/app
+      - /app/.next
     env_file:
       - ../../apps/hello-world-nextjs/.env
     container_name: teacher-web

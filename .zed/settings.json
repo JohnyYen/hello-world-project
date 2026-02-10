@@ -1,0 +1,27 @@
+{
+  "lsp": {
+    "basedpyright": {
+      "settings": {
+        "python": {
+          "pythonPath": "apps/hello-world-backend/.venv/bin/python",
+          "venvPath": "apps/hello-world-backend/.venv"
+        },
+        "basedpyright": {
+          "analysis": {
+            "extraPaths": ["apps/hello-world-backend/src"],
+            "pythonVersion": "3.12",
+            "typeCheckingMode": "standard",
+            "strict": ["apps/hello-world-backend/src"],
+            "reportMissingImports": true,
+            "reportMissingTypeStubs": false
+          }
+        }
+      }
+    }
+  },
+  "languages": {
+    "Python": {
+      "language_servers": ["basedpyright"]
+    }
+  }
+}
