@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckwlsm7b66ivp"]
+
+[ext_resource type="PackedScene" uid="uid://cvbtkiyi17t64" path="res://scenes/components/dialog_box.tscn" id="1_ifkcb"]
+[ext_resource type="PackedScene" uid="uid://c06nfwm3imn0t" path="res://scenes/characters/Character.tscn" id="2_t7bjq"]
+
+[node name="main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="dialogBox" parent="." instance=ExtResource("1_ifkcb")]
+layout_mode = 1
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Character" parent="Control" instance=ExtResource("2_t7bjq")]
+position = Vector2(2, -25)
+
+[node name="MenuButton" type="MenuButton" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -53.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "Menu"

@@ -1,0 +1,56 @@
+~ start
+# Escena: Teatro – Charla de bienvenida (Versión Mejorada)
+
+# --- Inicio de escena ---
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/theater_full.png")
+do _DialogueUiController.played_music.emit("audio/music/teatro_inspirador.mp3")
+do _DialogueUiController.set_flag.emit("chapter_1_theater_start", true)
+#
+#do _DialogueUIController.clean_character.emit("l")
+#do _DialogueUIController.clean_character.emit(0.0)
+#do _DialogueUIController.clean_character.emit(0.0)
+#
+Narrador: El teatro vibra con murmullos y expectación. Poco a poco, las luces descienden, envolviendo el lugar en un silencio atento.  
+Narrador: En el escenario, una mujer de presencia tranquila y mirada firme se coloca tras el podio: la decana.
+
+do _DialogueUiController.changed_character.emit("center", "characters/main_characters/decana/Normal.png")
+
+Decana: Buenas tardes, queridos estudiantes. Hoy damos inicio a algo más que un semestre… damos inicio a una transformación.  
+Decana: Algunos han llegado aquí movidos por curiosidad, otros por vocación…  
+Decana: Pero todos comparten una chispa: el deseo de crear.
+
+Decana: La programación no es solo escribir código.  
+Decana: Es aprender a pensar.  
+Decana: Es convertir lo abstracto en concreto, lo imaginado en posible.
+
+do _DialogueUiController.changed_character.emit("center", "characters/orqui/hologram_idle.png")
+
+Narrador: A su lado, Orqui aparece en un destello suave, desplegando ondas luminosas que acompañan cada frase con precisión casi poética.
+
+Orqui: *Con energía.* ¡Bienvenidos a la Facultad de Ingeniería Informática!  
+Orqui: Seré su guía digital, su aliada en cada duda, cada desafío y cada logro.
+
+do _DialogueUiController.changed_character.emit("center", "characters/main_characters/decana/Speech.png")
+
+Decana: Aquí no buscamos respuestas inmediatas.  
+Decana: Buscamos mentes que se atrevan a preguntar.  
+Decana: Porque cada error es un mensaje, cada intento, un paso hacia adelante.
+
+Narrador: Hologramas de líneas de código se elevan y dispersan como constelaciones. El teatro respira con un aura de descubrimiento.
+
+Orqui: *Con calidez.* Nunca olviden que este viaje no se recorre en soledad.  
+Orqui: Todo lo que aprendan formará parte de una red que trasciende el tiempo y las personas.
+
+Decana: *Asiente, serena.* Ustedes no son solo estudiantes.  
+Decana: Son los arquitectos del mañana.  
+Decana: Los ingenieros capaces de moldear ideas invisibles y convertirlas en herramientas que cambien el mundo.
+
+Narrador: Las proyecciones de Orqui se desvanecen suavemente, como si la luz misma se inclinara ante la solemnidad de la decana.
+
+Decana: Y así, queridos futuros ingenieros informáticos… comienza su camino.
+
+#do _DialogueUIController.clean_character.emit(0.0)
+
+do _DialogueUiController.showed_title.emit("Capítulo 1 – Primeros Pasos", 4.0)
+
+=> END

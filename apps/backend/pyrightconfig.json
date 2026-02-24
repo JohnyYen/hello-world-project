@@ -1,0 +1,20 @@
+{
+  "include": ["src", "tests"],
+  "exclude": ["**/__pycache__", "**/.venv", "**/.git"],
+  "extraPaths": ["src"],
+  "pythonVersion": "3.12",
+  "pythonPlatform": "Linux",
+  "venvPath": ".",
+  "venv": ".venv",
+  "strict": ["src"],
+  "typeCheckingMode": "standard",
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "reportOptionalSubscript": true,
+  "reportOptionalMemberAccess": true,
+  "reportOptionalCall": true,
+  "reportOptionalIterable": true,
+  "reportOptionalContextManager": true,
+  "reportOptionalOperand": true,
+  "reportTypedDictNotRequiredAccess": true
+}

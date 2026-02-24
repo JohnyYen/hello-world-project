@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://dswnusnyb5vyb"
+path="res://.godot/imported/C00_E01_Entrada_Facultad.dialogue-5365f4271f89d4785de9dae3750f1a19.tres"
+
+[deps]
+
+source_file="res://dialogue/C00/C00_E01_Entrada_Facultad.dialogue"
+dest_files=["res://.godot/imported/C00_E01_Entrada_Facultad.dialogue-5365f4271f89d4785de9dae3750f1a19.tres"]
+
+[params]
+
+defaults=true

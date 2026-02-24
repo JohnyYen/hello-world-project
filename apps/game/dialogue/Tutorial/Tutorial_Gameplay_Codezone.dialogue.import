@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bamtl3puj4nk4"
+path="res://.godot/imported/Tutorial_Gameplay_Codezone.dialogue-b40742c38bbec344665e61821f1402d3.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_Gameplay_Codezone.dialogue"
+dest_files=["res://.godot/imported/Tutorial_Gameplay_Codezone.dialogue-b40742c38bbec344665e61821f1402d3.tres"]
+
+[params]
+
+defaults=true

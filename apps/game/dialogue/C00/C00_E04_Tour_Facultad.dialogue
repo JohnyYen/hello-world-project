@@ -1,0 +1,86 @@
+~ start
+# Escena: Tour por la facultad (Versión Mejorada)
+
+# Inicio del tour
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/hallway.png")
+do _DialogueUiController.played_music.emit("audio/music/tour_faculty.mp3")
+
+do _DialogueUiController.changed_character.emit("left", "characters/main_character/professor_carlos/Normal.png")
+
+Carlos: Bienvenidos oficialmente a la Facultad de Ingeniería del Conocimiento.  
+Carlos: Soy el profesor Carlos y los guiaré en un pequeño recorrido para que empiecen a familiarizarse con su nuevo hogar.  
+Carlos: Y tranquilos, prometo no abrumarlos… al menos por hoy. *Sonríe con complicidad.*
+
+do _DialogueUiController.changed_character.emit("right", "characters/ai/orqui/Happy.png")
+
+Orqui: ¡Yo también estoy aquí! Lista para responder preguntas, dar ánimos y evitar que alguien se pierda.  
+Orqui: Hola otra vez, {{_GameState.player_data.name}}. Veo que superaste la charla sin desmayarte. ¡Buen signo!
+
+do _DialogueUiController.changed_character.emit("left", "characters/main_character/professor_carlos/Smile.png")
+
+Carlos: *Ríe suavemente.* Orqui suele hacer amigos más rápido que muchos profesores.  
+Carlos: Muy bien, sigamos. Este es el pasillo principal: conecta casi todas las aulas del primer año.
+
+# Cambio de fondo — Aulas
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/classrooms.png")
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/classroom.png")
+
+Carlos: Aquí tendrán Programación I, Lógica, Fundamentos Matemáticos…  
+Carlos: Sí, los nombres imponen un poco, pero no se preocupen: la mayoría de los profesores no muerde.  
+RandomStudent1: *En voz baja.* Entonces… ¿hay excepciones?  
+Carlos: *Sonríe misterioso.* Descúbranlo ustedes mismos, es parte del encanto.
+
+do _DialogueUiController.changed_character.emit("right", "characters/ai/orqui/Thinking.png")
+
+Orqui: Consejo de Orqui™: si toman apuntes decentes y practican aunque sea un poquito cada día… todo saldrá bien.  
+Orqui: Y si no, puedo enviar recordatorios “delicados”... tan delicados como un ping a medianoche.
+
+# Cafetería
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/cafeteria.png")
+
+Carlos: Bienvenidos a la cafetería, santuario sagrado de debates profundos, sueños rotos y café... cuestionable.  
+RandomStudent2: ¿Tan malo es como dicen?  
+Carlos: *Ríe.* Digamos que es un rito de iniciación.  
+Orqui: Confirmo. La mezcla es 10% cafeína, 90% incertidumbre científica.
+
+# Librería
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/library.png")
+
+Carlos: Aquí tenemos la librería: manuales, guías, materiales de proyecto… lo que necesiten.  
+Carlos: Algunos libros huelen a tinta fresca; otros parecen sobrevivientes de varias generaciones de estudiantes.  
+Orqui: *Bromeando.* Intenté aprender por ósmosis abrazando uno… no funcionó. Todavía investigo por qué.
+
+# Laboratorio de IA
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/ia_laboratory.png")
+
+Carlos: Y este es nuestro orgullo: el Laborator para tirarse una fotoio de Inteligencia Artificial.  
+Carlos: Aquí las ideas toman forma, los proyectos crecen… y sí, a veces el caos también.  
+RandomStudent3: ¡Es increíble!  
+Orqui: *Con emoción.* ¡Aquí nací! Fui creada como proyecto educativo… y terminé quedándome.  
+Carlos: Y gracias a eso, la facultad es un lugar mejor.
+
+do _DialogueUiController.changed_character.emit("left", "characters/main_character/professor_carlos/Smile.png")
+
+Carlos: Antes de terminar, mantenemos una tradición: la foto de bienvenida.  
+Carlos: Su primer recuerdo oficial como futuros ingenieros del conocimiento.
+
+# Momento de la foto
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/photo_moment.png")
+
+Orqui: *Con suavidad.* Vamos, sonrían. El futuro ya los está observando con curiosidad.  
+Orqui: Esta imagen quedará en la memoria de la facultad… y, espero, en la de ustedes también.  
+Carlos: ¡A la cuenta de tres! Uno… dos… ¡tres!
+
+do _DialogueUiController.played_sfx.emit("audio/sfx/camera_click.mp3")
+
+# CG Final
+do _DialogueUiController.showed_cg.emit("cg_scenes/intro/cg_welcome_to_faculty.png")
+do _DialogueUiController.changed_background.emit("backgrounds/black.png")
+do _DialogueUiController.played_music.emit("audio/music/emotional_theme.mp3")
+
+Orqui: *Voz en off.* Toda gran historia comienza con un paso. Y ustedes… acaban de dar el primero.  
+Carlos: Bienvenidos, futuros ingenieros informáticos. Que esta aventura sea tan grande como sus sueños.
+
+do _DialogueUiController.showed_title.emit("Capítulo 1 – Primeros Pasos", 3.5)
+
+=> END

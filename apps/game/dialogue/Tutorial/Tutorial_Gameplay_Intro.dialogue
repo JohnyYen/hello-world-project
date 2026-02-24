@@ -1,0 +1,13 @@
+~ start
+Orqui: Hola, {{_GameState.player_data.name}}. Bienvenido al espacio de práctica. (voz cálida y animada)  
+Orqui: Aquí aprenderás las mecánicas que te permitirán resolver los puzzles del campus.  
+Orqui: El entorno tiene tres zonas clave: el área de juego, el CodeSpace y el HUD de control.  
+Orqui: Te guiaré paso a paso: primero veremos el escenario, luego el editor y al final cómo ejecutar tu código. (con confianza)
+
+- Perfecto, empecemos.
+	Orqui: ¡Genial! Empezaremos mostrando el área de juego para que identifiques al agente y el objetivo. Observa la distribución y piénsalo como el mapa de una pequeña misión.
+
+- Necesito que me lo expliques más despacio.
+	Orqui: Lo haremos con calma. Te explicaré cada elemento y esperaré a que lo explores. (tono paciente) Primero te mostraré el tablero; dime cuando estés listo y pasamos al CodeSpace.
+
+=> END

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://cbkj7vds50ngc"
+path="res://.godot/imported/Tutorial_Map_Park.dialogue-e8a9a19157596cf6257697d48b55295d.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_Map_Park.dialogue"
+dest_files=["res://.godot/imported/Tutorial_Map_Park.dialogue-e8a9a19157596cf6257697d48b55295d.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://ctpwattorc67r"]
+
+[ext_resource type="Script" uid="uid://c70b7san5l622" path="res://scenes/pages/welcome.gd" id="1_7qga8"]
+[ext_resource type="PackedScene" uid="uid://cvbtkiyi17t64" path="res://scenes/components/dialog_box.tscn" id="1_b8fq7"]
+[ext_resource type="Texture2D" uid="uid://cpkg7k181dx3i" path="res://assets/background/inauguracion.png" id="2_0y5mw"]
+
+[node name="Welcome" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7qga8")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_0y5mw")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="dialogBox" parent="." instance=ExtResource("1_b8fq7")]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+grow_vertical = 0
+
+[connection signal="dialogue_update" from="dialogBox" to="." method="_on_dialog_box_dialogue_update"]

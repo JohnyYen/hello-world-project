@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://ce0a2mmdts12p"]
+
+[ext_resource type="PackedScene" uid="uid://dhxdg3jmuprqq" path="res://scenes/pages/select level/select_level_template.tscn" id="1_upx5k"]
+[ext_resource type="Texture2D" uid="uid://cttrtr2406fx5" path="res://assets/anime/backgrounds/chapter_2/bg_select_level.png" id="2_mhmft"]
+[ext_resource type="Texture2D" uid="uid://b2pm0dewldbxa" path="res://assets/anime/ui/btn_cafeteria.png" id="3_t17kn"]
+
+[node name="SelectLevelOne" instance=ExtResource("1_upx5k")]
+previous_scene = "uid://f1phaldnojoi"
+gameplay_scene = "uid://6gr1ei4kgnc8"
+
+[node name="Background" parent="." index="0"]
+texture = ExtResource("2_mhmft")
+
+[node name="Level1" parent="LevelContainer" index="0"]
+level_number = 0
+icon_texture = ExtResource("3_t17kn")
+
+[node name="Level2" parent="LevelContainer" index="1"]
+icon_texture = ExtResource("3_t17kn")
+
+[node name="Level3" parent="LevelContainer" index="2"]
+level_number = 2
+icon_texture = ExtResource("3_t17kn")
+
+[node name="Level4" parent="LevelContainer" index="3"]
+level_number = 3
+icon_texture = ExtResource("3_t17kn")
+
+[node name="Level5" parent="LevelContainer" index="4"]
+level_number = 4
+icon_texture = ExtResource("3_t17kn")
+
+[node name="Level6" parent="LevelContainer" index="5"]
+level_number = 5
+icon_texture = ExtResource("3_t17kn")

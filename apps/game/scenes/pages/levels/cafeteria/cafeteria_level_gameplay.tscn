@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://dsli8nj736lgt"]
+
+[ext_resource type="PackedScene" uid="uid://bq46ma7jp7bh1" path="res://scenes/pages/levels/level_template.tscn" id="1_saegq"]
+[ext_resource type="Texture2D" uid="uid://crfbdqkermsd8" path="res://icon.svg" id="2_ky6eh"]
+
+[sub_resource type="Curve2D" id="Curve2D_saegq"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 77, 9, 0, 0, 0, 0, 235, 60, 0, 0, 0, 0, 225, 510)
+}
+point_count = 3
+
+[node name="LevelOneGameplay" instance=ExtResource("1_saegq")]
+rotation = -0.261799
+
+[node name="Path2D" type="Path2D" parent="CanvasLayer" index="1"]
+curve = SubResource("Curve2D_saegq")
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/GamePlay" index="0"]
+clip_contents = true
+layout_mode = 2
+texture = ExtResource("2_ky6eh")

@@ -1,0 +1,152 @@
+[gd_scene load_steps=7 format=3 uid="uid://cvbtkiyi17t64"]
+
+[ext_resource type="Script" uid="uid://lcooynudy1bi" path="res://scenes/components/dialog_box.gd" id="1_m112v"]
+[ext_resource type="Texture2D" uid="uid://hqulwq0uhymw" path="res://assets/ui/next_button.png" id="2_u3uuq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8rubh"]
+content_margin_left = 30.0
+content_margin_top = 20.0
+bg_color = Color(0, 0, 0, 0.631373)
+border_width_top = 1
+border_color = Color(0, 0, 0.505882, 0.701961)
+expand_margin_top = 1.0
+
+[sub_resource type="Theme" id="Theme_6l0f7"]
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_8rubh")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3j7q8"]
+bg_color = Color(0.166169, 0.459512, 0.663131, 1)
+corner_radius_top_right = 50
+corner_detail = 1
+
+[sub_resource type="LabelSettings" id="LabelSettings_8dnvj"]
+font_size = 24
+
+[node name="dialogBox" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m112v")
+
+[node name="Fondo" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Character" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -390.5
+offset_top = -584.0
+offset_right = 390.5
+grow_horizontal = 2
+grow_vertical = 0
+expand_mode = 1
+
+[node name="DialogBox" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -115.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = SubResource("Theme_6l0f7")
+
+[node name="ColorRect" type="ColorRect" parent="DialogBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.117647, 0.117647, 0.117647, 0.8)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="DialogBox"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -556.0
+offset_top = -41.5
+offset_right = 480.0
+offset_bottom = 34.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Dialog Text"
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -159.0
+offset_right = 262.0
+offset_bottom = -119.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3j7q8")
+
+[node name="Control" type="Control" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="PanelContainer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -87.5
+offset_top = -11.0
+offset_right = 173.5
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Name"
+label_settings = SubResource("LabelSettings_8dnvj")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Next_Button" type="TextureButton" parent="Control"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -112.0
+offset_top = -131.0
+offset_right = 1231.0
+offset_bottom = 1149.0
+grow_horizontal = 0
+grow_vertical = 2
+scale = Vector2(0.0958165, 0.139015)
+texture_normal = ExtResource("2_u3uuq")
+
+[connection signal="pressed" from="Control/Next_Button" to="." method="_on_texture_button_pressed"]

@@ -1,0 +1,197 @@
+{
+  "segments": [
+    {
+      "segment_id": 1,
+      "level_id": 1,
+      "problem": "Aprende a usar los bloques secuenciales para tomar un pan del dispensador",
+      "goal": "Mueve un pan del dispensador al inventario",
+      "order": 1,
+      "difficulty": "Aprendizaje",
+      "configuration": {
+        "initial_state": {
+          "student_queue": [],
+          "menu": {"pan": 2},
+          "cash_register": 0,
+          "orders_served": [],
+          "inventario": [],
+          "estaciones": {
+            "dispensador_pan": ["pan", "pan"]
+          }
+        },
+        "expected_outputs": [],
+        "available_blocks": ["Start", "Execute", "End"],
+        "available_actions": [
+          {"name": "Tomar pan del dispensador", "command": "tomar_pan_dispensador"}
+        ],
+        "learning_objective": "Introducción a bloques secuenciales"
+      },
+      "blocks": []
+    },
+    {
+      "segment_id": 2,
+      "level_id": 1,
+      "problem": "Atiende a un solo cliente de la cola",
+      "goal": "Atender al cliente en la cola",
+      "order": 2,
+      "difficulty": "Fácil",
+      "configuration": {
+        "initial_state": {
+          "student_queue": [{"nombre": "Ana", "pedido": "cafe"}],
+          "menu": {"cafe": 1, "pan": 2},
+          "cash_register": 0,
+          "orders_served": [],
+          "inventario": [],
+          "estaciones": {
+            "dispensador_pan": ["pan", "pan"],
+            "dispensador_bebidas": ["cafe"]
+          }
+        },
+        "expected_outputs": [{"nombre": "Ana", "pedido": "cafe"}],
+        "available_blocks": ["Execute", "Start", "End"],
+        "available_actions": [
+          {"name": "Atender al cliente", "command": "atender_siguiente_cliente"},
+          {"name": "Preparar bebida", "command": "preparar_bebida"}
+        ],
+        "learning_objective": "Secuencia simple de acciones"
+      },
+      "blocks": []
+    },
+    {
+      "segment_id": 3,
+      "level_id": 1,
+      "problem": "Atiende a dos clientes de la cola",
+      "goal": "Atender a ambos clientes en orden",
+      "order": 3,
+      "difficulty": "Fácil",
+      "configuration": {
+        "initial_state": {
+          "student_queue": [{"nombre": "Luis", "pedido": "te"}, {"nombre": "Carlos", "pedido": "cafe"}],
+          "menu": {"cafe": 1, "te": 1, "pan": 2},
+          "cash_register": 0,
+          "orders_served": [],
+          "inventario": [],
+          "estaciones": {
+            "dispensador_pan": ["pan", "pan"],
+            "dispensador_bebidas": ["cafe", "te"]
+          }
+        },
+        "expected_outputs": [{"nombre": "Luis", "pedido": "te"}, {"nombre": "Carlos", "pedido": "cafe"}],
+        "available_blocks": ["Execute", "Start", "End"],
+        "available_actions": [
+          {"name": "Atender al cliente", "command": "atender_siguiente_cliente"},
+          {"name": "Preparar bebida", "command": "preparar_bebida"}
+        ],
+        "learning_objective": "Secuencia de múltiples acciones"
+      },
+      "blocks": []
+    },
+    {
+      "segment_id": 4,
+      "level_id": 1,
+      "problem": "Atiende a los tres clientes de la cola en orden",
+      "goal": "Atender a los tres clientes en orden",
+      "order": 4,
+      "difficulty": "Fácil",
+      "configuration": {
+        "initial_state": {
+          "student_queue": [
+            {"nombre": "Ana", "pedido": "cafe"},
+            {"nombre": "Pedro", "pedido": "te"},
+            {"nombre": "Maria", "pedido": "cafe"}
+          ],
+          "menu": {"cafe": 2, "te": 2, "pan": 2},
+          "cash_register": 0,
+          "orders_served": [],
+          "inventario": [],
+          "estaciones": {
+            "dispensador_pan": ["pan", "pan"],
+            "dispensador_bebidas": ["cafe", "cafe", "te", "te"]
+          }
+        },
+        "expected_outputs": [{"nombre": "Ana", "pedido": "cafe"}, {"nombre": "Pedro", "pedido": "te"}, {"nombre": "Maria", "pedido": "cafe"}],
+        "available_blocks": ["Execute", "Start", "End"],
+        "available_actions": [
+          {"name": "Atender al cliente", "command": "atender_siguiente_cliente"},
+          {"name": "Preparar bebida", "command": "preparar_bebida"}
+        ],
+        "learning_objective": "Secuencia de múltiples acciones"
+      },
+      "blocks": []
+    },
+    {
+      "segment_id": 5,
+      "level_id": 1,
+      "problem": "Atiende a todos los clientes de la cola",
+      "goal": "Atender a todos los clientes de la cola",
+      "order": 5,
+      "difficulty": "Fácil",
+      "configuration": {
+        "initial_state": {
+          "student_queue": [
+            {"nombre": "Ana", "pedido": "cafe"},
+            {"nombre": "Luis", "pedido": "te"},
+            {"nombre": "Carlos", "pedido": "cafe"}
+          ],
+          "menu": {"cafe": 2, "te": 1, "pan": 2},
+          "cash_register": 0,
+          "orders_served": [],
+          "inventario": [],
+          "estaciones": {
+            "dispensador_pan": ["pan", "pan"],
+            "dispensador_bebidas": ["cafe", "cafe", "te"]
+          }
+        },
+        "expected_outputs": [
+          {"nombre": "Ana", "pedido": "cafe"},
+          {"nombre": "Luis", "pedido": "te"},
+          {"nombre": "Carlos", "pedido": "cafe"}
+        ],
+        "available_blocks": ["Execute", "Start", "End"],
+        "available_actions": [
+          {"name": "Atender al cliente", "command": "atender_siguiente_cliente"},
+          {"name": "Preparar bebida", "command": "preparar_bebida"}
+        ],
+        "learning_objective": "Secuencia de múltiples acciones"
+      },
+      "blocks": []
+    },
+    {
+      "segment_id": 6,
+      "level_id": 1,
+      "problem": "Realiza una secuencia de tareas para preparar los pedidos",
+      "goal": "Completar correctamente la secuencia de tareas",
+      "order": 6,
+      "difficulty": "Medio",
+      "configuration": {
+        "initial_state": {
+          "student_queue": [
+            {"nombre": "Ana", "pedido": "cafe"},
+            {"nombre": "Luis", "pedido": "cafe"},
+            {"nombre": "Carlos", "pedido": "te"}
+          ],
+          "menu": {"cafe": 2, "te": 1, "pan": 2},
+          "cash_register": 0,
+          "orders_served": [],
+          "inventario": [],
+          "estaciones": {
+            "dispensador_pan": ["pan", "pan"],
+            "dispensador_bebidas": ["cafe", "cafe", "te"]
+          }
+        },
+        "expected_outputs": [
+          {"nombre": "Ana", "pedido": "cafe"},
+          {"nombre": "Luis", "pedido": "cafe"},
+          {"nombre": "Carlos", "pedido": "te"}
+        ],
+        "available_blocks": ["Execute", "Start", "End"],
+        "available_actions": [
+          {"name": "Atender al cliente", "command": "atender_siguiente_cliente"},
+          {"name": "Preparar bebida", "command": "preparar_bebida"},
+          {"name": "Tomar pan del dispensador", "command": "tomar_pan_dispensador"}
+        ],
+        "learning_objective": "Secuencia de múltiples acciones"
+      },
+      "blocks": []
+    }
+  ]
+}

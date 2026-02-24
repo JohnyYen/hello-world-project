@@ -1,0 +1,12 @@
+~ start
+Orqui: Bien, {{_GameState.player_data.name}}. El botón "Ejecutar" es la llave para poner en acción tu código.  
+Orqui: Al pulsarlo, la simulación comenzará y podrás ver si tu agente alcanza el objetivo.  
+Orqui: Localiza el botón en el HUD y prepárate para dar el primer paso.
+
+- Entendido, voy a ejecutarlo.
+	Orqui: ¡Excelente! Pulsa Ejecutar cuando estés listo y observa cómo tu instrucción cobra vida.
+
+- ¿Y si falla?
+	Orqui: No te preocupes. Si el agente no llega, recibirás feedback inmediato y podrás ajustar tu código. Cada error es una oportunidad de aprendizaje.  
+
+=> END

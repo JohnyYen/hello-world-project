@@ -1,0 +1,25 @@
+{
+  "title": "Level Segment Standard Configuration",
+  "description": "Standard configuration template for level segments",
+  "version": "1.0",
+  "segment_id": 1,
+  "initial_state": {},
+  "expected_outputs": {},
+  "available_blocks": {},
+  "learning_objective": {},
+  "environment_data": {},
+  "execution_rules": {},
+  "goals": {},
+  "feedback_messages": {
+    "success": {},
+    "failure": {},
+    "hints": {}
+  },
+  "ui_config": {},
+  "defined_actions": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ]
+}

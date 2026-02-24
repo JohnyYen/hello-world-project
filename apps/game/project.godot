@@ -1,0 +1,49 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Hello World!!"
+run/main_scene="uid://dpgh15fk7coxr"
+config/features=PackedStringArray("4.4", "Mobile")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Env="*res://env.gd"
+DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
+EventBus="*res://scripts/eventBus.gd"
+_FeedbackController="*res://scripts/controllers/feedback_controller.gd"
+_GameConfig="*res://config/game_config.gd"
+_GameState="*res://scripts/globals/game_state.gd"
+_Util="*res://scripts/util.gd"
+_SaveController="*res://scripts/controllers/save_controller.gd"
+_DialogueUiController="*res://scripts/controllers/dialogue_ui_controller.gd"
+_GameController="*res://scripts/controllers/game_controller.gd"
+
+[dialogue_manager]
+
+runtime/balloon_path="res://scenes/components/dialogue/balloon.tscn"
+
+[display]
+
+window/stretch/mode="canvas_items"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/godot-sqlite/plugin.cfg", "res://addons/gut/plugin.cfg")
+
+[internationalization]
+
+locale/translations_pot_files=PackedStringArray("res://dialogue/dialogue.dialogue", "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue", "res://dialogue/C01/C01_01_Despertar.dialogue", "res://dialogue/C01/C01_02_Superar_Tutorial.dialogue", "res://dialogue/C00/C00_E04_Tour_Facultad.dialogue", "res://dialogue/C00/C00_E01_Entrada_Facultad.dialogue", "res://dialogue/C00/C00_E02_Bienvenida_Orqui.dialogue", "res://dialogue/C00/C00_E03_Teatro_Facultad.dialogue", "res://dialogue/Tutorial/Tutorial_PC.dialogue", "res://dialogue/Tutorial/Tutorial_Bed.dialogue", "res://dialogue/Tutorial/Tutorial_Room_Finish.dialogue", "res://dialogue/Tutorial/Tutorial_Map_Dorm.dialogue", "res://dialogue/Tutorial/Tutorial_Map_Faculty.dialogue", "res://dialogue/Tutorial/Tutorial_Map_Park.dialogue", "res://dialogue/Tutorial/Tutorial_Map_Finish.dialogue", "res://dialogue/Tutorial/Tutorial_Gameplay_Intro.dialogue", "res://dialogue/Tutorial/Tutorial_Gameplay_Gamezone.dialogue", "res://dialogue/Tutorial/Tutorial_Gameplay_Codezone.dialogue", "res://dialogue/Tutorial/Tutorial_Gameplay_Run_Code.dialogue", "res://dialogue/Tutorial/Tutorial_Gameplay_Finished.dialogue", "res://dialogue/C01/C01_E03_Llegada_Facultad.dialogue", "res://dialogue/C01/C01_E04_Primera_Clase.dialogue", "res://dialogue/C01/C01_E05_Primera_Vez_Cafeteria.dialogue", "res://dialogue/Testing.dialogue", "res://dialogue/C01/C01_Extra_Finish_One.dialogue")
+
+[rendering]
+
+renderer/rendering_method="mobile"

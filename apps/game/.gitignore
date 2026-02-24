@@ -1,0 +1,15 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+.godot/editor/
+editor_layout.cfg
+*.translation
+.db
+.sqlite3
+.sqlite
+/builds
+/assets
+/addons
+.gd.uuid
+
+requirements.md

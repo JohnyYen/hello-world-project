@@ -1,0 +1,18 @@
+Aquí tienes una versión mejorada, más inmersiva y con un tono más propio de una novela visual:
+
+```renpy
+~ start
+Orqui: Bienvenido al CodeSpace, {{_GameState.player_data.name}}. Este será tu taller creativo.
+Orqui: Aquí es donde darás órdenes al agente… y donde la lógica cobrará vida.
+Orqui: Empecemos con algo sencillo. Escribe exactamente: move_forward()
+Orqui: Ese comando le indicará al agente que avance una casilla hacia adelante.
+
+- Listo, lo escribí.
+	Orqui: ¡Perfecto! Ahora vamos a ejecutarlo para ver cómo responde tu primer instrucción real.
+
+- ¿Puedo escribir varios comandos?
+	Orqui: Claro que sí. Puedes escribir tantas líneas como quieras y luego ejecutarlas todas juntas.
+	Orqui: Piensa en ello como un pequeño programa: tú decides el orden… y el agente lo sigue.
+
+=> END
+```

@@ -1,0 +1,33 @@
+~ start
+# Escena: Fin de la Versión Alpha – Salida de la Cafetería
+# Contexto: El jugador acaba de terminar la tarea práctica en la cafetería. Orqui aparece para cerrar la versión.
+
+# Orqui aparece flotando con un brillo tenue, como si supiera algo que el jugador no.
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/cafeteria_3.png")
+do _DialogueUiController.changed_character.emit("center","characters/main_characters/orqui/Happy.png")
+Orqui: ¡Lo lograste, {{_GameState.player_data.name}}! Completaste con éxito tu primera tarea real aplicando lógica de programación.
+Orqui: Analizaste el problema, ordenaste los pasos y construiste una solución… justo como un verdadero programador en formación.
+
+# El personaje mira alrededor; la cafetería empieza a vaciarse lentamente.
+Orqui: Y con esto… llegamos al final de la versión *alpha* de tu aventura.
+Orqui: Todo lo que has vivido hasta ahora —tu llegada, tus primeras clases, tus decisiones, tus conversaciones— forman parte del primer gran tramo de tu historia.
+
+# Orqui se acerca un poco más, con gesto orgulloso.
+Orqui: A partir de aquí, el camino se vuelve más profundo: algoritmos más complejos, nuevas misiones, personajes inesperados y retos que pondrán a prueba tu creatividad.
+Orqui: Pero por ahora… este segmento llega a su fin.
+
+- ¿Ya terminó todo?
+	Orqui: Por el momento sí. Esta es la versión *alpha*, una ventana a lo que será tu viaje completo por la Facultad.
+
+- ¿Habrá más contenido luego?
+	Orqui: ¡Muchísimo más! Nuevos sistemas, niveles, historias y mecánicas ya están en desarrollo. Tus decisiones aquí influirán en lo que viene.
+
+- Me encantó esta parte.
+	Orqui: ¡Me alegra! Esta es solo la primera capa de un proyecto mucho más grande. Gracias por acompañarnos hasta aquí.
+
+# Orqui empieza a desvanecerse con partículas digitales.
+Orqui: Descansa, {{_GameState.player_data.name}}. Lo que viene será todavía mejor.
+Orqui: Nos vemos en la siguiente versión…
+
+do _DialogueUiController.set_flag.emit("has_complete_one_level", true)
+=> END

@@ -1,0 +1,10 @@
+~ start
+Orqui: Esta es el área de juego, {{_GameState.player_data.name}}. Aquí es donde cobra vida la simulación.
+Orqui: En el centro verás al agente y, un poco más adelante, el objetivo marcado con un indicador luminoso.
+Orqui: Tu misión será guiar al agente hasta ese punto utilizando los comandos que escribas en el CodeSpace.
+Orqui: Antes de avanzar, observa el tablero con calma y familiarízate con la posición del objetivo.
+- Entendido, ¿qué comando uso primero?
+    Orqui: Aún no te preocupes por eso; primero veremos el CodeSpace, el lugar donde escribirás todos tus comandos.
+- Ya veo el objetivo.
+    Orqui: Perfecto. Con eso claro, pasemos ahora al editor de código.
+=> END

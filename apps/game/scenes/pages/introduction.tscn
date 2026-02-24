@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bn1otporqg5vn"]
+
+[ext_resource type="Script" uid="uid://dwuh2pq40apyd" path="res://scenes/pages/introduction.gd" id="1_i80g1"]
+[ext_resource type="PackedScene" uid="uid://cvbtkiyi17t64" path="res://scenes/components/dialog_box.tscn" id="1_tv0ls"]
+
+[node name="Introduction" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i80g1")
+
+[node name="dialogBox" parent="." instance=ExtResource("1_tv0ls")]
+layout_mode = 1
+
+[connection signal="dialogue_update" from="dialogBox" to="." method="_on_dialog_box_dialogue_update"]

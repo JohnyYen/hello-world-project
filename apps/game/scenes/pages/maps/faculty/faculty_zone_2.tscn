@@ -1,0 +1,87 @@
+[gd_scene load_steps=4 format=3 uid="uid://du77u3pc87sah"]
+
+[ext_resource type="Texture2D" uid="uid://dm3ubyft8as4b" path="res://assets/anime/backgrounds/map/faculty/faculty_map_zone_2.png" id="1_nge8w"]
+[ext_resource type="Script" uid="uid://cng1iatevsf6q" path="res://scenes/pages/maps/faculty/hotspot_pulse.gd" id="2_g3mwe"]
+[ext_resource type="Script" uid="uid://cd67dommqviv2" path="res://scenes/pages/maps/faculty/hotspot_scene_change.gd" id="3_whevf"]
+
+[node name="FacultyZone2" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Bg" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_nge8w")
+expand_mode = 2
+stretch_mode = 6
+
+[node name="Straight" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -247.0
+offset_top = -15.0
+offset_right = -60.0
+offset_bottom = 258.0
+grow_horizontal = 0
+rotation = 0.537599
+
+[node name="HotspotPulse" type="Node" parent="Straight"]
+script = ExtResource("2_g3mwe")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Straight"]
+script = ExtResource("3_whevf")
+hotspot_node_path = NodePath("..")
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Cafeteria" type="Button" parent="."]
+layout_mode = 1
+offset_left = 206.0
+offset_top = 86.0
+offset_right = 411.0
+offset_bottom = 356.0
+
+[node name="HotspotPulse" type="Node" parent="Cafeteria"]
+script = ExtResource("2_g3mwe")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Cafeteria"]
+script = ExtResource("3_whevf")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://f1phaldnojoi"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -110.0
+offset_right = 222.0
+grow_vertical = 0
+
+[node name="HotspotPulse" type="Node" parent="Button"]
+script = ExtResource("2_g3mwe")
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Button"]
+script = ExtResource("3_whevf")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://by7hnfck7sf5r"
+metadata/_custom_type_script = "uid://cd67dommqviv2"

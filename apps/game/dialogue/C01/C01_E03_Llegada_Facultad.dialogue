@@ -1,0 +1,78 @@
+~ start
+# Escena: Encuentro matutino con Alex y primer día de clases
+
+#do game.fade_in()
+#do game.set_background("backgrounds/chapter_1/hallway_morning.png")
+#do game.play_music("audio/music/morning_campus.mp3")
+#
+# Alex aparece
+#do game.set_character("left", "characters/main_characters/Alex/Smile.png")
+#do game.set_character("right", "")
+
+Alex: ¡Ey, {{_GameState.player_data.name}}! *Se le ilumina la cara, como si te hubiera estado buscando desde hace rato.*
+Alex: No pensé encontrarte tan temprano, ¿qué tal tu primer día "oficial"?
+Alex: Cuéntame, ¿ya te ubicaron dónde queda cada aula o sigues igual de perdido que ayer?
+
+- “Estoy un poco nervioso, la verdad.”
+	Alex: *Su tono se suaviza.* Nah, tranquilo. A todos nos pasa. El primer día es como una ola gigante… pero si la surfeas, te lleva lejos.
+
+- “Creo que ya me ubico mejor, gracias a ti.”
+	Alex: *Sonríe con orgullo.* ¡Eso! Ves, sabía que no ibas a tardar mucho en agarrarle el ritmo.
+
+Alex: A ver, ¿qué quieres saber? ¿Profesores? ¿Materias? ¿Chismes del campus?
+Alex: *Ríe por lo bajo, como quien disfruta el ambiente universitario.* Yo te acompaño un rato, justo voy por el mismo pasillo hacia mi aula.
+
+- “¿Qué tal son los profesores de primer año?”
+	Alex: Diría que… variados. Pero el de Introducción a la Programación es el más buena onda. Te va a caer bien.
+
+- “¿Las materias son muy difíciles?”
+	Alex: Difíciles no. Exigen práctica. Si te gusta esto, vas a disfrutarlo más de lo que vas a sufrirlo.
+
+Alex: *Camina a tu lado, observando los pasillos llenarse de estudiantes.*
+Alex: Hm… justo el profesor que te decía está allí adelante. Qué timing.
+
+# Mostrar profesor
+#do game.set_character("right", "characters/professor/main/Normal.png")
+
+Profesor: *Se gira al escuchar sus pasos, con una sonrisa cálida y sincera.* Buenos días, jóvenes.
+Profesor: Es bueno ver caras nuevas con tanta energía.
+Profesor: {{_GameState.player_data.name}}, ¿cierto? Me alegra verte puntual.
+
+- “Sí, profesor. Tenía ganas de empezar.”
+	Profesor: *Asiente satisfecho.* Esa actitud es la mejor herramienta para aprender a programar.
+
+- “Trato de llegar a tiempo siempre.”
+	Profesor: *Ríe con suavidad.* Créeme, eso te va a ahorrar muchos dolores de cabeza este semestre.
+
+Profesor: Entren al aula, por favor. La clase está por comenzar y no quiero que se pierdan la introducción.
+
+# Alex se despide
+#do game.set_character("left", "characters/main_characters/Alex/Wave.png")
+Alex: *Te da un golpecito amistoso en el brazo.* Yo sigo por aquí. ¡Nos vemos luego!
+
+# Transición al aula
+#do game.fade_out()
+#do game.set_background("backgrounds/chapter_1/classroom_morning.png")
+#do game.fade_in()
+
+# Mostrar profesor al frente del aula
+#do game.set_character("center", "characters/professor/main/Normal.png")
+
+Profesor: *Mientras tomas asiento, su voz llena el salón con un tono cercano y apasionado.*
+Profesor: Programar es mucho más que escribir código… es aprender a pensar.
+Profesor: Es una herramienta poderosa para transformar ideas en soluciones, y para nosotros, los ingenieros informáticos, es prácticamente una extensión de nuestras manos.
+
+# Mostrar a Laura
+#do game.set_character("left", "characters/side_characters/Laura/Normal.png")
+
+Laura: *Levanta la mano, seria pero curiosa.* Profesor, ¿cómo sabemos si estamos “pensando como programadores”?
+Laura: A veces siento que entiendo el código… pero no entiendo el “por qué”.
+
+Profesor: *Sus ojos brillan con interés, claramente disfrutando la pregunta.*
+Profesor: Excelente duda, Laura. Pensar como programador no es memorizar, es comprender la lógica detrás de cada decisión.
+Profesor: Cuando empiezas a preguntarte “¿qué problema resuelvo?” antes de escribir una línea… ahí es cuando empieza la magia.
+Profesor: Y justo por eso, la clase de hoy será especial.
+
+do _DialogueUiController.set_flag.emit("has_first_time_faculty")
+
+=> END

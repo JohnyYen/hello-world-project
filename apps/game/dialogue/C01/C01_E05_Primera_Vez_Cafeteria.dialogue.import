@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://cfbogx0nbk5my"
+path="res://.godot/imported/C01_E05_Primera_Vez_Cafeteria.dialogue-4794bbf66d90468b5335b85afbd4e6e7.tres"
+
+[deps]
+
+source_file="res://dialogue/C01/C01_E05_Primera_Vez_Cafeteria.dialogue"
+dest_files=["res://.godot/imported/C01_E05_Primera_Vez_Cafeteria.dialogue-4794bbf66d90468b5335b85afbd4e6e7.tres"]
+
+[params]
+
+defaults=true

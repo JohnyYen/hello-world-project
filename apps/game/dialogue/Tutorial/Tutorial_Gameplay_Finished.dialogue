@@ -1,0 +1,10 @@
+~ start
+Orqui: ¡Perfecto, {{_GameState.player_data.name}}! Has completado el ejercicio de práctica sin ningún problema.
+Orqui: Ya dominas lo esencial: escribir comandos, ejecutarlos y aprovechar el feedback para mejorar tu lógica.
+Orqui: Con estas bases, estás listo para enfrentarte a los primeros puzzles reales dentro del campus.
+Orqui: Antes de que te marches, repasemos el HUD rápidamente: energía, reiniciar y menú. Todo lo que necesitas para orientarte.
+- ¡Genial! ¿Ahora puedo avanzar?
+    Orqui: Claro que sí. Cuando estés listo, podemos seguir con más niveles. Te esperan retos muy interesantes. Buena suerte… y que te diviertas mucho.
+- Quiero practicar otra vez.
+    Orqui: Como desees. Puedo reiniciar la práctica o prepararte nuevos ejercicios para que sigas puliendo tus habilidades.
+=> END

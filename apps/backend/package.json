@@ -1,0 +1,9 @@
+{
+  "name": "backend",
+  "private": true,
+  "scripts": {
+    "dev": ".venv/bin/python -m uvicorn main:app --reload --port 8000",
+    "lint": "echo \"Add ruff or flake8 here\"",
+    "typecheck": "echo \"Add mypy here\""
+  }
+}

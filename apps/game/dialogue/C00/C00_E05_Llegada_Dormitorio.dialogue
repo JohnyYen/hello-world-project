@@ -1,0 +1,55 @@
+~ start
+# Escena: Dormitorio estudiantil
+# Contexto: Tras el tour y la foto conmemorativa, el jugador llega a su habitación por primera vez.
+
+do _Util.fade_in()
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/night_dormitory.png")
+do _DialogueUiController.played_music.emit("audio/music/melodias_de_un_comienzo.mp3")
+
+do _DialogueUiController.changed_character.emit("left","characters/main_characters/%s_main/Normal.png" % [_GameState.player_data.gender])
+
+do _DialogueUiController.clean_character.emit("right")
+do _DialogueUiController.clean_character.emit("left")
+
+Narrador: La jornada ha sido larga.  
+Narrador: Entre rostros nuevos, pasillos interminables y el eco del teatro, el día ha pasado casi sin que te des cuenta.  
+Narrador: Y ahora, en la calma tibia del dormitorio, {{_GameState.player_data.name}} siente que el futuro por fin tiene forma.
+
+{{_GameState.player_data.name}}: (susurra) No puedo creerlo…  
+{{_GameState.player_data.name}}: Ya estoy aquí. De verdad.
+
+do _DialogueUiController.changed_character.emit("right", "characters/side_characters/orqui/Normal.png")
+
+Orqui: *Buenas noches, {{_GameState.player_data.name}}.*  
+Orqui: *Hoy fue un torbellino, ¿cierto?*
+
+- "Sí, agotador… pero emocionante."
+	Orqui: *Ese cansancio es el signo más bonito: significa que avanzaste.*  
+
+- "No pensé que el primer día sería tan largo."
+	Orqui: *Los comienzos suelen sentirse así. Son puertas grandes que se abren poco a poco.*  
+
+- "Todavía no creo que esté estudiando aquí."
+	Orqui: *Los sueños son así… primero parecen lejanos, luego te das cuenta de que estás viviendo dentro de ellos.*  
+
+{{_GameState.player_data.name}}: (sonríe) Supongo que estoy entre emocionado y asustado.
+
+Orqui: *Es una mezcla poderosa. El miedo te mantiene despierto… la emoción te mantiene avanzando.*  
+Orqui: *Y recuerda: nadie nace sabiendo programar el camino, pero todos pueden aprender a construirlo.*
+
+do _DialogueUiController.clean_character.emit("left")
+do _DialogueUiController.changed_character.emit("right", "characters/side_characters/orqui/Happy.png")
+
+Orqui: *Mañana empiezan tus clases, tu verdadera aventura.*  
+Orqui: *Por ahora… deja que la noche haga su magia. Hasta el conocimiento necesita un descanso.*
+
+Narrador: El holograma de Orqui se atenúa lentamente, dejando un halo azulado que acaricia la habitación antes de desvanecerse.  
+Narrador: Afuera, la ciudad universitaria respira en silencio, como si protegiera el sueño de quienes están a punto de cambiar el mundo.
+
+do _Util.fade_out()
+
+Narrador: *“Aquí comienza tu camino como ingeniero del conocimiento…”*  
+
+do _DialogueUiController.showed_title.emit("Capítulo 1 – Primeros Pasos", 3.5)
+
+=> END

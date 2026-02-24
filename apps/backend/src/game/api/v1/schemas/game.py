@@ -1,0 +1,112 @@
+from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel, ConfigDict, Field
+
+
+# ------------------------
+# Esquemas Base
+# ------------------------
+
+
+class GameBase(BaseModel):
+    """Campos base compartidos para Game"""
+
+    title: str = Field(
+        ..., min_length=1, max_length=255, example="Juego de Matemáticas"
+    )
+    description: Optional[str] = Field(
+        None, max_length=255, example="Aprende matemáticas básicas"
+    )
+    creator: Optional[str] = Field(None, max_length=255, example="Profesor García")
+    subject: Optional[str] = Field(None, max_length=255, example="Matemáticas")
+    publication_status: Optional[str] = Field(None, max_length=255, example="published")
+
+
+# ------------------------
+# Esquemas de Request
+# ------------------------
+
+
+class GameCreate(GameBase):
+    """Esquema para creación de juego"""
+
+    pass
+
+
+class GameUpdate(BaseModel):
+    """Esquema para actualización de juego"""
+
+    title: Optional[str] = Field(
+        None, min_length=1, max_length=255, example="Juego de Matemáticas"
+    )
+    description: Optional[str] = Field(
+        None, max_length=255, example="Aprende matemáticas básicas"
+    )
+    creator: Optional[str] = Field(None, max_length=255, example="Profesor García")
+    subject: Optional[str] = Field(None, max_length=255, example="Matemáticas")
+    publication_status: Optional[str] = Field(None, max_length=255, example="published")
+
+
+# ------------------------
+# Esquemas de Respuesta
+# ------------------------
+
+
+class GameResponse(GameBase):
+    """Esquema para respuesta de juego"""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    is_deleted: bool = False
+
+
+class GameDetailResponse(GameResponse):
+    """Esquema para respuesta detallada de juego con relaciones"""
+
+    levels_count: int = Field(0, description="Cantidad de niveles del juego")
+
+
+class GameListResponse(BaseModel):
+    """Esquema para listado de juegos"""
+
+    success: bool = True
+    message: str = "Juegos obtenidos exitosamente"
+    data: List[GameResponse] = []
+    total: int = 0
+    skip: int = 0
+    limit: int = 10
+
+
+class SingleGameResponse(BaseModel):
+    """Esquema para respuesta de un solo juego"""
+
+    success: bool = True
+    message: str = "Juego obtenido exitosamente"
+    data: Optional[GameDetailResponse] = None
+
+
+class GameCreateResponse(BaseModel):
+    """Esquema para respuesta de creación de juego"""
+
+    success: bool = True
+    message: str = "Juego creado exitosamente"
+    data: GameResponse
+
+
+class GameUpdateResponse(BaseModel):
+    """Esquema para respuesta de actualización de juego"""
+
+    success: bool = True
+    message: str = "Juego actualizado exitosamente"
+    data: GameResponse
+
+
+class GameDeleteResponse(BaseModel):
+    """Esquema para respuesta de eliminación de juego"""
+
+    success: bool = True
+    message: str = "Juego eliminado exitosamente"

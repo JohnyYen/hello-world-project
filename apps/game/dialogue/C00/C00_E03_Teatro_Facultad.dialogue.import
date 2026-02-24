@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://ctn4jum67x0p7"
+path="res://.godot/imported/C00_E03_Teatro_Facultad.dialogue-e56988b6af58b0ac8b8e4088116ce43f.tres"
+
+[deps]
+
+source_file="res://dialogue/C00/C00_E03_Teatro_Facultad.dialogue"
+dest_files=["res://.godot/imported/C00_E03_Teatro_Facultad.dialogue-e56988b6af58b0ac8b8e4088116ce43f.tres"]
+
+[params]
+
+defaults=true

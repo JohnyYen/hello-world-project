@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://b6t76my6d8jcc"
+path="res://.godot/imported/C00_E04_Tour_Facultad.dialogue-a49ce9430d1e4f38e333ba60de1800d2.tres"
+
+[deps]
+
+source_file="res://dialogue/C00/C00_E04_Tour_Facultad.dialogue"
+dest_files=["res://.godot/imported/C00_E04_Tour_Facultad.dialogue-a49ce9430d1e4f38e333ba60de1800d2.tres"]
+
+[params]
+
+defaults=true

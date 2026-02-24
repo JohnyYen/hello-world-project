@@ -1,0 +1,448 @@
+[gd_scene load_steps=53 format=3 uid="uid://6gr1ei4kgnc8"]
+
+[ext_resource type="PackedScene" uid="uid://bm5lwl4uv5x07" path="res://scenes/pages/levels/template_level.tscn" id="1_lxa08"]
+[ext_resource type="Script" uid="uid://g33a1ssjrn0p" path="res://scenes/pages/levels/cafeteria/cafeteria_gameplay.gd" id="2_krp0b"]
+[ext_resource type="Texture2D" uid="uid://vux5r7ln4f8m" path="res://assets/anime/sprites/level_1/floor.png" id="3_3busp"]
+[ext_resource type="Texture2D" uid="uid://cdawt8ff1b0k2" path="res://assets/anime/sprites/level_1/walls.png" id="3_cl8ni"]
+[ext_resource type="Texture2D" uid="uid://bhhbhby8seq3x" path="res://assets/anime/sprites/level_1/Cash.png" id="3_krp0b"]
+[ext_resource type="Texture2D" uid="uid://caqujytp7kgs6" path="res://assets/anime/sprites/level_1/Coffe.png" id="4_3busp"]
+[ext_resource type="Texture2D" uid="uid://dswur01en88wh" path="res://assets/anime/sprites/level_1/Table.png" id="4_ledsl"]
+[ext_resource type="Script" uid="uid://cnula2sch333j" path="res://scenes/pages/levels/cafeteria/player.gd" id="5_r0cij"]
+[ext_resource type="Texture2D" uid="uid://40nd5k6h8esi" path="res://assets/anime/sprites/level_1/main_character_sprite.png" id="6_8ivq4"]
+[ext_resource type="Texture2D" uid="uid://rax3g6cvle6w" path="res://assets/anime/sprites/level_1/Player_Sprite.png" id="7_cl8ni"]
+[ext_resource type="Texture2D" uid="uid://cr2itxc11hn3" path="res://assets/anime/sprites/level_1/male_main_wall.png" id="8_xi6db"]
+[ext_resource type="PackedScene" uid="uid://vgv7q3fyxtxi" path="res://scenes/characters/level_one/student_1.tscn" id="9_c28ar"]
+[ext_resource type="PackedScene" uid="uid://dn51spf7wjded" path="res://scenes/characters/level_one/student_2.tscn" id="10_f0h7g"]
+[ext_resource type="PackedScene" uid="uid://bkdoo1tod213m" path="res://scenes/characters/level_one/student_3.tscn" id="14_402hk"]
+[ext_resource type="PackedScene" uid="uid://cy2yutf7syrox" path="res://scenes/characters/level_one/student_4.tscn" id="15_1ngbw"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_402hk"]
+radius = 20.0
+height = 74.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r0cij"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(0, 0, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xi6db"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(216, 0, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5iqkm"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(432, 0, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c28ar"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(648, 0, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0h7g"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(0, 266, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_402hk"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(216, 266, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ngbw"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(432, 266, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bj6j8"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(648, 266, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4kbg4"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(0, 532, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xnmxn"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(216, 532, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4gun3"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(432, 532, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tq35e"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(648, 532, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fshhe"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(0, 798, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ee5yn"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(216, 798, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2cx0e"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(432, 798, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_66pvg"]
+atlas = ExtResource("6_8ivq4")
+region = Rect2(648, 798, 216, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8hk0t"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(0, 0, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kxao1"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(201, 0, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6tnim"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(402, 0, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4jib6"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(603, 0, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_milaf"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(0, 266, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_77dem"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(201, 266, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3yow0"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(402, 266, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_58ll5"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(603, 266, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3c1mo"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(0, 532, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8e6gd"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(201, 532, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c36sx"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(402, 532, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vo55g"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(603, 532, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iv0o1"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(0, 798, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cdd5e"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(201, 798, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ay8l"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(402, 798, 201, 266)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ee736"]
+atlas = ExtResource("8_xi6db")
+region = Rect2(603, 798, 201, 266)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8hk0t"]
+animations = [{
+"frames": [{
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_r0cij")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_xi6db")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_5iqkm")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_c28ar")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_f0h7g")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_402hk")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_1ngbw")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_bj6j8")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_4kbg4")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_xnmxn")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_4gun3")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_tq35e")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_fshhe")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_ee5yn")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_2cx0e")
+}, {
+"duration": 0.7,
+"texture": SubResource("AtlasTexture_66pvg")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_8hk0t")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_kxao1")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_6tnim")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_4jib6")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_milaf")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_77dem")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_3yow0")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_58ll5")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_3c1mo")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_8e6gd")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_c36sx")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_vo55g")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_iv0o1")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_cdd5e")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_3ay8l")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_ee736")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_402hk"]
+size = Vector2(618, 52)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1ngbw"]
+size = Vector2(49, 65)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bj6j8"]
+size = Vector2(74, 59)
+
+[node name="CafeteriaLevel" instance=ExtResource("1_lxa08")]
+script = ExtResource("2_krp0b")
+back_scene = "uid://f1phaldnojoi"
+student_scenes = [ExtResource("9_c28ar"), ExtResource("10_f0h7g"), ExtResource("14_402hk"), ExtResource("15_1ngbw")]
+
+[node name="World" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport" index="0"]
+
+[node name="Background" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World" index="0"]
+
+[node name="Floor" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Background" index="0"]
+texture_filter = 1
+position = Vector2(337, 502)
+scale = Vector2(0.671875, 0.281)
+texture = ExtResource("3_3busp")
+
+[node name="Walls" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Background" index="1"]
+position = Vector2(335, 191)
+scale = Vector2(0.676562, 0.815546)
+texture = ExtResource("3_cl8ni")
+
+[node name="PlayerZone" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World" index="1"]
+position = Vector2(355, 547)
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone" index="0"]
+position = Vector2(-60, -199)
+script = ExtResource("5_r0cij")
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/CharacterBody2D" index="0"]
+visible = false
+texture_filter = 1
+scale = Vector2(0.419872, 0.454327)
+texture = ExtResource("7_cl8ni")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/CharacterBody2D" index="1"]
+z_index = 1
+shape = SubResource("CapsuleShape2D_402hk")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/CharacterBody2D" index="2"]
+z_as_relative = false
+texture_filter = 1
+scale = Vector2(0.45, 0.433)
+sprite_frames = SubResource("SpriteFrames_8hk0t")
+animation = &"walk"
+frame_progress = 0.926792
+speed_scale = 0.7
+
+[node name="InteractionZone" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone" index="1"]
+position = Vector2(9, 14)
+
+[node name="InteractCash" type="Area2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/InteractionZone" index="0"]
+position = Vector2(-34, 43)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/InteractionZone/InteractCash" index="0"]
+
+[node name="InteractDrink" type="Area2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/InteractionZone" index="1"]
+position = Vector2(9, 25)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/InteractionZone/InteractDrink" index="0"]
+
+[node name="InteractTable" type="Area2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/InteractionZone" index="2"]
+position = Vector2(-21, 10)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/InteractionZone/InteractTable" index="0"]
+
+[node name="Stations" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World" index="2"]
+position = Vector2(255, 150)
+
+[node name="Table" type="StaticBody2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations" index="0"]
+position = Vector2(66, 295)
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/Table" index="0"]
+position = Vector2(10, -8)
+scale = Vector2(0.720703, 0.169434)
+texture = ExtResource("4_ledsl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/Table" index="1"]
+position = Vector2(9, -9)
+shape = SubResource("RectangleShape2D_402hk")
+
+[node name="CashRegister" type="StaticBody2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations" index="1"]
+position = Vector2(205, 237)
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/CashRegister" index="0"]
+scale = Vector2(0.1, 0.088)
+texture = ExtResource("3_krp0b")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/CashRegister" index="1"]
+position = Vector2(-2.5, 4.5)
+shape = SubResource("RectangleShape2D_1ngbw")
+
+[node name="DrinkMachine" type="StaticBody2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations" index="2"]
+position = Vector2(316, 236)
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/DrinkMachine" index="0"]
+scale = Vector2(0.1, 0.088)
+texture = ExtResource("4_3busp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/DrinkMachine" index="1"]
+position = Vector2(1, 7.5)
+shape = SubResource("RectangleShape2D_bj6j8")
+
+[node name="CustomerContainer" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World" index="3"]
+z_index = 1
+position = Vector2(250, 420)
+
+[node name="OrderSpot" type="Marker2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer" index="0"]
+
+[node name="QueuePositions" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer" index="1"]
+
+[node name="Q1" type="Marker2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer/QueuePositions" index="0"]
+
+[node name="Q2" type="Marker2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer/QueuePositions" index="1"]
+position = Vector2(-40, 10)
+
+[node name="Q3" type="Marker2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer/QueuePositions" index="2"]
+position = Vector2(-80, 20)
+
+[node name="Q4" type="Marker2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer/QueuePositions" index="3"]
+position = Vector2(-120, 30)
+
+[node name="Q5" type="Marker2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer/QueuePositions" index="4"]
+position = Vector2(-160, 40)
+
+[node name="Student1" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer" index="2" instance=ExtResource("9_c28ar")]
+visible = false
+position = Vector2(-174, 107)
+
+[node name="Student2" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer" index="3" instance=ExtResource("10_f0h7g")]
+visible = false
+position = Vector2(-30, 120)
+
+[node name="Student3" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer" index="4" instance=ExtResource("14_402hk")]
+visible = false
+position = Vector2(149, 71)
+
+[node name="Student4" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer" index="5" instance=ExtResource("15_1ngbw")]
+visible = false
+position = Vector2(210, 132)
+
+[node name="Popups" type="CanvasLayer" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World" index="4"]
+visible = false
+
+[node name="RequestPopups" type="Control" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Popups" index="0"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Popups/RequestPopups" index="0"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Popups/RequestPopups" index="1"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/Hud" index="1"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -206.0
+offset_top = -69.0
+offset_right = 186.0
+offset_bottom = 67.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/Hud/PanelContainer" index="0"]
+layout_mode = 2
+
+[node name="Instructions" type="RichTextLabel" parent="MarginContainer/Hud/PanelContainer/CenterContainer" index="0"]
+custom_minimum_size = Vector2(300, 150)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4

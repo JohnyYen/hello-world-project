@@ -1,0 +1,31 @@
+~ start
+Orqui: ¡Felicidades, {{_GameState.player_data.name}}! Has completado el tutorial básico.
+Orqui: ¡Ya eres oficialmente un estudiante funcional de la Facultad del Conocimiento!
+Orqui: ¿Listo para tu primer día de clases?
+
+- ¡Sí, estoy emocionado!
+	Orqui: ¡Esa es la actitud que me gusta! La motivación es el mejor lenguaje de programación.
+	Orqui: Vamos, tus compañeros te esperan en el aula de introducción.
+
+- Tengo un poco de miedo...
+	Orqui: No pasa nada, {{_GameState.player_data.name}}. Todos los grandes ingenieros empezaron con dudas.
+	Orqui: Lo importante es dar el primer paso, y tú ya lo diste.
+
+- ¿Habrá café?
+	Orqui: ¡Por supuesto! Es el combustible oficial de los programadores.
+	Orqui: Pero cuidado... el exceso puede generar *bugs humanos*.
+
+Orqui: Bien, activa tu mapa para ver la ruta al aula.
+Orqui: Hoy conocerás a tus primeros profesores y te asignarán tu primer proyecto real.
+Orqui: Y recuerda, {{_GameState.player_data.name}}: aquí no se trata solo de aprender a programar…
+Orqui: …sino de aprender a pensar como un creador del conocimiento.
+
+Orqui: ¿Listo para comenzar el Capítulo 1?
+
+- ¡Vamos allá!
+	Orqui: ¡Excelente! Te veré en el aula.
+
+- Necesito un minuto más.
+	Orqui: Claro, tómate tu tiempo. Hasta los algoritmos necesitan optimizarse antes de correr.
+
+=> END

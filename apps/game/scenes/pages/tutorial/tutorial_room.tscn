@@ -1,0 +1,107 @@
+[gd_scene load_steps=5 format=3 uid="uid://c0f8qbp8tsw0b"]
+
+[ext_resource type="Script" uid="uid://hfm307ihyoiv" path="res://scenes/pages/tutorial/tutorial_room.gd" id="1_pyonh"]
+[ext_resource type="Texture2D" uid="uid://unvbnbcfk7o0" path="res://assets/anime/backgrounds/chapter_1/morning_dormitory.png" id="2_jsyqx"]
+[ext_resource type="Script" uid="uid://ces1onxba7pi6" path="res://scenes/pages/tutorial/btn_tutorial.gd" id="2_mnisw"]
+[ext_resource type="Script" uid="uid://bmu6pim5otpjr" path="res://scenes/pages/maps/dormitory/text_typer.gd" id="4_pb0xv"]
+
+[node name="TutorialRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pyonh")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_jsyqx")
+expand_mode = 1
+
+[node name="PC Btn" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 27.0
+offset_top = -16.0
+offset_right = 202.0
+offset_bottom = 70.0
+grow_vertical = 2
+flat = true
+script = ExtResource("2_mnisw")
+
+[node name="Highlight" type="ColorRect" parent="PC Btn"]
+visible = false
+z_index = 4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.5)
+
+[node name="Bedroom Btn" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 136.0
+offset_top = 27.0
+offset_right = 566.0
+offset_bottom = 243.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.0196639
+flat = true
+script = ExtResource("2_mnisw")
+
+[node name="Highlight" type="ColorRect" parent="Bedroom Btn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.5)
+
+[node name="PC" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MessageLabel" type="RichTextLabel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -156.0
+offset_top = -44.0
+offset_right = 135.0
+offset_bottom = 58.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 50
+script = ExtResource("4_pb0xv")
+
+[connection signal="pressed" from="Bedroom Btn" to="." method="_on_bedroom_btn_pressed"]

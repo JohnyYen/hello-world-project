@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bo0cd7k8g8kdl"
+path="res://.godot/imported/C01_02_Superar_Tutorial.dialogue-a0ef98c52c94613036a813dfd4be0295.tres"
+
+[deps]
+
+source_file="res://dialogue/C01/C01_02_Superar_Tutorial.dialogue"
+dest_files=["res://.godot/imported/C01_02_Superar_Tutorial.dialogue-a0ef98c52c94613036a813dfd4be0295.tres"]
+
+[params]
+
+defaults=true

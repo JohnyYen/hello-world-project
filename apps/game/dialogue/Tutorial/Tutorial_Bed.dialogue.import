@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://clcdupxcm7kks"
+path="res://.godot/imported/Tutorial_Bed.dialogue-2e79eeacb7901a58a173371962ab016c.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_Bed.dialogue"
+dest_files=["res://.godot/imported/Tutorial_Bed.dialogue-2e79eeacb7901a58a173371962ab016c.tres"]
+
+[params]
+
+defaults=true

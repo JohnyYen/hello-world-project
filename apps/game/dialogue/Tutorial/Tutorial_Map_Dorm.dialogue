@@ -1,0 +1,13 @@
+~ start
+Orqui: Bienvenido al mapa global, {{_GameState.player_data.name}}.
+Orqui: Este de aquí es tu dormitorio: tu punto seguro, tu base y el lugar al que siempre podrás volver.
+Orqui: Desde aquí revisarás tus objetos, organizarás tus ideas… y, cuando lo necesites, podrás descansar.
+Orqui: Adelante, haz clic en tu dormitorio para que veas cómo funciona.
+
+- Entendido, Orqui.
+	Orqui: ¡Excelente! Conocer bien tu espacio te ayudará a orientarte mejor en lo que viene.
+
+- ¿Puedo explorar otra zona ya?
+	Orqui: Aún no. Primero vamos paso a paso… dominar cada zona hará que el resto del mapa tenga mucho más sentido.
+
+=> END

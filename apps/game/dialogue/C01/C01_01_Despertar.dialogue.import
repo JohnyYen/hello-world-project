@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://cmlm1mrwsiwlh"
+path="res://.godot/imported/C01_01_Despertar.dialogue-be50883a6f988b0282635fc9e8064b0d.tres"
+
+[deps]
+
+source_file="res://dialogue/C01/C01_01_Despertar.dialogue"
+dest_files=["res://.godot/imported/C01_01_Despertar.dialogue-be50883a6f988b0282635fc9e8064b0d.tres"]
+
+[params]
+
+defaults=true

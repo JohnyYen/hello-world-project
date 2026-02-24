@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhoj16mnsbmvu"]
+
+[ext_resource type="Script" uid="uid://dvsp5ji00er0u" path="res://scenes/pages/arrive_faculty.gd" id="1_6ya5t"]
+[ext_resource type="PackedScene" uid="uid://cvbtkiyi17t64" path="res://scenes/components/dialog_box.tscn" id="2_sx6sw"]
+
+[node name="ArriveFaculty" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6ya5t")
+
+[node name="dialogBox" parent="." instance=ExtResource("2_sx6sw")]
+layout_mode = 1
+
+[connection signal="dialogue_update" from="dialogBox" to="." method="_on_dialog_box_dialogue_update"]

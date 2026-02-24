@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://dta1rdrvdq4ak"
+path="res://.godot/imported/Tutorial_Gameplay_Finished.dialogue-8f44d769b1ba9fc926514b633806a514.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_Gameplay_Finished.dialogue"
+dest_files=["res://.godot/imported/Tutorial_Gameplay_Finished.dialogue-8f44d769b1ba9fc926514b633806a514.tres"]
+
+[params]
+
+defaults=true

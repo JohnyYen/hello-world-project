@@ -1,0 +1,102 @@
+# Escena: Llegada a la facultad (Refactorizada)
+# Contexto: Primer día oficial del jugador. Ambiente vivo.
+~ start
+
+do _Util.fade_in()
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/building_entrance_2.png")
+do _DialogueUiController.played_music.emit("audio/music/codigos_en_la_sangre.mp3")
+
+# --- Ambiente inicial ---
+do _DialogueUiController.changed_character.emit("right", "characters/side_characters/student_1/Normal.png")
+RandomStudent1: (a lo lejos) ¡No, te digo que el aula 204 está cruzando el patio, no subiendo esas escaleras!
+
+do _DialogueUiController.changed_character.emit("left", "characters/side_characters/student_2/Normal.png")
+RandomStudent2: ¡Pues el mapa del campus no ayuda nada!
+
+do _DialogueUiController.changed_character.emit("right", "characters/side_characters/professor_1/Normal.png")
+Professor1: (en voz firme) Revisen sus correos. La charla de bienvenida empieza en veinte minutos.
+RandomStudent2: ¿Escuchaste? Este año hay más de cien ingresantes. ¡El teatro va a explotar!
+
+# Limpiar personajes
+do _DialogueUiController.clean_character.emit("right")
+do _DialogueUiController.clean_character.emit("left")
+
+# --- Encuentro con Alex ---
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Talk.png")
+Alex: *Se acerca con una sonrisa relajada.* Hey, ¿nuevo por aquí? Tienes esa mirada de “¿en dónde me metí?” que todos tuvimos el primer día.
+
+# --- RESPUESTA 1 ---
+- "Sí, soy nuevo. Es mi primer día aquí."  
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Laugh.png")
+	Alex: *Ríe con complicidad.* Lo sabía. Bienvenido al caos más organizado del país.
+	Alex: Soy Alex, segundo año de Ingeniería. ¿Y tú eres…?
+
+	do _DialogueUiController.changed_character.emit("left", "characters/main_characters/%s_main/Normal.png" % [_GameState.player_data.gender])
+	{{_GameState.player_data.name}}: Me llamo {{_GameState.player_data.name}}.
+
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Happy.png")
+	Alex: Encantado, {{_GameState.player_data.name}}. Prometo que este lugar mejora después de la primera semana.
+
+# --- RESPUESTA 2 ---
+- "¿Tan obvio se nota?"  
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Playful.png")
+	Alex: *Levanta las manos en rendición.* Un poquito, sí. Pero tranquilo, a todos se nos veía igual.
+
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Talk.png")
+	Alex: Soy Alex, de segundo. ¿Cómo te llamas?
+
+	do _DialogueUiController.changed_character.emit("left", "characters/main_characters/%s_main/Normal.png" % [_GameState.player_data.gender])
+	{{_GameState.player_data.name}}: {{_GameState.player_data.name}}.
+
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Happy.png")
+	Alex: *Asiente con calidez.* Buen nombre. Vas a encajar mejor de lo que crees.
+
+# --- RESPUESTA 3 ---
+- "Solo estoy explorando un poco."  
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Laugh.png")
+	Alex: ¡Esa es la actitud! Yo también exploré mi primer día… y terminé entrando por error a un laboratorio de química.
+
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Talk.png")
+	Alex: Soy Alex, por cierto. ¿Y tú eres…?
+
+	do _DialogueUiController.changed_character.emit("left", "characters/main_characters/%s_main/Normal.png" % [_GameState.player_data.gender])
+	{{_GameState.player_data.name}}: {{_GameState.player_data.name}}.
+
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Happy.png")
+	Alex: Genial. Si algún día te pierdes, seguro me encuentras rondando por el edificio de sistemas.
+
+# --- Ambiente continuo ---
+do _DialogueUiController.changed_character.emit("right", "characters/side_characters/professor_2/Normal.png")
+Professor2: (pasando cerca) ¡La charla en el teatro empieza puntual! No olviden sus credenciales.
+
+do _DialogueUiController.changed_character.emit("right", "characters/side_characters/student_2/Normal.png")
+RandomStudent4: ¡Hey! ¿Probaste la cafetería? Dicen que el café sigue igual de terrible…
+
+do _DialogueUiController.changed_character.emit("right", "characters/side_characters/student_3/Normal.png")
+RandomStudent5: (riendo) ¡Entonces nada cambió desde el año pasado!
+
+# --- Vuelve Alex ---
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Normal.png")
+Alex: Bueno, parece que todos se están moviendo al teatro.
+Alex: Si quieres, puedo acompañarte. La primera vez es menos rara cuando vas con alguien.
+
+# --- RESPUESTAS FINALES ---
+- "Gracias, me vendría bien."  
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Talk.png")
+	Alex: Perfecto. Así aprovecho para contarte los trucos de supervivencia del primer semestre. Vas a necesitarlos.
+
+- "Prefiero ir por mi cuenta, pero gracias."  
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Pointing.png")
+	Alex: *Sonríe sin ofenderse.* Claro. Solo no sigas al grupo equivocado o vas a terminar en la fila del baño.
+
+- "¿Ya todos van al teatro?"  
+	do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Thinking.png")
+	Alex: Sí. La decana dará la bienvenida. Y dicen que prepararon algo especial para los nuevos… tú verás.
+
+# Despedida
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Friendly.png")
+Alex: Vamos entonces. Prometo que después de hoy, este lugar ya no te parecerá un laberinto… bueno, no tanto.
+
+# Fade final
+do _Util.fade_out()
+=> END

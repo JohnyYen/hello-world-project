@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=3 uid="uid://bqkbgslok33v8"]
+
+[ext_resource type="PackedScene" uid="uid://bm5lwl4uv5x07" path="res://scenes/pages/levels/template_level.tscn" id="1_dwxpr"]
+[ext_resource type="Script" uid="uid://cvtq65v6bmc6a" path="res://scenes/pages/tutorial/tutorial_gameplay.gd" id="2_hapjq"]
+[ext_resource type="Shader" uid="uid://brlv6dtw2gl6d" path="res://scenes/pages/tutorial/tutorial_gameplay.gdshader" id="3_q51ym"]
+[ext_resource type="Texture2D" uid="uid://bp6jgknhdhs8q" path="res://assets/shared/ui/arrow_mark.png" id="4_3m7y3"]
+[ext_resource type="Script" uid="uid://bel7jewo77tjh" path="res://scenes/pages/tutorial/arrow.gd" id="5_016on"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3m7y3"]
+shader = ExtResource("3_q51ym")
+shader_parameter/highlight_pos = Vector2(0, 0)
+shader_parameter/highlight_size = Vector2(0, 0)
+
+[node name="TutorialGameplay" instance=ExtResource("1_dwxpr")]
+script = ExtResource("2_hapjq")
+
+[node name="Hud" parent="MarginContainer" index="1"]
+layer = 0
+
+[node name="Overlay" type="Control" parent="." index="1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Highlight" type="Control" parent="Overlay" index="0"]
+material = SubResource("ShaderMaterial_3m7y3")
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Arrow" type="TextureRect" parent="Overlay" index="1"]
+z_index = 3
+layout_mode = 0
+offset_left = 217.0
+offset_top = 153.0
+offset_right = 430.0
+offset_bottom = 256.0
+texture = ExtResource("4_3m7y3")
+expand_mode = 2
+script = ExtResource("5_016on")
+
+[node name="Dimmer" type="ColorRect" parent="Overlay" index="2"]
+visible = false
+z_index = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)

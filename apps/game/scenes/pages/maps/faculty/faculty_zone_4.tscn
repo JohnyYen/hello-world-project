@@ -1,0 +1,71 @@
+[gd_scene load_steps=4 format=3 uid="uid://b4sjsghdhgfng"]
+
+[ext_resource type="Texture2D" uid="uid://bv77fdjg88h2n" path="res://assets/anime/backgrounds/map/faculty/faculty_map_zone_4.png" id="1_yuc6m"]
+[ext_resource type="Script" uid="uid://cng1iatevsf6q" path="res://scenes/pages/maps/faculty/hotspot_pulse.gd" id="2_um364"]
+[ext_resource type="Script" uid="uid://cd67dommqviv2" path="res://scenes/pages/maps/faculty/hotspot_scene_change.gd" id="3_bfd5t"]
+
+[node name="FacultyZone4" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_yuc6m")
+expand_mode = 2
+stretch_mode = 6
+
+[node name="Library" type="Button" parent="."]
+layout_mode = 1
+offset_left = 172.0
+offset_top = 46.0
+offset_right = 354.0
+offset_bottom = 525.0
+
+[node name="HotspotPulse" type="Node" parent="Library"]
+script = ExtResource("2_um364")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Library"]
+script = ExtResource("3_bfd5t")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://dhhvuwt0ejrlb"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Garden" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -359.0
+offset_top = -284.0
+offset_right = -118.0
+offset_bottom = 157.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="HotspotPulse" type="Node" parent="Garden"]
+script = ExtResource("2_um364")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Garden"]
+script = ExtResource("3_bfd5t")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://ghu3wf1rd7q7"
+metadata/_custom_type_script = "uid://cd67dommqviv2"

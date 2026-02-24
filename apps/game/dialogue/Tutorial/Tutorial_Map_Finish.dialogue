@@ -1,0 +1,15 @@
+~ start
+Orqui: ¡Fantástico, {{_GameState.player_data.name}}! Has completado el tutorial del mapa global.  
+Orqui: Ahora conoces las zonas principales: tu dormitorio, la facultad y el parque.  
+Orqui: Desde aquí podrás moverte libremente por todo el campus y decidir cuál será tu siguiente paso.  
+Orqui: Cada zona tiene su propósito, y te aseguro que nuevas aventuras te esperan en cada rincón.  
+Orqui: Pero antes de lanzarte a tus primeras misiones, haremos un pequeño tutorial de gameplay.  
+Orqui: Te mostraré cómo se juegan los puzzles del juego, para que domines tus herramientas y mecánicas desde el inicio.
+
+- ¡Estoy listo, Orqui!
+	Orqui: ¡Excelente! Explora, observa y disfruta. Cuando te sientas preparado, comenzaremos con los puzzles.
+
+- Necesito repasar otra vez.
+	Orqui: No hay problema, {{_GameState.player_data.name}}. Tómate tu tiempo, revisa cada zona con calma y luego continuaremos con el tutorial de puzzles.  
+
+=> END

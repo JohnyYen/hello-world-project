@@ -1,0 +1,334 @@
+[gd_scene load_steps=10 format=3 uid="uid://08gepectvbo0"]
+
+[ext_resource type="Script" uid="uid://dbl4pw2wo5ud6" path="res://scenes/components/room/pc_panel.gd" id="1_05g40"]
+[ext_resource type="Texture2D" uid="uid://bdfu2l5rvc32c" path="res://icon.svg" id="1_mp2fe"]
+[ext_resource type="Texture2D" uid="uid://cnled3l25frd2" path="res://assets/shared/backgrounds/pc_background.jpg" id="2_5dj1l"]
+[ext_resource type="Script" uid="uid://pyuhh7nqrq4l" path="res://scenes/components/room/app_icon.gd" id="2_vlxpb"]
+[ext_resource type="Script" uid="uid://bl57jqm08b67c" path="res://scenes/components/room/email_app.gd" id="5_5uypr"]
+[ext_resource type="Script" uid="uid://6iejapnmrt0i" path="res://scenes/components/room/mail_content.gd" id="5_cc47g"]
+[ext_resource type="Script" uid="uid://n76kmv4lqt4i" path="res://scenes/components/room/mail_list.gd" id="5_vbiaf"]
+[ext_resource type="Script" uid="uid://bd3ejeubb474j" path="res://scenes/components/room/gallery_app.gd" id="8_2lmio"]
+[ext_resource type="Script" uid="uid://dhsql6abtjrhj" path="res://scenes/components/room/code_editor_app.gd" id="8_i4eas"]
+
+[node name="PcPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_05g40")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_5dj1l")
+expand_mode = 2
+stretch_mode = 6
+
+[node name="Launcher" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 128.0
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Launcher"]
+layout_mode = 2
+
+[node name="EmailIcon" type="TextureButton" parent="Launcher/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_mp2fe")
+script = ExtResource("2_vlxpb")
+app_name = "EmailApp"
+
+[node name="GalleryIcon" type="TextureButton" parent="Launcher/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_mp2fe")
+script = ExtResource("2_vlxpb")
+
+[node name="CodeEditorIcon" type="TextureButton" parent="Launcher/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_mp2fe")
+script = ExtResource("2_vlxpb")
+app_name = "CodeEditoApp"
+
+[node name="Aplications" type="Control" parent="."]
+z_index = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EmailApp" type="Panel" parent="Aplications"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_5uypr")
+
+[node name="TitleBar" type="HBoxContainer" parent="Aplications/EmailApp"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="Label" type="Label" parent="Aplications/EmailApp/TitleBar"]
+layout_mode = 2
+text = "Correo"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Close" type="Button" parent="Aplications/EmailApp/TitleBar"]
+layout_mode = 2
+text = "X"
+
+[node name="MailList" type="ScrollContainer" parent="Aplications/EmailApp"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -532.0
+offset_top = -261.0
+offset_right = 538.0
+offset_bottom = 289.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+script = ExtResource("5_vbiaf")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Aplications/EmailApp/MailList"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 5
+
+[node name="MailContent" type="PanelContainer" parent="Aplications/EmailApp"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = 63.0
+offset_right = -38.0
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_cc47g")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Aplications/EmailApp/MailContent"]
+layout_mode = 2
+
+[node name="Close" type="Button" parent="Aplications/EmailApp/MailContent/VBoxContainer"]
+layout_mode = 2
+text = "Back"
+flat = true
+alignment = 2
+
+[node name="Subject" type="Label" parent="Aplications/EmailApp/MailContent/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 16
+text = "Hola"
+vertical_alignment = 1
+
+[node name="From" type="Label" parent="Aplications/EmailApp/MailContent/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "From"
+
+[node name="Body" type="RichTextLabel" parent="Aplications/EmailApp/MailContent/VBoxContainer"]
+clip_contents = false
+layout_mode = 2
+size_flags_vertical = 3
+text = "sadasdas"
+fit_content = true
+scroll_active = false
+tab_size = 7
+justification_flags = 171
+
+[node name="GalleryApp" type="Panel" parent="Aplications"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_2lmio")
+
+[node name="TitleBar" type="HBoxContainer" parent="Aplications/GalleryApp"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 51.0
+grow_horizontal = 2
+
+[node name="Label" type="Label" parent="Aplications/GalleryApp/TitleBar"]
+layout_mode = 2
+text = "Galleria de Imagenes"
+
+[node name="Back" type="Button" parent="Aplications/GalleryApp/TitleBar"]
+layout_mode = 2
+text = "X"
+flat = true
+
+[node name="Scroll" type="ScrollContainer" parent="Aplications/GalleryApp"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -549.0
+offset_top = -247.0
+offset_right = 540.0
+offset_bottom = 278.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Grid" type="GridContainer" parent="Aplications/GalleryApp/Scroll"]
+layout_mode = 2
+columns = 4
+
+[node name="Viewer" type="PanelContainer" parent="Aplications/GalleryApp"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -540.0
+offset_top = -253.0
+offset_right = 533.0
+offset_bottom = 272.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Aplications/GalleryApp/Viewer"]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Close" type="Button" parent="Aplications/GalleryApp/Viewer"]
+layout_mode = 2
+
+[node name="CodeEditorApp" type="Panel" parent="Aplications"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_i4eas")
+
+[node name="TitleBar" type="HBoxContainer" parent="Aplications/CodeEditorApp"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_constants/separation = 8
+
+[node name="Control" type="Control" parent="Aplications/CodeEditorApp/TitleBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="Label" type="Label" parent="Aplications/CodeEditorApp/TitleBar/Control"]
+layout_mode = 2
+offset_left = -318.0
+offset_top = 8.0
+offset_right = -191.0
+offset_bottom = 31.0
+text = "Editor de Codigo"
+
+[node name="Control2" type="Control" parent="Aplications/CodeEditorApp/TitleBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="SaveBtn" type="Button" parent="Aplications/CodeEditorApp/TitleBar/Control2"]
+layout_mode = 1
+offset_left = -191.0
+offset_right = -118.0
+offset_bottom = 40.0
+text = "Guardar"
+flat = true
+
+[node name="ClearBtn" type="Button" parent="Aplications/CodeEditorApp/TitleBar/Control2"]
+layout_mode = 1
+offset_left = -110.0
+offset_right = -42.0
+offset_bottom = 40.0
+text = "Limpiar"
+flat = true
+
+[node name="CloseBtn" type="Button" parent="Aplications/CodeEditorApp/TitleBar/Control2"]
+layout_mode = 1
+offset_left = -34.0
+offset_right = -16.0
+offset_bottom = 40.0
+text = "X"
+flat = true
+
+[node name="EditorArea" type="TextEdit" parent="Aplications/CodeEditorApp"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = 59.0
+offset_right = -40.0
+offset_bottom = -37.0
+grow_horizontal = 2
+grow_vertical = 2
+indent_wrapped_lines = true
+draw_tabs = true
+draw_spaces = true
+
+[node name="OptionalEffects" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="TextureRect" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_5dj1l")
+expand_mode = 3
+stretch_mode = 4
+
+[node name="TextureButton" type="TextureButton" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 285.0
+offset_bottom = 207.0
+texture_normal = ExtResource("2_5dj1l")
+ignore_texture_size = true
+stretch_mode = 0
+
+[connection signal="pressed" from="Aplications/EmailApp/TitleBar/Close" to="Aplications/EmailApp" method="_on_close_pressed"]
+[connection signal="pressed" from="Aplications/GalleryApp/TitleBar/Back" to="Aplications/GalleryApp" method="_on_back_pressed"]
+[connection signal="pressed" from="Aplications/CodeEditorApp/TitleBar/Control2/CloseBtn" to="Aplications/CodeEditorApp" method="_on_close_btn_pressed"]

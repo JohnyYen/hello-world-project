@@ -1,0 +1,130 @@
+[gd_scene load_steps=8 format=3 uid="uid://c1v6qiahj272j"]
+
+[ext_resource type="Script" uid="uid://btik4l3n8oei8" path="res://scenes/pages/maps/dormitory/player_room.gd" id="1_fh6v1"]
+[ext_resource type="Texture2D" uid="uid://unvbnbcfk7o0" path="res://assets/anime/backgrounds/chapter_1/morning_dormitory.png" id="2_nmkyj"]
+[ext_resource type="Script" uid="uid://xa7tc45p2dsd" path="res://scenes/pages/maps/dormitory/notification_icon.gd" id="3_atmox"]
+[ext_resource type="Texture2D" uid="uid://dnax032em83ws" path="res://assets/anime/ui/exclamation-mark.png" id="3_kf72t"]
+[ext_resource type="Script" uid="uid://bmu6pim5otpjr" path="res://scenes/pages/maps/dormitory/text_typer.gd" id="5_ijjqs"]
+[ext_resource type="PackedScene" uid="uid://08gepectvbo0" path="res://scenes/components/room/pc_panel.tscn" id="6_nmkyj"]
+[ext_resource type="Script" uid="uid://cd67dommqviv2" path="res://scenes/pages/maps/faculty/hotspot_scene_change.gd" id="7_knicb"]
+
+[node name="Room" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fh6v1")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_nmkyj")
+expand_mode = 1
+
+[node name="PC Btn" type="Button" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -528.0
+offset_top = -21.0
+offset_right = -353.0
+offset_bottom = 65.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Bedroom Btn" type="Button" parent="."]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 60.0
+offset_top = 73.0
+offset_right = 553.0
+offset_bottom = 261.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.0247088
+
+[node name="Notification" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -534.0
+offset_top = -109.0
+offset_right = -430.0
+offset_bottom = -33.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_kf72t")
+expand_mode = 3
+stretch_mode = 5
+script = ExtResource("3_atmox")
+
+[node name="Message Label" type="RichTextLabel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.0
+offset_top = -21.0
+offset_right = 164.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 30
+text = "Hola"
+fit_content = true
+autowrap_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+justification_flags = 171
+script = ExtResource("5_ijjqs")
+
+[node name="PC" parent="." instance=ExtResource("6_nmkyj")]
+visible = false
+layout_mode = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -26.0
+offset_top = -47.0
+offset_right = 31.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "Volver"
+
+[node name="HotspotSceneChange" type="Node" parent="Button"]
+script = ExtResource("7_knicb")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://dmtgohahqsgav"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[connection signal="pressed" from="PC Btn" to="." method="_on_pc_btn_pressed"]
+[connection signal="pressed" from="Bedroom Btn" to="." method="_on_bedroom_btn_pressed"]
+[connection signal="visibility_changed" from="Message Label" to="Message Label" method="_on_visibility_changed"]

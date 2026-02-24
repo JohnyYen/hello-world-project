@@ -1,0 +1,13 @@
+~ start
+Orqui: Muy bien, {{_GameState.player_data.name}}. Ha llegado el momento de conocer un lugar clave de tu habitación: tu cama.
+Orqui: Aquí es donde recuperas energía, aclaras la mente y dejas que todo lo aprendido se asiente.
+Orqui: Solo haz clic sobre ella para descubrir cómo activar tu ciclo de descanso.
+Orqui: Incluso los programadores más brillantes necesitan apagar el sistema de vez en cuando.
+
+- Entendido, Orqui.
+	Orqui: ¡Perfecto! Dormir bien también mejora cómo tu cerebro organiza y procesa lo que has aprendido.
+
+- ¿Puedo saltarlo?
+	Orqui: Me temo que no, {{_GameState.player_data.name}}. El descanso no es opcional… es parte esencial del camino del conocimiento.
+
+=> END

@@ -1,0 +1,113 @@
+~ start
+# Escena: Clase de Introducción a la Programación – Versión Cinematográfica
+# Contexto: Los estudiantes están en el aula, Laura hace la primera pregunta y comienza la lección interactiva.
+
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/classroom_2.png")
+do _DialogueUiController.changed_character.emit("center","res://assets/anime/characters/main_characters/professor/Smiling.png")
+Professor: Bienvenidos, todos. Hoy iniciaremos su primera clase de Introducción a la Programación.  
+Professor: Hablaremos de qué es la programación, por qué es esencial y cómo las computadoras interpretan nuestras instrucciones.  
+Professor: La programación no es solo escribir código; es aprender a pensar de forma lógica y resolver problemas de manera creativa.
+
+Laura: Profesor, ¿realmente necesito aprender a programar si solo voy a usar aplicaciones ya hechas?  
+Professor: Excelente pregunta, Laura. Conocer la programación te da la capacidad de crear soluciones propias y entender cómo funcionan las herramientas que usamos cada día.
+
+Professor: Un poco de historia: los primeros lenguajes eran muy cercanos al lenguaje de la máquina, muy rígidos.  
+Professor: Con el tiempo surgieron lenguajes más intuitivos como Python, C o Java, que permiten comunicar nuestras ideas a la computadora de manera más natural.  
+Professor: Pero sin importar el lenguaje, lo que siempre importa es la **lógica** detrás de cada instrucción.
+
+Professor: Ahora, hablemos de qué es un programa.  
+Professor: Un programa es una secuencia de pasos ordenados para cumplir un objetivo específico.  
+Professor: Por ejemplo… freír un huevo. Primero partes el huevo, luego calientas el aceite, lo echas en la sartén, esperas a que se cocine y finalmente lo sirves en un plato.  
+Professor: Si los pasos no siguen el orden correcto, ¡el huevo termina arruinado!  
+Professor: Cada paso debe ejecutarse en la secuencia correcta, igual que en un programa.
+
+Orqui: *¡Ese huevo se ve tan delicioso como educativo!* 
+Orqui: *{{_GameState.player_data.name}}, piensa en tu código como en esa receta: cada línea es un paso que debe seguirse para obtener el resultado correcto.*
+
+Professor: Exacto. Todo código tiene un **inicio**, un **fin**, y entre ambos, acciones que deben ejecutarse.  
+Professor: Incluso la calculadora más simple sigue esta lógica.  
+
+Student1: Profesor, ¿si el código tiene un error, significa que fallé?  
+Professor: No, todo error es parte del aprendizaje. Lo importante es identificar dónde se rompe la secuencia y corregirla.  
+
+Professor: Muy bien, todos. Ahora vamos a poner manos a la obra.  
+Professor: Vamos a crear un programa muy simple: encender una luz en la habitación simulada de la facultad.  
+Professor: Recuerden, cada instrucción debe estar en orden lógico. Si mezclan los pasos, la luz no se encenderá.
+
+Professor: Primero, quiero que algunos de ustedes propongan la secuencia de pasos.  
+Student1: Yo creo que primero debería encender el interruptor, y luego conectar la electricidad.  
+Professor: Cuidado, Student1. En las computadoras, primero debemos inicializar el sistema antes de ejecutar acciones físicas.  
+
+Student2: Entonces… primero inicializamos la luz, luego activamos el interruptor, ¿no?  
+Professor: ¡Exacto! Esa es la idea. Cada acción tiene su momento.
+
+Orqui: *{{_GameState.player_data.name}}, ahora es tu turno.*  
+Orqui: *Recuerda: piensa en la secuencia lógica, como la receta del huevo frito.*
+
+- "Primero inicializo el sistema, luego enciendo la luz."
+	Professor: Muy bien, {{_GameState.player_data.name}}. Observa cómo la luz se enciende en la simulación.  
+	Orqui: *¡Perfecto! Secuencia correcta. La lógica fluye como un río.*
+	Student3: ¡Wow! Bien hecho, {{_GameState.player_data.name}}.
+- "Enciendo la luz primero y luego inicializo el sistema."
+	Professor: Mmm… {{_GameState.player_data.name}}, la luz no se encendió correctamente.  
+	Orqui: *Ups… eso genera un error en la simulación. Pero no te preocupes, puedes intentar de nuevo.* ⚡
+	Student3: ¡Ah! Creo que entendí dónde me confundo.
+- "Intento un orden aleatorio para probar."
+	Professor: Interesante enfoque, {{_GameState.player_data.name}}, pero recuerda: los programas requieren orden lógico.  
+	Orqui: *La creatividad es bienvenida, pero aquí necesitamos lógica. Analiza los pasos y vuelve a intentarlo.*
+
+Professor: Muy bien, veamos otro ejemplo. Esta vez vamos a simular preparar un café en la cafetería de la facultad.  
+Professor: ¿Quién quiere proponer el primer paso?  
+Student1: Yo… pondría la taza debajo de la máquina.  
+Professor: Correcto, eso es un buen inicio. Luego, ¿qué sigue?  
+Student2: Añadir el café.  
+Orqui: *{{_GameState.player_data.name}}, es tu turno de completar la secuencia.*  
+Orqui: *Recuerda, cada paso debe ejecutarse en el orden correcto y tener sentido lógico.*
+
+- "Colocar agua, encender la máquina, añadir el café."
+	Professor: ¡Perfecto! Esa es la secuencia correcta.  
+	Orqui: *Excelente trabajo, {{_GameState.player_data.name}}. La cafetería virtual está sirviendo tu café correctamente.* ☕  
+	Student3: Increíble, funciona tal como lo dijimos.
+- "Encender la máquina primero, luego poner el agua y el café."
+	Professor: Mmm… el café no se preparó bien. Observa la secuencia y prueba otra vez.  
+	Orqui: *No pasa nada, {{_GameState.player_data.name}}. Aprender de los errores es parte de la programación.*  
+	Student3: Sí, ahora entiendo por qué el orden importa.
+- "Intento improvisar todo a la vez."
+	Professor: Creativo, pero recuerda, los programas necesitan pasos claros.  
+	Orqui: *Casi seguro terminarías con un desastre en la cafetería real… pero simulada está bien para aprender.* 😅
+
+Professor: Muy bien, todos. Estas pequeñas prácticas les enseñan algo muy importante: cada línea de código, cada acción, importa.  
+Professor: Lo que hoy aprendieron sobre secuencias y lógica será fundamental para todos sus futuros proyectos.  
+
+Orqui: *{{_GameState.player_data.name}}, ahora que entiendes la importancia de la secuencia, prepárate para aplicar este conocimiento en tu primera misión en la cafetería.*  
+Orqui: *Vamos a combinar creatividad, lógica y decisiones correctas para resolver el desafío.*
+
+
+Professor: Muy bien, ahora vamos a hacer esto práctico.  
+Professor: Su primera tarea será en la cafetería.  
+Professor: La máquina de café tiene errores y no sirve correctamente.  
+Professor: Usando lo que aprendieron hoy, deben escribir una secuencia de pasos clara y ordenada para resolver el problema.
+
+Orqui: *{{_GameState.player_data.name}}, puedo ayudarte a simular la cafetería antes de que pruebes tus pasos en la realidad.*  
+Orqui: *Será como tener tu propio laboratorio dentro del juego.*  
+
+Student2: {{_GameState.player_data.name}}, ¿quieres trabajar conmigo? Podríamos revisar juntos la secuencia de pasos.  
+- "Claro, trabajemos juntos."
+	Student2: ¡Genial! Dos cabezas piensan mejor que una.  
+	Orqui: *Sí, colaboración detectada. Preparando feedback conjunto.* 😏
+- "Prefiero intentarlo solo."
+	Orqui: *Entendido, autonomía activada.*  
+	Orqui: *Pero recuerda, siempre puedes pedir ayuda si algo no funciona.*
+
+Professor: Recuerden: no hay una única solución correcta.  
+Professor: Cada paso debe tener sentido y respetar la lógica de la secuencia.  
+Professor: Ahora, manos a la obra, y no olviden probar sus pasos en la simulación de Orqui antes de aplicarlos en la cafetería.  
+
+Orqui: *¡Vamos {{_GameState.player_data.name}}! Comienza a escribir tus instrucciones y observa qué pasa.*  
+Orqui: *Si algo falla, te daré pistas y sugerencias para ajustar la secuencia.*  
+
+Student3: ¿Y si mezclo los pasos de manera incorrecta?  
+Orqui: *Entonces obtendrás un resultado inesperado, como un huevo revuelto antes de tiempo… pero no te preocupes, siempre puedes reiniciar y mejorar.*  
+
+do _DialogueUiController.set_flag.emit("has_first_time_faculty", true)
+=> END

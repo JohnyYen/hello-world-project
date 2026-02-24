@@ -1,0 +1,93 @@
+{
+  "title": "Level Segment Standard Configuration",
+  "description": "Standard configuration template for level segments",
+  "version": "1.0",
+  "segment_id": 1,
+  "initial_state": {
+    "description": "Initial game state for the segment",
+    "type": "object",
+    "properties": {}
+  },
+  "expected_outputs": {
+    "description": "Expected results after successful completion",
+    "type": "array",
+    "items": {}
+  },
+  "available_blocks": {
+    "description": "List of block types available in this segment",
+    "type": "array",
+    "items": {
+      "type": "string"
+    }
+  },
+  "learning_objective": {
+    "description": "Educational goal of this segment",
+    "type": "string"
+  },
+  "environment_data": {
+    "description": "Environment-specific data for the segment",
+    "type": "object",
+    "properties": {}
+  },
+  "execution_rules": {
+    "description": "Rules that govern execution in this segment",
+    "type": "object",
+    "properties": {}
+  },
+  "validation_criteria": {
+    "description": "Criteria for validating a correct solution",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "condition": "string",
+        "description": "string"
+      }
+    }
+  },
+  "feedback_messages": {
+    "success": {
+      "description": "Message shown when segment is completed successfully",
+      "type": "string"
+    },
+    "failure": {
+      "description": "Message shown when segment fails",
+      "type": "string"
+    },
+    "hints": {
+      "description": "Array of hints to help the student",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "ui_config": {
+    "code_editor": {
+      "syntax_highlighting": {
+        "description": "Enable syntax highlighting in the code editor",
+        "type": "boolean"
+      },
+      "line_numbers": {
+        "description": "Show line numbers in the code editor",
+        "type": "boolean"
+      }
+    },
+    "visualization": {
+      "show_state": {
+        "description": "Show current game state during execution",
+        "type": "boolean"
+      },
+      "animation_speed": {
+        "description": "Speed of execution animations",
+        "type": "number"
+      }
+    }
+  },
+  "defined_actions": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ]
+}

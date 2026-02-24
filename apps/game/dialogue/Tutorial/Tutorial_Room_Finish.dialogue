@@ -1,0 +1,15 @@
+~ start
+Orqui: ¡Felicidades, {{_GameState.player_data.name}}! Has completado la parte inicial del tutorial.  
+Orqui: Ahora ya sabes cómo interactuar con la PC y cómo usar tu cama para descansar y recuperar energía.  
+Orqui: Estás listo para explorar tu habitación y familiarizarte con la Facultad.  
+Orqui: Recuerda: cada acción tiene un propósito, y estás aprendiendo a pensar como un verdadero creador del conocimiento.  
+Orqui: ¿Listo para dar inicio a tu primer día real en la facultad?
+
+- ¡Sí, vamos!
+	Orqui: ¡Perfecto! Te veré en el aula de introducción. Prepárate para tu primera aventura académica.
+
+- Necesito un momento más.
+	Orqui: No hay problema, {{_GameState.player_data.name}}. Tómate tu tiempo… incluso los algoritmos necesitan optimizarse antes de ejecutarse.  
+
+do _DialogueUiController.set_flag.emit("has_completed_tutorial_in_room", true)
+=> END

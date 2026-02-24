@@ -1,0 +1,130 @@
+[gd_scene load_steps=5 format=3 uid="uid://dn48xwp4qtby5"]
+
+[ext_resource type="Script" uid="uid://dl4abj3umqulh" path="res://scenes/pages/levels/level_one.gd" id="1_5idma"]
+[ext_resource type="Texture2D" uid="uid://crfbdqkermsd8" path="res://icon.svg" id="1_o1vsc"]
+[ext_resource type="Texture2D" uid="uid://rdpqdclbnu3e" path="res://assets/background/cafeteria.png" id="2_pjsyo"]
+[ext_resource type="Texture2D" uid="uid://dss4umxfktgcq" path="res://assets/ui/buttonLevel.png" id="4_nehd8"]
+
+[node name="LevelOne" type="Node2D"]
+script = ExtResource("1_5idma")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -149.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.14465, 0.816877)
+texture = ExtResource("2_pjsyo")
+expand_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.059126, 0.0591259, 0.0591259, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -167.0
+offset_top = 29.0
+offset_right = 220.0
+offset_bottom = 89.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 25
+theme_override_font_sizes/bold_font_size = 0
+bbcode_enabled = true
+text = "[center]Probando[/center]
+"
+tab_size = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -440.0
+offset_top = -238.0
+offset_right = 482.0
+offset_bottom = 238.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="VBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+alignment = 1
+
+[node name="TextureButton2" type="TextureButton" parent="CanvasLayer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_o1vsc")
+
+[node name="TextureButton3" type="TextureButton" parent="CanvasLayer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_o1vsc")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("1_o1vsc")
+
+[node name="Control" type="Control" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 11
+size_flags_stretch_ratio = 0.5
+
+[node name="VBoxContainer2" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="TextureButton2" type="TextureButton" parent="CanvasLayer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+texture_normal = ExtResource("1_o1vsc")
+
+[node name="TextureButton3" type="TextureButton" parent="CanvasLayer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+texture_normal = ExtResource("1_o1vsc")
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer/VBoxContainer/VBoxContainer2"]
+layout_mode = 2
+texture_normal = ExtResource("1_o1vsc")
+
+[node name="prev" type="TextureButton" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 278.0
+offset_top = 22.9999
+offset_right = 1558.0
+offset_bottom = 1303.0
+grow_vertical = 0
+rotation = 3.14159
+scale = Vector2(0.208036, 0.189528)
+texture_normal = ExtResource("4_nehd8")
+
+[node name="next" type="TextureButton" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -274.0
+offset_top = -220.0
+offset_right = 1006.0
+offset_bottom = 1060.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.228632, 0.194821)
+texture_normal = ExtResource("4_nehd8")

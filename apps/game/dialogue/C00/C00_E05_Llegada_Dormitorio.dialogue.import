@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://crudpur7cd8b8"
+path="res://.godot/imported/C00_E05_Llegada_Dormitorio.dialogue-3bccde9a618c3f449db8ba117a1c5a9d.tres"
+
+[deps]
+
+source_file="res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue"
+dest_files=["res://.godot/imported/C00_E05_Llegada_Dormitorio.dialogue-3bccde9a618c3f449db8ba117a1c5a9d.tres"]
+
+[params]
+
+defaults=true

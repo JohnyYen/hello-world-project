@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://c58bxu8tqr1i3"
+path="res://.godot/imported/Tutorial_Map_Dorm.dialogue-562a50cb8095ff0d889fb141ea997618.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_Map_Dorm.dialogue"
+dest_files=["res://.godot/imported/Tutorial_Map_Dorm.dialogue-562a50cb8095ff0d889fb141ea997618.tres"]
+
+[params]
+
+defaults=true

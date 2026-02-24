@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dheq52je3h728"]
+
+[ext_resource type="PackedScene" uid="uid://bbycuw5jt88uj" path="res://scenes/components/blocks/code_block.tscn" id="1_5iq6l"]
+[ext_resource type="Script" uid="uid://wqsxw7b54eyv" path="res://scenes/components/blocks/start_block.gd" id="2_ms52n"]
+[ext_resource type="Texture2D" uid="uid://dfhh1e5v6ygb2" path="res://assets/shared/ui/code_block_start.png" id="3_8sbrk"]
+
+[node name="StartBlock" instance=ExtResource("1_5iq6l")]
+offset_bottom = 42.0
+script = ExtResource("2_ms52n")
+start_color = Color(0.2, 0.7, 0.3, 1)
+block_type = 0
+
+[node name="TextureButton" parent="." index="2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("3_8sbrk")
+ignore_texture_size = true
+stretch_mode = 0

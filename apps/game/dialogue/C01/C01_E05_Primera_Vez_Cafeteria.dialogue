@@ -1,0 +1,81 @@
+~ start
+# Escena: Llegada a la Cafetería – Primer Encuentro con el Problema
+# Contexto: El jugador llega por primera vez a la cafetería para realizar la tarea asignada por el profesor.
+
+# La puerta de la cafetería se abre lentamente. Se escucha ruido de platos, conversaciones y el constante “bip” de la caja registradora.
+do _DialogueUiController.changed_character.emit("center","characters/main_characters/orqui/Happy.png")
+Orqui: Bienvenido a la cafetería, {{_GameState.player_data.name}}. Aquí es donde pondrás en práctica tus primeros pasos como programador.
+Orqui: El profesor dijo que observaras… y solucionaras un problema. ¡Así que abre bien los ojos!
+
+do _DialogueUiController.clean_character.emit("center")
+do _DialogueUiController.changed_character.emit("center","characters/side_characters/employee/Normal.png")
+# Un empleado corre de un lado a otro.
+Empleado: ¡Ay no, otra vez se trabó la cola! ¡Perdón chicos, un momento!
+
+# Un grupo pequeño de estudiantes se queja suavemente.
+do _DialogueUiController.clean_character.emit("center")
+do _DialogueUiController.changed_character.emit("left","characters/side_characters/student_1/Normal.png")
+do _DialogueUiController.changed_character.emit("right","characters/side_characters/student_2/Normal.png")
+Estudiante1: Siempre es lo mismo… hacemos fila diez minutos y al final atienden al que llega después…
+Estudiante2: Creo que es porque el sistema de turnos no funciona. ¿O será por cómo ordenan los pedidos?
+
+do _DialogueUiController.clean_character.emit("right")
+do _DialogueUiController.clean_character.emit("left")
+do _DialogueUiController.changed_character.emit("center","characters/main_characters/orqui/Thinking.png")
+# Orqui flota hacia el jugador.
+Orqui: ¿Ves? Ya encontramos nuestro primer bug… o al menos un comportamiento inesperado.
+Orqui: Tu misión aquí es entender qué está fallando, y cómo podrías mejorarlo usando lo que aprendiste en clase.
+
+do _DialogueUiController.clean_character.emit("center")
+do _DialogueUiController.changed_character.emit("left","characters/side_characters/student_4/Normal.png")
+do _DialogueUiController.changed_character.emit("right","characters/side_characters/student_3/Normal.png")
+# Se acerca un estudiante amable.
+Estudiante3: Hola, ¿tú eres el nuevo, verdad? El profe dijo que vendrías a ver el desastre que tenemos aquí.
+Estudiante3: Si necesitas información, pregúntame lo que sea… ¡estoy en esta fila todos los días!
+
+- ¿Qué es lo que más falla aquí?
+	Estudiante3: Para empezar, el orden. A veces atienden primero pedidos más largos, a veces cortos… y otras simplemente se saltan personas sin querer.
+
+- ¿Qué hace tan lento el servicio?
+	Estudiante3: Creo que no siguen un flujo claro. Como dijo el profe: sin pasos ordenados, todo se vuelve un caos.
+
+- ¿Puedo ver cómo procesan los pedidos?
+	Estudiante3: Claro, acércate a la barra. El encargado te explicará cómo lo hacen… o cómo *intentan* hacerlo.
+
+do _DialogueUiController.clean_character.emit("left")
+do _DialogueUiController.clean_character.emit("right")
+do _DialogueUiController.changed_character.emit("center","characters/side_characters/employee/Normal.png")
+# El encargado de la cafetería aparece limpiándose las manos.
+Encargado: ¡Oh, al fin alguien del grupo del profesor! Mira, muchacho, aquí hacemos lo que podemos.
+Encargado: Pero el flujo se nos enreda: a veces mezclamos pedidos, otras tomamos dos al mismo tiempo… y ni hablar de cuando llega mucha gente.
+
+do _DialogueUiController.changed_character.emit("center","characters/main_characters/orqui/Thinking.png")
+# Orqui vuelve al lado del jugador.
+Orqui: Este es el momento ideal para pensar como un programador.
+Orqui: Observa, identifica el problema, ordénalo en pasos… y luego plantea una posible solución.
+Orqui: Recuerda el ejemplo del huevo frito: todo tiene un orden lógico. Y aquí falta justamente eso.
+
+- ¿Por dónde empiezo?
+	Orqui: Empieza por analizar: ¿qué pasos sigue actualmente la cafetería? ¿Cuál debería ser el orden real?  
+           Si puedes responder eso… ya tendrás la mitad del ejercicio completado.
+
+- Necesito pistas.
+	Orqui: Mira el comportamiento:  
+           *Entrada de pedidos*,  
+           *registro*,  
+           *preparación*,  
+           *entrega*.  
+           Si esa secuencia se rompe… tú puedes arreglarla.
+
+do _DialogueUiController.clean_character.emit("center")
+do _DialogueUiController.changed_character.emit("center","characters/side_characters/employee/Normal.png")
+# El encargado entrega un delantal simbólico.
+Encargado: Toma, esto es para que te sientas parte del equipo. No te preocupes, no vas a cocinar nada… solo arreglar cómo pensamos.
+
+do _DialogueUiController.changed_character.emit("center","characters/main_characters/orqui/Happy.png")
+# Orqui sonríe.
+Orqui: Vamos, {{_GameState.player_data.name}}. Este es tu primer desafío real.
+Orqui: Y estoy contigo en cada paso.
+
+do _DialogueUiController.set_flag.emit("has_first_time_cafeteria", true)
+=> END

@@ -1,0 +1,15 @@
+from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
+from src.shared.infrastructure.base import Base
+
+
+class Student(Base):
+    __tablename__ = "students"
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    user = relationship("User", back_populates="student")
+    game_instances = relationship("GameInstance", back_populates="student")
+    feedbacks = relationship("Feedback", back_populates="student")
+    progresses = relationship("Progress", back_populates="student")
+    xapi_statements = relationship("XAPIStatement", back_populates="student")

@@ -1,0 +1,120 @@
+[gd_scene load_steps=4 format=3 uid="uid://c23725vmhohxa"]
+
+[ext_resource type="Script" uid="uid://d4eo73glb61b2" path="res://scenes/components/code_space.gd" id="1_80ad3"]
+[ext_resource type="Texture2D" uid="uid://gxviogxinlus" path="res://assets/shared/ui/code_run_btn.png" id="2_w75b7"]
+
+[sub_resource type="Theme" id="Theme_nsxjo"]
+
+[node name="CodeSpace" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+script = ExtResource("1_80ad3")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="BlockList" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 1
+
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/BlockList"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.109804, 0.109804, 0.109804, 0.270588)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/BlockList"]
+layout_mode = 2
+offset_left = 30.0
+offset_top = 85.0
+offset_right = 178.0
+offset_bottom = 617.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_nsxjo")
+theme_override_constants/separation = 30
+
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/BlockList/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 1
+bbcode_enabled = true
+text = "[center]Bloques[/center]"
+fit_content = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/BlockList/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/BlockList/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BlockSpace" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/BlockSpace"]
+visible = false
+layout_mode = 2
+color = Color(0.236334, 0.236334, 0.236334, 0.137255)
+
+[node name="Control" type="Control" parent="HBoxContainer/BlockSpace"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/BlockSpace/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HScrollBar" type="VScrollBar" parent="HBoxContainer/BlockSpace/Control/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/BlockSpace/Control/MarginContainer/HScrollBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -56.5
+offset_top = -269.5
+offset_right = 56.5
+offset_bottom = 269.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureButton" type="TextureButton" parent="HBoxContainer/BlockSpace"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 8
+texture_normal = ExtResource("2_w75b7")
+ignore_texture_size = true
+stretch_mode = 4
+
+[connection signal="pressed" from="HBoxContainer/BlockSpace/TextureButton" to="." method="_on_texture_button_pressed"]

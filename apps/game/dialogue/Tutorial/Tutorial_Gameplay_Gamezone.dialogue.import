@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://c1nwem5ukaoxp"
+path="res://.godot/imported/Tutorial_Gameplay_Gamezone.dialogue-be815d62fa62c5b273805695a695a84d.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_Gameplay_Gamezone.dialogue"
+dest_files=["res://.godot/imported/Tutorial_Gameplay_Gamezone.dialogue-be815d62fa62c5b273805695a695a84d.tres"]
+
+[params]
+
+defaults=true

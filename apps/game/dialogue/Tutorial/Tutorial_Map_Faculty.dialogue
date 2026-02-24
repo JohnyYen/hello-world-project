@@ -1,0 +1,12 @@
+~ start
+Orqui: Bienvenido a la Facultad del Conocimiento, {{_GameState.player_data.name}}.  
+Orqui: Aquí asistirás a tus clases, recibirás misiones y descubrirás nuevas habilidades.  
+Orqui: Haz clic en la facultad para entrar y ver cómo funcionan las clases en acción.
+
+- Entendido, Orqui.
+	Orqui: ¡Perfecto! Conocer cada rincón de la facultad te dará ventaja y te ayudará a orientarte mejor en tu camino académico.
+
+- ¿Puedo saltarlo?
+	Orqui: No, {{_GameState.player_data.name}}. Familiarizarse con tu centro de estudios es un paso fundamental antes de avanzar.  
+
+=> END

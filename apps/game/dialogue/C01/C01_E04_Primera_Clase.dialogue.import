@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://3xny0ijj6ep5"
+path="res://.godot/imported/C01_E04_Primera_Clase.dialogue-ed322d6168d64786ee5515dcae0cb07e.tres"
+
+[deps]
+
+source_file="res://dialogue/C01/C01_E04_Primera_Clase.dialogue"
+dest_files=["res://.godot/imported/C01_E04_Primera_Clase.dialogue-ed322d6168d64786ee5515dcae0cb07e.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbycuw5jt88uj"]
+
+[ext_resource type="Script" uid="uid://by066wpshe133" path="res://scenes/components/blocks/code_block.gd" id="1_hk5e7"]
+[ext_resource type="Texture2D" uid="uid://bdfu2l5rvc32c" path="res://icon.svg" id="1_ryike"]
+
+[node name="CodeBlock" type="Control"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 129.0
+offset_bottom = 130.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tooltip_text = "Bloque Generico"
+mouse_filter = 2
+script = ExtResource("1_hk5e7")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+texture = ExtResource("1_ryike")
+expand_mode = 2
+stretch_mode = 6
+
+[node name="Label" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="TextureButton" type="TextureButton" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+tooltip_text = "Bloque Generico"
+texture_normal = ExtResource("1_ryike")
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="pressed" from="TextureButton" to="." method="_on_texture_button_pressed"]

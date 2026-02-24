@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://dqw83o8ejf6ig"
+path="res://.godot/imported/C00_E02_Bienvenida_Orqui.dialogue-460fca0293cb534d5efc0d5dac033d56.tres"
+
+[deps]
+
+source_file="res://dialogue/C00/C00_E02_Bienvenida_Orqui.dialogue"
+dest_files=["res://.godot/imported/C00_E02_Bienvenida_Orqui.dialogue-460fca0293cb534d5efc0d5dac033d56.tres"]
+
+[params]
+
+defaults=true

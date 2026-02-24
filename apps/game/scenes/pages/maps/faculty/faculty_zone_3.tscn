@@ -1,0 +1,204 @@
+[gd_scene load_steps=4 format=3 uid="uid://d4ch8kxa0nv3d"]
+
+[ext_resource type="Texture2D" uid="uid://bcl56maomdvyq" path="res://assets/anime/backgrounds/map/faculty/faculty_map_zone_3.png" id="1_kt7iy"]
+[ext_resource type="Script" uid="uid://cng1iatevsf6q" path="res://scenes/pages/maps/faculty/hotspot_pulse.gd" id="2_cef41"]
+[ext_resource type="Script" uid="uid://cd67dommqviv2" path="res://scenes/pages/maps/faculty/hotspot_scene_change.gd" id="3_csfj0"]
+
+[node name="FacultyZone3" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_kt7iy")
+expand_mode = 2
+stretch_mode = 6
+
+[node name="Aula_101" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -337.0
+offset_top = -220.0
+offset_right = -225.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HotspotPulse" type="Node" parent="Aula_101"]
+script = ExtResource("2_cef41")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Aula_101"]
+script = ExtResource("3_csfj0")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://c7bjetlt0bvcn"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Aula_102" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 271.0
+offset_top = -218.0
+offset_right = 384.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HotspotPulse" type="Node" parent="Aula_102"]
+script = ExtResource("2_cef41")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Aula_102"]
+script = ExtResource("3_csfj0")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://cmsn32kkd1yau"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Aula_103" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -184.0
+offset_top = -320.0
+offset_right = -67.0
+offset_bottom = -63.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.0500542
+
+[node name="HotspotPulse" type="Node" parent="Aula_103"]
+script = ExtResource("2_cef41")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Aula_103"]
+script = ExtResource("3_csfj0")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://cgpdy5j1x2hvo"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Aula_104" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 413.0
+offset_top = -160.0
+offset_right = 532.0
+offset_bottom = 102.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HotspotPulse" type="Node" parent="Aula_104"]
+script = ExtResource("2_cef41")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Aula_104"]
+script = ExtResource("3_csfj0")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://ce8c3cu34uegf"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Back" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 28.0
+offset_top = 3.0
+offset_right = 200.0
+offset_bottom = 250.0
+grow_horizontal = 2
+
+[node name="HotspotPulse" type="Node" parent="Back"]
+script = ExtResource("2_cef41")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Back"]
+script = ExtResource("3_csfj0")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://by7hnfck7sf5r"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Back2" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -156.0
+offset_right = 200.0
+grow_vertical = 0
+
+[node name="HotspotPulse" type="Node" parent="Back2"]
+script = ExtResource("2_cef41")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Back2"]
+script = ExtResource("3_csfj0")
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Back3" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -172.0
+offset_top = -157.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="HotspotPulse" type="Node" parent="Back3"]
+script = ExtResource("2_cef41")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Back3"]
+script = ExtResource("3_csfj0")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://b4sjsghdhgfng"
+metadata/_custom_type_script = "uid://cd67dommqviv2"

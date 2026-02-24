@@ -1,0 +1,93 @@
+~ start
+# Escena: Presentación de Orqui (Versión Señales)
+
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/hallway.png")
+
+# Alex inicia hablando mientras caminan → expresión Friendly/Relaxed
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Talk.png")
+Alex: Y aquí estamos… el famoso pasillo central. Prepárate, porque siempre pasa algo interesante por aquí.  
+
+# Jugador participa
+do _DialogueUiController.changed_character.emit("left", "characters/main_characters/%s_main/Normal.png" % [_GameState.player_data.gender])
+_Player_: ¿Siempre está tan lleno?  
+
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Laugh.png")
+Alex: *Sonríe.* El primer día sí. Primeros años perdidos, segundos años corriendo por créditos… y, claro, ella.
+
+# --- Aparición de Orqui ---
+do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/SoftGlow.png")
+Orqui: *El holograma se materializa con un destello suave.* ¡Bienvenidos, estudiantes!  
+Orqui: Soy **Orqui**, asistente virtual de la Facultad de Ingeniería Informática.  
+Orqui: Estoy aquí para orientarlos, guiarlos… y ayudarlos a sobrevivir al semestre sin demasiadas noches en vela.
+
+# Alex reacción cómica → Playful
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Playful.png")
+Alex: *Susurra divertido.* Te presento a la celebridad digital de este lugar.  
+
+# Jugador duda/pregunta
+do _DialogueUiController.changed_character.emit("left", "characters/main_characters/%s_main/Thinking.png" % [_GameState.player_data.gender])
+_Player_: ¿Es… una inteligencia artificial?  
+
+# Orqui responde cálida
+do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/SoftSmile.png")
+Orqui: Correcto, {{_GameState.player_data.name}}. Fui diseñada para acompañarte en tu crecimiento académico y emocional.  
+Orqui: Puedo darte consejos, recordatorios, empujones de motivación… pero no puedo programar tus proyectos por ti. Todavía. 🌸
+
+do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/Neutral.png")
+Orqui: ¿Qué te inspira mi presencia?
+
+# ===========================
+# OPCIONES
+# ===========================
+
+# --- Opción 1: Entusiasmo positivo ---
+- "¡Qué genial! Una IA."  
+	do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/Happy.png")
+	Orqui: ¡Gracias! Me alegra que lo sientas así. La tecnología también puede ser cálida cuando se crea con cariño.  
+
+	do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/SoftGlow.png")
+	Orqui: Registraré tu entusiasmo… suele ser una gran ventaja al aprender.  
+
+	[Tag: mood_positive]
+
+# --- Opción 2: Duda pragmática ---
+- "¿Y de verdad puedes ayudarme a aprobar?"  
+	do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/Playful.png")
+	Orqui: *Risa digital.* Puedo guiarte, recordarte y organizarte, pero estudiar sigue siendo parte del trato.  
+
+	do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/SoftSmile.png")
+	Orqui: Aunque, si te sirve, puedo convencerte de que dormir ayuda más que compilar a las tres de la mañana.  
+
+	[Tag: mood_curious]
+
+# --- Opción 3: Desconfianza ---
+- "Suena un poco raro…"  
+	do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/Neutral.png")
+	Orqui: Lo entiendo. La confianza se construye, no se impone.  
+
+	do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/SoftSmile.png")
+	Orqui: Pero tranquila, {{_GameState.player_data.name}}. Me adaptaré a tu ritmo, nunca al revés.  
+
+	do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/Friendly.png")
+	Orqui: Y prometo no invadir tu espacio… salvo que te pierdas a cinco metros del aula.  
+
+	[Tag: mood_reserved]
+
+# ===========================
+# CONTINÚA ESCENA
+# ===========================
+
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Laugh.png")
+Alex: *Ríe.* Ya ves, Orqui es como la mascota oficial del caos universitario: inofensiva, útil y siempre observándolo todo.  
+
+do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/Neutral.png")
+Orqui: *Inclina su forma holográfica.* Mi función es simple: guiarlos al teatro para la bienvenida de la decana.  
+
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/alex/Talk.png")
+Alex: Entonces eso los deja al final del pasillo. Yo me desvío aquí, tengo que ir al laboratorio a revisar los equipos nuevos.  
+Alex: Nos vemos luego, {{_GameState.player_data.name}}. Y hazle caso a Orqui… conoce atajos que ni los profes.  
+
+do _DialogueUiController.changed_character.emit("center", "characters/main_characters/orqui/SoftGlow.png")
+Orqui: Sígueme, {{_GameState.player_data.name}}. Prometo no llevarte por la ruta más larga.  
+
+=> END

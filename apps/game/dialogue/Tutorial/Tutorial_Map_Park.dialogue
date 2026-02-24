@@ -1,0 +1,12 @@
+~ start
+Orqui: Ahora echemos un vistazo al parque, {{_GameState.player_data.name}}.  
+Orqui: Es un espacio para socializar, explorar y participar en eventos especiales dentro del campus.  
+Orqui: Haz clic en el parque para aprender a interactuar con todo lo que ofrece.
+
+- Entendido, Orqui.
+	Orqui: ¡Perfecto! Explorar estas zonas secundarias también forma parte de tu aprendizaje y puede abrir nuevas oportunidades.
+
+- ¿Puedo ignorarlo?
+	Orqui: No te preocupes, {{_GameState.player_data.name}}. Solo queremos que comprendas su utilidad y el potencial que tiene para tus actividades.  
+
+=> END

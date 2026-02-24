@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://cvjtk55rma85u"]
+
+[sub_resource type="FontVariation" id="FontVariation_rqqv4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5trpc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_itgxq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k8a40"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0n03j"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5nunw"]
+bg_color = Color(0.566298, 0.566298, 0.566298, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Button" type="Button"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"FlatButton"
+theme_override_fonts/font = SubResource("FontVariation_rqqv4")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/focus = SubResource("StyleBoxFlat_5trpc")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_itgxq")
+theme_override_styles/hover = SubResource("StyleBoxFlat_k8a40")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_0n03j")
+theme_override_styles/normal = SubResource("StyleBoxFlat_5nunw")
+text = "sfsdfsd"

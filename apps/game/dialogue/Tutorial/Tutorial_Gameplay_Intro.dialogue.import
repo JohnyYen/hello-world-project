@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://b6vylowknk0iu"
+path="res://.godot/imported/Tutorial_Gameplay_Intro.dialogue-64e57122e5e48bdc0e7046ce3296c5bf.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_Gameplay_Intro.dialogue"
+dest_files=["res://.godot/imported/Tutorial_Gameplay_Intro.dialogue-64e57122e5e48bdc0e7046ce3296c5bf.tres"]
+
+[params]
+
+defaults=true

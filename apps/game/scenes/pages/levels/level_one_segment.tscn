@@ -1,0 +1,99 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcaxxxopqc3u3"]
+
+[ext_resource type="Texture2D" uid="uid://rdpqdclbnu3e" path="res://assets/background/cafeteria.png" id="2_33pyc"]
+[ext_resource type="PackedScene" uid="uid://c23725vmhohxa" path="res://scenes/components/CodeSpace.tscn" id="2_cnfhh"]
+
+[sub_resource type="Curve2D" id="Curve2D_0nqi7"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 137, 5, 0, 0, 0, 0, 245, 164, 0, 0, 0, 0, 231, 571)
+}
+point_count = 3
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Control2" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -581.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Control2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_33pyc")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Control2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="CanvasLayer/Control2"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -33.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer/Control2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.266
+anchor_right = 0.285
+offset_left = -40.886
+offset_right = -11.735
+offset_bottom = 23.0
+grow_horizontal = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/Control2/TextureRect2"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 21.0
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -581.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="CodeSpace" parent="CanvasLayer/Control/PanelContainer" instance=ExtResource("2_cnfhh")]
+layout_mode = 2
+
+[node name="Path2D" type="Path2D" parent="."]
+curve = SubResource("Curve2D_0nqi7")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+position = Vector2(137, 5)
+rotation = 0.974136
+loop = false

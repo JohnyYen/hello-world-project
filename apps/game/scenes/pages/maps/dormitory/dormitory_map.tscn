@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=3 uid="uid://duct8wi1by7y2"]
+
+[ext_resource type="Script" uid="uid://bqlelj54rb3ay" path="res://scenes/pages/maps/dormitory/dormitory_map.gd" id="1_li6pd"]
+[ext_resource type="Texture2D" uid="uid://dkltysfbrw46y" path="res://assets/anime/backgrounds/chapter_2/dormitory_world.png" id="1_lljqv"]
+[ext_resource type="Texture2D" uid="uid://du61jfmpd33wa" path="res://assets/anime/backgrounds/chapter_2/dormitory_male.png" id="2_uco65"]
+[ext_resource type="PackedScene" uid="uid://bhgbnecueodwi" path="res://scenes/components/arrow_map.tscn" id="4_t2rjc"]
+
+[node name="DormitoryMap" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_li6pd")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_lljqv")
+expand_mode = 2
+
+[node name="Male Btn" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 33.0
+offset_top = 205.0
+offset_right = 560.0
+offset_bottom = 425.0
+rotation = -0.0135008
+texture_normal = ExtResource("2_uco65")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="ArrowMap" parent="." instance=ExtResource("4_t2rjc")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_bottom = 0.0
+offset_left = -174.0
+offset_top = 8.99999
+offset_right = -19.0
+offset_bottom = 133.0
+grow_horizontal = 0
+grow_vertical = 1
+rotation = 0.188287
+target_scene = "uid://dmtgohahqsgav"

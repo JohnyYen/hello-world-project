@@ -1,0 +1,15 @@
+~ start
+
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/building_entrance_2.png")
+do _DialogueUiController.changed_character.emit("left", "characters/side_characters/student_1/Normal.png")
+do _DialogueUiController.played_music.emit("audio/music/codigos_en_la_sangre.mp3")
+Nathan: [[Hi|Hello|Howdy]], this is some dialogue.
+Nathan: Here are some choices.
+- First one
+	Nathan: You picked the first one.
+- Second one
+	Nathan: You picked the second one.
+- Start again => start
+- End the conversation => END
+Nathan: For more information see the online documentation.
+=> END

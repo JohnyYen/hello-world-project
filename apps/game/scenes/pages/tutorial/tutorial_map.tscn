@@ -1,0 +1,89 @@
+[gd_scene load_steps=8 format=3 uid="uid://dklktvxgbfdvr"]
+
+[ext_resource type="Texture2D" uid="uid://c83eiocoq7wy2" path="res://assets/anime/backgrounds/chapter_2/world.png" id="1_2ydus"]
+[ext_resource type="Script" uid="uid://qfmbhu1ghxjs" path="res://scenes/pages/tutorial/tutorial_map.gd" id="1_iub88"]
+[ext_resource type="Texture2D" uid="uid://ds3enp1ankxxn" path="res://assets/anime/backgrounds/chapter_2/world_dormitory.png" id="2_fdk6r"]
+[ext_resource type="Texture2D" uid="uid://bim048a6o4mx5" path="res://assets/anime/backgrounds/chapter_2/world_faculty.png" id="3_iub88"]
+[ext_resource type="Texture2D" uid="uid://lfct0v03xlvk" path="res://assets/anime/backgrounds/chapter_2/world_park.png" id="4_4lom4"]
+[ext_resource type="Script" uid="uid://dyfd1ag0kbyuj" path="res://scenes/components/arrow_map.gd" id="4_aqb6v"]
+[ext_resource type="PackedScene" uid="uid://bglln6g25urq" path="res://scenes/components/dialogue/balloon.tscn" id="6_4lom4"]
+
+[node name="TutorialMap" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_iub88")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 14.0
+offset_right = -8.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_2ydus")
+expand_mode = 2
+
+[node name="Dormitory Btn" type="TextureButton" parent="."]
+z_index = 1
+clip_contents = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 47.0
+offset_top = -229.0
+offset_right = 561.0
+offset_bottom = -21.0
+grow_vertical = 0
+rotation = 0.00136439
+mouse_filter = 1
+action_mode = 0
+texture_normal = ExtResource("2_fdk6r")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_aqb6v")
+
+[node name="Faculty Btn" type="TextureButton" parent="."]
+z_index = 1
+layout_mode = 0
+offset_left = 724.0
+offset_top = 89.0
+offset_right = 1101.0
+offset_bottom = 301.0
+rotation = 0.00748112
+mouse_filter = 1
+action_mode = 0
+texture_normal = ExtResource("3_iub88")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_aqb6v")
+
+[node name="Park Btn" type="TextureButton" parent="."]
+z_index = 1
+layout_mode = 0
+offset_left = 356.0
+offset_top = 204.0
+offset_right = 845.0
+offset_bottom = 454.0
+rotation = 0.00443928
+mouse_filter = 1
+action_mode = 0
+texture_normal = ExtResource("4_4lom4")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("4_aqb6v")
+
+[node name="University Btn" type="TextureButton" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ExampleBalloon" parent="." instance=ExtResource("6_4lom4")]

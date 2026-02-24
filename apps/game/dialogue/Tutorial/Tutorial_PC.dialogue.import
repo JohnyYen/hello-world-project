@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://82mgj2hei3u6"
+path="res://.godot/imported/Tutorial_PC.dialogue-9b189a6ee64a3ef1e39e76a5c0abedd0.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_PC.dialogue"
+dest_files=["res://.godot/imported/Tutorial_PC.dialogue-9b189a6ee64a3ef1e39e76a5c0abedd0.tres"]
+
+[params]
+
+defaults=true

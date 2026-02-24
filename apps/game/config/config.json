@@ -1,0 +1,9 @@
+{
+	"database": {
+		"path": "res://data/hello_world_database.db",
+		"read_only": false,
+		"foreign_keys": true,
+		"journal_mode": "WAL",
+		"synchronous": "NORMAL"
+	},
+}

@@ -1,0 +1,64 @@
+~ start
+# Escena: Amanecer en el dormitorio – Segundo día
+# Contexto: El jugador despierta en su habitación universitaria. Es su primer día oficial de clases.
+
+# do game.fade_in()   (comentado)
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/morning_dormitory.png")
+# do game.play_music("audio/music/amanecer_academico.mp3")   (comentado)
+# do game.set_character("left", "characters/main_characters/%s_main/Sleepy.png" % [_GameState.player_data.gender])
+# do game.set_character("right", "")
+# do game.set_expression()
+
+Narrador: La luz del amanecer se cuela entre las cortinas, cálida y suave.  
+Narrador: El dormitorio huele a un nuevo comienzo: café, libros sin estrenar y un leve aroma a aventura.
+
+{{_GameState.player_data.name}}: (bosteza) Wow… hoy empieza todo.  
+{{_GameState.player_data.name}}: Ayer fue intenso… demasiado para un solo día.
+
+# do game.set_character("right", "characters/side_characters/orqui/Normal.png")
+do _DialogueUiController.changed_character.emit("right", "characters/side_characters/orqui/Normal.png")
+
+Orqui: *¡Muy buenos días, {{_GameState.player_data.name}}!* ☀️  
+Orqui: *Detecté movimiento en tu cama hace exactamente 3.4 segundos. Eso confirma que… ¡sobreviviste al día uno de tu saga universitaria!*  
+
+{{_GameState.player_data.name}}: (ríe) ¿Siempre tienes estadísticas listas desde que despierto?
+
+Orqui: *Solo cuando las estadísticas son prometedoras.*  
+Orqui: *Hoy comienza oficialmente tu vida académica. Pero antes… tenemos una misión prioritaria.*  
+
+{{_GameState.player_data.name}}: ¿Una misión? Tan temprano.
+
+Orqui: *Muy temprano. Pero crucial. Antes de enfrentarte al conocimiento… debes aprender a moverte dentro de él.*  
+Orqui: *Piensa en mí como tu “sistema operativo académico”, optimizado para humanos soñolientos.*  
+
+- "¿Un sistema operativo con sentido del humor?"
+	Orqui: *El humor incrementa la retención de información en un 27%.*  
+	Orqui: *O… bueno… quizás el número esté ligeramente redondeado.*  
+
+- "¿Entonces vas a entrenarme?"
+	Orqui: *Más que entrenarte, voy a desbloquearte. Enseñarte a explorar, elegir y entender…*  
+	Orqui: *Tu mente es el código más poderoso que tienes.*  
+
+- "¿Y si me equivoco?"
+	Orqui: *Entonces celebraré tu error. Significará que estás aprendiendo.*  
+	Orqui: *El progreso siempre deja huellas.*  
+
+{{_GameState.player_data.name}}: No suena tan mal.  
+{{_GameState.player_data.name}}: Entonces, ¿por dónde empiezo?
+
+Orqui: *Por tu entorno.*  
+Orqui: *Vamos a repasar las herramientas y acciones que te acompañarán desde hoy.*  
+Orqui: *Prometo no causar cortocircuitos neuronales… al menos no a propósito.* ⚡  
+
+{{_GameState.player_data.name}}: (sonríe) Está bien. Cuentas conmigo.
+
+Orqui: *Perfecto.*  
+Orqui: *Iniciando secuencia de introducción interactiva… prepárate.*  
+
+# do game.fade_out()
+do _Util.fade_out()
+
+Narrador: Un brillo azulado envuelve la habitación, suave y pulsante.  
+Narrador: Por un instante, parece que el conocimiento mismo despierta contigo.
+
+=> END

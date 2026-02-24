@@ -1,0 +1,162 @@
+"use client"
+
+import * as React from "react"
+import {
+  IconCamera,
+  IconChartBar,
+  IconDashboard,
+  IconDatabase,
+  IconFileAi,
+  IconFileDescription,
+  IconFileWord,
+  IconFolder,
+  IconHelp,
+  IconInnerShadowTop,
+  IconListDetails,
+  IconReport,
+  IconSettings,
+} from "@tabler/icons-react"
+
+import { NavDocuments, NavMain, NavSecondary } from "@/components/shared/navigation"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
+
+const data = {
+  user: {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  },
+  navMain: [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: IconDashboard,
+    },
+    {
+      title: "Estudiantes",
+      url: "/dashboard/students",
+      icon: IconListDetails,
+    },
+    {
+      title: "Métricas",
+      url: "/dashboard/metrics",
+      icon: IconChartBar,
+    },
+    {
+      title: "Reportes",
+      url: "/dashboard/reports",
+      icon: IconFolder,
+    }
+  ],
+  navClouds: [
+    {
+      title: "Proyectos Activos",
+      icon: IconCamera,
+      isActive: true,
+      url: "/dashboard/projects",
+      items: [
+        {
+          title: "Propuestas Activas",
+          url: "/dashboard/projects/proposals",
+        },
+        {
+          title: "Archivados",
+          url: "/dashboard/projects/archived",
+        },
+      ],
+    },
+    {
+      title: "Documentos",
+      icon: IconFileDescription,
+      url: "/dashboard/documents",
+      items: [
+        {
+          title: "Propuestas Activas",
+          url: "/dashboard/documents/proposals",
+        },
+        {
+          title: "Archivados",
+          url: "/dashboard/documents/archived",
+        },
+      ],
+    },
+    {
+      title: "Recursos",
+      icon: IconFileAi,
+      url: "/dashboard/resources",
+      items: [
+        {
+          title: "Propuestas Activas",
+          url: "/dashboard/resources/proposals",
+        },
+        {
+          title: "Archivados",
+          url: "/dashboard/resources/archived",
+        },
+      ],
+    },
+  ],
+  navSecondary: [
+    {
+      title: "Settings",
+      url: "/dashboard/settings",
+      icon: IconSettings,
+    },
+    {
+      title: "Ayuda",
+      url: "/dashboard/help",
+      icon: IconHelp,
+    }
+  ],
+  documents: [
+    {
+      name: "Data Library",
+      url: "#",
+      icon: IconDatabase,
+    },
+    {
+      name: "Reports",
+      url: "#",
+      icon: IconReport,
+    },
+    {
+      name: "Word Assistant",
+      url: "#",
+      icon: IconFileWord,
+    },
+  ],
+}
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="#">
+                <IconInnerShadowTop className="!size-5" />
+                <span className="text-base font-semibold">My Platform</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        <NavDocuments items={data.documents} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
+      </SidebarContent>
+    </Sidebar>
+  )
+}

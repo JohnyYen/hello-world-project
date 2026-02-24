@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://drfki6ehra7xp"
+path="res://.godot/imported/Tutorial_Room_Finish.dialogue-abb04fc518ee5df902b703da087f3f0b.tres"
+
+[deps]
+
+source_file="res://dialogue/Tutorial/Tutorial_Room_Finish.dialogue"
+dest_files=["res://.godot/imported/Tutorial_Room_Finish.dialogue-abb04fc518ee5df902b703da087f3f0b.tres"]
+
+[params]
+
+defaults=true

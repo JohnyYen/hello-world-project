@@ -1,0 +1,68 @@
+[gd_scene load_steps=4 format=3 uid="uid://ghu3wf1rd7q7"]
+
+[ext_resource type="Texture2D" uid="uid://dmq2apq770u4v" path="res://assets/anime/backgrounds/map/faculty/faculty_map_zone_5.png" id="1_rfldp"]
+[ext_resource type="Script" uid="uid://cng1iatevsf6q" path="res://scenes/pages/maps/faculty/hotspot_pulse.gd" id="2_jbn24"]
+[ext_resource type="Script" uid="uid://cd67dommqviv2" path="res://scenes/pages/maps/faculty/hotspot_scene_change.gd" id="3_ba7cu"]
+
+[node name="FacultyZone5" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_rfldp")
+expand_mode = 2
+stretch_mode = 6
+
+[node name="AI Laboratory" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -274.0
+offset_top = 32.0
+offset_right = -61.0
+offset_bottom = 334.0
+grow_horizontal = 0
+
+[node name="HotspotPulse" type="Node" parent="AI Laboratory"]
+script = ExtResource("2_jbn24")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="AI Laboratory"]
+script = ExtResource("3_ba7cu")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://b6nl82uemaan1"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Back" type="Button" parent="."]
+layout_mode = 0
+offset_left = 153.0
+offset_top = 26.0
+offset_right = 336.0
+offset_bottom = 283.0
+
+[node name="HotspotPulse" type="Node" parent="Back"]
+script = ExtResource("2_jbn24")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Back"]
+script = ExtResource("3_ba7cu")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://b4sjsghdhgfng"
+metadata/_custom_type_script = "uid://cd67dommqviv2"

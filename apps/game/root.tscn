@@ -1,0 +1,61 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://env.gd" id="1_bf3um"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_manager.gd" id="2_huihk"]
+[ext_resource type="Script" path="res://scripts/eventBus.gd" id="3_tw3kd"]
+[ext_resource type="Script" path="res://scripts/controllers/feedback_controller.gd" id="4_gd4vy"]
+[ext_resource type="Script" path="res://config/game_config.gd" id="5_qw60f"]
+[ext_resource type="Script" path="res://scripts/globals/game_state.gd" id="6_eji0w"]
+[ext_resource type="Script" path="res://scripts/util.gd" id="7_qwhpj"]
+[ext_resource type="Script" path="res://scripts/controllers/save_controller.gd" id="8_qt76e"]
+
+[sub_resource type="World3D" id="World3D_sq7yr"]
+
+[node name="root" type="Window"]
+process_mode = 1
+auto_translate_mode = 1
+world_3d = SubResource("World3D_sq7yr")
+audio_listener_enable_2d = true
+audio_listener_enable_3d = true
+physics_object_picking = true
+gui_embed_subwindows = true
+positional_shadow_atlas_size = 4096
+title = "Hello World!!"
+position = Vector2i(384, 232)
+size = Vector2i(1152, 648)
+borderless = true
+min_size = Vector2i(64, 64)
+content_scale_size = Vector2i(1152, 648)
+content_scale_mode = 1
+content_scale_aspect = 1
+
+[node name="Env" type="Node" parent="."]
+script = ExtResource("1_bf3um")
+
+[node name="DialogueManager" type="Node" parent="."]
+script = ExtResource("2_huihk")
+
+[node name="EventBus" type="Node" parent="."]
+script = ExtResource("3_tw3kd")
+
+[node name="_FeedbackController" type="Node" parent="."]
+script = ExtResource("4_gd4vy")
+
+[node name="_GameConfig" type="Node" parent="."]
+script = ExtResource("5_qw60f")
+
+[node name="_GameState" type="Node" parent="."]
+script = ExtResource("6_eji0w")
+
+[node name="_Util" type="CanvasLayer" parent="."]
+script = ExtResource("7_qwhpj")
+
+[node name="_ColorRect_12" type="ColorRect" parent="_Util"]
+visible = false
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="_SaveController" type="Node" parent="."]
+script = ExtResource("8_qt76e")

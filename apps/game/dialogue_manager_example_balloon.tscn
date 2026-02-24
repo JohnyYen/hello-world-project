@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdefge4whw3v6"]
+
+[ext_resource type="Script" uid="uid://slpj1bm3gx7p" path="res://addons/dialogue_manager/example_balloon/example_balloon.gd" id="1_q00pk"]
+
+[node name="DialogueManagerExampleBalloon" type="CanvasLayer"]
+script = ExtResource("1_q00pk")

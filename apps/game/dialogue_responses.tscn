@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dpcl51vf4u3ak"]
+
+[ext_resource type="Script" uid="uid://cpk02waiapaei" path="res://addons/dialogue_manager/dialogue_reponses_menu.gd" id="1_jev5p"]
+
+[node name="DialogueResponsesMenu" type="Container"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_jev5p")

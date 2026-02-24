@@ -1,0 +1,13 @@
+~ start
+Orqui: ¡Hola, {{_GameState.player_data.name}}!  
+Orqui: Esta es tu PC, tu herramienta principal para gestionar tareas, proyectos y recibir mensajes importantes de amigos o profesores.  
+Orqui: Haz clic en ella para aprender a navegar por los menús y explorar tu inventario.  
+Orqui: Recuerda, cada acción aquí te prepara para tus clases y exámenes, así que vale la pena aprender a usarla bien.
+
+- Entendido, Orqui.
+	Orqui: ¡Perfecto! Observa cómo se despliega la interfaz y familiarízate con cada elemento, te será muy útil.
+
+- ¿Puedo explorar después?
+	Orqui: Claro, pero primero asegúrate de dominar lo básico. Haz clic en la PC ahora y descubrirás todo su potencial.  
+
+=> END

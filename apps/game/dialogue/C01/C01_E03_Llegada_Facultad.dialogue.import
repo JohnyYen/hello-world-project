@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://cquaibrv1tqom"
+path="res://.godot/imported/C01_E03_Llegada_Facultad.dialogue-59c6a690f64d901304735f00e764b9f2.tres"
+
+[deps]
+
+source_file="res://dialogue/C01/C01_E03_Llegada_Facultad.dialogue"
+dest_files=["res://.godot/imported/C01_E03_Llegada_Facultad.dialogue-59c6a690f64d901304735f00e764b9f2.tres"]
+
+[params]
+
+defaults=true

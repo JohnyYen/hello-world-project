@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq46ma7jp7bh1"]
+
+[ext_resource type="PackedScene" uid="uid://c23725vmhohxa" path="res://scenes/components/CodeSpace.tscn" id="1_l0fk7"]
+
+[node name="LevelTemplate" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Code Panel" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CodeSpace" parent="CanvasLayer/Code Panel" instance=ExtResource("1_l0fk7")]
+layout_mode = 2
+size_flags_horizontal = 1
+size_flags_vertical = 1
+
+[node name="GamePlay" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
