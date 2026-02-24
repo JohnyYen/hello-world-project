@@ -1,0 +1,27 @@
+{
+  "name": "hello-world-project",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "doc": "docs"
+  },
+  "packageManager": "pnpm@10.4.1",
+  "scripts": {
+    "dev": "turbo run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnyYen/hello-world-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JohnyYen/hello-world-project/issues"
+  },
+  "homepage": "https://github.com/JohnyYen/hello-world-project#readme",
+  "devDependencies": {
+    "turbo": "^2.8.10"
+  }
+}
