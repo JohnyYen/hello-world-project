@@ -1,0 +1,6056 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Hello World Backend",
+    "description": "Una API moderna y asíncrona para gestionar la plataforma de aprendizaje de programación con videjuegos",
+    "contact": {
+      "name": "Johny A. Pedraza Romero",
+      "url": "http://tuwebsite.com/",
+      "email": "jhonnyantonio892@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login For Access Token",
+        "description": "Autentica un usuario y retorna el token de acceso JWT.\n\n- **username**: Username del usuario (opcional)\n- **email**: Email del usuario (opcional)\n- **password**: Contraseña del usuario\n\nNota: Proporcionar username O email, no ambos requeridos.\n\nRetorna el token JWT y los datos del usuario autenticado.",
+        "operationId": "login_for_access_token_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLoginResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Register User",
+        "description": "Registra un nuevo usuario y retorna el token de acceso JWT.\n\n- **username**: Nombre de usuario (debe ser único)\n- **email**: Email del usuario (debe ser único)\n- **name**: Nombre del usuario (requerido)\n- **lastname**: Apellido del usuario (opcional)\n- **password**: Contraseña del usuario (será hasheada)\n\nRetorna el token JWT y los datos del usuario creado.",
+        "operationId": "register_user_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserLoginResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Change Password",
+        "description": "Cambia la contraseña de un usuario.\n\n- **user_id**: ID del usuario (en query parameter o body)\n- **current_password**: Contraseña actual para verificación\n- **new_password**: Nueva contraseña (mínimo 8 caracteres)",
+        "operationId": "change_password_api_v1_auth_change_password_post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserChangePassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/students": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List Students",
+        "description": "Listar estudiantes (con filtros y paginación).\n\nRequiere autenticación y rol de professor o admin.",
+        "operationId": "list_students_api_v1_users_students_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Número de registros a saltar",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Número de registros a saltar"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Número de registros a devolver",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Número de registros a devolver"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Búsqueda por nombre o email",
+              "title": "Search"
+            },
+            "description": "Búsqueda por nombre o email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create Student",
+        "description": "Registrar un nuevo estudiante.\n\nRequiere autenticación y rol de professor o admin.",
+        "operationId": "create_student_api_v1_users_students_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/students/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Student",
+        "description": "Obtener detalle de un estudiante.\n\nRequiere autenticación. Professor/Admin pueden ver cualquier estudiante.\nEl propio estudiante puede ver su propio perfil.",
+        "operationId": "get_student_api_v1_users_students__id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update Student",
+        "description": "Actualizar información del estudiante.\n\nRequiere autenticación y rol de professor o admin.",
+        "operationId": "update_student_api_v1_users_students__id__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete Student",
+        "description": "Eliminar estudiante (soft delete).\n\nRequiere autenticación y rol de professor o admin.",
+        "operationId": "delete_student_api_v1_users_students__id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/students/{id}/progress": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Student Progress",
+        "description": "Obtener progreso del estudiante.\n\nRequiere autenticación. Professor/Admin pueden ver cualquier estudiante.\nEl propio estudiante puede ver su propio progreso.",
+        "operationId": "get_student_progress_api_v1_users_students__id__progress_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentProgressResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/students/{id}/reports": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Student Reports",
+        "description": "Obtener reportes individuales (desempeño, actividad, etc.)",
+        "operationId": "get_student_reports_api_v1_users_students__id__reports_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentReportsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Crear un nuevo usuario",
+        "description": "Crea un nuevo usuario en la base de datos con la información proporcionada.\n- **email**: El correo electrónico del usuario (debe ser único).\n- **username**: El nombre de usuario (opcional, debe ser único si se proporciona).\n- **name**: El nombre del usuario (requerido).\n- **password**: La contraseña del usuario.",
+        "operationId": "create_user_api_v1_users__post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Obtener todos los usuarios",
+        "description": "Obtiene una lista paginada de todos los usuarios registrados en el sistema.\n\n- **include_deleted**: Si es True, incluye usuarios eliminados (soft deleted).\n  Por defecto es False para solo mostrar usuarios activos.",
+        "operationId": "get_all_users_api_v1_users__get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "include_deleted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include Deleted"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/professors/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Teacher Profile",
+        "description": "Obtener perfil del profesor autenticado.\n\nRequiere autenticación mediante token JWT.",
+        "operationId": "get_teacher_profile_api_v1_users_professors_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherProfileResponseSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update Teacher Profile",
+        "description": "Actualizar perfil del profesor autenticado.\n\nRequiere autenticación mediante token JWT.",
+        "operationId": "update_teacher_profile_api_v1_users_professors_me_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeacherProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherUpdateResponseSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/professors/settings": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Teacher Settings",
+        "description": "Obtener configuraciones del dashboard del profesor.\n\nRequiere autenticación mediante token JWT.",
+        "operationId": "get_teacher_settings_api_v1_users_professors_settings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherSettingsResponseSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update Teacher Settings",
+        "description": "Actualizar configuraciones del dashboard del profesor.\n\nRequiere autenticación mediante token JWT.",
+        "operationId": "update_teacher_settings_api_v1_users_professors_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeacherSettingsUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherSettingsResponseSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/lms/credentials": {
+      "post": {
+        "tags": [
+          "Users",
+          "LMS Credentials"
+        ],
+        "summary": "Register Lms Credentials",
+        "description": "Registrar credenciales LMS para un usuario.\n\n- **user_id**: ID del usuario que registra las credenciales\n- **lms_url**: URL del LMS (ej: https://moodle.university.edu)\n- **lms_email**: Email de la cuenta en el LMS\n- **lms_password**: Contraseña de la cuenta LMS\n- **lms_provider**: Proveedor LMS (moodle, canvas, etc.)",
+        "operationId": "register_lms_credentials_api_v1_users_lms_credentials_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LMSCredentialCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LMSCredentialResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/lms/credentials/user/{user_id}": {
+      "get": {
+        "tags": [
+          "Users",
+          "LMS Credentials"
+        ],
+        "summary": "Get User Lms Credentials",
+        "description": "Obtener las credenciales LMS de un usuario.\n\nRetorna las credenciales con la contraseña oculta.",
+        "operationId": "get_user_lms_credentials_api_v1_users_lms_credentials_user__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LMSCredentialResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users",
+          "LMS Credentials"
+        ],
+        "summary": "Delete User Lms Credentials",
+        "description": "Eliminar las credenciales LMS de un usuario.\n\nRealiza un soft delete de las credenciales.",
+        "operationId": "delete_user_lms_credentials_api_v1_users_lms_credentials_user__user_id__delete",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/lms/sync/{user_id}": {
+      "post": {
+        "tags": [
+          "Users",
+          "LMS Integration"
+        ],
+        "summary": "Sync Lms Data",
+        "description": "Sincronizar datos entre LMS y la plataforma.\n\nImporta usuarios, cursos y calificaciones desde el LMS\no exporta progreso de estudiantes al LMS.",
+        "operationId": "sync_lms_data_api_v1_users_lms_sync__user_id__post",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncResultResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Obtener un usuario por ID",
+        "description": "Busca y devuelve un usuario por su ID único.",
+        "operationId": "get_user_api_v1_users__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleUserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/games": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Get Games",
+        "description": "Lista todos los juegos con paginación.\n\n- **skip**: Número de registros a saltar (para paginación)\n- **limit**: Número máximo de registros a devolver (1-100)",
+        "operationId": "get_games_api_v1_games_get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Número de registros a saltar",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Número de registros a saltar"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Número de registros a devolver",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Número de registros a devolver"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Create Game",
+        "description": "Crea un nuevo juego.\n\n- **title**: Título del juego (requerido)\n- **description**: Descripción del juego (opcional)\n- **creator**: Creador del juego (opcional)\n- **subject**: Materia/asignatura (opcional)\n- **publication_status**: Estado de publicación (opcional)",
+        "operationId": "create_game_api_v1_games_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameCreateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/games/{game_id}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Get Game",
+        "description": "Obtiene los detalles de un juego específico.\n\n- **game_id**: ID del juego a obtener",
+        "operationId": "get_game_api_v1_games__game_id__get",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Game Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleGameResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Update Game",
+        "description": "Actualiza un juego existente.\n\n- **game_id**: ID del juego a actualizar\n- **title**: Nuevo título (opcional)\n- **description**: Nueva descripción (opcional)\n- **creator**: Nuevo creador (opcional)\n- **subject**: Nueva materia (opcional)\n- **publication_status**: Nuevo estado (opcional)",
+        "operationId": "update_game_api_v1_games__game_id__put",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Game Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameUpdateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Delete Game",
+        "description": "Elimina un juego (soft delete).\n\n- **game_id**: ID del juego a eliminar",
+        "operationId": "delete_game_api_v1_games__game_id__delete",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Game Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameDeleteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/game-instances/{game_id}/instances": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Create Game Instance",
+        "description": "Crea una nueva instancia de juego para un estudiante.\n\n- **game_id**: ID del juego\n- **student_id**: ID del estudiante (requerido)\n- **status**: Estado inicial (default: active)",
+        "operationId": "create_game_instance_api_v1_game_instances__game_id__instances_post",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Game Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameInstanceCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameInstanceCreateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "List Game Instances",
+        "description": "Lista las instancias de un juego con paginación.\n\n- **game_id**: ID del juego\n- **skip**: Número de registros a saltar\n- **limit**: Número máximo de registros a devolver\n- **status_filter**: Filtrar por estado (opcional)",
+        "operationId": "list_game_instances_api_v1_game_instances__game_id__instances_get",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Game Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Número de registros a saltar",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Número de registros a saltar"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Número de registros a devolver",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Número de registros a devolver"
+          },
+          {
+            "name": "status_filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filtrar por estado (active, completed, abandoned)",
+              "title": "Status Filter"
+            },
+            "description": "Filtrar por estado (active, completed, abandoned)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameInstanceListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/game-instances/{instance_id}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Get Instance",
+        "description": "Obtiene los detalles de una instancia de juego.\n\n- **instance_id**: ID de la instancia",
+        "operationId": "get_instance_api_v1_game_instances__instance_id__get",
+        "parameters": [
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Instance Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleGameInstanceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/game-instances/{instance_id}/end": {
+      "put": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "End Instance",
+        "description": "Finaliza una instancia de juego.\n\n- **instance_id**: ID de la instancia a finalizar\n- **status**: Estado final (default: completed)",
+        "operationId": "end_instance_api_v1_game_instances__instance_id__end_put",
+        "parameters": [
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Instance Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameInstanceEnd"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameInstanceEndResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/levels/{level_id}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Get Level",
+        "description": "Obtiene los detalles de un nivel específico.\n\n- **level_id**: ID del nivel a obtener",
+        "operationId": "get_level_api_v1_levels__level_id__get",
+        "parameters": [
+          {
+            "name": "level_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Level Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SingleLevelResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Update Level",
+        "description": "Actualiza un nivel existente.\n\n- **level_id**: ID del nivel a actualizar\n- **level_number**: Nuevo número de nivel (opcional)\n- **title**: Nuevo título (opcional)\n- **description**: Nueva descripción (opcional)\n- **goal**: Nuevo objetivo (opcional)",
+        "operationId": "update_level_api_v1_levels__level_id__put",
+        "parameters": [
+          {
+            "name": "level_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Level Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LevelUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelUpdateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Delete Level",
+        "description": "Elimina un nivel (soft delete).\n\n- **level_id**: ID del nivel a eliminar",
+        "operationId": "delete_level_api_v1_levels__level_id__delete",
+        "parameters": [
+          {
+            "name": "level_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Level Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelDeleteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/games/{game_id}/levels": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Get Game Levels",
+        "description": "Lista los niveles de un juego con paginación.\n\n- **game_id**: ID del juego\n- **skip**: Número de registros a saltar\n- **limit**: Número máximo de registros a devolver",
+        "operationId": "get_game_levels_api_v1_games__game_id__levels_get",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Game Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Número de registros a saltar",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Número de registros a saltar"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Número de registros a devolver",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Número de registros a devolver"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Create Game Level",
+        "description": "Crea un nuevo nivel en un juego.\n\n- **game_id**: ID del juego\n- **level_number**: Número del nivel (requerido)\n- **title**: Título del nivel (requerido)\n- **description**: Descripción del nivel (opcional)\n- **goal**: Objetivo del nivel (opcional)",
+        "operationId": "create_game_level_api_v1_games__game_id__levels_post",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Game Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LevelCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelCreateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/segments/{level_id}/segments": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Get Level Segments",
+        "description": "Lista los segmentos de un nivel con paginación.\n\n- **level_id**: ID del nivel\n- **skip**: Número de registros a saltar\n- **limit**: Número máximo de registros a devolver",
+        "operationId": "get_level_segments_api_v1_segments__level_id__segments_get",
+        "parameters": [
+          {
+            "name": "level_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Level Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Número de registros a saltar",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Número de registros a saltar"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "description": "Número de registros a devolver",
+              "default": 10,
+              "title": "Limit"
+            },
+            "description": "Número de registros a devolver"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SegmentLevelListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Create Level Segment",
+        "description": "Crea un nuevo segmento en un nivel.\n\n- **level_id**: ID del nivel\n- **configuration**: Configuración JSON del segmento (opcional)",
+        "operationId": "create_level_segment_api_v1_segments__level_id__segments_post",
+        "parameters": [
+          {
+            "name": "level_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Level Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SegmentLevelCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SegmentLevelCreateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/segments/{segment_id}": {
+      "put": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Update Segment",
+        "description": "Actualiza un segmento existente.\n\n- **segment_id**: ID del segmento a actualizar\n- **configuration**: Nueva configuración JSON (opcional)",
+        "operationId": "update_segment_api_v1_segments__segment_id__put",
+        "parameters": [
+          {
+            "name": "segment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Segment Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SegmentLevelUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SegmentLevelUpdateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Games"
+        ],
+        "summary": "Delete Segment",
+        "description": "Elimina un segmento (soft delete).\n\n- **segment_id**: ID del segmento a eliminar",
+        "operationId": "delete_segment_api_v1_segments__segment_id__delete",
+        "parameters": [
+          {
+            "name": "segment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Segment Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SegmentLevelDeleteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sync/sync-events": {
+      "post": {
+        "tags": [
+          "Sync"
+        ],
+        "summary": "Register Sync Event",
+        "description": "Registra un evento (acción del jugador).",
+        "operationId": "register_sync_event_api_v1_sync_sync_events_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncEventCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncEventSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sync/sync-events/{session_id}": {
+      "get": {
+        "tags": [
+          "Sync"
+        ],
+        "summary": "List Sync Events",
+        "description": "Lista eventos asociados a una sesión.",
+        "operationId": "list_sync_events_api_v1_sync_sync_events__session_id__get",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SyncEventSchema"
+                  },
+                  "title": "Response List Sync Events Api V1 Sync Sync Events  Session Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sync/sync-sessions": {
+      "post": {
+        "tags": [
+          "Sync"
+        ],
+        "summary": "Start Sync Session",
+        "description": "Inicia una sesión de sincronización.",
+        "operationId": "start_sync_session_api_v1_sync_sync_sessions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncSessionCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncSessionSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sync/sync-sessions/{session_id}/end": {
+      "put": {
+        "tags": [
+          "Sync"
+        ],
+        "summary": "End Sync Session",
+        "description": "Finaliza la sesión.",
+        "operationId": "end_sync_session_api_v1_sync_sync_sessions__session_id__end_put",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncSessionSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sync/sync-sessions/{instance_id}": {
+      "get": {
+        "tags": [
+          "Sync"
+        ],
+        "summary": "Get Sessions By Instance",
+        "description": "Obtiene sesiones de una instancia.",
+        "operationId": "get_sessions_by_instance_api_v1_sync_sync_sessions__instance_id__get",
+        "parameters": [
+          {
+            "name": "instance_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Instance Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SyncSessionSchema"
+                  },
+                  "title": "Response Get Sessions By Instance Api V1 Sync Sync Sessions  Instance Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/statistic/feedback": {
+      "post": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Submit Feedback",
+        "description": "Enviar retroalimentación de un estudiante.",
+        "operationId": "submit_feedback_api_v1_statistic_feedback_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackSchema"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/statistic/feedback/{student_id}": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get Student Feedback History",
+        "description": "Obtener feedback histórico del estudiante.",
+        "operationId": "get_student_feedback_history_api_v1_statistic_feedback__student_id__get",
+        "parameters": [
+          {
+            "name": "student_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Student Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedbackSchema"
+                  },
+                  "title": "Response Get Student Feedback History Api V1 Statistic Feedback  Student Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/statistic/xapi/statements": {
+      "post": {
+        "tags": [
+          "Statistics",
+          "xAPI"
+        ],
+        "summary": "Send Statements",
+        "description": "Receive and store xAPI statements.\n\nAccepts a batch of xAPI statements (1-1000 per request).\nSupports full xAPI 1.0 specification with game-specific context.\n\nThe game client should send statements with:\n- actor.account.name = student_id\n- verb = standard xAPI verb\n- object.id = activity ID (e.g., hello-world://segment/level_1_seg_3)\n- result = quantitative data (score, success, completion)\n- context = qualitative data (platform, language, extensions)\n- context.extensions = game-specific data (game_id, level_id, segment_id)",
+        "operationId": "send_statements_api_v1_statistic_xapi_statements_post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/XAPIStatementBatchCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/XAPIStatementResponse"
+                  },
+                  "title": "Response Send Statements Api V1 Statistic Xapi Statements Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Statistics",
+          "xAPI"
+        ],
+        "summary": "Get Statements",
+        "description": "Get xAPI statements with optional filters.\n\nReturns statements with pagination. Use filters to narrow results.",
+        "operationId": "get_statements_api_v1_statistic_xapi_statements_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of records to skip",
+              "default": 0,
+              "title": "Skip"
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "description": "Maximum number of records to return",
+              "default": 100,
+              "title": "Limit"
+            },
+            "description": "Maximum number of records to return"
+          },
+          {
+            "name": "student_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by student ID",
+              "title": "Student Id"
+            },
+            "description": "Filter by student ID"
+          },
+          {
+            "name": "verb_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by verb ID",
+              "title": "Verb Id"
+            },
+            "description": "Filter by verb ID"
+          },
+          {
+            "name": "game_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by game ID",
+              "title": "Game Id"
+            },
+            "description": "Filter by game ID"
+          },
+          {
+            "name": "level_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by level ID",
+              "title": "Level Id"
+            },
+            "description": "Filter by level ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/XAPIStatementListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/statistic/xapi/statements/{statement_id}": {
+      "get": {
+        "tags": [
+          "Statistics",
+          "xAPI"
+        ],
+        "summary": "Get Statement",
+        "description": "Get a specific xAPI statement by ID.",
+        "operationId": "get_statement_api_v1_statistic_xapi_statements__statement_id__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "statement_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Statement Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/XAPIStatementResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Read Root",
+        "operationId": "read_root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi": {
+      "get": {
+        "summary": "Get Openapi",
+        "operationId": "get_openapi_openapi_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FeedbackCreate": {
+        "properties": {
+          "student_id": {
+            "type": "integer",
+            "title": "Student Id"
+          },
+          "comments": {
+            "type": "string",
+            "title": "Comments"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          }
+        },
+        "type": "object",
+        "required": [
+          "student_id",
+          "comments"
+        ],
+        "title": "FeedbackCreate"
+      },
+      "FeedbackSchema": {
+        "properties": {
+          "student_id": {
+            "type": "integer",
+            "title": "Student Id"
+          },
+          "comments": {
+            "type": "string",
+            "title": "Comments"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "student_id",
+          "comments",
+          "id",
+          "created_at"
+        ],
+        "title": "FeedbackSchema"
+      },
+      "GameCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Title",
+            "example": "Juego de Matemáticas"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "example": "Aprende matemáticas básicas"
+          },
+          "creator": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Creator",
+            "example": "Profesor García"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject",
+            "example": "Matemáticas"
+          },
+          "publication_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publication Status",
+            "example": "published"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "title": "GameCreate",
+        "description": "Esquema para creación de juego"
+      },
+      "GameCreateResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Juego creado exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GameResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "GameCreateResponse",
+        "description": "Esquema para respuesta de creación de juego"
+      },
+      "GameDeleteResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Juego eliminado exitosamente"
+          }
+        },
+        "type": "object",
+        "title": "GameDeleteResponse",
+        "description": "Esquema para respuesta de eliminación de juego"
+      },
+      "GameDetailResponse": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Title",
+            "example": "Juego de Matemáticas"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "example": "Aprende matemáticas básicas"
+          },
+          "creator": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Creator",
+            "example": "Profesor García"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject",
+            "example": "Matemáticas"
+          },
+          "publication_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publication Status",
+            "example": "published"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted",
+            "default": false
+          },
+          "levels_count": {
+            "type": "integer",
+            "title": "Levels Count",
+            "description": "Cantidad de niveles del juego",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "id",
+          "created_at"
+        ],
+        "title": "GameDetailResponse",
+        "description": "Esquema para respuesta detallada de juego con relaciones"
+      },
+      "GameInstanceCreate": {
+        "properties": {
+          "game_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Game Id"
+          },
+          "student_id": {
+            "type": "integer",
+            "title": "Student Id"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status",
+            "default": "active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "student_id"
+        ],
+        "title": "GameInstanceCreate",
+        "description": "Esquema para crear una nueva instancia de juego"
+      },
+      "GameInstanceCreateResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Instancia creada exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GameInstanceResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "GameInstanceCreateResponse",
+        "description": "Esquema para respuesta de creación de instancia"
+      },
+      "GameInstanceDetailResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "game_id": {
+            "type": "integer",
+            "title": "Game Id"
+          },
+          "student_id": {
+            "type": "integer",
+            "title": "Student Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "start_instance": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Instance"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted",
+            "default": false
+          },
+          "game_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Game Title"
+          },
+          "student_username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Username"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "game_id",
+          "student_id",
+          "status",
+          "start_instance",
+          "created_at"
+        ],
+        "title": "GameInstanceDetailResponse",
+        "description": "Esquema para respuesta detallada de instancia con relaciones"
+      },
+      "GameInstanceEnd": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "completed"
+          }
+        },
+        "type": "object",
+        "title": "GameInstanceEnd",
+        "description": "Esquema para finalizar una instancia de juego"
+      },
+      "GameInstanceEndResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Instancia finalizada exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GameInstanceResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "GameInstanceEndResponse",
+        "description": "Esquema para respuesta de finalización de instancia"
+      },
+      "GameInstanceListResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Instancias obtenidas exitosamente"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/GameInstanceResponse"
+            },
+            "type": "array",
+            "title": "Data",
+            "default": []
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "default": 0
+          },
+          "skip": {
+            "type": "integer",
+            "title": "Skip",
+            "default": 0
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "default": 10
+          }
+        },
+        "type": "object",
+        "title": "GameInstanceListResponse",
+        "description": "Esquema para listado de instancias de juego"
+      },
+      "GameInstanceResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "game_id": {
+            "type": "integer",
+            "title": "Game Id"
+          },
+          "student_id": {
+            "type": "integer",
+            "title": "Student Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "start_instance": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Instance"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "game_id",
+          "student_id",
+          "status",
+          "start_instance",
+          "created_at"
+        ],
+        "title": "GameInstanceResponse",
+        "description": "Esquema para la respuesta de una instancia de juego"
+      },
+      "GameListResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Juegos obtenidos exitosamente"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/GameResponse"
+            },
+            "type": "array",
+            "title": "Data",
+            "default": []
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "default": 0
+          },
+          "skip": {
+            "type": "integer",
+            "title": "Skip",
+            "default": 0
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "default": 10
+          }
+        },
+        "type": "object",
+        "title": "GameListResponse",
+        "description": "Esquema para listado de juegos"
+      },
+      "GameResponse": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Title",
+            "example": "Juego de Matemáticas"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "example": "Aprende matemáticas básicas"
+          },
+          "creator": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Creator",
+            "example": "Profesor García"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject",
+            "example": "Matemáticas"
+          },
+          "publication_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publication Status",
+            "example": "published"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "id",
+          "created_at"
+        ],
+        "title": "GameResponse",
+        "description": "Esquema para respuesta de juego"
+      },
+      "GameUpdate": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title",
+            "example": "Juego de Matemáticas"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "example": "Aprende matemáticas básicas"
+          },
+          "creator": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Creator",
+            "example": "Profesor García"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject",
+            "example": "Matemáticas"
+          },
+          "publication_status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Publication Status",
+            "example": "published"
+          }
+        },
+        "type": "object",
+        "title": "GameUpdate",
+        "description": "Esquema para actualización de juego"
+      },
+      "GameUpdateResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Juego actualizado exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GameResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "GameUpdateResponse",
+        "description": "Esquema para respuesta de actualización de juego"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LMSCredentialCreate": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "lms_url": {
+            "type": "string",
+            "title": "Lms Url",
+            "description": "URL del LMS (ej: https://moodle.university.edu)"
+          },
+          "lms_email": {
+            "type": "string",
+            "title": "Lms Email",
+            "description": "Email de la cuenta en el LMS"
+          },
+          "lms_password": {
+            "type": "string",
+            "title": "Lms Password",
+            "description": "Contraseña de la cuenta LMS"
+          },
+          "lms_provider": {
+            "type": "string",
+            "title": "Lms Provider",
+            "description": "Proveedor LMS (moodle, canvas, etc.)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id",
+          "lms_url",
+          "lms_email",
+          "lms_password",
+          "lms_provider"
+        ],
+        "title": "LMSCredentialCreate",
+        "description": "Schema for creating LMS credentials."
+      },
+      "LMSCredentialResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "lms_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lms Url"
+          },
+          "lms_email": {
+            "type": "string",
+            "title": "Lms Email"
+          },
+          "lms_provider": {
+            "type": "string",
+            "title": "Lms Provider"
+          },
+          "access_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Token"
+          },
+          "expire_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expire At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "lms_email",
+          "lms_provider",
+          "created_at"
+        ],
+        "title": "LMSCredentialResponse",
+        "description": "Schema for LMS credential response (password masked)."
+      },
+      "LevelCreate": {
+        "properties": {
+          "level_number": {
+            "type": "integer",
+            "title": "Level Number"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          },
+          "game_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Game Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_number",
+          "title"
+        ],
+        "title": "LevelCreate",
+        "description": "Esquema para creación de nivel"
+      },
+      "LevelCreateResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Nivel creado exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/LevelResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "LevelCreateResponse",
+        "description": "Esquema para respuesta de creación de nivel"
+      },
+      "LevelDeleteResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Nivel eliminado exitosamente"
+          }
+        },
+        "type": "object",
+        "title": "LevelDeleteResponse",
+        "description": "Esquema para respuesta de eliminación de nivel"
+      },
+      "LevelDetailResponse": {
+        "properties": {
+          "level_number": {
+            "type": "integer",
+            "title": "Level Number"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "game_id": {
+            "type": "integer",
+            "title": "Game Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted",
+            "default": false
+          },
+          "segments_count": {
+            "type": "integer",
+            "title": "Segments Count",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_number",
+          "title",
+          "id",
+          "game_id",
+          "created_at"
+        ],
+        "title": "LevelDetailResponse",
+        "description": "Esquema para respuesta detallada de nivel con segmentos"
+      },
+      "LevelListResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Niveles obtenidos exitosamente"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/LevelResponse"
+            },
+            "type": "array",
+            "title": "Data",
+            "default": []
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "LevelListResponse",
+        "description": "Esquema para listado de niveles"
+      },
+      "LevelResponse": {
+        "properties": {
+          "level_number": {
+            "type": "integer",
+            "title": "Level Number"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "game_id": {
+            "type": "integer",
+            "title": "Game Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "level_number",
+          "title",
+          "id",
+          "game_id",
+          "created_at"
+        ],
+        "title": "LevelResponse",
+        "description": "Esquema para respuesta de nivel"
+      },
+      "LevelUpdate": {
+        "properties": {
+          "level_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level Number"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal"
+          }
+        },
+        "type": "object",
+        "title": "LevelUpdate",
+        "description": "Esquema para actualización de nivel"
+      },
+      "LevelUpdateResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Nivel actualizado exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/LevelResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "LevelUpdateResponse",
+        "description": "Esquema para respuesta de actualización de nivel"
+      },
+      "SegmentLevelCreate": {
+        "properties": {
+          "level_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Level Id"
+          },
+          "configuration": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Configuration"
+          }
+        },
+        "type": "object",
+        "title": "SegmentLevelCreate",
+        "description": "Esquema para crear un nuevo segmento de nivel"
+      },
+      "SegmentLevelCreateResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Segmento creado exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SegmentLevelResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "SegmentLevelCreateResponse",
+        "description": "Esquema para respuesta de creación de segmento"
+      },
+      "SegmentLevelDeleteResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Segmento eliminado exitosamente"
+          }
+        },
+        "type": "object",
+        "title": "SegmentLevelDeleteResponse",
+        "description": "Esquema para respuesta de eliminación de segmento"
+      },
+      "SegmentLevelListResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Segmentos obtenidos exitosamente"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/SegmentLevelResponse"
+            },
+            "type": "array",
+            "title": "Data",
+            "default": []
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "SegmentLevelListResponse",
+        "description": "Esquema para listado de segmentos de nivel"
+      },
+      "SegmentLevelResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "level_number_id": {
+            "type": "integer",
+            "title": "Level Number Id"
+          },
+          "configuration": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Configuration"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "level_number_id",
+          "created_at"
+        ],
+        "title": "SegmentLevelResponse",
+        "description": "Esquema para la respuesta de un segmento de nivel"
+      },
+      "SegmentLevelUpdate": {
+        "properties": {
+          "configuration": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Configuration"
+          }
+        },
+        "type": "object",
+        "title": "SegmentLevelUpdate",
+        "description": "Esquema para actualizar un segmento de nivel"
+      },
+      "SegmentLevelUpdateResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Segmento actualizado exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SegmentLevelResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "SegmentLevelUpdateResponse",
+        "description": "Esquema para respuesta de actualización de segmento"
+      },
+      "SingleGameInstanceResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Instancia obtenida exitosamente"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GameInstanceDetailResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "SingleGameInstanceResponse",
+        "description": "Esquema para respuesta de una sola instancia"
+      },
+      "SingleGameResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Juego obtenido exitosamente"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GameDetailResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "SingleGameResponse",
+        "description": "Esquema para respuesta de un solo juego"
+      },
+      "SingleLevelResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Nivel obtenido exitosamente"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LevelDetailResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "SingleLevelResponse",
+        "description": "Esquema para respuesta de un solo nivel"
+      },
+      "SingleUserResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Operación exitosa"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "title": "SingleUserResponse",
+        "description": "Respuesta para un solo usuario"
+      },
+      "StudentCreate": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lastname": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "email",
+          "name",
+          "lastname",
+          "password"
+        ],
+        "title": "StudentCreate",
+        "description": "Esquema para crear un nuevo estudiante"
+      },
+      "StudentListResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Operación exitosa"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/StudentResponse"
+            },
+            "type": "array",
+            "title": "Data"
+          },
+          "error": {
+            "anyOf": [
+              {
+
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "StudentListResponse",
+        "description": "Esquema para la respuesta de listado de estudiantes"
+      },
+      "StudentProgressResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Operación exitosa"
+          },
+          "data": {
+            "type": "object",
+            "title": "Data"
+          },
+          "error": {
+            "anyOf": [
+              {
+
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "StudentProgressResponse",
+        "description": "Esquema para la respuesta de progreso del estudiante"
+      },
+      "StudentReportsResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Operación exitosa"
+          },
+          "data": {
+            "type": "object",
+            "title": "Data"
+          },
+          "error": {
+            "anyOf": [
+              {
+
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "StudentReportsResponse",
+        "description": "Esquema para la respuesta de reportes del estudiante"
+      },
+      "StudentResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lastname": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "email",
+          "name",
+          "lastname",
+          "is_active"
+        ],
+        "title": "StudentResponse",
+        "description": "Esquema para la respuesta individual del estudiante"
+      },
+      "StudentUpdate": {
+        "properties": {
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "lastname": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastname"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "title": "StudentUpdate",
+        "description": "Esquema para actualizar la información del estudiante"
+      },
+      "SyncEventCreate": {
+        "properties": {
+          "sync_session_id": {
+            "type": "integer",
+            "title": "Sync Session Id"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "payload": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sync_session_id",
+          "event_type"
+        ],
+        "title": "SyncEventCreate"
+      },
+      "SyncEventSchema": {
+        "properties": {
+          "sync_session_id": {
+            "type": "integer",
+            "title": "Sync Session Id"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "payload": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Payload"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sync_session_id",
+          "event_type",
+          "id",
+          "timestamp"
+        ],
+        "title": "SyncEventSchema"
+      },
+      "SyncResultResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "success"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "records_synced": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Records Synced"
+          },
+          "sync_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Sync Time"
+          },
+          "next_sync_scheduled": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Sync Scheduled"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "records_synced",
+          "sync_time"
+        ],
+        "title": "SyncResultResponse",
+        "description": "Response schema for LMS sync operation."
+      },
+      "SyncSessionCreate": {
+        "properties": {
+          "instance_id": {
+            "type": "integer",
+            "title": "Instance Id"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "instance_id"
+        ],
+        "title": "SyncSessionCreate"
+      },
+      "SyncSessionSchema": {
+        "properties": {
+          "instance_id": {
+            "type": "integer",
+            "title": "Instance Id"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Started At"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "instance_id",
+          "id",
+          "started_at"
+        ],
+        "title": "SyncSessionSchema"
+      },
+      "TeacherProfileResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lastname": {
+            "type": "string",
+            "title": "Lastname"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "department": {
+            "type": "string",
+            "title": "Department"
+          },
+          "contact_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Phone"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "name",
+          "lastname",
+          "email",
+          "department"
+        ],
+        "title": "TeacherProfileResponse",
+        "description": "Esquema para respuesta del perfil de profesor"
+      },
+      "TeacherProfileResponseSchema": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Operación exitosa"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TeacherProfileResponse"
+          },
+          "error": {
+            "anyOf": [
+              {
+
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "TeacherProfileResponseSchema",
+        "description": "Respuesta para el perfil de profesor"
+      },
+      "TeacherProfileUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "example": "Juan"
+          },
+          "lastname": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastname",
+            "example": "Pérez"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email",
+            "example": "nuevoemail@example.com"
+          },
+          "department": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Department",
+            "example": "Matemáticas"
+          },
+          "contact_phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Phone",
+            "example": "+1234567890"
+          },
+          "avatar_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Url",
+            "example": "https://example.com/avatar.jpg"
+          }
+        },
+        "type": "object",
+        "title": "TeacherProfileUpdate",
+        "description": "Esquema para actualización del perfil de profesor"
+      },
+      "TeacherSettingsResponse": {
+        "properties": {
+          "theme": {
+            "type": "string",
+            "title": "Theme",
+            "default": "light"
+          },
+          "notifications_enabled": {
+            "type": "boolean",
+            "title": "Notifications Enabled",
+            "default": true
+          },
+          "notification_frequency": {
+            "type": "string",
+            "title": "Notification Frequency",
+            "default": "instant"
+          },
+          "interface_language": {
+            "type": "string",
+            "title": "Interface Language",
+            "default": "es"
+          }
+        },
+        "type": "object",
+        "title": "TeacherSettingsResponse",
+        "description": "Esquema para respuesta de configuraciones de profesor"
+      },
+      "TeacherSettingsResponseSchema": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Operación exitosa"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TeacherSettingsResponse"
+          },
+          "error": {
+            "anyOf": [
+              {
+
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "TeacherSettingsResponseSchema",
+        "description": "Respuesta para las configuraciones de profesor"
+      },
+      "TeacherSettingsUpdate": {
+        "properties": {
+          "theme": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Theme",
+            "description": "Tema de la interfaz: light o dark",
+            "example": "dark"
+          },
+          "notifications_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notifications Enabled",
+            "description": "Habilitar notificaciones",
+            "example": true
+          },
+          "notification_frequency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notification Frequency",
+            "description": "Frecuencia de notificaciones: instant, daily, weekly",
+            "example": "instant"
+          },
+          "interface_language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Interface Language",
+            "description": "Idioma de la interfaz",
+            "example": "es"
+          }
+        },
+        "type": "object",
+        "title": "TeacherSettingsUpdate",
+        "description": "Esquema para actualización de configuraciones de profesor"
+      },
+      "TeacherUpdateResponseSchema": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Perfil actualizado exitosamente"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TeacherProfileResponse"
+          },
+          "error": {
+            "anyOf": [
+              {
+
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "title": "TeacherUpdateResponseSchema",
+        "description": "Respuesta para actualizaciones de profesor"
+      },
+      "UserChangePassword": {
+        "properties": {
+          "current_password": {
+            "type": "string",
+            "title": "Current Password",
+            "example": "Current123!"
+          },
+          "new_password": {
+            "type": "string",
+            "minLength": 8,
+            "title": "New Password",
+            "example": "NewPassword123!"
+          }
+        },
+        "type": "object",
+        "required": [
+          "current_password",
+          "new_password"
+        ],
+        "title": "UserChangePassword",
+        "description": "Esquema para cambio de contraseña"
+      },
+      "UserCreate": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3,
+            "title": "Username",
+            "example": "usuario"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email",
+            "example": "usuario@example.com"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Name",
+            "example": "John"
+          },
+          "lastname": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastname",
+            "example": "Doe"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Password",
+            "example": "Password123!"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "email",
+          "name",
+          "password"
+        ],
+        "title": "UserCreate",
+        "description": "Esquema para creación de usuario.\n\nNote: El role_id NO se incluye en el registro.\nEl sistema asigna automáticamente el rol de 'professor' al usuario."
+      },
+      "UserListResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "Operación exitosa"
+          },
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/UserResponse"
+            },
+            "type": "array",
+            "title": "Data",
+            "default": []
+          },
+          "error": {
+            "anyOf": [
+              {
+
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "title": "UserListResponse",
+        "description": "Respuesta para listado de usuarios"
+      },
+      "UserLogin": {
+        "properties": {
+          "username": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Username",
+            "example": "User"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email",
+            "example": "usuario@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Password",
+            "example": "Password123!"
+          }
+        },
+        "type": "object",
+        "required": [
+          "password"
+        ],
+        "title": "UserLogin",
+        "description": "Esquema para inicio de sesión"
+      },
+      "UserLoginResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "title": "Expires In"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "expires_in",
+          "user"
+        ],
+        "title": "UserLoginResponse",
+        "description": "Respuesta de autenticación exitosa"
+      },
+      "UserResponse": {
+        "properties": {
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "username": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3,
+            "title": "Username",
+            "example": "usuario"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email",
+            "example": "usuario@example.com"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "lastname": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lastname"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "role": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRoleResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "email",
+          "id",
+          "name"
+        ],
+        "title": "UserResponse",
+        "description": "Esquema para respuesta de usuario"
+      },
+      "UserRoleResponse": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "role_name": {
+            "type": "string",
+            "title": "Role Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "role_name"
+        ],
+        "title": "UserRoleResponse",
+        "description": "Esquema para respuesta de rol"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "XAPIActivity": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "IRI of the activity"
+          },
+          "object_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Object Type",
+            "description": "Type of object",
+            "default": "Activity"
+          },
+          "definition": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIActivityDefinition"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Activity definition"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "XAPIActivity",
+        "description": "xAPI Activity - The object of the action."
+      },
+      "XAPIActivityDefinition": {
+        "properties": {
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type",
+            "description": "Activity type IRI"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Activity name (localized)"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description",
+            "description": "Activity description (localized)"
+          },
+          "extensions": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extensions",
+            "description": "Custom extensions"
+          }
+        },
+        "type": "object",
+        "title": "XAPIActivityDefinition",
+        "description": "xAPI Activity definition with type, name, description."
+      },
+      "XAPIActor": {
+        "properties": {
+          "mbox": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mbox",
+            "description": "Mailto URI of actor"
+          },
+          "mbox_sha1sum": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mbox Sha1Sum",
+            "description": "SHA1 hash of actor email"
+          },
+          "account": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Account",
+            "description": "Account object with homePage and name"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Display name of actor"
+          },
+          "object_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIActorType"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Agent or Group"
+          }
+        },
+        "type": "object",
+        "title": "XAPIActor",
+        "description": "xAPI Actor - Who performed the action."
+      },
+      "XAPIActorType": {
+        "type": "string",
+        "enum": [
+          "Agent",
+          "Group"
+        ],
+        "title": "XAPIActorType",
+        "description": "xAPI Actor types."
+      },
+      "XAPIContext-Input": {
+        "properties": {
+          "registration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registration",
+            "description": "Registration UUID"
+          },
+          "platform": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Platform",
+            "description": "Platform (e.g., 'Hello World Game')"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language",
+            "description": "Language code (e.g., 'es', 'en')"
+          },
+          "instructor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Instructor"
+          },
+          "team": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Team/group"
+          },
+          "context_activities": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Activities",
+            "description": "Related activities"
+          },
+          "extensions": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extensions",
+            "description": "Custom context extensions"
+          }
+        },
+        "type": "object",
+        "title": "XAPIContext",
+        "description": "xAPI Context - Additional context information."
+      },
+      "XAPIContext-Output": {
+        "properties": {
+          "registration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Registration",
+            "description": "Registration UUID"
+          },
+          "platform": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Platform",
+            "description": "Platform (e.g., 'Hello World Game')"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language",
+            "description": "Language code (e.g., 'es', 'en')"
+          },
+          "instructor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Instructor"
+          },
+          "team": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Team/group"
+          },
+          "context_activities": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Activities",
+            "description": "Related activities"
+          },
+          "extensions": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extensions",
+            "description": "Custom context extensions"
+          }
+        },
+        "type": "object",
+        "title": "XAPIContext",
+        "description": "xAPI Context - Additional context information."
+      },
+      "XAPIResult": {
+        "properties": {
+          "score": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIScore"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Score object"
+          },
+          "success": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Success",
+            "description": "Success of the activity"
+          },
+          "completion": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completion",
+            "description": "Completion of the activity"
+          },
+          "response": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Response",
+            "description": "Response/answer provided"
+          },
+          "duration": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration",
+            "description": "Duration in ISO 8601 format (PTnHnMnS)"
+          },
+          "extensions": {
+            "anyOf": [
+              {
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extensions",
+            "description": "Custom result extensions"
+          }
+        },
+        "type": "object",
+        "title": "XAPIResult",
+        "description": "xAPI Result - The result of the action (quantitative and qualitative)."
+      },
+      "XAPIScore": {
+        "properties": {
+          "raw": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw",
+            "description": "Raw score"
+          },
+          "min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min",
+            "description": "Minimum score"
+          },
+          "max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max",
+            "description": "Maximum score"
+          },
+          "scaled": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scaled",
+            "description": "Scaled score (0-1)"
+          }
+        },
+        "type": "object",
+        "title": "XAPIScore",
+        "description": "xAPI Score - Quantitative result."
+      },
+      "XAPIStatementBatchCreate": {
+        "properties": {
+          "statements": {
+            "items": {
+              "$ref": "#/components/schemas/XAPIStatementCreate"
+            },
+            "type": "array",
+            "maxItems": 1000,
+            "minItems": 1,
+            "title": "Statements"
+          }
+        },
+        "type": "object",
+        "required": [
+          "statements"
+        ],
+        "title": "XAPIStatementBatchCreate",
+        "description": "Batch of xAPI statements."
+      },
+      "XAPIStatementCreate": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id",
+            "description": "Statement ID (UUID), auto-generated if not provided"
+          },
+          "actor": {
+            "$ref": "#/components/schemas/XAPIActor",
+            "description": "Who performed the action"
+          },
+          "verb": {
+            "$ref": "#/components/schemas/XAPIVerb",
+            "description": "The action performed"
+          },
+          "object": {
+            "$ref": "#/components/schemas/XAPIActivity",
+            "description": "The object of the action"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIResult"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Result of the action (quantitative)"
+          },
+          "context": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIContext-Input"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Context (qualitative info)"
+          },
+          "timestamp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timestamp",
+            "description": "When the statement occurred"
+          },
+          "stored": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stored",
+            "description": "When the statement was stored"
+          },
+          "authority": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Who stored the statement"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version",
+            "description": "xAPI version (default: 1.0.3)"
+          },
+          "attachments": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attachments",
+            "description": "Attachments"
+          }
+        },
+        "type": "object",
+        "required": [
+          "actor",
+          "verb",
+          "object"
+        ],
+        "title": "XAPIStatementCreate",
+        "description": "xAPI Statement schema for receiving statements from game client.\nSupports full xAPI 1.0 specification with game-specific context.",
+        "example": {
+          "actor": {
+            "account": {
+              "homePage": "hello-world-game",
+              "name": "student_123"
+            }
+          },
+          "context": {
+            "extensions": {
+              "http://hello-world-game.com/extensions/attempts": 2,
+              "http://hello-world-game.com/extensions/game_session": "session_abc",
+              "http://hello-world-game.com/extensions/hints_used": 1
+            },
+            "language": "es",
+            "platform": "Hello World Game v1.0"
+          },
+          "object": {
+            "definition": {
+              "name": {
+                "es": "Segmento 3 - Variables"
+              },
+              "type": "http://adlnet.gov/expapi/activities/lesson"
+            },
+            "id": "hello-world://segment/level_1_seg_3"
+          },
+          "result": {
+            "completion": true,
+            "duration": "PT5M30S",
+            "score": {
+              "max": 100,
+              "min": 0,
+              "raw": 85,
+              "scaled": 0.85
+            },
+            "success": true
+          },
+          "timestamp": "2026-02-13T10:30:00Z",
+          "verb": {
+            "id": "http://adlnet.gov/expapi/verbs/completed"
+          }
+        }
+      },
+      "XAPIStatementListResponse": {
+        "properties": {
+          "statements": {
+            "items": {
+              "$ref": "#/components/schemas/XAPIStatementResponse"
+            },
+            "type": "array",
+            "title": "Statements"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "skip": {
+            "type": "integer",
+            "title": "Skip"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "statements",
+          "total",
+          "skip",
+          "limit"
+        ],
+        "title": "XAPIStatementListResponse",
+        "description": "List of xAPI statements with pagination."
+      },
+      "XAPIStatementResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "actor": {
+            "$ref": "#/components/schemas/XAPIActor"
+          },
+          "verb": {
+            "$ref": "#/components/schemas/XAPIVerb"
+          },
+          "object": {
+            "$ref": "#/components/schemas/XAPIActivity"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "context": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/XAPIContext-Output"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          },
+          "stored": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Stored"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "actor",
+          "verb",
+          "object",
+          "timestamp",
+          "stored"
+        ],
+        "title": "XAPIStatementResponse",
+        "description": "xAPI Statement response after storage."
+      },
+      "XAPIVerb": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "IRI of the verb"
+          },
+          "display": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display",
+            "description": "Human readable display of verb"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "XAPIVerb",
+        "description": "xAPI Verb - The action performed."
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {
+
+            },
+            "tokenUrl": "api/v1/auth/login"
+          }
+        }
+      }
+    }
+  }
+}

@@ -15,6 +15,8 @@ def run_migrations():
     command.upgrade(alembic_cfg, "head")
 
 
+
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="Una API moderna y asíncrona para gestionar la plataforma de aprendizaje de programación con videjuegos",
@@ -25,6 +27,7 @@ app = FastAPI(
         "email": "jhonnyantonio892@gmail.com",
     },
 )
+
 
 
 @app.on_event("startup")
@@ -40,3 +43,8 @@ app.include_router(router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to FastAPI!"}
+
+
+@app.get("/openapi")
+def get_openapi():
+    return app.openapi()
