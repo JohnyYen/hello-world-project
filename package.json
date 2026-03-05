@@ -7,7 +7,8 @@
   },
   "packageManager": "pnpm@10.4.1",
   "scripts": {
-    "dev": "turbo run dev"
+    "dev": "turbo run dev",
+    "generate:api-client": "pnpm exec openapi-generator-cli generate -i packages/api-contract/openapi.yaml -g typescript-fetch -o packages/api-client-ts"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
   },
   "homepage": "https://github.com/JohnyYen/hello-world-project#readme",
   "devDependencies": {
+    "@mockoon/cli": "^9.5.0",
+    "@openapitools/openapi-generator-cli": "^2.30.0",
     "turbo": "^2.8.10"
   }
 }

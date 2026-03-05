@@ -1,0 +1,365 @@
+[
+  {
+    "US": "UI-001",
+    "category": "ui",
+    "description": "Landing Page pública con información del producto",
+    "steps": [
+      "Navegar a la raíz del sitio /",
+      "Verificar presencia de secciones Hero, Características y Video",
+      "Hacer clic en 'Comenzar' y verificar redirección a /signup"
+    ],
+    "passes": true
+  },
+  {
+    "US": "US-001",
+    "category": "auth",
+    "description": "Registro de cuenta de profesor (Rol automático)",
+    "steps": [
+      "Completar formulario de registro con nombre, email y contraseña fuerte",
+      "Verificar validación de coincidencia de contraseñas en el cliente",
+      "Verificar redirección a login tras registro exitoso",
+      "Validar en DB que el usuario tiene asignado el rol 'professor'"
+    ],
+    "passes": true
+  },
+  {
+    "US": "US-002",
+    "category": "auth",
+    "description": "Autenticación de usuario y obtención de JWT",
+    "steps": [
+      "Ingresar credenciales en /login",
+      "Verificar que se recibe y almacena el token JWT (Bearer)",
+      "Redirigir automáticamente al dashboard al autenticar",
+      "Verificar que el perfil del usuario se carga en el estado global"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-003",
+    "category": "auth",
+    "description": "Cambio de contraseña segura para usuario autenticado",
+    "steps": [
+      "Acceder a Seguridad en /dashboard/account",
+      "Validar contraseña actual contra el backend",
+      "Aplicar regex de fortaleza a la nueva contraseña",
+      "Verificar mensaje de éxito tras la actualización"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-004",
+    "category": "students",
+    "description": "Creación de perfil de estudiante por el profesor",
+    "steps": [
+      "Abrir formulario de creación en /dashboard/students",
+      "Ingresar datos del estudiante incluyendo contraseña inicial",
+      "Verificar que se crean registros en tablas User y Student simultáneamente",
+      "Confirmar que el estudiante aparece en el listado principal"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-005",
+    "category": "students",
+    "description": "Listado de estudiantes con paginación y filtros",
+    "steps": [
+      "Cargar tabla de estudiantes en /dashboard/students",
+      "Probar búsqueda por nombre parcial y email",
+      "Verificar cambio de página con parámetros skip y limit",
+      "Validar filtro por estado activo/inactivo"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-006",
+    "category": "students",
+    "description": "Visualización de progreso agregado del estudiante",
+    "steps": [
+      "Acceder al detalle del estudiante /dashboard/students/[id]",
+      "Verificar barra de progreso basada en niveles completados",
+      "Validar cálculo de porcentaje: (completados / totales) * 100",
+      "Comprobar visualización de 'Última actividad'"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-007",
+    "category": "students",
+    "description": "Reportes detallados de rendimiento y compromiso",
+    "steps": [
+      "Navegar a /dashboard/students/[id]/reports",
+      "Verificar gráficos de rendimiento (puntajes medios)",
+      "Validar métricas de actividad (sesiones, tiempo total)",
+      "Comprobar reporte de compromiso (tasa de participación)"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-008",
+    "category": "students",
+    "description": "Actualización parcial de información del estudiante",
+    "steps": [
+      "Abrir edición de estudiante",
+      "Modificar campos permitidos (nombre, email, estado)",
+      "Verificar validación de unicidad de email excluyendo al actual",
+      "Confirmar actualización en ambas tablas (User/Student)"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-009",
+    "category": "students",
+    "description": "Eliminado suave (Soft Delete) de estudiante",
+    "steps": [
+      "Ejecutar acción de eliminar estudiante",
+      "Verificar que el registro no aparece en consultas normales",
+      "Validar en DB que is_deleted es True y tiene timestamp deleted_at",
+      "Confirmar que registros relacionados (Feedback, Progress) se marcan también"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-010",
+    "category": "professor",
+    "description": "Visualización de perfil de profesor autenticado",
+    "steps": [
+      "Acceder a /dashboard/account",
+      "Verificar visualización de departamento y teléfono de contacto",
+      "Validar que los datos provienen del join Professor-User"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-011",
+    "category": "professor",
+    "description": "Actualización de perfil de profesor",
+    "steps": [
+      "Modificar datos en el perfil del profesor",
+      "Verificar validación de URL para el avatar",
+      "Confirmar persistencia de cambios tras refrescar"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-012",
+    "category": "professor",
+    "description": "Visualización de configuraciones de plataforma",
+    "steps": [
+      "Navegar a /dashboard/settings",
+      "Verificar carga de preferencias actuales (tema, idioma, notificaciones)",
+      "Validar que se muestran valores por defecto si no hay registro previo"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-013",
+    "category": "professor",
+    "description": "Actualización de configuraciones personales",
+    "steps": [
+      "Modificar el tema a 'dark' y guardar",
+      "Verificar aplicación inmediata del cambio en la UI",
+      "Validar que la frecuencia de notificaciones cumple con los enums permitidos"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-014",
+    "category": "games",
+    "description": "Creación de videojuego educativo",
+    "steps": [
+      "Acceder a la nueva sección de Gestión de Juegos",
+      "Completar título (único) y descripción del juego",
+      "Verificar respuesta 201 y redirección al listado"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-015",
+    "category": "games",
+    "description": "Listado de videojuegos disponibles",
+    "steps": [
+      "Cargar listado de juegos",
+      "Verificar que no se muestran juegos marcados como eliminados",
+      "Validar que cada item muestra el creador y materia"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-016",
+    "category": "games",
+    "description": "Detalle de videojuego con conteo de niveles",
+    "steps": [
+      "Seleccionar un juego específico",
+      "Verificar que se muestra el levels_count correctamente calculado",
+      "Validar visualización de timestamps de creación"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-017",
+    "category": "games",
+    "description": "Actualización de información de videojuego",
+    "steps": [
+      "Editar campos de un juego existente",
+      "Verificar que se permite actualización parcial (PATCH behavior)",
+      "Validar error al intentar usar un título duplicado"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-018",
+    "category": "games",
+    "description": "Soft delete de videojuegos",
+    "steps": [
+      "Eliminar un juego del catálogo",
+      "Verificar que desaparece de la vista del usuario",
+      "Confirmar persistencia en DB para auditoría con flag is_deleted"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-019",
+    "category": "levels",
+    "description": "Creación de niveles dentro de un juego",
+    "steps": [
+      "Dentro de un juego, añadir nuevo nivel",
+      "Validar que el level_number es único dentro de ese juego",
+      "Verificar vínculo automático con game_id desde la URL"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-020",
+    "category": "levels",
+    "description": "Listado de niveles por videojuego",
+    "steps": [
+      "Visualizar estructura de un juego",
+      "Verificar orden de niveles por level_number",
+      "Confirmar exclusión de niveles eliminados"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-021",
+    "category": "levels",
+    "description": "Detalle de nivel y conteo de segmentos",
+    "steps": [
+      "Acceder a un nivel específico",
+      "Verificar descripción y objetivos",
+      "Validar que se muestra el conteo de SegmentLevel asociados"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-024",
+    "category": "instances",
+    "description": "Creación de instancia de juego para estudiante",
+    "steps": [
+      "Iniciar juego como estudiante",
+      "Verificar creación de GameInstance con status 'active'",
+      "Validar que start_instance se setea en el servidor"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-025",
+    "category": "instances",
+    "description": "Monitoreo de instancias activas por el profesor",
+    "steps": [
+      "Acceder al monitor de juego /dashboard/monitoring",
+      "Filtrar por juego y estado 'active'",
+      "Verificar que se muestran los estudiantes conectados actualmente"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-027",
+    "category": "instances",
+    "description": "Finalización de instancia de juego",
+    "steps": [
+      "Terminar sesión de juego",
+      "Verificar cambio de estado a 'completed' o 'abandoned'",
+      "Validar que ya no aparece en el monitor de activos"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-030",
+    "category": "sync",
+    "description": "Listado de eventos de sincronización para análisis",
+    "steps": [
+      "Abrir log de eventos de una sesión",
+      "Verificar orden cronológico ascendente",
+      "Validar visualización de payloads JSON de movimientos y errores"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-032",
+    "category": "sync",
+    "description": "Historial de sesiones por instancia de juego",
+    "steps": [
+      "Ver detalle de una instancia",
+      "Listar todas las sesiones de sync vinculadas",
+      "Verificar duración calculada (end_time - start_time)"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-035",
+    "category": "metrics",
+    "description": "Métricas globales y análisis de tendencias",
+    "steps": [
+      "Acceder a /dashboard/metrics",
+      "Verificar promedios de error y eficiencia globales",
+      "Validar análisis de tipos de errores más frecuentes",
+      "Comprobar métricas de engagement (uso de pistas, duración)"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-036",
+    "category": "feedback",
+    "description": "Envío de feedback por el estudiante",
+    "steps": [
+      "Completar formulario de feedback como estudiante",
+      "Validar límite de 255 caracteres y escala 1-5",
+      "Verificar que el comentario se almacena como texto plano"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-038",
+    "category": "feedback",
+    "description": "Dashboard de feedback agregado para profesor",
+    "steps": [
+      "Ver resumen de feedback en el dashboard",
+      "Verificar promedio de calificación total",
+      "Validar agrupación por categorías de estrellas"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-039",
+    "category": "lms",
+    "description": "Registro de credenciales de integración LMS",
+    "steps": [
+      "Configurar integración en Ajustes",
+      "Ingresar URL, email y password del LMS",
+      "Verificar validación de formato de URL y unicidad de email LMS",
+      "Confirmar almacenamiento encriptado en el backend"
+    ],
+    "passes": false
+  },
+  {
+    "US": "US-042",
+    "category": "lms",
+    "description": "Disparador de sincronización de datos con LMS",
+    "steps": [
+      "Hacer clic en botón de Sincronizar",
+      "Verificar notificación de inicio de tarea en segundo plano",
+      "Validar reporte final con conteo de registros procesados"
+    ],
+    "passes": false
+  }
+]

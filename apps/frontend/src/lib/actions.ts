@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { authService } from "@/lib/api-client";
 
 // 📝 Type para las acciones
 export type ActionState = {
@@ -17,11 +18,18 @@ const loginSchema = z.object({
   password: z.string().min(6, "Mínimo 6 caracteres"),
 });
 
+const passwordSchema = z.string()
+  .min(8, "La contraseña debe tener al menos 8 caracteres")
+  .regex(/[A-Z]/, "Debe contener al menos una mayúscula")
+  .regex(/[a-z]/, "Debe contener al menos una minúscula")
+  .regex(/\d/, "Debe contener al menos un número");
+
 // 🔐 Schema de validación para signup
 const signupSchema = z.object({
   name: z.string().min(2, "Mínimo 2 caracteres"),
+  username: z.string().min(3, "Mínimo 3 caracteres"),
   email: z.string().email("Email inválido"),
-  password: z.string().min(6, "Mínimo 6 caracteres"),
+  password: passwordSchema,
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Las contraseñas no coinciden",
@@ -53,17 +61,20 @@ export async function loginAction(
     // Simulación de login
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Revalidar caché y redirigir
-    revalidatePath("/dashboard");
-    redirect("/dashboard");
-    
-  } catch (_error) {
+  } catch (error: any) {
+    if (error?.message?.includes("NEXT_REDIRECT")) {
+      throw error;
+    }
     return {
       success: false,
       message: "Error al iniciar sesión",
       errors: { _form: ["Credenciales inválidas"] },
     };
   }
+  
+  // Revalidar caché y redirigir
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
 
 // 📝 Signup Action
@@ -74,6 +85,7 @@ export async function signupAction(
   try {
     const validatedFields = signupSchema.safeParse({
       name: formData.get("name"),
+      username: formData.get("username"),
       email: formData.get("email"),
       password: formData.get("password"),
       confirmPassword: formData.get("confirmPassword"),
@@ -87,23 +99,29 @@ export async function signupAction(
       };
     }
 
-    // TODO: Implementar registro real aquí
-    // const result = await auth.signup(validatedFields.data);
+    const { name, username, email, password } = validatedFields.data;
     
-    // Simulación de registro
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await authService.signup({
+      name,
+      username,
+      email,
+      password,
+    });
     
-    // Revalidar caché y redirigir
-    revalidatePath("/login");
-    redirect("/login");
+  } catch (error: any) {
+    if (error?.message?.includes("NEXT_REDIRECT")) {
+      throw error;
+    }
     
-  } catch (_error) {
     return {
       success: false,
-      message: "Error al crear cuenta",
-      errors: { _form: ["Email ya existe o error del sistema"] },
+      message: error.detail || error.message || "Error al crear cuenta",
+      errors: { _form: [error.detail || "Email o usuario ya existe"] },
     };
   }
+
+  revalidatePath("/login");
+  redirect("/login");
 }
 
 // 🎓 Student Creation Action

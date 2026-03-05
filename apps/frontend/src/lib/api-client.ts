@@ -9,7 +9,9 @@ import {
   PerformanceDistribution,
   ActivityPerformance,
   StudentFilters,
-  CacheConfig
+  CacheConfig,
+  SignupRequest,
+  SignupResponse
 } from '@/types/api';
 
 /**
@@ -256,6 +258,31 @@ export class ReportsService {
   }
 }
 
+export class AuthService {
+  // eslint-disable-next-line no-unused-vars
+  constructor(private _client: APIClient) {}
+
+  // 📝 Register new teacher
+  async signup(data: SignupRequest): Promise<SignupResponse> {
+    // Note: The backend returns the raw object, not wrapped in ApiResponse
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw error;
+    }
+
+    return response.json();
+  }
+}
+
 // 🏭 Service instances
 export const studentService = new StudentService(apiClient);
 export const reportsService = new ReportsService(apiClient);
+export const authService = new AuthService(apiClient);

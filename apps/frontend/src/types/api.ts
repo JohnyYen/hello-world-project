@@ -149,16 +149,35 @@ export type CacheDuration =
 // 🔐 Tipos de Autenticación
 export interface AuthTokens {
   accessToken: string;
-  refreshToken: string;
+  tokenType: string;
   expiresIn: number;
 }
 
-export interface AuthUser {
-  id: string;
+export interface SignupRequest {
+  username: string;
   email: string;
   name: string;
-  role: 'admin' | 'teacher' | 'student';
-  permissions: string[];
+  lastname?: string;
+  password: string;
+}
+
+export interface SignupResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  user: AuthUser;
+}
+
+export interface AuthUser {
+  id: number;
+  email: string;
+  name: string;
+  lastname?: string;
+  username: string;
+  role?: {
+    id: number;
+    name: string;
+  };
 }
 
 // 📝 Form State Types
@@ -167,4 +186,35 @@ export interface FormState<T> {
   errors: Partial<Record<keyof T, string[]>>;
   isSubmitting: boolean;
   isDirty: boolean;
+}
+
+// 📊 Tipos para Gráficos de Reportes de Estudiante
+export interface StudentReportKPIs {
+  totalLevelsCompleted: number;
+  totalGamesPlayed: number;
+  totalPlayTime: number;
+  averageScore: number;
+  currentStreak: number;
+  lastActivity: string | null;
+}
+
+export interface ProgressOverTime {
+  date: string;
+  level: number;
+  score: number;
+  timeSpent: number;
+}
+
+export interface LevelPerformance {
+  levelName: string;
+  score: number;
+  attempts: number;
+  timeSpent: number;
+  completed: boolean;
+}
+
+export interface ActivityDistribution {
+  gameName: string;
+  timeSpent: number;
+  sessions: number;
 }
