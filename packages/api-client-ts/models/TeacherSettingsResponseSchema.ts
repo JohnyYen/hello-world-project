@@ -50,7 +50,7 @@ export interface TeacherSettingsResponseSchema {
      * @type {}
      * @memberof TeacherSettingsResponseSchema
      */
-    error?:  | null;
+    error?: any | null;
 }
 
 /**
@@ -74,7 +74,7 @@ export function TeacherSettingsResponseSchemaFromJSONTyped(json: any, ignoreDisc
         'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
         'data': TeacherSettingsResponseFromJSON(json['data']),
-        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'error': json['error'] == null ? undefined : json['error'],
     };
 }
 
@@ -92,7 +92,7 @@ export function TeacherSettingsResponseSchemaToJSONTyped(value?: TeacherSettings
         'success': value['success'],
         'message': value['message'],
         'data': TeacherSettingsResponseToJSON(value['data']),
-        'error': ToJSON(value['error']),
+        'error': value['error'],
     };
 }
 

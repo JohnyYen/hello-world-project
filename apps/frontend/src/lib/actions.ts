@@ -4,7 +4,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { authService } from "@/lib/api-client";
+import { authService, apiClient } from "@/lib/api-client";
+import { AuthenticationApi, Configuration } from "@workspace/api-client-ts";
 
 // 📝 Type para las acciones
 export type ActionState = {
@@ -12,6 +13,19 @@ export type ActionState = {
   errors?: Record<string, string[]>;
   success?: boolean;
 };
+
+// 🔐 Helper para obtener instancia de API configurada
+async function getAuthApi(): Promise<AuthenticationApi> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+  
+  const config = new Configuration({
+    basePath: process.env.NEXT_PUBLIC_API_BASE_URL,
+    accessToken: token,
+  });
+  
+  return new AuthenticationApi(config);
+}
 
 // 🔐 Schema de validación para login
 const loginSchema = z.object({
@@ -25,6 +39,16 @@ const passwordSchema = z.string()
   .regex(/[a-z]/, "Debe contener al menos una minúscula")
   .regex(/\d/, "Debe contener al menos un número");
 
+// 🔐 Schema de validación para cambio de contraseña
+const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "La contraseña actual es requerida"),
+  newPassword: passwordSchema,
+  confirmPassword: z.string(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Las contraseñas no coinciden",
+  path: ["confirmPassword"],
+});
+
 // 🔐 Schema de validación para signup
 const signupSchema = z.object({
   name: z.string().min(2, "Mínimo 2 caracteres"),
@@ -36,6 +60,68 @@ const signupSchema = z.object({
   message: "Las contraseñas no coinciden",
   path: ["confirmPassword"],
 });
+
+// 🔑 Change Password Action
+export async function changePasswordAction(
+  prevState: ActionState | null,
+  formData: FormData
+): Promise<ActionState> {
+  try {
+    const validatedFields = changePasswordSchema.safeParse({
+      currentPassword: formData.get("currentPassword"),
+      newPassword: formData.get("newPassword"),
+      confirmPassword: formData.get("confirmPassword"),
+    });
+
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        message: "Errores de validación",
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    const { currentPassword, newPassword } = validatedFields.data;
+    
+    // Obtener token para las peticiones del servicio
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token")?.value;
+    if (token) {
+      apiClient.setAuthToken(token);
+    }
+
+    // Obtener el ID del usuario actual
+    const userResponse = await authService.getMe();
+    if (!userResponse.success || !userResponse.data.id) {
+      return {
+        success: false,
+        message: "No se pudo obtener la información del usuario",
+      };
+    }
+
+    const authApi = await getAuthApi();
+    await authApi.changePasswordApiV1AuthChangePasswordPost({
+      userId: userResponse.data.id,
+      userChangePassword: {
+        currentPassword,
+        newPassword,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Contraseña actualizada exitosamente",
+    };
+    
+  } catch (error: any) {
+    console.error("Error changing password:", error);
+    return {
+      success: false,
+      message: error.message || "Error al actualizar la contraseña",
+      errors: { _form: [error.message || "Error de red o del servidor"] },
+    };
+  }
+}
 
 // 🔑 Login Action
 export async function loginAction(

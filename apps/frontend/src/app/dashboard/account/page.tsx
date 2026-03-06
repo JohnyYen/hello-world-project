@@ -1,11 +1,11 @@
+import { ChangePasswordForm } from "@/components/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Camera, User, Mail, Lock, Save, Settings } from "lucide-react";
+import { Camera, User, Mail, Settings } from "lucide-react";
 
 // Mock user data - in a real app, this would come from an API
 const mockUser = {
@@ -59,10 +59,6 @@ export default function AccountPage() {
                 <Button variant="outline" className="flex items-center gap-2">
                   <Camera className="h-4 w-4" />
                   Cambiar Avatar
-                </Button>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Save className="h-4 w-4" />
-                  Guardar Cambios
                 </Button>
               </div>
             </CardContent>
@@ -120,52 +116,7 @@ export default function AccountPage() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Seguridad de la Cuenta</CardTitle>
-              <CardDescription>
-                Cambia tu contraseña y configura la seguridad de tu cuenta
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="current-password">Contraseña Actual</Label>
-                  <div className="flex items-center gap-2">
-                    <Input id="current-password" type="password" placeholder="Ingresa tu contraseña actual" />
-                    <Button size="icon" variant="outline">
-                      <Lock className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <Separator />
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">Nueva Contraseña</Label>
-                  <div className="flex items-center gap-2">
-                    <Input id="new-password" type="password" placeholder="Ingresa una nueva contraseña" />
-                    <Button size="icon" variant="outline">
-                      <Lock className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirmar Nueva Contraseña</Label>
-                  <div className="flex items-center gap-2">
-                    <Input id="confirm-password" type="password" placeholder="Confirma la nueva contraseña" />
-                    <Button size="icon" variant="outline">
-                      <Lock className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="pt-4">
-                  <Button className="flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    Actualizar Contraseña
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <ChangePasswordForm />
 
           <Card>
             <CardHeader>

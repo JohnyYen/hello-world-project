@@ -13,7 +13,13 @@
   - Actualizada `loginAction` para usar la API real y almacenar el token en cookies.
   - Corregidos enlaces `<a>` por `<Link>` y textos a español en login/signup.
   - Verificada la compilación exitosa del proyecto.
+- [x] US-003: Cambio de contraseña segura para usuario autenticado.
+  - Creada `changePasswordSchema` con validación de fortaleza de contraseña (regex) y coincidencia.
+  - Implementada `changePasswordAction` (Server Action) que utiliza el paquete `@workspace/api-client-ts`.
+  - Creado componente `ChangePasswordForm` con `useActionState`, `sonner` para notificaciones y validación en español.
+  - Refactorizada la página `/dashboard/account` para integrar el nuevo formulario.
+  - Corregidos errores de tipos y ambigüedades en el paquete auto-generado `@workspace/api-client-ts`.
+  - Verificada la compilación exitosa del proyecto (build & lint).
 
 ## Próximas Tareas
-- [ ] US-002: Autenticación de usuario (Login) y obtención de JWT.
-- [ ] US-003: Cambio de contraseña segura.
+- [ ] US-004: Creación de perfil de estudiante por el profesor.

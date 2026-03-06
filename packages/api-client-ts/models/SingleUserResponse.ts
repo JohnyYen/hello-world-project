@@ -47,10 +47,10 @@ export interface SingleUserResponse {
     data?: UserResponse | null;
     /**
      * 
-     * @type {}
+     * @type {any}
      * @memberof SingleUserResponse
      */
-    error?:  | null;
+    error?: any | null;
 }
 
 /**
@@ -73,7 +73,7 @@ export function SingleUserResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : UserResponseFromJSON(json['data']),
-        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'error': json['error'] == null ? undefined : json['error'],
     };
 }
 
@@ -91,7 +91,7 @@ export function SingleUserResponseToJSONTyped(value?: SingleUserResponse | null,
         'success': value['success'],
         'message': value['message'],
         'data': UserResponseToJSON(value['data']),
-        'error': ToJSON(value['error']),
+        'error': value['error'],
     };
 }
 

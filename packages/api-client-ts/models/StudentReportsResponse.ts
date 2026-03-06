@@ -42,7 +42,7 @@ export interface StudentReportsResponse {
      * @type {}
      * @memberof StudentReportsResponse
      */
-    error?:  | null;
+    error?: any | null;
 }
 
 /**
@@ -66,7 +66,7 @@ export function StudentReportsResponseFromJSONTyped(json: any, ignoreDiscriminat
         'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'],
-        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'error': json['error'] == null ? undefined : json['error'],
     };
 }
 
@@ -84,7 +84,7 @@ export function StudentReportsResponseToJSONTyped(value?: StudentReportsResponse
         'success': value['success'],
         'message': value['message'],
         'data': value['data'],
-        'error': ToJSON(value['error']),
+        'error': value['error'],
     };
 }
 

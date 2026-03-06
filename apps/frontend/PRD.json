@@ -44,7 +44,7 @@
       "Aplicar regex de fortaleza a la nueva contraseña",
       "Verificar mensaje de éxito tras la actualización"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "US": "US-004",

@@ -50,7 +50,7 @@ export interface UserListResponse {
      * @type {}
      * @memberof UserListResponse
      */
-    error?:  | null;
+    error?: any | null;
 }
 
 /**
@@ -73,7 +73,7 @@ export function UserListResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : ((json['data'] as Array<any>).map(UserResponseFromJSON)),
-        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'error': json['error'] == null ? undefined : json['error'],
     };
 }
 
@@ -91,7 +91,7 @@ export function UserListResponseToJSONTyped(value?: UserListResponse | null, ign
         'success': value['success'],
         'message': value['message'],
         'data': value['data'] == null ? undefined : ((value['data'] as Array<any>).map(UserResponseToJSON)),
-        'error': ToJSON(value['error']),
+        'error': value['error'],
     };
 }
 

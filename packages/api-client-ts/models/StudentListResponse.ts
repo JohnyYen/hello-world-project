@@ -50,7 +50,7 @@ export interface StudentListResponse {
      * @type {}
      * @memberof StudentListResponse
      */
-    error?:  | null;
+    error?: any | null;
 }
 
 /**
@@ -74,7 +74,7 @@ export function StudentListResponseFromJSONTyped(json: any, ignoreDiscriminator:
         'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
         'data': ((json['data'] as Array<any>).map(StudentResponseFromJSON)),
-        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'error': json['error'] == null ? undefined : json['error'],
     };
 }
 
@@ -92,7 +92,7 @@ export function StudentListResponseToJSONTyped(value?: StudentListResponse | nul
         'success': value['success'],
         'message': value['message'],
         'data': ((value['data'] as Array<any>).map(StudentResponseToJSON)),
-        'error': ToJSON(value['error']),
+        'error': value['error'],
     };
 }
 

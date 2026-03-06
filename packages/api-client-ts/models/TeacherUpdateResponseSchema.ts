@@ -50,7 +50,7 @@ export interface TeacherUpdateResponseSchema {
      * @type {}
      * @memberof TeacherUpdateResponseSchema
      */
-    error?:  | null;
+    error?: any | null;
 }
 
 /**
@@ -74,7 +74,7 @@ export function TeacherUpdateResponseSchemaFromJSONTyped(json: any, ignoreDiscri
         'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
         'data': TeacherProfileResponseFromJSON(json['data']),
-        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'error': json['error'] == null ? undefined : json['error'],
     };
 }
 
@@ -92,7 +92,7 @@ export function TeacherUpdateResponseSchemaToJSONTyped(value?: TeacherUpdateResp
         'success': value['success'],
         'message': value['message'],
         'data': TeacherProfileResponseToJSON(value['data']),
-        'error': ToJSON(value['error']),
+        'error': value['error'],
     };
 }
 
