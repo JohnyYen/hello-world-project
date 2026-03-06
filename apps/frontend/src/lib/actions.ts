@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { authService } from "@/lib/api-client";
 
 // 📝 Type para las acciones
@@ -55,11 +56,22 @@ export async function loginAction(
       };
     }
 
-    // TODO: Implementar autenticación real aquí
-    // const result = await auth.login(validatedFields.data);
+    const { email, password } = validatedFields.data;
     
-    // Simulación de login
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const result = await authService.login({
+      username: email, // Backend accepts email in username field or has email field
+      password: password,
+    });
+
+    if (result.access_token) {
+      const cookieStore = await cookies();
+      cookieStore.set("auth_token", result.access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+    }
     
   } catch (error: any) {
     if (error?.message?.includes("NEXT_REDIRECT")) {
@@ -67,8 +79,8 @@ export async function loginAction(
     }
     return {
       success: false,
-      message: "Error al iniciar sesión",
-      errors: { _form: ["Credenciales inválidas"] },
+      message: error.detail || error.message || "Error al iniciar sesión",
+      errors: { _form: [error.detail || "Credenciales inválidas"] },
     };
   }
   

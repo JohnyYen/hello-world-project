@@ -153,6 +153,18 @@ export interface AuthTokens {
   expiresIn: number;
 }
 
+export interface LoginRequest {
+  username?: string;
+  email?: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+  user: AuthUser;
+}
+
 export interface SignupRequest {
   username: string;
   email: string;

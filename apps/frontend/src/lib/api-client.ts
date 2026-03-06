@@ -11,7 +11,10 @@ import {
   StudentFilters,
   CacheConfig,
   SignupRequest,
-  SignupResponse
+  SignupResponse,
+  LoginRequest,
+  LoginResponse,
+  AuthUser
 } from '@/types/api';
 
 /**
@@ -261,6 +264,29 @@ export class ReportsService {
 export class AuthService {
   // eslint-disable-next-line no-unused-vars
   constructor(private _client: APIClient) {}
+
+  // 🔐 Login user
+  async login(data: LoginRequest): Promise<LoginResponse> {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw error;
+    }
+
+    return response.json();
+  }
+
+  // 👤 Get current user profile
+  async getMe(): Promise<ApiResponse<AuthUser>> {
+    return this._client.get('/users/professors/me');
+  }
 
   // 📝 Register new teacher
   async signup(data: SignupRequest): Promise<SignupResponse> {

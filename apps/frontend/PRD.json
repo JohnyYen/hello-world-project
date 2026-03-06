@@ -32,7 +32,7 @@
       "Redirigir automáticamente al dashboard al autenticar",
       "Verificar que el perfil del usuario se carga en el estado global"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "US": "US-003",

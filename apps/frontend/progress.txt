@@ -8,6 +8,11 @@
   - Creada AuthService y SignupRequest/Response types.
   - Creada signupAction (Server Action) conectada al backend.
   - SignupForm conectado a la acción con manejo de estados y errores.
+- [x] US-002: Autenticación de usuario (Login) y obtención de JWT.
+  - Implementado `authService.login` en `api-client.ts`.
+  - Actualizada `loginAction` para usar la API real y almacenar el token en cookies.
+  - Corregidos enlaces `<a>` por `<Link>` y textos a español en login/signup.
+  - Verificada la compilación exitosa del proyecto.
 
 ## Próximas Tareas
 - [ ] US-002: Autenticación de usuario (Login) y obtención de JWT.
