@@ -12,6 +12,10 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   
+  {
+    ignores: [".next/**", "next-env.d.ts"],
+  },
+  
   // ✅ Reglas esenciales para calidad de código
   {
     rules: {
