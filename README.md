@@ -236,76 +236,6 @@ docker compose -f infraestructure/docker/docker-compose.dev.yml down
 
 ---
 
-## 📁 Project Structure
-
-```
-hello-world-project/
-├── apps/
-│   ├── backend/                    # FastAPI backend service
-│   │   ├── src/
-│   │   │   ├── api/               # API route handlers
-│   │   │   ├── auth/              # Authentication logic
-│   │   │   ├── core/              # Configuration and constants
-│   │   │   ├── db/
-│   │   │   │   ├── models/        # SQLAlchemy models
-│   │   │   │   ├── repositories/  # Data access layer
-│   │   │   │   └── session.py     # DB connection
-│   │   │   ├── services/          # Business logic
-│   │   │   ├── game/              # Game-related endpoints
-│   │   │   ├── statistic/         # Analytics service
-│   │   │   ├── users/             # User management
-│   │   │   └── shared/            # Shared utilities
-│   │   ├── migrations/            # Alembic database migrations
-│   │   ├── tests/                 # Test suite
-│   │   ├── docs/                  # Documentation
-│   │   ├── main.py               # Application entry point
-│   │   ├── requirements.txt       # Python dependencies
-│   │   └── Dockerfile.dev        # Development container
-│   │
-│   ├── frontend/                   # Next.js web dashboard
-│   │   ├── src/
-│   │   │   ├── app/              # Next.js 15 App Router
-│   │   │   ├── components/       # React components
-│   │   │   ├── hooks/            # Custom React hooks
-│   │   │   ├── services/         # API client services
-│   │   │   ├── types/            # TypeScript interfaces
-│   │   │   ├── adapters/         # External integrations
-│   │   │   └── lib/              # Utilities
-│   │   ├── public/               # Static assets
-│   │   ├── package.json          # Dependencies
-│   │   └── Dockerfile.dev        # Development container
-│   │
-│   └── game/                       # Godot 4.x educational game
-│       ├── scripts/               # GDScript files
-│       │   ├── engine/           # Game execution engine
-│       │   ├── agents/           # AI adaptive agents
-│       │   ├── blocks/           # Programming blocks
-│       │   ├── controllers/      # Scene controllers
-│       │   └── database/         # SQLite interface
-│       ├── scenes/               # Godot scenes
-│       ├── models/               # Data models
-│       ├── assets/               # Art, sounds, fonts
-│       ├── dialogue/             # Dialogue scripts
-│       ├── config/               # Game configuration
-│       ├── test/                 # GUT test suite
-│       ├── addons/               # Godot plugins
-│       └── project.godot         # Godot project file
-│
-├── infraestructure/
-│   └── docker/
-│       └── docker-compose.dev.yml     # Development environment
-│
-├── docs/                          # Project documentation
-├── scripts/                       # Utility scripts
-├── package.json                   # Monorepo root
-├── pnpm-workspace.yaml           # pnpm workspace config
-├── turbo.json                    # Turborepo configuration
-└── AGENTS.md                     # CodeAI agent guidelines
-
-```
-
----
-
 ## 🛠️ Development Guide
 
 ### Backend Development
@@ -582,13 +512,7 @@ Limitations:
 
 ---
 
-## 👥 Authors and Contributors
-
-### Core Team
-- **Project Lead**: [Your Name](https://github.com/yourusername)
-- **Backend Architect**: [Backend Lead](https://github.com/backend-lead)
-- **Frontend Lead**: [Frontend Lead](https://github.com/frontend-lead)
-- **Game Designer**: [Game Lead](https://github.com/game-lead)
+## 👥 Contributors
 
 ### Contributors
 See [CONTRIBUTORS.md](./CONTRIBUTORS.md) for the full list of amazing people who have contributed to this project.
@@ -616,10 +540,8 @@ A: See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for complete self-hosting guide.
 
 ## 📞 Support and Community
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/hello-world-project/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/hello-world-project/discussions)
-- **Email**: support@example.com
-- **Discord**: [Join our community](https://discord.gg/example)
+- **Issues**: [GitHub Issues](https://github.com/JohnyYen/hello-world-project/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/JohnyYen/hello-world-project/discussions)
 
 ---
 
