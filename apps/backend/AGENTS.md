@@ -1,138 +1,99 @@
-# Agent Guidelines for Hello World Backend
+# Hello World Backend - AI Agent Ruleset
 
-See PROJECT_SPEC.md for full specifications.
+> **Skills Reference**: For detailed patterns, use these skills:
+> - [`fastapi`](https://fastapi.tiangolo.com/) - Async patterns, JWT auth, Pydantic v2
+> - [`architecture-patterns`](#) - Clean Architecture (Service/UseCase)
+> - [`pytest`](https://docs.pytest.org/) - Generic pytest patterns
+> - [`tdd`](#) - Test-Driven Development workflow
 
-Always changed a important part of the codebase (dependency or bussines rules) update PROJECT_SPEC.md
+### Auto-invoke Skills
 
-Always finish a task committed
+When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
-## Environment Configuration
+| Action | Skill |
+|--------|-------|
+| Committing changes | `prowler-commit` |
+| Creating FastAPI endpoints | `fastapi` |
+| Fixing bug | `tdd` |
+| Implementing feature | `tdd` |
+| Refactoring code | `tdd` |
+| Working on task | `tdd` |
+| Writing Python tests with pytest | `pytest` |
 
-The application supports two environment configurations:
+---
 
-### Local Development (uvicorn)
-Use `.env.local` when running the app locally with uvicorn:
-```bash
-# DATABASE_URL points to localhost (Docker DB exposed on host)
-DATABASE_URL=postgresql+asyncpg://value:password@localhost:5432/hello-world-db
+## CRITICAL RULES - NON-NEGOTIABLE
+
+### Models
+- ALWAYS: UUIDv4 PKs, `created_at`/`updated_at` timestamps.
+- ALWAYS: Use `AsyncSession` for all database operations.
+- NEVER: Synchronous database calls or auto-increment integer PKs.
+
+### Architecture (Service/UseCase Pattern)
+- ALWAYS: Separate logic into `Service` (CRUD) and `UseCase` (Business Logic).
+- ALWAYS: Use `Depends()` for dependency injection of services and usecases.
+- NEVER: Business logic in endpoints or raw SQL queries in services.
+
+### Endpoints
+- ALWAYS: One endpoint per file in `src/{domain}/api/v1/endpoints/{action}.py`.
+- ALWAYS: Catch custom exceptions and raise `HTTPException` with appropriate status codes.
+- NEVER: Logic directly in the endpoint function; delegate to UseCases.
+
+---
+
+## DECISION TREES
+
+### Service vs UseCase
+```
+CRUD / Simple Validation → Service
+Business Workflow / Multi-service orchestration → UseCase
 ```
 
-**Note:** The application automatically detects `.env.local` if it exists and uses it instead of `.env`.
+---
 
-### Docker Development
-Use `.env` when running everything in Docker Compose:
-```bash
-# DATABASE_URL points to Docker service name
-DATABASE_URL=postgresql+asyncpg://value:password@postgresql_db:5432/hello-world-db
+## TECH STACK
+
+FastAPI | SQLAlchemy 2.0 (Async) | Alembic | Pydantic v2 | PostgreSQL 16 | pytest
+
+---
+
+## PROJECT STRUCTURE
+
+```
+apps/backend/src/
+├── {domain}/
+│   ├── api/v1/endpoints/   # One file per action
+│   ├── application/
+│   │   ├── service/        # CRUD logic
+│   │   └── usecase/       # Business workflows
+│   └── models.py          # SQLAlchemy models
+├── shared/                # Cross-domain utilities
+└── main.py                # Application entry point
 ```
 
-### Priority
-1. If `.env.local` exists → use it (local development)
-2. Otherwise → use `.env` (Docker environment)
+---
 
-## Build/Run Commands
+## COMMANDS
 
 ```bash
-# Development server
+# Development
 uvicorn main:app --reload
 
-# Production server
-uvicorn main:app --host 0.0.0.0 --port 8000
-
 # Database
-alembic upgrade head              # Run migrations
-alembic revision --autogenerate -m "msg"  # Create
-alembic downgrade -1              # Rollback
+alembic revision --autogenerate -m "description"
+alembic upgrade head
 
 # Testing
-pytest                           # All
-pytest tests/test_user.py           # Single file
-pytest tests/test_user.py::test_create_user  # Single test
-pytest --cov=src --cov-report=html  # Coverage
+pytest
+pytest --cov=src tests/
 ```
 
-## Code Style Guidelines
+---
 
-### Import Organization
-Order: stdlib → third-party → local, separated by blank lines.
-```python
-from datetime import datetime
-from typing import Optional
+## QA CHECKLIST
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from src.shared.infrastructure.config import settings
-from src.shared.application.usecase.base_service import BaseService
-from src.users.application.service.user_service import UserService
-from src.users.api.v1.schemas.user import UserCreate
-```
-
-### Architecture Structure
-```
-src/{domain}/application/
-├── service/        # CRUD + simple validations
-└── usecase/       # Business logic workflows
-src/{domain}/api/v1/endpoints/{action}.py  # One endpoint per file
-```
-
-### Naming Conventions
-- Classes: PascalCase (UserService, CreateUserUseCase)
-- Functions: snake_case (get_by_id, execute)
-- Variables: snake_case (user_id, user_data)
-- Constants: UPPER_CASE (DATABASE_URL, SECRET_KEY)
-- Endpoint files: {action}.py (create_user.py, login.py)
-
-### Services (src/{domain}/application/service/)
-- Inherit from BaseService
-- Only CRUD + simple validations
-- Use DI: `service: Service = Depends()`
-```python
-class UserService(BaseService):
-    def __init__(self, db: AsyncSession = Depends(get_db)):
-        super().__init__(UserRepository(db), User)
-```
-
-### UseCases (src/{domain}/application/usecase/)
-- Business logic + workflow orchestration
-- Orchestrate multiple services
-- Method named: `execute()`
-```python
-class AuthenticateUseCase:
-    def __init__(self, user_service: UserService = Depends()):
-        self.user_service = user_service
-    async def execute(self, email: str, password: str) -> Token:
-        # Business logic
-```
-
-### Endpoints (src/{domain}/api/v1/endpoints/{action}.py)
-- One endpoint per file
-- Use APIRouter with prefix
-- Inject UseCases for business logic
-```python
-router = APIRouter(prefix="/auth")
-@router.post("/login")
-async def login(form_data: LoginData, auth_uc: AuthenticateUseCase = Depends()):
-    return await auth_uc.execute(...)
-```
-
-### Error Handling
-- Custom: NotFoundException, DuplicateEntryException, InvalidCredentialsException
-- In endpoints: catch and raise HTTPException
-```python
-try:
-    result = await usecase.execute(...)
-except NotFoundException as e:
-    raise HTTPException(status_code=404, detail=str(e))
-```
-
-### Router Structure
-- `{domain}/api/router.py`: Domain central
-- `{domain}/api/v1/router.py`: V1 domain (aggregates endpoints)
-- `src/api/v1/router.py`: V1 central (aggregates domain routers)
-- `src/api/router.py`: API central
-
-### Database
-- Always async/await with AsyncSession
-- Use select() (SQLAlchemy 2.0)
-- No direct queries in endpoints
+- [ ] `pytest` passes
+- [ ] Async/Await used correctly in all DB calls
+- [ ] Endpoint delegated to UseCase
+- [ ] Migrations created for model changes
+- [ ] UUIDs used for all primary keys
