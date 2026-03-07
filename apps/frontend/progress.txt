@@ -20,6 +20,11 @@
   - Refactorizada la página `/dashboard/account` para integrar el nuevo formulario.
   - Corregidos errores de tipos y ambigüedades en el paquete auto-generado `@workspace/api-client-ts`.
   - Verificada la compilación exitosa del proyecto (build & lint).
+- [x] US-004: Creación de perfil de estudiante por el profesor.
+  - Actualizada `createStudentAction` en `src/lib/actions.ts` para usar `UsersApi` de `@workspace/api-client-ts`.
+  - Creado componente `CreateStudentForm` usando React 19 (`useActionState`) y validación con Zod en español.
+  - Integrado `CreateStudentForm` en el `Dialog` de `StudentTable` en `/dashboard/students`.
+  - Verificada la compilación exitosa del proyecto (build & lint).
 
 ## Próximas Tareas
-- [ ] US-004: Creación de perfil de estudiante por el profesor.
+- [ ] US-005: Listado de estudiantes con paginación y filtros.

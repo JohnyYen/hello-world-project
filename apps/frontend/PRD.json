@@ -56,7 +56,7 @@
       "Verificar que se crean registros en tablas User y Student simultáneamente",
       "Confirmar que el estudiante aparece en el listado principal"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "US": "US-005",

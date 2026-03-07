@@ -22,7 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import StudentForm from "./student-form";
+import CreateStudentForm from "./create-student-form";
 import { Student } from "@/types/index";
 
 type StudentTableProps = {
@@ -78,34 +78,9 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
 
   // States for the create student modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newStudent, setNewStudent] = useState<Partial<Student> & { maxLevel: number }>({
-    name: "",
-    email: "",
-    maxLevel: 1,
-    status: "active" as "active" | "inactive" | "unregistered",
-    course: initialCourses[0] || "2024-2027"
-  });
 
   // State for the delete confirmation dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  // Handle form submission
-  const handleCreateStudent = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real application, you would send this data to an API
-    // eslint-disable-next-line no-console -- Debug logging for student creation
-    console.log("Creating new student:", newStudent);
-    
-    // Reset form and close modal
-    setNewStudent({
-      name: "",
-      email: "",
-      maxLevel: 1,
-      status: "active",
-      course: initialCourses[0] || "2024-2027"
-    });
-    setIsModalOpen(false);
-  };
 
   // Handle delete button click
   const handleDeleteClick = () => {
@@ -137,17 +112,15 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
             <DialogTrigger asChild>
               <Button>Crear Nuevo Estudiante</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
                 <DialogTitle>Crear Nuevo Estudiante</DialogTitle>
                 <DialogDescription>
-                  Ingresa los datos del nuevo estudiante aquí. Haz clic en guardar cuando termines.
+                  Ingresa los datos del nuevo estudiante aquí. Se creará una cuenta de usuario automáticamente.
                 </DialogDescription>
               </DialogHeader>
-              <StudentForm 
-                student={newStudent} 
-                onChange={setNewStudent}
-                onSubmit={handleCreateStudent}
+              <CreateStudentForm 
+                onSuccess={() => setIsModalOpen(false)}
                 onCancel={() => setIsModalOpen(false)}
               />
             </DialogContent>

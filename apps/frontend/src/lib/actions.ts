@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { authService, apiClient } from "@/lib/api-client";
-import { AuthenticationApi, Configuration } from "@workspace/api-client-ts";
+import { AuthenticationApi, Configuration, UsersApi } from "@workspace/api-client-ts";
 
 // 📝 Type para las acciones
 export type ActionState = {
@@ -25,6 +25,19 @@ async function getAuthApi(): Promise<AuthenticationApi> {
   });
   
   return new AuthenticationApi(config);
+}
+
+// 🔐 Helper para obtener instancia de Users API configurada
+async function getUsersApi(): Promise<UsersApi> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
+  
+  const config = new Configuration({
+    basePath: process.env.NEXT_PUBLIC_API_BASE_URL,
+    accessToken: token,
+  });
+  
+  return new UsersApi(config);
 }
 
 // 🔐 Schema de validación para login
@@ -229,15 +242,19 @@ export async function createStudentAction(
 ): Promise<ActionState> {
   try {
     const studentSchema = z.object({
-      name: z.string().min(2, "Mínimo 2 caracteres"),
+      username: z.string().min(3, "Mínimo 3 caracteres"),
       email: z.string().email("Email inválido"),
-      course: z.string().min(1, "Selecciona un curso"),
+      name: z.string().min(2, "Mínimo 2 caracteres"),
+      lastname: z.string().min(2, "Mínimo 2 caracteres"),
+      password: passwordSchema,
     });
 
     const validatedFields = studentSchema.safeParse({
-      name: formData.get("name"),
+      username: formData.get("username"),
       email: formData.get("email"),
-      course: formData.get("course"),
+      name: formData.get("name"),
+      lastname: formData.get("lastname"),
+      password: formData.get("password"),
     });
 
     if (!validatedFields.success) {
@@ -248,11 +265,13 @@ export async function createStudentAction(
       };
     }
 
-    // TODO: Implementar creación real en base de datos
-    // await db.students.create(validatedFields.data);
-    
-    // Simulación
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const usersApi = await getUsersApi();
+    await usersApi.createStudentApiV1UsersStudentsPost({
+      studentCreate: {
+        ...validatedFields.data,
+        isActive: true,
+      }
+    });
     
     // Revalidar caché
     revalidatePath("/dashboard/students");
@@ -262,11 +281,12 @@ export async function createStudentAction(
       message: "Estudiante creado exitosamente" 
     };
     
-  } catch (_error) {
+  } catch (error: any) {
+    console.error("Error creating student:", error);
     return {
       success: false,
-      message: "Error al crear estudiante",
-      errors: { _form: ["Error al guardar en base de datos"] },
+      message: error.detail || error.message || "Error al crear estudiante",
+      errors: { _form: [error.detail || "Error al guardar en base de datos"] },
     };
   }
 }
