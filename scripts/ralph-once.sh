@@ -1,41 +1,37 @@
 #!/bin/bash
 
-# ralph-once.sh - Ejecuta una sola tarea para un proyecto específico
-# Uso: ./ralph-once.sh <proyecto>
-# Ejemplo: ./ralph-once.sh frontend
+# ralph-once.sh - Ejecuta una sola tarea para un proyecto específico utilizando el SSOT prompt
+
+# Cargar utilidades comunes
+source "$(dirname "$0")/lib/ralph-common.sh"
 
 PROJECT=$1
+TIMESTAMP=$(date "+%Y%m%d_%H%M%S")
 
-if [ -z "$PROJECT" ]; then
-  echo "Error: Debes especificar un proyecto (backend, frontend, game)"
-  echo "Uso: $0 <proyecto>"
-  exit 1
+# Validaciones iniciales
+check_opencode
+validate_project "$PROJECT" || exit 1
+
+echo -e "${GREEN}🚀 Iniciando Ralph para el proyecto: $PROJECT en $APP_PATH${NC}"
+
+# Obtener el prompt desde la fuente de verdad (SSOT)
+FINAL_PROMPT=$(get_prompt "$PROJECT" "$APP_PATH")
+
+# Definir archivos de log
+ITER_LOG="$PROJECT_LOG_DIR/${TIMESTAMP}_once.log"
+
+log_summary "$PROJECT" "STARTED: Single run for $PROJECT"
+
+# Ejecutar opencode y capturar salida
+set +e # No queremos que el script muera aquí para poder loguear el resultado
+opencode run "@$PRD_PATH @$AGENTS_PATH @$PROGRESS_PATH $FINAL_PROMPT" 2>&1 | tee "$ITER_LOG"
+EXIT_CODE=${PIPESTATUS[0]}
+
+if [ $EXIT_CODE -eq 0 ]; then
+    echo -e "${GREEN}✅ Tarea completada con éxito.${NC}"
+    log_summary "$PROJECT" "SUCCESS: Single run completed (Log: ${TIMESTAMP}_once.log)"
+else
+    echo -e "${RED}❌ Hubo un error en la ejecución de la tarea.${NC}"
+    log_summary "$PROJECT" "FAILED: Single run failed with exit code $EXIT_CODE (Log: ${TIMESTAMP}_once.log)"
+    exit $EXIT_CODE
 fi
-
-case $PROJECT in
-  backend)
-    APP_PATH="apps/backend"
-    ;;
-  frontend)
-    APP_PATH="apps/frontend"
-    ;;
-  game)
-    APP_PATH="apps/game"
-    ;;
-  *)
-    echo "Error: Proyecto desconocido '$PROJECT'. Usa: backend, frontend o game."
-    exit 1
-    ;;
-esac
-
-echo "🚀 Iniciando Ralph para el proyecto: $PROJECT en $APP_PATH"
-
-opencode run "@$APP_PATH/PRD.json @$APP_PATH/AGENTS.md @progress.txt \
-1. Lee el PRD.json e identifica la primera tarea con \"passes\": false que corresponda al dominio de $PROJECT. \
-2. Lee el AGENTS.md en $APP_PATH para entender las reglas críticas y comandos de verificación de este proyecto. \
-3. Has una nueva rama siguiendo la convención, implementa la tarea siguiendo estrictamente los patrones arquitectónicos y de código definidos en el AGENTS.md. \
-4. Ejecuta los comandos de verificación (test/lint) indicados en el AGENTS.md. \
-5. Si las pruebas pasan, cambia \"passes\": true en el PRD.json para esa tarea. \
-6. Actualiza progress.txt con el detalle de lo implementado. \
-7. Crea un commit siguiendo el estilo conventional-commits definido. \
-SOLO REALIZA UNA TAREA A LA VEZ."
