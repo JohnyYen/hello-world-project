@@ -1,7 +1,6 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LoadingState } from '@/components/ui/loading-state';
 import { FileText, BarChart3, TrendingUp } from 'lucide-react';
@@ -95,20 +94,32 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
+      {/* Background pattern */}
+      <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+      </div>
+
       {/* Header con estilo editorial */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-12 px-6 md:px-12">
+      <div className="bg-gradient-to-r from-indigo-900 via-violet-900 to-indigo-900 text-white py-12 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
-            <FileText className="h-6 w-6 text-slate-300" />
-            <span className="text-sm font-medium text-slate-300 uppercase tracking-wider">
+            <FileText className="h-6 w-6 text-indigo-300" />
+            <span className="text-sm font-medium text-indigo-300 uppercase tracking-wider">
               Reportes Institucionales
             </span>
           </div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">
+          <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
             Reportes de Curso
           </h1>
-          <p className="text-slate-300 text-lg max-w-2xl">
+          <p className="text-indigo-200 text-lg max-w-2xl">
             Análisis integral del rendimiento académico y engagement de estudiantes por curso.
             Compara el desempeño entre diferentes grupos.
           </p>
@@ -126,19 +137,19 @@ export default function ReportsPage() {
           />
         </div>
 
-        {/* Tabs de navegación */}
+          {/* Tabs de navegación */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-white border border-slate-200 p-1 h-auto">
+          <TabsList className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 p-1 h-auto backdrop-blur-sm">
             <TabsTrigger 
               value="overview" 
-              className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white"
+              className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-indigo-600 data-[state=active]:text-white"
             >
               <BarChart3 className="w-4 h-4" />
               Vista General
             </TabsTrigger>
             <TabsTrigger 
               value="comparison" 
-              className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-slate-900 data-[state=active]:text-white"
+              className="flex items-center gap-2 px-4 py-2 data-[state=active]:bg-indigo-600 data-[state=active]:text-white"
             >
               <TrendingUp className="w-4 h-4" />
               Comparación
@@ -180,17 +191,15 @@ export default function ReportsPage() {
 
             {/* Mensaje cuando no hay cursos seleccionados */}
             {selectedMetrics.length === 0 && (
-              <Card className="border-dashed border-2 border-slate-300">
-                <CardContent className="py-12 text-center">
-                  <BarChart3 className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-600 mb-2">
-                    Selecciona un curso para ver sus métricas
-                  </h3>
-                  <p className="text-slate-500">
-                    Usa el selector de arriba para elegir qué curso quieres analizar
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden p-12 text-center">
+                <BarChart3 className="h-12 w-12 text-indigo-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                  Selecciona un curso para ver sus métricas
+                </h3>
+                <p className="text-slate-500">
+                  Usa el selector de arriba para elegir qué curso quieres analizar
+                </p>
+              </div>
             )}
           </TabsContent>
 
@@ -252,17 +261,15 @@ export default function ReportsPage() {
                 </div>
               </>
             ) : (
-              <Card className="border-dashed border-2 border-slate-300">
-                <CardContent className="py-12 text-center">
-                  <TrendingUp className="h-12 w-12 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-600 mb-2">
-                    Selecciona al menos 2 cursos para comparar
-                  </h3>
-                  <p className="text-slate-500">
-                    Elige múltiples cursos del selector para ver análisis comparativos
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden p-12 text-center">
+                <TrendingUp className="h-12 w-12 text-indigo-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                  Selecciona al menos 2 cursos para comparar
+                </h3>
+                <p className="text-slate-500">
+                  Elige múltiples cursos del selector para ver análisis comparativos
+                </p>
+              </div>
             )}
           </TabsContent>
         </Tabs>
