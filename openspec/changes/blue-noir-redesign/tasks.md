@@ -16,8 +16,8 @@
 
 ## Phase 3: Layout Components
 
-- [ ] 3.1 Apply glassmorphism to Sidebar in `apps/frontend/src/components/ui/sidebar.tsx` - Add backdrop-blur and semi-transparent background classes
-- [ ] 3.2 Apply glassmorphism to Sheet in `apps/frontend/src/components/ui/sheet.tsx` - Add glassmorphism to SheetContent and blur overlay
+- [x] 3.1 Apply glassmorphism to Sidebar in `apps/frontend/src/components/ui/sidebar.tsx` - Add backdrop-blur and semi-transparent background classes
+- [x] 3.2 Apply glassmorphism to Sheet in `apps/frontend/src/components/ui/sheet.tsx` - Add glassmorphism to SheetContent and blur overlay
 
 ## Phase 4: Landing Page
 
