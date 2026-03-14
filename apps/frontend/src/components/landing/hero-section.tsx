@@ -5,10 +5,8 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <section className="relative w-full py-12 md:py-24 lg:py-32 flex flex-col align-center justify-center items-center overflow-hidden">
-      {/* Gradient mesh background */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-50 via-transparent to-amber-50 dark:from-blue-950/30 dark:via-transparent dark:to-amber-950/20" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,var(--gradient-glow),transparent_70%)] opacity-60" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom_left,rgba(245,158,11,0.08),transparent_50%)]" />
+      {/* Subtle background */}
+      <div className="absolute inset-0 -z-10 bg-background" />
       
       <div className="container px-4 md:px-6 relative z-10">
         <div className="flex flex-col items-center space-y-8 text-center">
@@ -22,19 +20,19 @@ export function HeroSection() {
             </p>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Button asChild size="lg" variant="gradient">
+            <Button asChild size="lg" variant="default">
               <Link href="/signup">
                 Comenzar
               </Link>
             </Button>
-            <Button variant="glass" size="lg">
+            <Button variant="outline" size="lg">
               <Link href="/docs">
                 Saber Más
               </Link>
             </Button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl mt-12">
-            <Card gradient>
+            <Card>
               <CardHeader>
                 <CardTitle className="text-3xl">90%</CardTitle>
                 <CardDescription>Aumento de Participación</CardDescription>
@@ -43,7 +41,7 @@ export function HeroSection() {
                 <p className="text-sm text-muted-foreground">Los estudiantes muestran una participación significativamente mayor con el aprendizaje basado en juegos en comparación con los métodos tradicionales.</p>
               </CardContent>
             </Card>
-            <Card gradient>
+            <Card>
               <CardHeader>
                 <CardTitle className="text-3xl">En Tiempo Real</CardTitle>
                 <CardDescription>Seguimiento de Rendimiento</CardDescription>
@@ -52,7 +50,7 @@ export function HeroSection() {
                 <p className="text-sm text-muted-foreground">Los docentes pueden monitorear el progreso de los estudiantes e identificar brechas de aprendizaje al instante.</p>
               </CardContent>
             </Card>
-            <Card gradient>
+            <Card>
               <CardHeader>
                 <CardTitle className="text-3xl">100+</CardTitle>
                 <CardDescription>Juegos Educativos</CardDescription>

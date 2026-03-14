@@ -12,7 +12,7 @@ import {
 
 export function NavLanding() {
   return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between p-4 border-b border-border/40 bg-white/70 dark:bg-black/40 backdrop-blur-md supports-[backdrop-filter]:bg-white/70 supports-[backdrop-filter]:dark:bg-black/40">
+    <nav className="sticky top-0 z-50 flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
       <div className="flex items-center space-x-2">
         <Link href="/" className="text-xl font-bold font-mono">
           AprendeProgramación
@@ -59,7 +59,7 @@ export function NavLanding() {
         </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="retro" size="icon">
+            <Button variant="default" size="icon">
               <Globe className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -79,7 +79,7 @@ export function NavLanding() {
       <div className="flex items-center space-x-4 md:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="retro" size="icon">
+            <Button variant="default" size="icon">
               <Globe className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -95,7 +95,7 @@ export function NavLanding() {
         <ThemeToggle />
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="retro" size="icon">
+            <Button variant="default" size="icon">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>

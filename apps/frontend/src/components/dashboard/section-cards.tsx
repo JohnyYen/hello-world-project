@@ -13,7 +13,7 @@ import {
 export function SectionCards() {
   return (
     <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className="@container/card shadow-lg" gradient>
+      <Card className="@container/card">
         <CardHeader>
           <CardDescription>Ingresos Totales</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -35,7 +35,7 @@ export function SectionCards() {
           </div>
         </CardFooter>
       </Card>
-      <Card className="@container/card shadow-lg" gradient>
+      <Card className="@container/card">
         <CardHeader>
           <CardDescription>Nuevos Clientes</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -57,7 +57,7 @@ export function SectionCards() {
           </div>
         </CardFooter>
       </Card>
-      <Card className="@container/card shadow-lg" gradient>
+      <Card className="@container/card">
         <CardHeader>
           <CardDescription>Cuentas Activas</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -77,7 +77,7 @@ export function SectionCards() {
           <div className="text-muted-foreground">El engagement supera los objetivos</div>
         </CardFooter>
       </Card>
-      <Card className="@container/card shadow-lg" gradient>
+      <Card className="@container/card">
         <CardHeader>
           <CardDescription>Tasa de Crecimiento</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
