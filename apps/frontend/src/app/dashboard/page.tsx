@@ -4,7 +4,7 @@ import data from "./data.json";
 
 export default function Page() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 retro-grid scanlines">
       <SectionCards />
       <div className="px-4 lg:px-6">
         <ChartAreaInteractive />

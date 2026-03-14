@@ -1,152 +1,61 @@
-'use client';
-
-import { useState, useEffect, useRef } from 'react';
-import { 
-  getMetricSummary, 
-  getStudentProgress, 
-  getCourseCompletion, 
-  getDailyActivity, 
-  getActivityPerformance
-} from '@/components/metrics/metrics-data-provider';
-import MetricsSummary from '@/components/metrics/metrics-summary';
-import StudentProgressChart from '@/components/metrics/student-progress-chart';
-import CourseCompletionChart from '@/components/metrics/course-completion-chart';
-import EngagementMetrics from '@/components/metrics/engagement-metrics';
-import ActivityPerformanceChart from '@/components/metrics/activity-performance-chart';
+import { Suspense } from 'react';
 import { LoadingState } from '@/components/ui/loading-state';
+import { BarChart2 } from 'lucide-react';
 
-// Types for data - defined outside component to prevent re-creation
- type MetricSummary = {
-  totalStudents: number;
-  activeStudents: number;
-  avgCompletionRate: number;
-  avgScore: number;
-  totalCourses: number;
-  activeCourses: number;
-};
+// Server Components
+import { MetricsKPIServer } from './metrics-kpi-server';
+import { StudentProgressServer } from './student-progress-server';
+import { CourseCompletionServer } from './course-completion-server';
+import { EngagementServer } from './engagement-server';
+import { ActivityPerformanceServer } from './activity-performance-server';
 
- type StudentProgress = {
-  id: string;
-  name: string;
-  progress: number;
-  score: number;
-  lastActivity: string;
-};
-
- type CourseCompletion = {
-  courseId: string;
-  courseName: string;
-  completionRate: number;
-  enrolled: number;
-  completed: number;
-};
-
- type DailyActivity = {
-  date: string;
-  activityCount: number;
-  avgTimeSpent: number;
-};
-
- type ActivityPerformance = {
-  activityId: string;
-  name: string;
-  avgScore: number;
-  completionRate: number;
-  difficulty: number;
-};
-
-export default function MetricsPage() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [metricSummary, setMetricSummary] = useState<MetricSummary | null>(null);
-  const [studentProgress, setStudentProgress] = useState<StudentProgress[]>([]);
-  const [courseCompletion, setCourseCompletion] = useState<CourseCompletion[]>([]);
-  const [dailyActivity, setDailyActivity] = useState<DailyActivity[]>([]);
-  const [activityPerformance, setActivityPerformance] = useState<ActivityPerformance[]>([]);
-  
-  // Use ref to prevent state updates if component unmounts
-  const isMounted = useRef(true);
-
-  useEffect(() => {
-    // Set mounted flag
-    isMounted.current = true;
-    
-    const loadMetricsData = async () => {
-      // Prevent multiple simultaneous loads
-      if (!loading) return;
-      
-      try {
-        // Fetch all metrics data in parallel
-        const [
-          summary,
-          studentProgressData,
-          courseCompletionData,
-          dailyActivityData,
-          activityPerformanceData
-        ] = await Promise.all([
-          getMetricSummary(),
-          getStudentProgress(),
-          getCourseCompletion(),
-          getDailyActivity(),
-          getActivityPerformance()
-        ]);
-        
-        // Only update state if component is still mounted
-        if (isMounted.current) {
-          setMetricSummary(summary);
-          setStudentProgress(studentProgressData);
-          setCourseCompletion(courseCompletionData);
-          setDailyActivity(dailyActivityData);
-          setActivityPerformance(activityPerformanceData);
-          setLoading(false);
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console -- Log error for debugging metrics loading
-        console.error('Error loading metrics data:', error);
-        if (isMounted.current) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadMetricsData();
-    
-    // Cleanup function to prevent state updates after unmount
-    return () => {
-      isMounted.current = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array - only run once on mount
-
-  if (loading || !metricSummary) {
-    return (
-      <div className="container mx-auto py-10">
-        <LoadingState message="Cargando métricas..." size="lg" />
-      </div>
-    );
-  }
-
+export default async function MetricsPage() {
   return (
-    <div className="container mx-auto py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Métricas del Sistema</h1>
-        <p className="text-muted-foreground">Visualización y análisis del rendimiento del sistema educativo</p>
+    <div className="min-h-screen bg-slate-50">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-10 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-3 mb-2">
+            <BarChart2 className="h-6 w-6 text-blue-300" />
+            <span className="text-sm font-medium text-blue-300 uppercase tracking-wider">
+              Analytics
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight mb-2">
+            Métricas del Sistema
+          </h1>
+          <p className="text-blue-200 text-lg max-w-2xl">
+            Visualización y análisis del rendimiento del sistema educativo.
+            Estadísticas en tiempo real de estudiantes y cursos.
+          </p>
+        </div>
       </div>
 
-      <MetricsSummary 
-        totalStudents={metricSummary.totalStudents}
-        activeStudents={metricSummary.activeStudents}
-        avgCompletionRate={metricSummary.avgCompletionRate}
-        avgScore={metricSummary.avgScore}
-      />
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
+        {/* KPIs - Server Component con streaming */}
+        <Suspense fallback={<LoadingState message="Cargando métricas..." />}>
+          <MetricsKPIServer />
+        </Suspense>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <StudentProgressChart students={studentProgress} />
-        <CourseCompletionChart courses={courseCompletion} />
-      </div>
+        {/* Gráficos principales */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <Suspense fallback={<div className="h-80 bg-slate-200 animate-pulse rounded-lg" />}>
+            <StudentProgressServer />
+          </Suspense>
+          <Suspense fallback={<div className="h-80 bg-slate-200 animate-pulse rounded-lg" />}>
+            <CourseCompletionServer />
+          </Suspense>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <EngagementMetrics dailyActivity={dailyActivity} />
-        <ActivityPerformanceChart activities={activityPerformance} />
+        {/* Métricas de engagement y rendimiento */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <Suspense fallback={<div className="h-80 bg-slate-200 animate-pulse rounded-lg" />}>
+            <EngagementServer />
+          </Suspense>
+          <Suspense fallback={<div className="h-80 bg-slate-200 animate-pulse rounded-lg" />}>
+            <ActivityPerformanceServer />
+          </Suspense>
+        </div>
       </div>
     </div>
   );
