@@ -4,12 +4,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Retro Palette Variables */
+  /* 🎨 BLUE & NOIR - Elegant Dark Palette */
+  
+  /* Background & Foreground */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-background-secondary: var(--bg-secondary);
-  --color-accent-primary: var(--accent-primary);
-  --color-accent-secondary: var(--accent-secondary);
   
   /* Fonts */
   --font-sans: var(--font-sans);
@@ -26,12 +26,12 @@
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
   
-  /* Charts */
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+  /* Charts - Blue & Noir with Complementary Accents */
+  --color-chart-1: var(--chart-1); /* Blue Primary */
+  --color-chart-2: var(--chart-2); /* Complementary Accent 1 */
+  --color-chart-3: var(--chart-3); /* Complementary Accent 2 */
+  --color-chart-4: var(--chart-4); /* Complementary Accent 3 */
+  --color-chart-5: var(--chart-5); /* Muted Blue */
   
   /* UI Elements */
   --color-ring: var(--ring);
@@ -61,110 +61,110 @@
 :root {
   --radius: 0.375rem;
   
-  /* 🎨 PALETA RETRO COMPUTADORA - Light Mode */
+  /* 🎨 BLUE & NOIR - Light Mode (Subtle Gray Variant) */
   
-  /* Background & Foreground */
-  --background: #F5F0E6; /* Papel crema antiguo */
-  --bg-secondary: #EBE6DC;
-  --foreground: #2D3436; /* Gris oscuro */
+  /* Background & Foreground - Deep grays instead of true black for light mode */
+  --background: #f8fafc; /* Very light slate */
+  --bg-secondary: #f1f5f9;
+  --foreground: #0f172a; /* Very dark slate */
   
   /* Cards & Popovers */
-  --card: #FFFEF9;
-  --card-foreground: #2D3436;
-  --popover: #FFFEF9;
-  --popover-foreground: #2D3436;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
   
-  /* Primary - Amber/Orange Vintage */
-  --primary: #D97706;
-  --primary-foreground: #FFFEF9;
+  /* Primary - Elegant Dark Blue */
+  --primary: #1e40af; /* blue-800 */
+  --primary-foreground: #ffffff;
   
-  /* Secondary - Slate Oscuro */
-  --secondary: #4A5568;
-  --secondary-foreground: #FFFEF9;
+  /* Secondary - Cool Slate */
+  --secondary: #64748b; /* slate-500 */
+  --secondary-foreground: #ffffff;
   
-  /* Accent - Highlight Effect */
-  --accent: #9CA3AF;
-  --accent-foreground: #2D3436;
+  /* Accent - Warm Yellow (Complementary) */
+  --accent: #f59e0b; /* amber-500 */
+  --accent-foreground: #0f172a;
   
   /* Semantic States */
-  --destructive: #B91C1C;
-  --destructive-foreground: #FFFEF9;
+  --destructive: #ef4444; /* red-500 */
+  --destructive-foreground: #ffffff;
   
   /* Neutros */
-  --muted: #9CA3AF;
-  --muted-foreground: #6B7280;
-  --border: #D1D5DB;
-  --input: #E5E7EB;
-  --ring: #D97706;
+  --muted: #94a3b8; /* slate-400 */
+  --muted-foreground: #475569; /* slate-600 */
+  --border: #e2e8f0; /* slate-200 */
+  --input: #e2e8f0;
+  --ring: #1e40af; /* blue-800 */
   
-  /* Chart Colors - Retro Palette */
-  --chart-1: #D97706;
-  --chart-2: #4A5568;
-  --chart-3: #1F2937;
-  --chart-4: #9CA3AF;
-  --chart-5: #6B7280;
+  /* Chart Colors - Blue & Noir with Complementary Accents */
+  --chart-1: #1e40af; /* Blue Primary */
+  --chart-2: #f59e0b; /* Amber - Complementary */
+  --chart-3: #10b981; /* Emerald - Success */
+  --chart-4: #ef4444; /* Red - Destructive */
+  --chart-5: #3b82f6; /* Blue Light */
   
   /* Sidebar */
-  --sidebar: #F5F0E6;
-  --sidebar-foreground: #2D3436;
-  --sidebar-primary: #D97706;
-  --sidebar-primary-foreground: #FFFEF9;
-  --sidebar-accent: #EBE6DC;
-  --sidebar-accent-foreground: #2D3436;
-  --sidebar-border: #D1D5DB;
-  --sidebar-ring: #D97706;
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #1e40af;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #1e40af;
 }
 
 .dark {
-  /* 🎨 PALETA RETRO COMPUTADORA - Dark Mode */
-  /* Deep charcoal background with high-contrast amber/cyan accents */
+  /* 🎨 BLUE & NOIR - Dark Mode (Elegant Dark Blue) */
+  /* Deep noir background with elegant blue accents and warm complements */
   
-  --background: #1A1C1E;
-  --bg-secondary: #25282A;
-  --foreground: #E5E7EB;
+  --background: #0a0a0a; /* True black */
+  --bg-secondary: #141414;
+  --foreground: #e5e7eb; /* Light gray */
   
-  --card: #25282A;
-  --card-foreground: #E5E7EB;
-  --popover: #25282A;
-  --popover-foreground: #E5E7EB;
+  --card: #141414;
+  --card-foreground: #e5e7eb;
+  --popover: #141414;
+  --popover-foreground: #e5e7eb;
   
-  /* Primary - Bright Amber */
-  --primary: #F59E0B;
-  --primary-foreground: #1A1C1E;
+  /* Primary - Elegant Dark Blue */
+  --primary: #1e40af; /* blue-800 */
+  --primary-foreground: #ffffff;
   
-  /* Secondary - Cool Gray */
-  --secondary: #94A3B8;
-  --secondary-foreground: #1A1C1E;
+  /* Secondary - Cool Slate */
+  --secondary: #64748b; /* slate-500 */
+  --secondary-foreground: #ffffff;
   
-  /* Accent - Cyan Glow */
-  --accent: #22D3EE;
-  --accent-foreground: #1A1C1E;
+  /* Accent - Warm Yellow (Complementary) */
+  --accent: #f59e0b; /* amber-500 */
+  --accent-foreground: #0f172a;
   
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
   
-  --muted: #6B7280;
-  --muted-foreground: #9CA3AF;
-  --border: #374151;
+  --muted: #4b5563; /* gray-600 */
+  --muted-foreground: #9ca3af; /* gray-400 */
+  --border: #374151; /* gray-700 */
   --input: #374151;
-  --ring: #F59E0B;
+  --ring: #3b82f6; /* blue-500 */
   
-  /* Chart Colors - Dark Retro */
-  --chart-1: #F59E0B;
-  --chart-2: #22D3EE;
-  --chart-3: #A78BFA;
-  --chart-4: #F87171;
-  --chart-5: #34D399;
+  /* Chart Colors - Blue & Noir with Complementary Accents */
+  --chart-1: #3b82f6; /* Blue Primary - brighter for dark mode */
+  --chart-2: #f59e0b; /* Amber - Complementary */
+  --chart-3: #10b981; /* Emerald - Success */
+  --chart-4: #ef4444; /* Red - Destructive */
+  --chart-5: #6366f1; /* Indigo - Secondary */
   
   /* Sidebar Dark */
-  --sidebar: #1F2937;
-  --sidebar-foreground: #E5E7EB;
-  --sidebar-primary: #F59E0B;
-  --sidebar-primary-foreground: #1A1C1E;
-  --sidebar-accent: #374151;
-  --sidebar-accent-foreground: #E5E7EB;
+  --sidebar: #0f0f0f;
+  --sidebar-foreground: #e5e7eb;
+  --sidebar-primary: #1e40af;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1f2937;
+  --sidebar-accent-foreground: #e5e7eb;
   --sidebar-border: #374151;
-  --sidebar-ring: #F59E0B;
+  --sidebar-ring: #3b82f6;
 }
 
 @layer base {
