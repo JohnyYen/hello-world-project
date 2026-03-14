@@ -27,8 +27,8 @@
 
 ## Phase 5: Dashboard
 
-- [ ] 5.1 Update metric cards in `apps/frontend/src/components/dashboard/section-cards.tsx` - Apply gradient backgrounds and elegant shadows to metric cards
-- [ ] 5.2 Verify Dashboard sidebar has glassmorphism in `apps/frontend/src/components/dashboard/app-sidebar.tsx` - Ensure it uses the updated Sidebar component
+- [x] 5.1 Update metric cards in `apps/frontend/src/components/dashboard/section-cards.tsx` - Apply gradient backgrounds and elegant shadows to metric cards
+- [x] 5.2 Verify Dashboard sidebar has glassmorphism in `apps/frontend/src/components/dashboard/app-sidebar.tsx` - Ensure it uses the updated Sidebar component
 
 ## Phase 6: Verification
 
