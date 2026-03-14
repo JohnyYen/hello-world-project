@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* 🎨 BLUE & NOIR - Elegant Dark Palette */
+  /* 🎨 INDIGO & VIOLET - Elegant Dark Palette */
   
   /* Background & Foreground */
   --color-background: var(--background);
@@ -26,12 +26,12 @@
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
   
-  /* Charts - Blue & Noir with Complementary Accents */
-  --color-chart-1: var(--chart-1); /* Blue Primary */
+  /* Charts - Indigo & Violet with Complementary Accents */
+  --color-chart-1: var(--chart-1); /* Indigo Primary */
   --color-chart-2: var(--chart-2); /* Complementary Accent 1 */
   --color-chart-3: var(--chart-3); /* Complementary Accent 2 */
   --color-chart-4: var(--chart-4); /* Complementary Accent 3 */
-  --color-chart-5: var(--chart-5); /* Muted Blue */
+  --color-chart-5: var(--chart-5); /* Muted Indigo */
   
   /* UI Elements */
   --color-ring: var(--ring);
@@ -63,10 +63,16 @@
 :root {
   --radius: 0.375rem;
   
-  /* 🎨 BLUE & NOIR - Light Mode (Subtle Gray Variant) */
+  /* 🎨 Theme System - Indigo & Violet for Future Theme Switching */
+  --theme-primary: #6366f1;      /* indigo-600 */
+  --theme-accent: #8b5cf6;       /* violet-500 */
+  --theme-ring: #6366f1;          /* indigo-600 */
+  
+  /* 🎨 INDIGO & VIOLET - Light Mode */
 
   /* Background & Foreground - Deep grays instead of true black for light mode */
   --background: #f8fafc; /* Very light slate */
+  --background-gradient: linear-gradient(180deg, #f8fafc 0%, #ffffff 50%, rgba(224, 231, 255, 0.3) 100%); /* from-slate-50 via-white to-indigo-50/30 */
   --bg-secondary: #f1f5f9;
   --foreground: #0f172a; /* Very dark slate */
 
@@ -76,17 +82,17 @@
   --popover: #ffffff;
   --popover-foreground: #0f172a;
 
-  /* Primary - Elegant Dark Blue */
-  --primary: #1e40af; /* blue-800 */
+  /* Primary - Elegant Indigo */
+  --primary: #6366f1; /* indigo-600 */
   --primary-foreground: #ffffff;
 
   /* Secondary - Cool Slate */
   --secondary: #64748b; /* slate-500 */
   --secondary-foreground: #ffffff;
 
-  /* Accent - Warm Yellow (Complementary) */
-  --accent: #f59e0b; /* amber-500 */
-  --accent-foreground: #0f172a;
+  /* Accent - Violet (Complementary) */
+  --accent: #8b5cf6; /* violet-500 */
+  --accent-foreground: #ffffff;
 
   /* Success - Emerald Green */
   --success: #10b981; /* emerald-500 */
@@ -101,33 +107,33 @@
   --muted-foreground: #475569; /* slate-600 */
   --border: #e2e8f0; /* slate-200 */
   --input: #e2e8f0;
-  --ring: #1e40af; /* blue-800 */
+  --ring: #6366f1; /* indigo-600 */
 
-  /* Chart Colors - Blue & Noir with Complementary Accents */
-  --chart-1: #1e40af; /* Blue Primary */
-  --chart-2: #f59e0b; /* Amber - Complementary */
+  /* Chart Colors - Indigo & Violet with Complementary Accents */
+  --chart-1: #6366f1; /* Indigo Primary */
+  --chart-2: #8b5cf6; /* Violet - Complementary */
   --chart-3: #10b981; /* Emerald - Success */
   --chart-4: #ef4444; /* Red - Destructive */
-  --chart-5: #3b82f6; /* Blue Light */
+  --chart-5: #818cf8; /* Indigo Light */
 
   /* Sidebar */
   --sidebar: #f8fafc;
   --sidebar-foreground: #0f172a;
-  --sidebar-primary: #1e40af;
+  --sidebar-primary: #6366f1;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f1f5f9;
   --sidebar-accent-foreground: #0f172a;
   --sidebar-border: #e2e8f0;
-  --sidebar-ring: #1e40af;
+  --sidebar-ring: #6366f1;
 
-  /* 🎨 GRADIENTS - Blue & Noir (Subtle, not dramatic) */
-  --gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+  /* 🎨 GRADIENTS - Indigo & Violet Light Mode */
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #a5b4fc 100%);
   --gradient-secondary: linear-gradient(135deg, #64748b 0%, #94a3b8 50%, #cbd5e1 100%);
-  --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fcd34d 100%);
+  --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c4b5fd 100%);
   --gradient-background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   --gradient-card: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-  --gradient-subtle: linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
-  --gradient-glow: radial-gradient(ellipse at center, rgba(30, 64, 175, 0.15) 0%, transparent 70%);
+  --gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
 
   /* 🎨 GLASSMOPHISM - Backdrop blur max 20px for performance */
   --glass-background: rgba(255, 255, 255, 0.7);
@@ -144,45 +150,47 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  --shadow-glow-primary: 0 0 20px rgba(30, 64, 175, 0.25), 0 4px 12px rgba(30, 64, 175, 0.15);
-  --shadow-glow-accent: 0 0 20px rgba(245, 158, 11, 0.25), 0 4px 12px rgba(245, 158, 11, 0.15);
+  --shadow-glow-primary: 0 0 20px rgba(99, 102, 241, 0.25), 0 4px 12px rgba(99, 102, 241, 0.15);
+  --shadow-glow-accent: 0 0 20px rgba(139, 92, 246, 0.25), 0 4px 12px rgba(139, 92, 246, 0.15);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
 
   /* 🎨 FOCUS RINGS - Gradient focus rings for inputs */
-  --focus-ring: 0 0 0 3px rgba(30, 64, 175, 0.4);
-  --focus-ring-primary: 0 0 0 3px rgba(30, 64, 175, 0.5);
-  --focus-ring-accent: 0 0 0 3px rgba(245, 158, 11, 0.4);
-  --focus-ring-gradient: 0 0 0 3px rgba(30, 64, 175, 0.3), 0 0 0 5px rgba(59, 130, 246, 0.2);
+  --focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.4);
+  --focus-ring-primary: 0 0 0 3px rgba(99, 102, 241, 0.5);
+  --focus-ring-accent: 0 0 0 3px rgba(139, 92, 246, 0.4);
+  --focus-ring-gradient: 0 0 0 3px rgba(99, 102, 241, 0.3), 0 0 0 5px rgba(139, 92, 246, 0.2);
 }
 
 .dark {
-  /* 🎨 BLUE & NOIR - Dark Mode (Elegant Dark Blue) */
-  /* Deep noir background with elegant blue accents and warm complements */
+  /* 🎨 INDIGO & VIOLET - Dark Mode (Elegant Indigo) */
+  /* Deep noir background with elegant indigo/violet accents */
 
-  --background: #0a0a0a; /* True black */
-  --bg-secondary: #141414;
+  --background: #020617; /* slate-950 - deep dark */
+  --bg-secondary: #0f172a; /* slate-900 */
   --foreground: #e5e7eb; /* Light gray */
+  
+  --background-gradient: linear-gradient(180deg, #020617 0%, #0f172a 50%, rgba(49, 46, 129, 0.2) 100%); /* from-slate-950 via-slate-900 to-indigo-950/20 */
 
-  --card: #141414;
+  --card: #0f172a;
   --card-foreground: #e5e7eb;
-  --popover: #141414;
+  --popover: #0f172a;
   --popover-foreground: #e5e7eb;
 
-  /* Primary - Elegant Dark Blue */
-  --primary: #1e40af; /* blue-800 */
+  /* Primary - Elegant Indigo */
+  --primary: #6366f1; /* indigo-600 */
   --primary-foreground: #ffffff;
 
   /* Secondary - Cool Slate */
   --secondary: #64748b; /* slate-500 */
   --secondary-foreground: #ffffff;
 
-  /* Accent - Warm Yellow (Complementary) */
-  --accent: #f59e0b; /* amber-500 */
-  --accent-foreground: #0f172a;
+  /* Accent - Violet (Complementary) */
+  --accent: #8b5cf6; /* violet-500 */
+  --accent-foreground: #ffffff;
 
   /* Success - Emerald Green */
   --success: #10b981; /* emerald-500 */
-  --success-foreground: #0f172a;
+  --success-foreground: #020617;
 
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
@@ -191,37 +199,37 @@
   --muted-foreground: #9ca3af; /* gray-400 */
   --border: #374151; /* gray-700 */
   --input: #374151;
-  --ring: #3b82f6; /* blue-500 */
+  --ring: #818cf8; /* indigo-400 */
 
-  /* Chart Colors - Blue & Noir with Complementary Accents */
-  --chart-1: #3b82f6; /* Blue Primary - brighter for dark mode */
-  --chart-2: #f59e0b; /* Amber - Complementary */
+  /* Chart Colors - Indigo & Violet with Complementary Accents */
+  --chart-1: #818cf8; /* Indigo Primary - brighter for dark mode */
+  --chart-2: #a78bfa; /* Violet - Complementary */
   --chart-3: #10b981; /* Emerald - Success */
   --chart-4: #ef4444; /* Red - Destructive */
   --chart-5: #6366f1; /* Indigo - Secondary */
 
   /* Sidebar Dark */
-  --sidebar: #0f0f0f;
+  --sidebar: #020617;
   --sidebar-foreground: #e5e7eb;
-  --sidebar-primary: #1e40af;
+  --sidebar-primary: #6366f1;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1f2937;
+  --sidebar-accent: #1e1b4b;
   --sidebar-accent-foreground: #e5e7eb;
-  --sidebar-border: #374151;
-  --sidebar-ring: #3b82f6;
+  --sidebar-border: #3730a3;
+  --sidebar-ring: #818cf8;
 
-  /* 🎨 GRADIENTS - Blue & Noir Dark Mode (Subtle) */
-  --gradient-primary: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #3b82f6 100%);
+  /* 🎨 GRADIENTS - Indigo & Violet Dark Mode */
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #a5b4fc 100%);
   --gradient-secondary: linear-gradient(135deg, #475569 0%, #64748b 50%, #94a3b8 100%);
-  --gradient-accent: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
-  --gradient-background: linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
-  --gradient-card: linear-gradient(180deg, #1a1a1a 0%, #141414 100%);
-  --gradient-subtle: linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(59, 130, 246, 0.08) 100%);
-  --gradient-glow: radial-gradient(ellipse at center, rgba(30, 64, 175, 0.3) 0%, transparent 70%);
+  --gradient-accent: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
+  --gradient-background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+  --gradient-card: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.08) 100%);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
 
   /* 🎨 GLASSMOPHISM - Dark Mode */
-  --glass-background: rgba(20, 20, 20, 0.7);
-  --glass-background-solid: rgba(20, 20, 20, 0.85);
+  --glass-background: rgba(15, 23, 42, 0.7);
+  --glass-background-solid: rgba(15, 23, 42, 0.85);
   --glass-border: rgba(55, 65, 81, 0.5);
   --glass-blur-sm: blur(8px);
   --glass-blur-md: blur(12px);
@@ -234,15 +242,15 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-  --shadow-glow-primary: 0 0 25px rgba(30, 64, 175, 0.4), 0 4px 15px rgba(30, 64, 175, 0.3);
-  --shadow-glow-accent: 0 0 25px rgba(245, 158, 11, 0.35), 0 4px 15px rgba(245, 158, 11, 0.25);
+  --shadow-glow-primary: 0 0 25px rgba(99, 102, 241, 0.4), 0 4px 15px rgba(99, 102, 241, 0.3);
+  --shadow-glow-accent: 0 0 25px rgba(139, 92, 246, 0.35), 0 4px 15px rgba(139, 92, 246, 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
 
   /* 🎨 FOCUS RINGS - Dark Mode Gradient focus rings */
-  --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.4);
-  --focus-ring-primary: 0 0 0 3px rgba(59, 130, 246, 0.5);
-  --focus-ring-accent: 0 0 0 3px rgba(245, 158, 11, 0.4);
-  --focus-ring-gradient: 0 0 0 3px rgba(59, 130, 246, 0.3), 0 0 0 5px rgba(96, 165, 250, 0.2);
+  --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.4);
+  --focus-ring-primary: 0 0 0 3px rgba(129, 140, 248, 0.5);
+  --focus-ring-accent: 0 0 0 3px rgba(167, 139, 250, 0.4);
+  --focus-ring-gradient: 0 0 0 3px rgba(129, 140, 248, 0.3), 0 0 0 5px rgba(165, 180, 252, 0.2);
 }
 
 @layer base {
