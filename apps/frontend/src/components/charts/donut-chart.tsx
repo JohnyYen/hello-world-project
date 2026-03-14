@@ -18,21 +18,29 @@ interface DataPoint {
 interface DonutChartProps {
   data: DataPoint[];
   title?: string;
+  subtitle?: string;
   height?: number;
   innerRadius?: number;
   outerRadius?: number;
   showPercentage?: boolean;
+  showAnimation?: boolean;
+  tooltipFormatter?: (value: number, name: string) => string;
 }
 
 export function DonutChart({
   data,
   title,
+  subtitle,
   height = 300,
   innerRadius = 60,
   outerRadius = 100,
   showPercentage = true,
+  showAnimation = true,
+  tooltipFormatter,
 }: DonutChartProps) {
   const COLORS_ARRAY = CHART_COLORS_ARRAY;
+
+  const total = data.reduce((sum, item) => sum + item.value, 0);
 
   const renderCustomLabel = ({
     cx,
@@ -41,7 +49,6 @@ export function DonutChart({
     innerRadius,
     outerRadius,
     percent,
-    name,
   }: {
     cx: number;
     cy: number;
@@ -49,7 +56,6 @@ export function DonutChart({
     innerRadius: number;
     outerRadius: number;
     percent: number;
-    name: string;
   }) => {
     if (!showPercentage || percent < 0.05) return null;
     
@@ -73,10 +79,61 @@ export function DonutChart({
     );
   };
 
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ name: string; value: number; payload: DataPoint }> }) => {
+    if (!active || !payload || !payload.length) return null;
+    
+    const entry = payload[0];
+    const percentage = total > 0 ? ((entry.value / total) * 100).toFixed(1) : 0;
+    
+    return (
+      <div className="rounded-lg border bg-card p-3 shadow-lg">
+        <div className="flex items-center gap-2 text-sm">
+          <div 
+            className="w-3 h-3 rounded-full" 
+            style={{ backgroundColor: COLORS_ARRAY[data.findIndex(d => d.name === entry.name) % COLORS_ARRAY.length] }}
+          />
+          <span className="font-medium">{entry.name}</span>
+        </div>
+        <p className="text-sm text-muted-foreground mt-1">
+          {tooltipFormatter ? tooltipFormatter(entry.value, entry.name) : `${entry.value} (${percentage}%)`}
+        </p>
+      </div>
+    );
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderLegend = (props: any) => {
+    const { payload } = props;
+    if (!payload) return null;
+
+    return (
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        {payload.map((entry: { value: string; color: string | undefined }, index: number) => {
+          const item = data[index];
+          const percentage = total > 0 ? ((item.value / total) * 100).toFixed(1) : 0;
+          
+          return (
+            <div key={index} className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full" 
+                style={{ backgroundColor: entry.color || COLORS_ARRAY[index % COLORS_ARRAY.length] }}
+              />
+              <span className="text-sm text-foreground">{entry.value}</span>
+              <span className="text-xs text-muted-foreground">({percentage}%)</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="rounded-lg border bg-card p-6 shadow-sm">
-      {title && (
-        <h3 className="text-lg font-semibold mb-4">{title}</h3>
+      {(title || subtitle) && (
+        <div className="mb-4">
+          {title && <h3 className="text-lg font-semibold">{title}</h3>}
+          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+        </div>
       )}
       <ResponsiveContainer width="100%" height={height}>
         <PieChart>
@@ -92,6 +149,8 @@ export function DonutChart({
             dataKey="value"
             stroke={COLORS.card}
             strokeWidth={2}
+            animationDuration={1000}
+            animationEasing="ease-out"
           >
             {data.map((_entry, index) => (
               <Cell
@@ -100,21 +159,8 @@ export function DonutChart({
               />
             ))}
           </Pie>
-          <Tooltip
-            contentStyle={{
-              backgroundColor: COLORS.card,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: "8px",
-            }}
-            formatter={(value: number) => [`${value}`, "Valor"]}
-          />
-          <Legend
-            formatter={(value) => (
-              <span style={{ color: COLORS.foreground, fontSize: 12 }}>
-                {value}
-              </span>
-            )}
-          />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend content={renderLegend} />
         </PieChart>
       </ResponsiveContainer>
     </div>

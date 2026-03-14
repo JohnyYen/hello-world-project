@@ -32,11 +32,7 @@ export class APIClient {
   private defaultHeaders: Record<string, string>;
 
   constructor() {
-    if (!process.env.NEXT_PUBLIC_API_BASE_URL) {
-      throw new Error("NEXT_PUBLIC_API_BASE_URL environment variable is required");
-    }
-    
-    this.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     this.defaultHeaders = {
       'Content-Type': 'application/json',
     };
@@ -267,7 +263,7 @@ export class AuthService {
 
   // 🔐 Login user
   async login(data: LoginRequest): Promise<LoginResponse> {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -291,7 +287,7 @@ export class AuthService {
   // 📝 Register new teacher
   async signup(data: SignupRequest): Promise<SignupResponse> {
     // Note: The backend returns the raw object, not wrapped in ApiResponse
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/register`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

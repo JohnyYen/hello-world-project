@@ -17,12 +17,12 @@ export function HeroSection() {
             </p>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Button asChild size="lg">
+            <Button asChild size="lg" variant="retro">
               <Link href="/signup">
                 Comenzar
               </Link>
             </Button>
-            <Button variant="outline" size="lg">
+            <Button variant="retro" size="lg">
               <Link href="/docs">
                 Saber Más
               </Link>

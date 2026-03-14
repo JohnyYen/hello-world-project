@@ -6,6 +6,7 @@
 > - [`tailwind-4`](#) - cn() utility, modern CSS-first config
 > - [`typescript`](#) - Explicit typing, strict mode
 > - [`tdd`](#) - Test-Driven Development workflow
+> - [`frontend-design`](#) - Design atractive UI  
 
 ### Auto-invoke Skills
 
@@ -23,6 +24,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Working on task | `tdd` |
 | Working with Tailwind classes | `tailwind-4` |
 | Writing TypeScript types/interfaces | `typescript` |
+| Design UI | `frontend-design` |
 
 ---
 
@@ -45,6 +47,9 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
 ### API Client
 - ALWAYS: When the communicate with de api, use the api client package `workspace/api-client-ts`
+
+### Runtime
+- NEVER: Never build for test the application
 ---
 
 ## TECH STACK

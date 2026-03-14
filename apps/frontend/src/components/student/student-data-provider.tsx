@@ -1,10 +1,9 @@
-// Server component to fetch student data
+// Student data provider con caching optimizado
 import { notFound } from "next/navigation";
+import { unstable_cache } from 'next/cache';
 import { Student } from "@/types";
 
-// Define the student type
-
-// Mock data for students - in a real application, this would come from an API
+// Mock data
 const mockStudents: Record<string, Student> = {
   "1": {
     id: "1",
@@ -73,128 +72,69 @@ const mockStudents: Record<string, Student> = {
   }
 };
 
-// Mock data for the student list page (with course property)
 export const mockStudentsList = [
-  {
-    id: "1",
-    name: "Juan Pérez",
-    email: "juan.perez@email.com",
-    maxLevel: 5,
-    status: "active",
-    course: "2022-2025",
-  },
-  {
-    id: "2",
-    name: "María González",
-    email: "maria.gonzalez@email.com",
-    maxLevel: 8,
-    status: "active",
-    course: "2023-2026",
-  },
-  {
-    id: "3",
-    name: "Carlos Rodríguez",
-    email: "carlos.rodriguez@email.com",
-    maxLevel: 3,
-    status: "inactive",
-    course: "2021-2024",
-  },
-  {
-    id: "4",
-    name: "Ana López",
-    email: "ana.lopez@email.com",
-    maxLevel: 10,
-    status: "active",
-    course: "2023-2026",
-  },
-  {
-    id: "5",
-    name: "Luis Fernández",
-    email: "luis.fernandez@email.com",
-    maxLevel: 6,
-    status: "unregistered",
-    course: "2022-2025",
-  },
-  {
-    id: "6",
-    name: "Sofía Martínez",
-    email: "sofia.martinez@email.com",
-    maxLevel: 7,
-    status: "active",
-    course: "2023-2026",
-  },
-  {
-    id: "7",
-    name: "Pedro Sánchez",
-    email: "pedro.sanchez@email.com",
-    maxLevel: 4,
-    status: "inactive",
-    course: "2021-2024",
-  },
-  {
-    id: "8",
-    name: "Laura Ramírez",
-    email: "laura.ramirez@email.com",
-    maxLevel: 9,
-    status: "active",
-    course: "2023-2026",
-  },
-  {
-    id: "9",
-    name: "Miguel Torres",
-    email: "miguel.torres@email.com",
-    maxLevel: 2,
-    status: "unregistered",
-    course: "2022-2025",
-  },
-  {
-    id: "10",
-    name: "Elena Vásquez",
-    email: "elena.vasquez@email.com",
-    maxLevel: 11,
-    status: "active",
-    course: "2024-2027",
-  },
-  {
-    id: "11",
-    name: "Roberto Herrera",
-    email: "roberto.herrera@email.com",
-    maxLevel: 6,
-    status: "active",
-    course: "2023-2026",
-  },
-  {
-    id: "12",
-    name: "Carmen Castillo",
-    email: "carmen.castillo@email.com",
-    maxLevel: 8,
-    status: "inactive",
-    course: "2022-2025",
-  },
+  { id: "1", name: "Juan Pérez", email: "juan.perez@email.com", maxLevel: 5, status: "active", course: "2022-2025" },
+  { id: "2", name: "María González", email: "maria.gonzalez@email.com", maxLevel: 8, status: "active", course: "2023-2026" },
+  { id: "3", name: "Carlos Rodríguez", email: "carlos.rodriguez@email.com", maxLevel: 3, status: "inactive", course: "2021-2024" },
+  { id: "4", name: "Ana López", email: "ana.lopez@email.com", maxLevel: 10, status: "active", course: "2023-2026" },
+  { id: "5", name: "Luis Fernández", email: "luis.fernandez@email.com", maxLevel: 6, status: "unregistered", course: "2022-2025" },
+  { id: "6", name: "Sofía Martínez", email: "sofia.martinez@email.com", maxLevel: 7, status: "active", course: "2023-2026" },
+  { id: "7", name: "Pedro Sánchez", email: "pedro.sanchez@email.com", maxLevel: 4, status: "inactive", course: "2021-2024" },
+  { id: "8", name: "Laura Ramírez", email: "laura.ramirez@email.com", maxLevel: 9, status: "active", course: "2023-2026" },
+  { id: "9", name: "Miguel Torres", email: "miguel.torres@email.com", maxLevel: 2, status: "unregistered", course: "2022-2025" },
+  { id: "10", name: "Elena Vásquez", email: "elena.vasquez@email.com", maxLevel: 11, status: "active", course: "2024-2027" },
+  { id: "11", name: "Roberto Herrera", email: "roberto.herrera@email.com", maxLevel: 6, status: "active", course: "2023-2026" },
+  { id: "12", name: "Carmen Castillo", email: "carmen.castillo@email.com", maxLevel: 8, status: "inactive", course: "2022-2025" },
 ];
 
+// Cache options
+const cacheOptions = { 
+  revalidate: process.env.NODE_ENV === 'production' ? 300 : 60,
+  tags: ['students'] 
+};
+
+// Functions cacheadas
+const getStudentCached = unstable_cache(
+  async (id: string) => {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return mockStudents[id] as Student || null;
+  },
+  ['student-detail'],
+  cacheOptions
+);
+
+const getAllStudentsCached = unstable_cache(
+  async () => {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return Object.values(mockStudents) as Student[];
+  },
+  ['all-students'],
+  cacheOptions
+);
+
+const getStudentsListCached = unstable_cache(
+  async () => {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return mockStudentsList;
+  },
+  ['students-list'],
+  cacheOptions
+);
+
+// Funciones exportadas
 export async function getStudent(id: string): Promise<Student | null> {
-  // In a real application, this would be an API call to fetch data from a database
-  // Simulating an async operation
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return mockStudents[id] as any || null;
+  return getStudentCached(id);
 }
 
 export async function getAllStudents(): Promise<Student[]> {
-  // In a real application, this would be an API call to fetch data from a database
-  // Simulating an async operation
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return Object.values(mockStudents) as any;
+  return getAllStudentsCached();
 }
 
 export async function getStudents(): Promise<(Student & { course: string })[]> {
-  // In a real application, this would be an API call to fetch data from a database
-  // Simulating an async operation
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return mockStudentsList as any;
+  return getStudentsListCached() as (Student & { course: string })[];
 }
 
 export async function getUniqueCourses(): Promise<string[]> {
   const students = await getStudents();
-  return Array.from(new Set(students.map(student => student.course))).sort().reverse();
+  return Array.from(new Set(students.map(s => s.course))).sort().reverse();
 }

@@ -20,7 +20,7 @@ async function getAuthApi(): Promise<AuthenticationApi> {
   const token = cookieStore.get("auth_token")?.value;
   
   const config = new Configuration({
-    basePath: process.env.NEXT_PUBLIC_API_BASE_URL,
+    basePath: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
     accessToken: token,
   });
   
@@ -33,7 +33,7 @@ async function getUsersApi(): Promise<UsersApi> {
   const token = cookieStore.get("auth_token")?.value;
   
   const config = new Configuration({
-    basePath: process.env.NEXT_PUBLIC_API_BASE_URL,
+    basePath: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
     accessToken: token,
   });
   

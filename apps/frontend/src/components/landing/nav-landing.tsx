@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Globe } from "lucide-react";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/dashboard";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,54 +12,54 @@ import {
 
 export function NavLanding() {
   return (
-    <nav className="flex items-center justify-between p-4 border-b">
+    <nav className="flex items-center justify-between p-4 border-b-4 border-foreground bg-background">
       <div className="flex items-center space-x-2">
-        <Link href="/" className="text-xl font-bold">
+        <Link href="/" className="text-xl font-bold font-mono">
           AprendeProgramación
         </Link>
       </div>
 
       {/* Desktop Navigation */}
-      <div className="hidden md:flex items-center space-x-6">
+      <div className="hidden md:flex items-center space-x-6 font-mono text-sm">
         <Link
           href="/"
-          className="text-sm font-medium hover:underline underline-offset-4"
+          className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
         >
           Inicio
         </Link>
           <Link
           href="/docs"
-          className="text-sm font-medium hover:underline underline-offset-4"
+          className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
         >
           Docs
         </Link>
         <Link
           href="/#description"
-          className="text-sm font-medium hover:underline underline-offset-4"
+          className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
         >
           Descripción
         </Link>
         <Link
           href="/#features"
-          className="text-sm font-medium hover:underline underline-offset-4"
+          className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
         >
           Características
         </Link>
         <Link
           href="/signup"
-          className="text-sm font-medium hover:underline underline-offset-4"
+          className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
         >
           Regístrate
         </Link>
         <Link
           href="/login"
-          className="text-sm font-medium hover:underline underline-offset-4"
+          className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
         >
           Iniciar Sesión
         </Link>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button variant="retro" size="icon">
               <Globe className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -79,7 +79,7 @@ export function NavLanding() {
       <div className="flex items-center space-x-4 md:hidden">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button variant="retro" size="icon">
               <Globe className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -95,39 +95,39 @@ export function NavLanding() {
         <ThemeToggle />
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button variant="retro" size="icon">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right">
-            <div className="flex flex-col space-y-4 mt-6">
+          <SheetContent side="right" className="bg-background border-4 border-foreground shadow-none flat-shadow [&>button]:hidden border-l-4">
+            <div className="flex flex-col space-y-4 mt-6 font-mono text-sm">
               <Link
                 href="/"
-                className="text-sm font-medium hover:underline underline-offset-4"
+                className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
               >
                 Inicio
               </Link>
               <Link
                 href="/#description"
-                className="text-sm font-medium hover:underline underline-offset-4"
+                className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
               >
                 Descripción
               </Link>
               <Link
                 href="/#features"
-                className="text-sm font-medium hover:underline underline-offset-4"
+                className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
               >
                 Características
               </Link>
               <Link
                 href="/signup"
-                className="text-sm font-medium hover:underline underline-offset-4"
+                className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
               >
                 Regístrate
               </Link>
               <Link
                 href="/login"
-                className="text-sm font-medium hover:underline underline-offset-4"
+                className="hover:bg-foreground hover:text-background px-2 py-1 transition-colors"
               >
                 Iniciar Sesión
               </Link>
