@@ -1,7 +1,5 @@
 from typing import Optional
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.shared.infrastructure.session import get_db
+
 from src.users.infrastructure.user_repository import UserRepository
 from src.users.api.v1.schemas.user import UserCreate, UserUpdate
 from src.users.domain.user import User
@@ -15,13 +13,13 @@ from src.shared.application.usecase.base_service import BaseService
 
 class UserService(BaseService):
     """
-    Servicio para operaciones CRUD y validaciones sencillas de usuarios.
+    Servicio para operaciones CRUD y validaciones sencilla de usuarios.
 
     Responsabilidades:
     - Operaciones CRUD directas (crear, leer, actualizar, eliminar)
     - Búsquedas por campos específicos (email, username)
     - Transformaciones simples (hashing de contraseñas en create/update)
-    - Validaciones sencillas de unicidad (delegado al repositorio)
+    - Validaciones sencilla de unicidad (delegado al repositorio)
 
     NO contiene:
     - Lógica de negocio compleja (ver ChangePasswordUseCase en src/auth/application/usecase/)
@@ -29,16 +27,15 @@ class UserService(BaseService):
     - Workflows completos
     """
 
-    def __init__(self, db: AsyncSession = Depends(get_db)):
+    def __init__(self, repository: UserRepository, model: type[User]):
         """
-        Inicializa el servicio con una sesión de base de datos.
+        Inicializa el servicio con un repositorio y modelo.
 
         Args:
-            db: Sesión de base de datos asíncrona.
+            repository: Instancia del repositorio de usuarios
+            model: Clase del modelo User
         """
-        self.db = db
-        repository = UserRepository(db)
-        super().__init__(repository, User)
+        super().__init__(repository, model)
 
     async def create_user(
         self, user_data: UserCreate, role_id: Optional[int] = None
@@ -141,9 +138,8 @@ class UserService(BaseService):
         Returns:
             list[User]: Lista de usuarios con role cargado
         """
-        from src.users.infrastructure.user_repository import UserRepository
-
-        repo = UserRepository(self.db)
+        # Cast to UserRepository to access specific methods
+        repo: UserRepository = self.repository  # type: ignore[assignment]
         return await repo.get_all_with_role(
             skip=skip, limit=limit, include_deleted=include_deleted
         )
@@ -158,9 +154,8 @@ class UserService(BaseService):
         Returns:
             Optional[User]: Usuario con role cargado, o None si no existe
         """
-        from src.users.infrastructure.user_repository import UserRepository
-
-        repo = UserRepository(self.db)
+        # Cast to UserRepository to access specific methods
+        repo: UserRepository = self.repository  # type: ignore[assignment]
         return await repo.get_by_id_with_role(user_id)
 
     async def update_user(self, user_id: int, user_data: UserUpdate) -> Optional[User]:

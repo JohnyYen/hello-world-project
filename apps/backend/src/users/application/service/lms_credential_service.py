@@ -1,8 +1,5 @@
 from typing import Optional
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.shared.infrastructure.session import get_db
 from src.users.infrastructure.lms_credential_repository import LMSCredentialRepository
 from src.users.domain.lms_credential import LMSCredential
 from src.shared.application.usecase.base_service import BaseService
@@ -16,15 +13,15 @@ class LMSCredentialService(BaseService):
     manejando la lógica de negocio antes de interactuar con la base de datos.
     """
 
-    def __init__(self, db: AsyncSession = Depends(get_db)):
+    def __init__(self, repository: LMSCredentialRepository, model: type[LMSCredential]):
         """
-        Inicializa el servicio con una sesión de base de datos.
+        Inicializa el servicio con un repositorio y modelo.
 
         Args:
-            db: Sesión de base de datos asíncrona.
+            repository: Instancia del repositorio de credenciales LMS
+            model: Clase del modelo LMSCredential
         """
-        repository = LMSCredentialRepository(db)
-        super().__init__(repository, LMSCredential)
+        super().__init__(repository, model)
 
     async def get_by_user_id(self, user_id: int) -> Optional[LMSCredential]:
         """

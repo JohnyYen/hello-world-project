@@ -1,12 +1,6 @@
 # app/services/metric_type_service.py
-from typing import List, Optional
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.shared.infrastructure.session import get_db
 from src.statistic.infrastructure.metric_type_repository import MetricTypeRepository
-from src.statistic.api.v1.schemas.metric_type import MetricTypeCreate, MetricTypeUpdate
 from src.statistic.domain.metric_type import MetricType
-from src.shared.domain.exceptions import NotFoundException
 from src.shared.application.usecase.base_service import BaseService
 
 
@@ -18,12 +12,12 @@ class MetricTypeService(BaseService):
     manejando la lógica de negocio antes de interactuar con la base de datos.
     """
 
-    def __init__(self, db: AsyncSession = Depends(get_db)):
+    def __init__(self, repository: MetricTypeRepository, model: type[MetricType]):
         """
-        Inicializa el servicio con una sesión de base de datos.
+        Inicializa el servicio con un repositorio y modelo.
 
         Args:
-            db: Sesión de base de datos asíncrona.
+            repository: Instancia del repositorio de tipos de métrica
+            model: Clase del modelo MetricType
         """
-        repository = MetricTypeRepository(db)
-        super().__init__(repository, MetricType)
+        super().__init__(repository, model)

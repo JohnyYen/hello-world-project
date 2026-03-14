@@ -2,11 +2,8 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
-from src.shared.infrastructure.session import get_db
 from src.statistic.infrastructure.xapi_statement_repository import (
     XAPIStatementRepository,
 )
@@ -25,15 +22,14 @@ class XAPIStatementService:
     and batch processing for high-volume ingestion.
     """
 
-    def __init__(self, db: AsyncSession = Depends(get_db)):
+    def __init__(self, repository: XAPIStatementRepository):
         """
-        Initialize the service with database session.
+        Initialize the service with a repository.
 
         Args:
-            db: Async database session
+            repository: xAPI statement repository instance
         """
-        self.db = db
-        self.repository = XAPIStatementRepository(db)
+        self.repository = repository
 
     def _parse_statement(self, statement: XAPIStatementCreate) -> Dict[str, Any]:
         """
