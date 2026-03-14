@@ -8,11 +8,11 @@
 
 ## Phase 2: Core Components
 
-- [ ] 2.1 Add `gradient` variant to Button component in `apps/frontend/src/components/ui/button.tsx` - Use CVA to add gradient variant with shadow-lg
-- [ ] 2.2 Add `glass` variant to Button component in `apps/frontend/src/components/ui/button.tsx` - Add glassmorphism button style via CVA
-- [ ] 2.3 Update Card component in `apps/frontend/src/components/ui/card.tsx` - Replace flat-shadow border-4 with shadow-lg
-- [ ] 2.4 Add optional `gradient` prop to Card component in `apps/frontend/src/components/ui/card.tsx` - Enable subtle gradient background when true
-- [ ] 2.5 Add gradient focus ring to Input component in `apps/frontend/src/components/ui/input.tsx` - Apply gradient box-shadow on focus-visible state
+- [x] 2.1 Add `gradient` variant to Button component in `apps/frontend/src/components/ui/button.tsx` - Use CVA to add gradient variant with shadow-lg
+- [x] 2.2 Add `glass` variant to Button component in `apps/frontend/src/components/ui/button.tsx` - Add glassmorphism button style via CVA
+- [x] 2.3 Update Card component in `apps/frontend/src/components/ui/card.tsx` - Replace flat-shadow border-4 with shadow-lg
+- [x] 2.4 Add optional `gradient` prop to Card component in `apps/frontend/src/components/ui/card.tsx` - Enable subtle gradient background when true
+- [x] 2.5 Add gradient focus ring to Input component in `apps/frontend/src/components/ui/input.tsx` - Apply gradient box-shadow on focus-visible state
 
 ## Phase 3: Layout Components
 

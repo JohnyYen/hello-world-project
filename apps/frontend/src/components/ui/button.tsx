@@ -19,7 +19,9 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        retro: "border-4 border-foreground bg-background text-foreground font-mono uppercase tracking-wider shadow-none hover:bg-accent hover:text-accent-foreground flat-shadow"
+        retro: "border-4 border-foreground bg-background text-foreground font-mono uppercase tracking-wider shadow-none hover:bg-accent hover:text-accent-foreground flat-shadow",
+        gradient: "bg-gradient-to-r from-blue-800 via-blue-600 to-blue-500 text-white font-semibold shadow-lg hover:shadow-glow-primary hover:brightness-110",
+        glass: "bg-glass-background-solid backdrop-blur-md border border-glass-border shadow-md hover:bg-white/80 dark:hover:bg-black/40"
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
