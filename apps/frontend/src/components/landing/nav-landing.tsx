@@ -12,7 +12,7 @@ import {
 
 export function NavLanding() {
   return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 flex items-center justify-between p-4 border-b border-border/40 bg-background/95 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center space-x-2">
         <Link href="/" className="text-xl font-bold font-mono">
           AprendeProgramación

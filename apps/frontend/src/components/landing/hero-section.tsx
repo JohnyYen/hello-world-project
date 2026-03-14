@@ -5,8 +5,10 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <section className="relative w-full py-12 md:py-24 lg:py-32 flex flex-col align-center justify-center items-center overflow-hidden">
-      {/* Subtle background */}
-      <div className="absolute inset-0 -z-10 bg-background" />
+      {/* Dramatic indigo/violet gradient background */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-50 via-white to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,rgba(99,102,241,0.15),transparent_50%)] dark:opacity-100 opacity-60" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom_left,rgba(139,92,246,0.1),transparent_50%)]" />
       
       <div className="container px-4 md:px-6 relative z-10">
         <div className="flex flex-col items-center space-y-8 text-center">
