@@ -41,7 +41,7 @@ export default function SettingsPage() {
     <div className="container mx-auto py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Settings className="h-8 w-8 text-blue-600" />
+          <Settings className="h-8 w-8 text-primary" />
           Configuración de la Plataforma
         </h1>
         <p className="text-muted-foreground mt-2">
@@ -214,7 +214,7 @@ export default function SettingsPage() {
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="bg-blue-500 p-2 rounded-lg">
+                  <div className="bg-primary p-2 rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-school text-white">
                       <path d="M14 22v-4a2 2 0 1 0-4 0v4"></path>
                       <path d="M18 8h-6"></path>
@@ -255,7 +255,7 @@ export default function SettingsPage() {
               
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
-                  <div className="bg-blue-600 p-2 rounded-lg">
+                  <div className="bg-primary p-2 rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-book-open text-white">
                       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>

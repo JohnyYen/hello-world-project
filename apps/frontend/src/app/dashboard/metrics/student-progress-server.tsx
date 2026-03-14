@@ -39,7 +39,7 @@ export async function StudentProgressServer() {
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-2">
                   <div 
-                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
+                    className="bg-gradient-to-r from-primary to-primary h-2 rounded-full transition-all duration-500"
                     style={{ width: `${student.progress}%` }}
                   />
                 </div>

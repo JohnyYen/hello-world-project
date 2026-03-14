@@ -40,6 +40,8 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-success-foreground: var(--success-foreground);
+  --color-success: var(--success);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -85,6 +87,10 @@
   /* Accent - Warm Yellow (Complementary) */
   --accent: #f59e0b; /* amber-500 */
   --accent-foreground: #0f172a;
+  
+  /* Success - Emerald Green */
+  --success: #10b981; /* emerald-500 */
+  --success-foreground: #ffffff;
   
   /* Semantic States */
   --destructive: #ef4444; /* red-500 */
@@ -139,6 +145,10 @@
   /* Accent - Warm Yellow (Complementary) */
   --accent: #f59e0b; /* amber-500 */
   --accent-foreground: #0f172a;
+  
+  /* Success - Emerald Green */
+  --success: #10b981; /* emerald-500 */
+  --success-foreground: #0f172a;
   
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;

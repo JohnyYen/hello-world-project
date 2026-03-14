@@ -11,7 +11,7 @@ export default function HelpPage() {
     <div className="container mx-auto py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-bold flex items-center gap-2">
-          <HelpCircle className="h-8 w-8 text-blue-600" />
+          <HelpCircle className="h-8 w-8 text-primary" />
           Centro de Ayuda
         </h1>
         <p className="text-muted-foreground mt-2">

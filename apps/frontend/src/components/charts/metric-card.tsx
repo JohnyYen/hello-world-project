@@ -60,7 +60,7 @@ export function MetricCard({
             <p
               className={cn(
                 "text-xs font-semibold flex items-center gap-1",
-                trend.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+                trend.isPositive ? "text-accent" : "text-destructive"
               )}
             >
               <span className="text-base">{trend.isPositive ? "↑" : "↓"}</span>

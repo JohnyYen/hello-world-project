@@ -13,18 +13,18 @@ export default async function MetricsPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white py-10 px-6 md:px-12">
+      <div className="bg-gradient-to-r from-primary via-primary to-primary text-white py-10 px-6 md:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
-            <BarChart2 className="h-6 w-6 text-blue-300" />
-            <span className="text-sm font-medium text-blue-300 uppercase tracking-wider">
+            <BarChart2 className="h-6 w-6 text-primary/70" />
+            <span className="text-sm font-medium text-primary/70 uppercase tracking-wider">
               Analytics
             </span>
           </div>
           <h1 className="text-4xl font-bold tracking-tight mb-2">
             Métricas del Sistema
           </h1>
-          <p className="text-blue-200 text-lg max-w-2xl">
+          <p className="text-primary/60 text-lg max-w-2xl">
             Visualización y análisis del rendimiento del sistema educativo.
             Estadísticas en tiempo real de estudiantes y cursos.
           </p>

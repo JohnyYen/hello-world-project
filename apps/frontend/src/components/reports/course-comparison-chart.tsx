@@ -66,8 +66,8 @@ export function CourseComparisonChart({
           </div>
           <div className={cn(
             "flex items-center gap-1 text-sm font-medium px-2 py-1 rounded-full",
-            trend > 0 ? "bg-emerald-500/20 text-emerald-400" :
-            trend < 0 ? "bg-red-500/20 text-red-400" :
+            trend > 0 ? "bg-accent/20 text-accent" :
+            trend < 0 ? "bg-destructive/20 text-destructive" :
             "bg-slate-500/20 text-slate-300"
           )}>
             {trend > 0 ? <TrendingUp className="w-3 h-3" /> :

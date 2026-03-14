@@ -89,7 +89,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
               <div>
                 <p className="text-sm text-muted-foreground">Nivel Máximo</p>
                 <p className="font-medium">
-                  <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                  <span className="inline-flex items-center rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-medium text-primary">
                     Nivel {student.maxLevel}
                   </span>
                 </p>
@@ -119,7 +119,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5">
                   <div
-                    className="bg-blue-600 h-2.5 rounded-full"
+                    className="bg-primary h-2.5 rounded-full"
                     style={{ width: `${student.progress}%` }}
                   ></div>
                 </div>

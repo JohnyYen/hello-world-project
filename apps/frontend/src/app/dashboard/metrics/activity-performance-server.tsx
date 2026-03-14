@@ -35,7 +35,7 @@ export async function ActivityPerformanceServer() {
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium text-slate-900">{activity.name}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-emerald-600">{activity.avgScore}%</span>
+                    <span className="text-sm font-bold text-accent">{activity.avgScore}%</span>
                     <span className="text-xs text-slate-400">|</span>
                     <span className="text-sm text-slate-500">{activity.completionRate}%</span>
                   </div>
@@ -44,23 +44,23 @@ export async function ActivityPerformanceServer() {
                   {/* Score bar */}
                   <div className="flex-1 bg-slate-100 rounded-full h-1.5 overflow-hidden">
                     <div 
-                      className="bg-emerald-500 h-full rounded-full"
+                      className="bg-accent/100 h-full rounded-full"
                       style={{ width: `${activity.avgScore}%` }}
                     />
                   </div>
                   {/* Completion bar */}
                   <div className="flex-1 bg-slate-100 rounded-full h-1.5 overflow-hidden">
                     <div 
-                      className="bg-blue-500 h-full rounded-full"
+                      className="bg-primary h-full rounded-full"
                       style={{ width: `${activity.completionRate}%` }}
                     />
                   </div>
                 </div>
               </div>
               <div className={`text-xs px-2 py-0.5 rounded ${
-                activity.difficulty <= 3 ? 'bg-emerald-100 text-emerald-700' :
-                activity.difficulty <= 5 ? 'bg-amber-100 text-amber-700' :
-                'bg-red-100 text-red-700'
+                activity.difficulty <= 3 ? 'bg-accent/20 text-accent' :
+                activity.difficulty <= 5 ? 'bg-accent/20 text-accent-foreground' :
+                'bg-destructive/20 text-destructive'
               }`}>
                 {activity.difficulty <= 3 ? 'Fácil' : activity.difficulty <= 5 ? 'Medio' : 'Difícil'}
               </div>

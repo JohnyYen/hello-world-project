@@ -121,8 +121,8 @@ export function StudentFeedback({ student, onClose, onSubmit }: StudentFeedbackP
         <CardHeader className="border-b">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                <User className="h-6 w-6 text-blue-600" />
+              <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+                <User className="h-6 w-6 text-primary" />
               </div>
               <div>
                 <CardTitle className="text-xl">Feedback para {student.name}</CardTitle>

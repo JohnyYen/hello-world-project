@@ -230,11 +230,11 @@ export default function StudentReportPage() {
                 </div>
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500" />
+                    <div className="w-3 h-3 rounded-full bg-primary" />
                     <span className="text-muted-foreground">Puntuación</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                    <div className="w-3 h-3 rounded-full bg-accent/100" />
                     <span className="text-muted-foreground">Nivel</span>
                   </div>
                 </div>
@@ -269,11 +269,11 @@ export default function StudentReportPage() {
                 </div>
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500" />
+                    <div className="w-3 h-3 rounded-full bg-primary" />
                     <span className="text-muted-foreground">Score</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-amber-500" />
+                    <div className="w-3 h-3 rounded-full bg-accent" />
                     <span className="text-muted-foreground">Tiempo</span>
                   </div>
                 </div>

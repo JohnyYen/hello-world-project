@@ -41,15 +41,15 @@ export async function EngagementServer() {
       <CardContent>
         <div className="flex items-center justify-around mb-4">
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600">{avgActivity}</div>
+            <div className="text-3xl font-bold text-primary">{avgActivity}</div>
             <div className="text-xs text-slate-500">Promedio diario</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-emerald-600">{maxActivity}</div>
+            <div className="text-3xl font-bold text-accent">{maxActivity}</div>
             <div className="text-xs text-slate-500">Máximo</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-amber-600">{avgTime}min</div>
+            <div className="text-3xl font-bold text-accent">{avgTime}min</div>
             <div className="text-xs text-slate-500">Tiempo prom.</div>
           </div>
         </div>
@@ -59,7 +59,7 @@ export async function EngagementServer() {
           {activity.slice(-7).map((day, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-1">
               <div 
-                className="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t"
+                className="w-full bg-gradient-to-t from-primary to-primary rounded-t"
                 style={{ height: `${(day.activityCount / maxActivity) * 100}%` }}
               />
               <span className="text-[10px] text-slate-400">

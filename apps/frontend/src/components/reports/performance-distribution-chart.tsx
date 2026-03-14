@@ -48,11 +48,11 @@ const PerformanceDistributionChart = ({ alta, media, baja }: PerformanceDistribu
         </div>
         <div className="grid grid-cols-3 gap-4 mt-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-emerald-600">{alta}</div>
+            <div className="text-2xl font-bold text-accent">{alta}</div>
             <p className="text-sm text-muted-foreground">Alto Rendimiento</p>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-amber-600">{media}</div>
+            <div className="text-2xl font-bold text-accent">{media}</div>
             <p className="text-sm text-muted-foreground">Rendimiento Medio</p>
           </div>
           <div className="text-center">

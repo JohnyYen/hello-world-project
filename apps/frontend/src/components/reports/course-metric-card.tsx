@@ -57,7 +57,7 @@ export function CourseMetricCard({
   };
 
   const getTrendColor = (t: number) => {
-    if (t > 0) return 'text-emerald-600 bg-emerald-50';
+    if (t > 0) return 'text-accent bg-accent/10';
     if (t < 0) return 'text-red-600 bg-red-50';
     return 'text-slate-500 bg-slate-50';
   };

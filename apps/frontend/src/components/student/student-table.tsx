@@ -214,7 +214,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
               <TableHead className="w-[50px]">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                   checked={selectedStudents.size === currentStudents.length && currentStudents.length > 0}
                   aria-label="Seleccionar todos los estudiantes de esta página"
                   onChange={(e) => {
@@ -262,7 +262,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                   <TableCell>
                   <input
                     type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                     aria-label={`Seleccionar estudiante ${student.name}`}
                     checked={selectedStudents.has(student.id)}
                     onChange={(e) => {
@@ -280,11 +280,11 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                   <TableCell className="font-medium">{student.name}</TableCell>
                   <TableCell>
                     {student.status === "active" ? (
-                      <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 hover:bg-emerald-200">
+                      <Badge className="bg-accent/20 text-accent-foreground border-accent/30 hover:bg-accent/30">
                         Activo
                       </Badge>
                     ) : student.status === "inactive" ? (
-                      <Badge className="bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200">
+                      <Badge className="bg-accent/20 text-accent-foreground border-accent/30 hover:bg-accent/30">
                         Inactivo
                       </Badge>
                     ) : (
@@ -294,7 +294,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                     )}
                   </TableCell>
                   <TableCell>
-                    <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                    <span className="inline-flex items-center rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-medium text-primary">
                       Nivel {student.maxLevel}
                     </span>
                   </TableCell>
@@ -375,7 +375,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                     variant={currentPage === page ? "default" : "outline"}
                     size="sm"
                     onClick={() => handlePageChange(page)}
-                    className={currentPage === page ? "bg-blue-600" : ""}
+                    className={currentPage === page ? "bg-primary" : ""}
                   >
                     {page}
                   </Button>

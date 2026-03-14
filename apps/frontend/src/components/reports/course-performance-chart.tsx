@@ -120,8 +120,8 @@ export function CoursePerformanceChart({
                 key={item.name}
                 className={cn(
                   "text-center p-2 rounded-lg border",
-                  item.name === 'Alto' && "bg-emerald-50 border-emerald-200",
-                  item.name === 'Medio' && "bg-amber-50 border-amber-200",
+                  item.name === 'Alto' && "bg-accent/10 border-emerald-200",
+                  item.name === 'Medio' && "bg-accent/10 border-accent/30",
                   item.name === 'Bajo' && "bg-red-50 border-red-200"
                 )}
               >

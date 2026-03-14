@@ -41,7 +41,7 @@ export async function CourseCompletionServer() {
               </div>
               <div className="w-full bg-slate-200 rounded-full h-2">
                 <div 
-                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-accent to-accent h-2 rounded-full transition-all duration-500"
                   style={{ width: `${course.completionRate}%` }}
                 />
               </div>

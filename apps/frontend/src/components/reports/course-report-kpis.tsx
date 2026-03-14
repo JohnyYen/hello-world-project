@@ -42,15 +42,15 @@ export function CourseReportKPIs({ kpis }: CourseReportKPIsProps) {
 
       {/* Tasa de Completado */}
       <Card className="border-0 shadow-lg overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-emerald-500 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-br from-accent via-accent to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
           <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
             Tasa de Completado
           </CardTitle>
-          <TrendingUp className="h-4 w-4 text-emerald-600" />
+          <TrendingUp className="h-4 w-4 text-accent" />
         </CardHeader>
         <CardContent className="relative z-10">
-          <div className="text-3xl font-bold text-emerald-600">
+          <div className="text-3xl font-bold text-accent">
             {kpis.overallCompletionRate}%
           </div>
           <p className="text-xs text-slate-500 mt-1">
@@ -61,15 +61,15 @@ export function CourseReportKPIs({ kpis }: CourseReportKPIsProps) {
 
       {/* Promedio de Calificaciones */}
       <Card className="border-0 shadow-lg overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
           <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-300">
             Calificación Promedio
           </CardTitle>
-          <Target className="h-4 w-4 text-blue-600" />
+          <Target className="h-4 w-4 text-primary" />
         </CardHeader>
         <CardContent className="relative z-10">
-          <div className="text-3xl font-bold text-blue-600">
+          <div className="text-3xl font-bold text-primary">
             {kpis.overallAverageGrade}%
           </div>
           <p className="text-xs text-slate-500 mt-1">
@@ -112,10 +112,10 @@ export function CourseHighlightCards({ topCourse, attentionCourse }: CourseHighl
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Curso Destacado */}
       <Card className="border-0 shadow-lg overflow-hidden">
-        <div className="h-2 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600" />
+        <div className="h-2 bg-gradient-to-r from-accent via-accent to-accent" />
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-emerald-500" />
+            <Star className="h-5 w-5 text-accent" />
             <CardTitle className="text-lg font-semibold">Curso Mejor Rendimiento</CardTitle>
           </div>
         </CardHeader>
@@ -127,16 +127,16 @@ export function CourseHighlightCards({ topCourse, attentionCourse }: CourseHighl
             </div>
             
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-3 bg-emerald-50 rounded-lg">
-                <div className="text-2xl font-bold text-emerald-600">{topCourse.averageGrade}%</div>
+              <div className="text-center p-3 bg-accent/10 rounded-lg">
+                <div className="text-2xl font-bold text-accent">{topCourse.averageGrade}%</div>
                 <div className="text-xs text-slate-500">Promedio</div>
               </div>
-              <div className="text-center p-3 bg-emerald-50 rounded-lg">
-                <div className="text-2xl font-bold text-emerald-600">{topCourse.completionRate}%</div>
+              <div className="text-center p-3 bg-accent/10 rounded-lg">
+                <div className="text-2xl font-bold text-accent">{topCourse.completionRate}%</div>
                 <div className="text-xs text-slate-500">Completado</div>
               </div>
-              <div className="text-center p-3 bg-emerald-50 rounded-lg">
-                <div className="text-2xl font-bold text-emerald-600">{topCourse.highPerformers}</div>
+              <div className="text-center p-3 bg-accent/10 rounded-lg">
+                <div className="text-2xl font-bold text-accent">{topCourse.highPerformers}</div>
                 <div className="text-xs text-slate-500">Destacados</div>
               </div>
             </div>

@@ -29,22 +29,22 @@ export async function MetricsKPIServer() {
       title: 'Total Estudiantes',
       value: metrics.totalStudents.toLocaleString(),
       icon: Users,
-      color: 'text-blue-600',
-      bg: 'bg-blue-50'
+      color: 'text-primary',
+      bg: 'bg-primary/10'
     },
     {
       title: 'Estudiantes Activos',
       value: metrics.activeStudents.toLocaleString(),
       icon: UserCheck,
-      color: 'text-emerald-600',
-      bg: 'bg-emerald-50'
+      color: 'text-accent',
+      bg: 'bg-accent/10'
     },
     {
       title: 'Tasa de Completado',
       value: `${metrics.avgCompletionRate}%`,
       icon: Target,
-      color: 'text-amber-600',
-      bg: 'bg-amber-50'
+      color: 'text-accent',
+      bg: 'bg-accent/10'
     },
     {
       title: 'Calificación Promedio',
