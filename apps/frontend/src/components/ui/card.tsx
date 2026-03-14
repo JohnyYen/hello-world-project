@@ -2,18 +2,12 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-interface CardProps extends React.ComponentProps<"div"> {
-  /** Habilita fondo con gradiente sutil */
-  gradient?: boolean
-}
-
-function Card({ className, gradient = false, ...props }: CardProps) {
+function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-lg border border-border py-6 shadow-lg",
-        gradient && "bg-gradient-to-br from-card to-slate-50 dark:to-slate-900",
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-lg border border-border py-6 shadow-[0_0_0_1px_rgba(99,102,241,0.05),0_4px_6px_-1px_rgba(99,102,241,0.05)]",
         className
       )}
       {...props}
