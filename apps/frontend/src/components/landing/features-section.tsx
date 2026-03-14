@@ -45,8 +45,11 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section id="features" className="w-full py-12 md:py-24 lg:py-32 flex flex-col align-center justify-center items-center ">
-      <div className="container px-4 md:px-6">
+    <section id="features" className="relative w-full py-12 md:py-24 lg:py-32 flex flex-col align-center justify-center items-center overflow-hidden">
+      {/* Subtle gradient background for features section */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-blue-50/50 to-transparent dark:via-blue-950/20" />
+      
+      <div className="container px-4 md:px-6 relative z-10">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -59,7 +62,7 @@ export function FeaturesSection() {
         </div>
         <div className="mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-12">
           {features.map((feature, index) => (
-            <Card key={index}>
+            <Card key={index} gradient>
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <CardTitle>{feature.title}</CardTitle>
@@ -86,7 +89,7 @@ export function FeaturesSection() {
             Por Qué Elegir Nuestra Plataforma
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card>
+            <Card gradient>
               <CardHeader>
                 <CardTitle>Para Estudiantes</CardTitle>
                 <CardDescription>Educación en programación atractiva a través de juegos</CardDescription>
@@ -108,7 +111,7 @@ export function FeaturesSection() {
                 </ul>
               </CardContent>
             </Card>
-            <Card>
+            <Card gradient>
               <CardHeader>
                 <CardTitle>Para Docentes</CardTitle>
                 <CardDescription>Monitorear y guiar el progreso del estudiante</CardDescription>

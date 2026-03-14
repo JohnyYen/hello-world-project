@@ -21,9 +21,9 @@
 
 ## Phase 4: Landing Page
 
-- [ ] 4.1 Update Hero section in `apps/frontend/src/components/landing/hero-section.tsx` - Add gradient mesh background using CSS mesh gradient tokens
-- [ ] 4.2 Update Feature cards in `apps/frontend/src/components/landing/features-section.tsx` - Apply gradient styling and shadow-lg to feature cards
-- [ ] 4.3 Update Navbar in `apps/frontend/src/components/landing/nav-landing.tsx` - Add glassmorphism effect to navbar container
+- [x] 4.1 Update Hero section in `apps/frontend/src/components/landing/hero-section.tsx` - Add gradient mesh background using CSS mesh gradient tokens
+- [x] 4.2 Update Feature cards in `apps/frontend/src/components/landing/features-section.tsx` - Apply gradient styling and shadow-lg to feature cards
+- [x] 4.3 Update Navbar in `apps/frontend/src/components/landing/nav-landing.tsx` - Add glassmorphism effect to navbar container
 
 ## Phase 5: Dashboard
 
