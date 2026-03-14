@@ -1,44 +1,58 @@
 version: '3.9'
 
 services:
-  backend:
-    build:
-      context: ../../apps/hello-world-backend
-      dockerfile: Dockerfile.dev
-    env_file:
-      - ../../apps/hello-world-backend/.env
-    container_name: backend
-    ports:
-      - "8000:8000"
-    volumes:
-      - ../../apps/hello-world-backend:/app
-      - /app/__pycache__
-      - /app/.venv
-
-  teacher-web:
-    build:
-      context: ../../apps/hello-world-nextjs
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ../../apps/hello-world-nextjs:/app
-      - /app/.next
-    env_file:
-      - ../../apps/hello-world-nextjs/.env
-    container_name: teacher-web
-    ports:
-      - "3000:3000"
-
   postgresql_db:
     image: postgres:15
-    container_name: postgresql_db
+    container_name: hwp-postgres
     environment:
-      - POSTGRES_USER=value
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=hello-world-db
+      - POSTGRES_USER=hwp_user
+      - POSTGRES_PASSWORD=hwp_password
+      - POSTGRES_DB=hwp_db
     ports:
       - "5432:5432"
     volumes:
       - postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hwp_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../../apps/backend
+      dockerfile: Dockerfile.dev
+    env_file:
+      - ../../apps/backend/.env
+    container_name: hwp-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../apps/backend:/app
+      - /app/__pycache__
+      - /app/.venv
+    depends_on:
+      postgresql_db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://hwp_user:hwp_password@postgresql_db:5432/hwp_db
+
+  frontend:
+    build:
+      context: ../../apps/frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ../../apps/frontend:/app
+      - /app/.next
+    env_file:
+      - ../../apps/frontend/.env
+    container_name: hwp-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
 
 volumes:
   postgresql_data:
