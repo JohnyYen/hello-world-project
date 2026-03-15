@@ -5,28 +5,38 @@
 
 export interface Course {
   id: string;
-  name: string;           // Nombre de la materia (ej: "Matemáticas I")
-  schoolYear: string;     // Año escolar completo (ej: "2025-2026")
+  name: string;
+  period: string;
+  schoolYear: string;
   startDate: string;
   endDate: string;
   totalStudents: number;
+}
+
+export interface CourseMetrics {
+  courseId: string;
+  courseName: string;
+  period: string;
+  schoolYear: string;
   
-  // Métricas del año completo
+  // Progreso y Rendimiento
   averageProgress: number;
   averageGrade: number;
   completionRate: number;
   studentsCompleted: number;
+  
+  // Engagement
   averageActiveTime: number;
   dailyActiveUsers: number;
   weeklyActiveUsers: number;
   averageSessionsPerStudent: number;
+  
+  // Distribución de rendimiento
   highPerformers: number;
   mediumPerformers: number;
   lowPerformers: number;
-}
-
-export interface CourseMetrics extends Course {
-  // Tendencia vs año anterior
+  
+  // Tendencia
   progressTrend: number;
   gradeTrend: number;
   engagementTrend: number;
@@ -45,17 +55,6 @@ export interface StudentActivitySummary {
   averageSessionTime: number;
 }
 
-// Tipos para filtros de reporte
-export interface ReportFilters {
-  courses: string[];
-  dateRange?: {
-    start: string;
-    end: string;
-  };
-  compareMode: boolean;
-}
-
-// Tipos para KPIs de resumen
 export interface CourseReportKPIs {
   totalCourses: number;
   totalStudents: number;
@@ -63,8 +62,6 @@ export interface CourseReportKPIs {
   overallAverageGrade: number;
   topPerformingCourse: CourseMetrics | null;
   needsAttentionCourse: CourseMetrics | null;
-  
-  // Métricas de tendencia año a año
   yearOverYearProgress: number;
   yearOverYearGrade: number;
 }
