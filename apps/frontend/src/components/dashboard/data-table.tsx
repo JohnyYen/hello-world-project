@@ -450,9 +450,9 @@ export function DataTable({
 
           {/* Status Filter */}
           <Select
-            value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("status")?.getFilterValue() as string) ?? "all"}
             onValueChange={(value) => {
-              table.getColumn("status")?.setFilterValue(value || undefined)
+              table.getColumn("status")?.setFilterValue(value === "all" ? undefined : value)
             }}
           >
             <SelectTrigger className="w-40 rounded-lg border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50">
@@ -460,7 +460,7 @@ export function DataTable({
               <SelectValue placeholder="Filtrar estado" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
+              <SelectItem value="all">Todos</SelectItem>
               <SelectItem value="Done">Completado</SelectItem>
               <SelectItem value="In Process">En Proceso</SelectItem>
               <SelectItem value="Not Started">Sin Iniciar</SelectItem>
