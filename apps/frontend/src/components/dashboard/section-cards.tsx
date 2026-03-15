@@ -1,3 +1,4 @@
+import * as React from "react"
 import { IconTrendingDown, IconTrendingUp, IconUsers, IconCurrencyDollar, IconActivity, IconChartBar } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
