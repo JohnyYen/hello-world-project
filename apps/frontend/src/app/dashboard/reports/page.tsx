@@ -42,23 +42,23 @@ function SectionHeader({
   subtitle, 
   icon: Icon, 
   delay = 0,
-  accentColor = 'emerald'
+  accentColor = 'indigo'
 }: { 
   title: string; 
   subtitle?: string; 
   icon?: React.ElementType; 
   delay?: number;
-  accentColor?: 'emerald' | 'cyan' | 'amber';
+  accentColor?: 'indigo' | 'violet' | 'amber';
 }) {
   const colorClasses = {
-    emerald: 'border-emerald-500 dark:border-emerald-400 text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/50',
-    cyan: 'border-cyan-500 dark:border-cyan-400 text-cyan-600 dark:text-cyan-400 bg-cyan-100 dark:bg-cyan-900/50',
+    indigo: 'border-indigo-500 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/50',
+    violet: 'border-violet-500 dark:border-violet-400 text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-900/50',
     amber: 'border-amber-500 dark:border-amber-400 text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50',
   };
 
   return (
     <div 
-      className="relative mb-8 pl-4 border-l-4 border-emerald-500 dark:border-emerald-400"
+      className="relative mb-8 pl-4 border-l-4 border-indigo-500 dark:border-indigo-400"
       style={{ animationDelay: `${delay}ms` }}
     >
       <div className="flex items-center gap-3 mb-2">
@@ -129,9 +129,9 @@ function YearSelector({
                 <div className={cn(
                   "w-6 h-6 rounded-md flex items-center justify-center border-2 transition-colors",
                   allSelected 
-                    ? "bg-emerald-500 border-emerald-500" 
+                    ? "bg-indigo-500 border-indigo-500" 
                     : selectedInYear > 0
-                    ? "bg-emerald-500/50 border-emerald-500"
+                    ? "bg-indigo-500/50 border-indigo-500"
                     : "border-slate-600"
                 )}>
                   {allSelected && <Check className="w-4 h-4 text-white" />}
@@ -163,21 +163,21 @@ function YearSelector({
                   className={cn(
                     "w-full flex items-center gap-3 p-2 rounded-lg transition-all text-left",
                     selectedCourses.includes(course.id)
-                      ? "bg-emerald-500/10 border border-emerald-500/30"
+                      ? "bg-indigo-500/10 border border-indigo-500/30"
                       : "hover:bg-slate-800/50 border border-transparent"
                   )}
                 >
                   <div className={cn(
                     "w-4 h-4 rounded border flex items-center justify-center transition-colors",
                     selectedCourses.includes(course.id)
-                      ? "bg-emerald-500 border-emerald-500"
+                      ? "bg-indigo-500 border-indigo-500"
                       : "border-slate-600"
                   )}>
                     {selectedCourses.includes(course.id) && <Check className="w-3 h-3 text-white" />}
                   </div>
                   <span className={cn(
                     "text-sm",
-                    selectedCourses.includes(course.id) ? "text-emerald-400" : "text-muted-foreground"
+                    selectedCourses.includes(course.id) ? "text-indigo-400" : "text-muted-foreground"
                   )}>
                     {course.period}
                   </span>
@@ -201,7 +201,7 @@ function ComparisonBadge({ trend }: { trend: number }) {
     <span className={cn(
       "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold",
       isPositive 
-        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400" 
+        ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400" 
         : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400"
     )}>
       {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -214,7 +214,7 @@ function ComparisonBadge({ trend }: { trend: number }) {
 function TrendArrow({ value }: { value: number }) {
   const isPositive = value >= 0;
   return (
-    <span className={cn("inline-flex items-center", isPositive ? "text-emerald-400" : "text-red-400")}>
+    <span className={cn("inline-flex items-center", isPositive ? "text-indigo-400" : "text-red-400")}>
       {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
       <span className="ml-1 font-semibold">{Math.abs(value).toFixed(1)}%</span>
     </span>
@@ -331,7 +331,7 @@ export default function ReportsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950/20">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950/20">
         <div className="container mx-auto py-12 px-6">
           <div className="animate-pulse space-y-8">
             <div className="h-8 w-80 bg-slate-800 rounded" />
@@ -353,7 +353,7 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950/20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950/20">
       {/* Background pattern */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -372,14 +372,14 @@ export default function ReportsPage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 rounded-lg bg-emerald-500/20">
-                  <BookOpen className="w-6 h-6 text-emerald-400" />
+                <div className="p-2 rounded-lg bg-indigo-500/20">
+                  <BookOpen className="w-6 h-6 text-indigo-400" />
                 </div>
-                <span className="text-sm font-medium text-emerald-400/80 uppercase tracking-wider">
+                <span className="text-sm font-medium text-indigo-400/80 uppercase tracking-wider">
                   {subjectName}
                 </span>
               </div>
-              <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
                 Evolución Histórica
               </h1>
               <p className="text-muted-foreground text-lg">
@@ -389,14 +389,14 @@ export default function ReportsPage() {
             
             <div className="flex items-center gap-4 px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 backdrop-blur-sm">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-emerald-400" />
+                <Calendar className="w-4 h-4 text-indigo-400" />
                 <span className="text-sm font-medium text-slate-300">
                   {courses.length} períodos
                 </span>
               </div>
               <div className="w-px h-4 bg-slate-600" />
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-cyan-400" />
+                <Users className="w-4 h-4 text-violet-400" />
                 <span className="text-sm font-medium text-slate-300">
                   {courses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes
                 </span>
@@ -438,7 +438,7 @@ export default function ReportsPage() {
                     const latestYearCourses = courses.filter(c => c.schoolYear === latestYear);
                     setSelectedCourses(latestYearCourses.map(c => c.id));
                   }}
-                  className="flex-1 px-3 py-2 text-xs font-medium bg-emerald-500/20 hover:bg-emerald-500/30 rounded-lg border border-emerald-500/30 text-emerald-400 transition-colors"
+                  className="flex-1 px-3 py-2 text-xs font-medium bg-indigo-500/20 hover:bg-indigo-500/30 rounded-lg border border-indigo-500/30 text-indigo-400 transition-colors"
                 >
                   Último Año
                 </button>
@@ -453,8 +453,8 @@ export default function ReportsPage() {
               />
 
               {selectedCourses.length > 0 && (
-                <div className="mt-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-                  <p className="text-sm text-emerald-400 font-medium">
+                <div className="mt-4 p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/30">
+                  <p className="text-sm text-indigo-400 font-medium">
                     {selectedCourses.length} período{selectedCourses.length > 1 ? 's' : ''} seleccionado{selectedCourses.length > 1 ? 's' : ''}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -482,7 +482,7 @@ export default function ReportsPage() {
                   className={cn(
                     "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300",
                     activeTab === tab.id 
-                      ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg" 
+                      ? "bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-lg" 
                       : "text-slate-400 hover:text-white hover:bg-slate-800"
                   )}
                 >
@@ -549,30 +549,30 @@ export default function ReportsPage() {
                       subtitle={`Desde ${selectedMetrics[0]?.period} hasta ${selectedMetrics[selectedMetrics.length - 1]?.period}`}
                       icon={TrendingUp}
                       delay={300}
-                      accentColor="cyan"
+                      accentColor="violet"
                     />
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-center">
                         <p className="text-xs text-muted-foreground mb-1">Progreso</p>
-                        <p className={cn("text-2xl font-bold", evolutionData.progressDiff >= 0 ? "text-emerald-400" : "text-red-400")}>
+                        <p className={cn("text-2xl font-bold", evolutionData.progressDiff >= 0 ? "text-indigo-400" : "text-red-400")}>
                           {evolutionData.progressDiff > 0 ? '+' : ''}{evolutionData.progressDiff.toFixed(1)}%
                         </p>
                       </div>
                       <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-center">
                         <p className="text-xs text-muted-foreground mb-1">Calificación</p>
-                        <p className={cn("text-2xl font-bold", evolutionData.gradeDiff >= 0 ? "text-emerald-400" : "text-red-400")}>
+                        <p className={cn("text-2xl font-bold", evolutionData.gradeDiff >= 0 ? "text-indigo-400" : "text-red-400")}>
                           {evolutionData.gradeDiff > 0 ? '+' : ''}{evolutionData.gradeDiff.toFixed(1)}%
                         </p>
                       </div>
                       <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-center">
                         <p className="text-xs text-muted-foreground mb-1">Completación</p>
-                        <p className={cn("text-2xl font-bold", evolutionData.completionDiff >= 0 ? "text-emerald-400" : "text-red-400")}>
+                        <p className={cn("text-2xl font-bold", evolutionData.completionDiff >= 0 ? "text-indigo-400" : "text-red-400")}>
                           {evolutionData.completionDiff > 0 ? '+' : ''}{evolutionData.completionDiff.toFixed(1)}%
                         </p>
                       </div>
                       <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-center">
                         <p className="text-xs text-muted-foreground mb-1">Tiempo</p>
-                        <p className="text-2xl font-bold text-cyan-400">+{formatPlayTime(evolutionData.timeDiff)}</p>
+                        <p className="text-2xl font-bold text-violet-400">+{formatPlayTime(evolutionData.timeDiff)}</p>
                       </div>
                     </div>
                   </section>
@@ -609,14 +609,14 @@ export default function ReportsPage() {
                               <td className="p-3 text-center">{courses.find(c => c.id === metric.courseId)?.totalStudents || 0}</td>
                               <td className="p-3 text-center font-semibold">{metric.averageProgress}%</td>
                               <td className="p-3 text-center">
-                                <span className={cn("font-bold", metric.averageGrade >= 80 ? "text-emerald-400" : metric.averageGrade >= 60 ? "text-amber-400" : "text-red-400")}>
+                                <span className={cn("font-bold", metric.averageGrade >= 80 ? "text-indigo-400" : metric.averageGrade >= 60 ? "text-amber-400" : "text-red-400")}>
                                   {metric.averageGrade}%
                                 </span>
                               </td>
                               <td className="p-3">
                                 <div className="flex justify-center">
                                   <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                                    <div className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500" style={{ width: `${metric.completionRate}%` }} />
+                                    <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-500" style={{ width: `${metric.completionRate}%` }} />
                                   </div>
                                 </div>
                               </td>
@@ -641,7 +641,7 @@ export default function ReportsPage() {
                   title="Análisis de Evolución" 
                   icon={TrendingUp}
                   delay={0}
-                  accentColor="cyan"
+                  accentColor="violet"
                 />
                 
                 <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-6 mb-6">
