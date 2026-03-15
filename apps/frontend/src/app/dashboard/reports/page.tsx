@@ -13,6 +13,10 @@ import {
   BookOpen,
   CheckCircle2,
   Calendar,
+  ChevronDown,
+  ChevronRight,
+  Check,
+  X,
 } from 'lucide-react';
 import { MetricCard, LineChart as LineChartComponent, BarChart, DonutChart } from '@/components/charts';
 import { cn } from '@/lib/utils';
@@ -74,39 +78,128 @@ function SectionHeader({
   );
 }
 
-// Course period chip
-function PeriodChip({ 
-  course, 
-  isSelected, 
-  onClick,
-  isLatest = false
+// Year selector accordion
+function YearSelector({ 
+  courses, 
+  selectedCourses, 
+  onToggle,
+  latestYear 
 }: { 
-  course: Course; 
-  isSelected: boolean; 
-  onClick: () => void;
-  isLatest?: boolean;
+  courses: Course[];
+  selectedCourses: string[];
+  onToggle: (courseId: string) => void;
+  latestYear: string;
 }) {
+  // Group courses by school year
+  const coursesByYear = useMemo(() => {
+    return courses.reduce<Record<string, Course[]>>((acc, course) => {
+      const year = course.schoolYear;
+      if (!acc[year]) acc[year] = [];
+      acc[year].push(course);
+      return acc;
+    }, {});
+  }, [courses]);
+
+  // Sort years descending
+  const sortedYears = Object.keys(coursesByYear).sort().reverse();
+
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "relative px-5 py-3 rounded-xl text-sm font-medium transition-all duration-300",
-        "border backdrop-blur-sm",
-        isSelected 
-          ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white border-transparent shadow-lg shadow-emerald-500/25" 
-          : "bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
-      )}
-    >
-      <span className="flex items-center gap-2">
-        <Calendar className="w-4 h-4" />
-        {course.period}
-      </span>
-      {isLatest && (
-        <span className="absolute -top-2 -right-2 px-2 py-0.5 text-xs font-bold bg-amber-500 text-white rounded-full shadow-lg">
-          ACTUAL
-        </span>
-      )}
-    </button>
+    <div className="space-y-2">
+      {sortedYears.map((year) => {
+        const yearCourses = coursesByYear[year].sort((a, b) => a.period.localeCompare(b.period));
+        const selectedInYear = yearCourses.filter(c => selectedCourses.includes(c.id)).length;
+        const allSelected = selectedInYear === yearCourses.length;
+        const isLatest = year === latestYear;
+
+        return (
+          <div 
+            key={year}
+            className="rounded-xl border border-slate-700/50 bg-slate-900/30 overflow-hidden"
+          >
+            {/* Year header */}
+            <button
+              onClick={() => {
+                // Toggle all courses in this year
+                yearCourses.forEach(c => {
+                  if (!allSelected) {
+                    if (!selectedCourses.includes(c.id)) {
+                      onToggle(c.id);
+                    }
+                  } else {
+                    if (selectedCourses.includes(c.id)) {
+                      onToggle(c.id);
+                    }
+                  }
+                });
+              }}
+              className="w-full flex items-center justify-between p-4 hover:bg-slate-800/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  "w-6 h-6 rounded-md flex items-center justify-center border-2 transition-colors",
+                  allSelected 
+                    ? "bg-emerald-500 border-emerald-500" 
+                    : selectedInYear > 0
+                    ? "bg-emerald-500/50 border-emerald-500"
+                    : "border-slate-600"
+                )}>
+                  {allSelected && <Check className="w-4 h-4 text-white" />}
+                  {selectedInYear > 0 && !allSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                </div>
+                <div className="text-left">
+                  <span className="font-semibold">{year}</span>
+                  <span className="text-muted-foreground text-sm ml-2">
+                    ({selectedInYear}/{yearCourses.length} períodos)
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                {isLatest && (
+                  <span className="px-2 py-1 text-xs font-bold bg-amber-500 text-white rounded-full">
+                    ACTUAL
+                  </span>
+                )}
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              </div>
+            </button>
+
+            {/* Periods in this year */}
+            <div className="border-t border-slate-700/50 p-3 pt-0 space-y-1">
+              {yearCourses.map((course) => (
+                <button
+                  key={course.id}
+                  onClick={() => onToggle(course.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-2 rounded-lg transition-all text-left",
+                    selectedCourses.includes(course.id)
+                      ? "bg-emerald-500/10 border border-emerald-500/30"
+                      : "hover:bg-slate-800/50 border border-transparent"
+                  )}
+                >
+                  <div className={cn(
+                    "w-4 h-4 rounded border flex items-center justify-center transition-colors",
+                    selectedCourses.includes(course.id)
+                      ? "bg-emerald-500 border-emerald-500"
+                      : "border-slate-600"
+                  )}>
+                    {selectedCourses.includes(course.id) && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <span className={cn(
+                    "text-sm",
+                    selectedCourses.includes(course.id) ? "text-emerald-400" : "text-muted-foreground"
+                  )}>
+                    {course.period}
+                  </span>
+                  <span className="text-xs text-muted-foreground ml-auto">
+                    {course.totalStudents} estudiantes
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -150,9 +243,11 @@ export default function ReportsPage() {
   const [progressData, setProgressData] = useState<Record<string, CourseProgressOverTime[]>>({});
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Get latest course (most recent period)
-  const latestCourse = useMemo(() => {
-    return courses.length > 0 ? courses[courses.length - 1] : null;
+  // Get latest year (most recent school year)
+  const latestYear = useMemo(() => {
+    if (courses.length === 0) return '';
+    const sorted = [...courses].sort((a, b) => b.schoolYear.localeCompare(a.schoolYear));
+    return sorted[0].schoolYear;
   }, [courses]);
 
   // Get subject name (all courses are the same subject)
@@ -172,9 +267,12 @@ export default function ReportsPage() {
         setCourses(coursesData);
         setKpis(kpisData);
         
-        // Select all courses by default to show evolution
+        // Select latest year by default
         if (coursesData.length > 0) {
-          setSelectedCourses(coursesData.map(c => c.id));
+          const sorted = [...coursesData].sort((a, b) => b.schoolYear.localeCompare(a.schoolYear));
+          const latestSchoolYear = sorted[0].schoolYear;
+          const latestYearCourses = coursesData.filter(c => c.schoolYear === latestSchoolYear);
+          setSelectedCourses(latestYearCourses.map(c => c.id));
         }
       } catch (error) {
         console.error('Error loading reports data:', error);
@@ -257,17 +355,17 @@ export default function ReportsPage() {
         <div className="container mx-auto py-12 px-6">
           <div className="animate-pulse space-y-8">
             <div className="h-8 w-80 bg-slate-800 rounded" />
-            <div className="flex gap-3">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-12 w-44 bg-slate-800 rounded-xl" />
-              ))}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-1 space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-24 bg-slate-800 rounded-xl" />
+                ))}
+              </div>
+              <div className="lg:col-span-2 space-y-4">
+                <div className="h-36 bg-slate-800 rounded-xl" />
+                <div className="h-96 bg-slate-800 rounded-xl" />
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-36 bg-slate-800 rounded-xl" />
-              ))}
-            </div>
-            <div className="h-96 bg-slate-800 rounded-xl" />
           </div>
         </div>
       </div>
@@ -294,8 +392,8 @@ export default function ReportsPage() {
 
       <div className="container mx-auto py-12 px-6 relative z-10">
         {/* Header */}
-        <div className="mb-12">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 rounded-lg bg-emerald-500/20">
@@ -313,406 +411,428 @@ export default function ReportsPage() {
               </p>
             </div>
             
-            {/* Decorative badge */}
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/80 dark:bg-slate-900/80 border border-slate-700 dark:border-slate-600 backdrop-blur-sm">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-sm font-medium text-slate-300">
-                {courses.length} períodos analizados
-              </span>
+            {/* Summary badge */}
+            <div className="flex items-center gap-4 px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-emerald-400" />
+                <span className="text-sm font-medium text-slate-300">
+                  {courses.length} períodos
+                </span>
+              </div>
+              <div className="w-px h-4 bg-slate-600" />
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-cyan-400" />
+                <span className="text-sm font-medium text-slate-300">
+                  {courses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main content - 2 columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left sidebar - Year selector */}
+          <div className="lg:col-span-4 xl:col-span-3">
+            <div className="sticky top-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                  Seleccionar Períodos
+                </h3>
+                {selectedCourses.length > 0 && (
+                  <button
+                    onClick={() => setSelectedCourses([])}
+                    className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" />
+                    Limpiar
+                  </button>
+                )}
+              </div>
+              
+              {/* Quick select buttons */}
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => {
+                    // Select all
+                    setSelectedCourses(courses.map(c => c.id));
+                  }}
+                  className="flex-1 px-3 py-2 text-xs font-medium bg-slate-800/50 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors"
+                >
+                  Todos
+                </button>
+                <button
+                  onClick={() => {
+                    // Select latest year
+                    const latestYearCourses = courses.filter(c => c.schoolYear === latestYear);
+                    setSelectedCourses(latestYearCourses.map(c => c.id));
+                  }}
+                  className="flex-1 px-3 py-2 text-xs font-medium bg-emerald-500/20 hover:bg-emerald-500/30 rounded-lg border border-emerald-500/30 text-emerald-400 transition-colors"
+                >
+                  Último Año
+                </button>
+              </div>
+
+              {/* Year accordion selector */}
+              <YearSelector 
+                courses={courses}
+                selectedCourses={selectedCourses}
+                onToggle={toggleCourse}
+                latestYear={latestYear}
+              />
+
+              {/* Selection summary */}
+              {selectedCourses.length > 0 && (
+                <div className="mt-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                  <p className="text-sm text-emerald-400 font-medium">
+                    {selectedCourses.length} período{selectedCourses.length > 1 ? 's' : ''} seleccionado{selectedCourses.length > 1 ? 's' : ''}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {selectedCourses.length >= 2 
+                      ? `Comparando ${selectedMetrics[0]?.period} → ${selectedMetrics[selectedMetrics.length - 1]?.period}`
+                      : 'Selecciona más períodos para comparar'}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Period Selection */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <ArrowRightLeft className="w-4 h-4" />
-              <span>Selecciona los períodos a comparar:</span>
-              <span className="font-medium text-emerald-400">{selectedCourses.length} seleccionados</span>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {courses.map((course, index) => (
-                <PeriodChip
-                  key={course.id}
-                  course={course}
-                  isSelected={selectedCourses.includes(course.id)}
-                  onClick={() => toggleCourse(course.id)}
-                  isLatest={course.id === latestCourse?.id}
-                />
+          {/* Right content - Charts and data */}
+          <div className="lg:col-span-8 xl:col-span-9">
+            {/* Tab Navigation */}
+            <div className="flex gap-2 mb-8 p-1 bg-slate-900/50 rounded-xl w-fit backdrop-blur-sm">
+              {[
+                { id: 'overview', label: 'Resumen', icon: BarChart3 },
+                { id: 'evolution', label: 'Evolución', icon: TrendingUp },
+                { id: 'comparison', label: 'Comparación', icon: ArrowRightLeft },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300",
+                    activeTab === tab.id 
+                      ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg" 
+                      : "text-slate-400 hover:text-white hover:bg-slate-800"
+                  )}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Tab Navigation */}
-        <div className="flex gap-2 mb-8 p-1 bg-slate-900/50 dark:bg-slate-800/50 rounded-xl w-fit backdrop-blur-sm">
-          {[
-            { id: 'overview', label: 'Resumen', icon: BarChart3 },
-            { id: 'evolution', label: 'Evolución', icon: TrendingUp },
-            { id: 'comparison', label: 'Comparación', icon: ArrowRightLeft },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300",
-                activeTab === tab.id 
-                  ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg" 
-                  : "text-slate-400 hover:text-white hover:bg-slate-800"
-              )}
-            >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          ))}
-        </div>
+            {/* Overview Tab */}
+            {activeTab === 'overview' && (
+              <>
+                {/* KPIs Section */}
+                <section className="mb-8">
+                  <SectionHeader 
+                    title="Métricas Consolidadas" 
+                    subtitle={`Promedio histórico de ${selectedCourses.length} períodos seleccionados`}
+                    icon={Activity}
+                    delay={0}
+                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div style={{ animationDelay: "100ms" }} className="animate-fade-in-up">
+                      <MetricCard
+                        title="Períodos"
+                        value={selectedCourses.length}
+                        icon={<Calendar className="h-5 w-5" />}
+                        description="Seleccionados"
+                        variant="default"
+                      />
+                    </div>
+                    <div style={{ animationDelay: "150ms" }} className="animate-fade-in-up">
+                      <MetricCard
+                        title="Estudiantes"
+                        value={selectedCourses.reduce((sum, id) => sum + (courses.find(c => c.id === id)?.totalStudents || 0), 0)}
+                        icon={<Users className="h-5 w-5" />}
+                        description="En seleccionados"
+                        variant="default"
+                      />
+                    </div>
+                    <div style={{ animationDelay: "200ms" }} className="animate-fade-in-up">
+                      <MetricCard
+                        title="Completación"
+                        value={`${Math.round(selectedMetrics.reduce((sum, m) => sum + m.completionRate, 0) / (selectedMetrics.length || 1))}%`}
+                        icon={<CheckCircle2 className="h-5 w-5" />}
+                        description="Promedio"
+                        variant="highlight"
+                      />
+                    </div>
+                    <div style={{ animationDelay: "250ms" }} className="animate-fade-in-up">
+                      <MetricCard
+                        title="Calificación"
+                        value={`${Math.round(selectedMetrics.reduce((sum, m) => sum + m.averageGrade, 0) / (selectedMetrics.length || 1))}%`}
+                        icon={<Target className="h-5 w-5" />}
+                        description="Promedio"
+                        variant="accent"
+                      />
+                    </div>
+                  </div>
+                </section>
 
-        {/* Overview Tab */}
-        {activeTab === 'overview' && (
-          <>
-            {/* KPIs Section */}
-            <section className="mb-12">
-              <SectionHeader 
-                title="Métricas Consolidadas" 
-                subtitle={`Promedio histórico de ${subjectName}`}
-                icon={Activity}
-                delay={0}
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div style={{ animationDelay: "100ms" }} className="animate-fade-in-up">
-                  <MetricCard
-                    title="Períodos Analizados"
-                    value={kpis?.totalCourses || 0}
-                    icon={<Calendar className="h-5 w-5" />}
-                    description="Años escolares registrados"
-                    variant="default"
-                  />
-                </div>
-                <div style={{ animationDelay: "200ms" }} className="animate-fade-in-up">
-                  <MetricCard
-                    title="Total Estudiantes"
-                    value={kpis?.totalStudents || 0}
-                    icon={<Users className="h-5 w-5" />}
-                    description="Matriculados históricamente"
-                    variant="default"
-                  />
-                </div>
-                <div style={{ animationDelay: "300ms" }} className="animate-fade-in-up">
-                  <MetricCard
-                    title="Tasa Completación"
-                    value={`${kpis?.overallCompletionRate || 0}%`}
-                    icon={<CheckCircle2 className="h-5 w-5" />}
-                    description="Promedio histórico"
-                    variant="highlight"
-                  />
-                </div>
-                <div style={{ animationDelay: "400ms" }} className="animate-fade-in-up">
-                  <MetricCard
-                    title="Calificación Promedio"
-                    value={`${kpis?.overallAverageGrade || 0}%`}
-                    icon={<Target className="h-5 w-5" />}
-                    description="Rendimiento medio histórico"
-                    variant="accent"
-                  />
-                </div>
-              </div>
-            </section>
+                {/* Evolution Summary */}
+                {evolutionData && (
+                  <section className="mb-8">
+                    <SectionHeader 
+                      title="Evolución Total" 
+                      subtitle={`Cambio desde ${selectedMetrics[0]?.period} hasta ${selectedMetrics[selectedMetrics.length - 1]?.period}`}
+                      icon={TrendingUp}
+                      delay={300}
+                      accentColor="cyan"
+                    />
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-4 text-center">
+                        <p className="text-xs text-muted-foreground mb-1">Progreso</p>
+                        <p className={cn("text-2xl font-bold", evolutionData.progressDiff >= 0 ? "text-emerald-400" : "text-red-400")}>
+                          {evolutionData.progressDiff > 0 ? '+' : ''}{evolutionData.progressDiff.toFixed(1)}%
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-4 text-center">
+                        <p className="text-xs text-muted-foreground mb-1">Calificación</p>
+                        <p className={cn("text-2xl font-bold", evolutionData.gradeDiff >= 0 ? "text-emerald-400" : "text-red-400")}>
+                          {evolutionData.gradeDiff > 0 ? '+' : ''}{evolutionData.gradeDiff.toFixed(1)}%
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-4 text-center">
+                        <p className="text-xs text-muted-foreground mb-1">Completación</p>
+                        <p className={cn("text-2xl font-bold", evolutionData.completionDiff >= 0 ? "text-emerald-400" : "text-red-400")}>
+                          {evolutionData.completionDiff > 0 ? '+' : ''}{evolutionData.completionDiff.toFixed(1)}%
+                        </p>
+                      </div>
+                      <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-4 text-center">
+                        <p className="text-xs text-muted-foreground mb-1">Tiempo</p>
+                        <p className="text-2xl font-bold text-cyan-400">
+                          +{formatPlayTime(evolutionData.timeDiff)}
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+                )}
 
-            {/* Evolution Summary */}
-            {evolutionData && (
-              <section className="mb-12">
+                {/* Performance by Period Table */}
+                <section className="mb-8">
+                  <SectionHeader 
+                    title="Rendimiento por Período" 
+                    subtitle="Métricas detalladas de cada período"
+                    icon={Award}
+                    delay={500}
+                  />
+                  <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-slate-700/50">
+                            <th className="text-left p-3 text-xs font-semibold text-slate-400">Período</th>
+                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Año</th>
+                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Est.</th>
+                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Prog.</th>
+                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Calif.</th>
+                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Tasa</th>
+                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Tendencia</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {selectedMetrics.map((metric, index) => (
+                            <tr 
+                              key={metric.courseId}
+                              className="border-b border-slate-700/30 hover:bg-slate-800/50 transition-colors"
+                            >
+                              <td className="p-3">
+                                <span className="font-medium text-sm">{metric.period}</span>
+                              </td>
+                              <td className="p-3 text-center text-xs text-muted-foreground">
+                                {metric.schoolYear}
+                              </td>
+                              <td className="p-3 text-center text-sm">
+                                {courses.find(c => c.id === metric.courseId)?.totalStudents || 0}
+                              </td>
+                              <td className="p-3 text-center text-sm font-semibold">
+                                {metric.averageProgress}%
+                              </td>
+                              <td className="p-3 text-center">
+                                <span className={cn(
+                                  "font-bold text-sm",
+                                  metric.averageGrade >= 80 ? "text-emerald-400" :
+                                  metric.averageGrade >= 60 ? "text-amber-400" : "text-red-400"
+                                )}>
+                                  {metric.averageGrade}%
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <div className="flex items-center justify-center gap-2">
+                                  <div className="w-12 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                    <div 
+                                      className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full"
+                                      style={{ width: `${metric.completionRate}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-3 text-center">
+                                {metric.progressTrend !== 0 && (
+                                  <ComparisonBadge trend={metric.progressTrend} />
+                                )}
+                                {metric.progressTrend === 0 && (
+                                  <span className="text-xs text-slate-500">—</span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </section>
+              </>
+            )}
+
+            {/* Evolution Tab */}
+            {activeTab === 'evolution' && selectedMetrics.length > 0 && (
+              <section className="mb-8">
                 <SectionHeader 
-                  title="Evolución Total" 
-                  subtitle={`Cambio desde ${selectedMetrics[0]?.period} hasta ${selectedMetrics[selectedMetrics.length - 1]?.period}`}
+                  title="Análisis de Evolución" 
+                  subtitle="Tendencia histórica de las métricas principales"
                   icon={TrendingUp}
-                  delay={500}
+                  delay={0}
                   accentColor="cyan"
                 />
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6 text-center">
-                    <p className="text-sm text-muted-foreground mb-2">Progreso</p>
-                    <p className={cn(
-                      "text-3xl font-bold",
-                      evolutionData.progressDiff >= 0 ? "text-emerald-400" : "text-red-400"
-                    )}>
-                      {evolutionData.progressDiff > 0 ? '+' : ''}{evolutionData.progressDiff.toFixed(1)}%
-                    </p>
+                
+                {/* Progress & Grade Evolution */}
+                <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6 mb-6">
+                  <h3 className="text-lg font-semibold mb-6">Progreso y Calificación</h3>
+                  <LineChartComponent
+                    data={selectedMetrics.map(m => ({
+                      date: m.period.replace(' - Primer Semestre', ' (1S)').replace(' - Segundo Semestre', ' (2S)'),
+                      averageProgress: m.averageProgress,
+                      averageGrade: m.averageGrade,
+                    }))}
+                    xAxisDataKey="date"
+                    lines={[
+                      { dataKey: "averageProgress", name: "Progreso", color: "#10B981" },
+                      { dataKey: "averageGrade", name: "Calificación", color: "#06B6D4" },
+                    ]}
+                    title=""
+                    subtitle=""
+                    yAxisLabel="%"
+                    height={300}
+                  />
+                </div>
+
+                {/* Completion & Engagement */}
+                <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6">
+                  <h3 className="text-lg font-semibold mb-6">Completación y Engagement</h3>
+                  <LineChartComponent
+                    data={selectedMetrics.map(m => ({
+                      date: m.period.replace(' - Primer Semestre', ' (1S)').replace(' - Segundo Semestre', ' (2S)'),
+                      completionRate: m.completionRate,
+                      sessionsPerStudent: m.averageSessionsPerStudent * 5,
+                    }))}
+                    xAxisDataKey="date"
+                    lines={[
+                      { dataKey: "completionRate", name: "Tasa Completación", color: "#F59E0B" },
+                      { dataKey: "sessionsPerStudent", name: "Sesiones/Est (x5)", color: "#8B5CF6" },
+                    ]}
+                    title=""
+                    subtitle=""
+                    yAxisLabel="Valor"
+                    height={300}
+                  />
+                </div>
+              </section>
+            )}
+
+            {/* Comparison Tab */}
+            {activeTab === 'comparison' && selectedMetrics.length >= 2 && (
+              <section className="mb-8">
+                <SectionHeader 
+                  title="Comparación de Períodos" 
+                  subtitle={`${selectedMetrics.length} períodos seleccionados`}
+                  icon={ArrowRightLeft}
+                  delay={0}
+                  accentColor="amber"
+                />
+                
+                {/* Comparison Chart */}
+                <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6 mb-6">
+                  <h3 className="text-lg font-semibold mb-6">Métricas Comparadas</h3>
+                  <BarChart
+                    data={selectedMetrics.map(m => ({
+                      name: m.period.replace(' - ', '\n'),
+                      Progreso: m.averageProgress,
+                      Calificación: m.averageGrade,
+                      Completación: m.completionRate,
+                    }))}
+                    xAxisDataKey="name"
+                    bars={[
+                      { dataKey: "Progreso", color: "#10B981" },
+                      { dataKey: "Calificación", color: "#06B6D4" },
+                      { dataKey: "Completación", color: "#F59E0B" },
+                    ]}
+                    title=""
+                    subtitle=""
+                    yAxisLabel="%"
+                    height={350}
+                  />
+                </div>
+
+                {/* Distribution & Trends */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6">
+                    <h3 className="text-lg font-semibold mb-4">Distribución de Rendimiento</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Último período</p>
+                    <DonutChart
+                      data={[
+                        { name: 'Alto', value: selectedMetrics[selectedMetrics.length - 1]?.highPerformers || 0 },
+                        { name: 'Medio', value: selectedMetrics[selectedMetrics.length - 1]?.mediumPerformers || 0 },
+                        { name: 'Bajo', value: selectedMetrics[selectedMetrics.length - 1]?.lowPerformers || 0 },
+                      ]}
+                      title=""
+                      subtitle=""
+                      height={250}
+                    />
                   </div>
-                  <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6 text-center">
-                    <p className="text-sm text-muted-foreground mb-2">Calificación</p>
-                    <p className={cn(
-                      "text-3xl font-bold",
-                      evolutionData.gradeDiff >= 0 ? "text-emerald-400" : "text-red-400"
-                    )}>
-                      {evolutionData.gradeDiff > 0 ? '+' : ''}{evolutionData.gradeDiff.toFixed(1)}%
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6 text-center">
-                    <p className="text-sm text-muted-foreground mb-2">Completación</p>
-                    <p className={cn(
-                      "text-3xl font-bold",
-                      evolutionData.completionDiff >= 0 ? "text-emerald-400" : "text-red-400"
-                    )}>
-                      {evolutionData.completionDiff > 0 ? '+' : ''}{evolutionData.completionDiff.toFixed(1)}%
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6 text-center">
-                    <p className="text-sm text-muted-foreground mb-2">Tiempo Activo</p>
-                    <p className="text-3xl font-bold text-cyan-400">
-                      +{formatPlayTime(evolutionData.timeDiff)}
-                    </p>
+
+                  <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6">
+                    <h3 className="text-lg font-semibold mb-4">Tendencias</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Vs período anterior</p>
+                    <div className="space-y-2 max-h-64 overflow-y-auto">
+                      {selectedMetrics.slice(1).map((metric) => (
+                        <div 
+                          key={metric.courseId}
+                          className="p-3 rounded-lg bg-slate-800/30 border border-slate-700/30"
+                        >
+                          <p className="text-xs font-medium mb-1">{metric.period}</p>
+                          <div className="flex gap-4 text-xs">
+                            <span className="text-muted-foreground">Prog: <TrendArrow value={metric.progressTrend} /></span>
+                            <span className="text-muted-foreground">Calif: <TrendArrow value={metric.gradeTrend} /></span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </section>
             )}
 
-            {/* Performance by Period Table */}
-            <section className="mb-12">
-              <SectionHeader 
-                title="Rendimiento por Período" 
-                subtitle="Métricas detalladas de cada período escolar"
-                icon={Award}
-                delay={700}
-              />
-              <div className="rounded-2xl border border-slate-700/50 dark:border-slate-600/30 bg-slate-900/50 dark:bg-slate-800/30 backdrop-blur-sm shadow-xl shadow-emerald-500/5 overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-slate-700/50 dark:border-slate-600/30">
-                        <th className="text-left p-4 text-sm font-semibold text-slate-400">Período</th>
-                        <th className="text-center p-4 text-sm font-semibold text-slate-400">Año Escolar</th>
-                        <th className="text-center p-4 text-sm font-semibold text-slate-400">Estudiantes</th>
-                        <th className="text-center p-4 text-sm font-semibold text-slate-400">Progreso</th>
-                        <th className="text-center p-4 text-sm font-semibold text-slate-400">Calificación</th>
-                        <th className="text-center p-4 text-sm font-semibold text-slate-400">Completación</th>
-                        <th className="text-center p-4 text-sm font-semibold text-slate-400">Tendencia</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedMetrics.map((metric, index) => (
-                        <tr 
-                          key={metric.courseId}
-                          className="border-b border-slate-700/30 dark:border-slate-600/20 hover:bg-slate-800/50 transition-colors"
-                          style={{ animationDelay: `${800 + index * 100}ms` }}
-                        >
-                          <td className="p-4">
-                            <div className="flex items-center gap-3">
-                              <div className={cn(
-                                "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold",
-                                index === selectedMetrics.length - 1 
-                                  ? "bg-gradient-to-br from-emerald-500 to-cyan-500 text-white"
-                                  : "bg-slate-700 text-slate-300"
-                              )}>
-                                {index + 1}
-                              </div>
-                              <span className="font-medium">{metric.period}</span>
-                            </div>
-                          </td>
-                          <td className="p-4 text-center text-sm text-muted-foreground">
-                            {metric.schoolYear}
-                          </td>
-                          <td className="p-4 text-center">
-                            <span className="font-semibold">{courses.find(c => c.id === metric.courseId)?.totalStudents || 0}</span>
-                          </td>
-                          <td className="p-4 text-center">
-                            <span className="font-semibold">{metric.averageProgress}%</span>
-                          </td>
-                          <td className="p-4 text-center">
-                            <span className={cn(
-                              "font-bold",
-                              metric.averageGrade >= 80 ? "text-emerald-400" :
-                              metric.averageGrade >= 60 ? "text-amber-400" : "text-red-400"
-                            )}>
-                              {metric.averageGrade}%
-                            </span>
-                          </td>
-                          <td className="p-4 text-center">
-                            <div className="flex items-center justify-center gap-2">
-                              <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
-                                <div 
-                                  className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full"
-                                  style={{ width: `${metric.completionRate}%` }}
-                                />
-                              </div>
-                              <span className="text-sm">{metric.completionRate}%</span>
-                            </div>
-                          </td>
-                          <td className="p-4 text-center">
-                            {metric.progressTrend !== 0 && (
-                              <ComparisonBadge trend={metric.progressTrend} />
-                            )}
-                            {metric.progressTrend === 0 && (
-                              <span className="text-xs text-slate-500">—</span>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+            {activeTab === 'comparison' && selectedMetrics.length < 2 && (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-20 h-20 rounded-full bg-slate-800/50 flex items-center justify-center mb-6">
+                  <ArrowRightLeft className="w-10 h-10 text-slate-500" />
                 </div>
+                <h3 className="text-xl font-semibold mb-2">Selecciona al menos 2 períodos</h3>
+                <p className="text-muted-foreground max-w-md">
+                  Usa el selector de la izquierda para elegir períodos a comparar.
+                </p>
               </div>
-            </section>
-          </>
-        )}
-
-        {/* Evolution Tab - Line Charts */}
-        {activeTab === 'evolution' && selectedMetrics.length > 0 && (
-          <section className="mb-12">
-            <SectionHeader 
-              title="Análisis de Evolución" 
-              subtitle="Tendencia histórica de las métricas principales"
-              icon={TrendingUp}
-              delay={0}
-              accentColor="cyan"
-            />
-            
-            {/* Progress & Grade Evolution */}
-            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6 mb-8">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-lg font-semibold">Progreso y Calificación</h3>
-                  <p className="text-sm text-muted-foreground">Evolución a lo largo de los períodos</p>
-                </div>
-              </div>
-              <LineChartComponent
-                data={selectedMetrics.map(m => ({
-                  date: m.period.replace(' - Primer Semestre', ' (1S)').replace(' - Segundo Semestre', ' (2S)'),
-                  averageProgress: m.averageProgress,
-                  averageGrade: m.averageGrade,
-                }))}
-                xAxisDataKey="date"
-                lines={[
-                  { dataKey: "averageProgress", name: "Progreso", color: "#10B981" },
-                  { dataKey: "averageGrade", name: "Calificación", color: "#06B6D4" },
-                ]}
-                title=""
-                subtitle=""
-                yAxisLabel="%"
-                height={350}
-              />
-            </div>
-
-            {/* Completion & Time Evolution */}
-            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-lg font-semibold">Completación y Engagement</h3>
-                  <p className="text-sm text-muted-foreground">Tendencia de participación y completion</p>
-                </div>
-              </div>
-              <LineChartComponent
-                data={selectedMetrics.map(m => ({
-                  date: m.period.replace(' - Primer Semestre', ' (1S)').replace(' - Segundo Semestre', ' (2S)'),
-                  completionRate: m.completionRate,
-                  sessionsPerStudent: m.averageSessionsPerStudent * 5, // Scaled for visibility
-                }))}
-                xAxisDataKey="date"
-                lines={[
-                  { dataKey: "completionRate", name: "Tasa Completación", color: "#F59E0B" },
-                  { dataKey: "sessionsPerStudent", name: "Sesiones/Estudiante (x5)", color: "#8B5CF6" },
-                ]}
-                title=""
-                subtitle=""
-                yAxisLabel="Valor"
-                height={350}
-              />
-            </div>
-          </section>
-        )}
-
-        {/* Comparison Tab */}
-        {activeTab === 'comparison' && selectedMetrics.length >= 2 && (
-          <section className="mb-12">
-            <SectionHeader 
-              title="Comparación de Períodos" 
-              subtitle={`Análisis comparativo de ${selectedMetrics.length} períodos seleccionados`}
-              icon={ArrowRightLeft}
-              delay={0}
-              accentColor="amber"
-            />
-            
-            {/* Comparison Chart */}
-            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6 mb-8">
-              <h3 className="text-lg font-semibold mb-6">Comparación de Métricas</h3>
-              <BarChart
-                data={selectedMetrics.map(m => ({
-                  name: m.period.replace(' - ', '\n'),
-                  Progreso: m.averageProgress,
-                  Calificación: m.averageGrade,
-                  Completación: m.completionRate,
-                }))}
-                xAxisDataKey="name"
-                bars={[
-                  { dataKey: "Progreso", color: "#10B981" },
-                  { dataKey: "Calificación", color: "#06B6D4" },
-                  { dataKey: "Completación", color: "#F59E0B" },
-                ]}
-                title=""
-                subtitle=""
-                yAxisLabel="%"
-                height={400}
-              />
-            </div>
-
-            {/* Distribution by Period */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6">
-                <h3 className="text-lg font-semibold mb-4">Distribución de Rendimiento</h3>
-                <p className="text-sm text-muted-foreground mb-6">Último período seleccionado</p>
-                <DonutChart
-                  data={[
-                    { name: 'Alto Rendimiento', value: selectedMetrics[selectedMetrics.length - 1]?.highPerformers || 0 },
-                    { name: 'Rendimiento Medio', value: selectedMetrics[selectedMetrics.length - 1]?.mediumPerformers || 0 },
-                    { name: 'Necesita Apoyo', value: selectedMetrics[selectedMetrics.length - 1]?.lowPerformers || 0 },
-                  ]}
-                  title=""
-                  subtitle=""
-                  height={300}
-                />
-              </div>
-
-              <div className="rounded-2xl border border-slate-700/50 bg-slate-900/50 backdrop-blur-sm p-6">
-                <h3 className="text-lg font-semibold mb-4">Tendencias por Período</h3>
-                <p className="text-sm text-muted-foreground mb-6">Cambio porcentual vs período anterior</p>
-                <div className="space-y-3">
-                  {selectedMetrics.slice(1).map((metric, index) => (
-                    <div 
-                      key={metric.courseId}
-                      className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/30"
-                    >
-                      <p className="text-sm font-medium mb-2">{metric.period}</p>
-                      <div className="flex items-center gap-6 text-sm">
-                        <div>
-                          <span className="text-muted-foreground">Progreso: </span>
-                          <TrendArrow value={metric.progressTrend} />
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">Calificación: </span>
-                          <TrendArrow value={metric.gradeTrend} />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activeTab === 'comparison' && selectedMetrics.length < 2 && (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 rounded-full bg-slate-800/50 flex items-center justify-center mb-6">
-              <ArrowRightLeft className="w-10 h-10 text-slate-500" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Selecciona al menos 2 períodos</h3>
-            <p className="text-muted-foreground max-w-md">
-              Para ver la comparación, necesitas seleccionar al menos 2 períodos diferentes. 
-              Haz clic en los chips de arriba para añadir períodos.
-            </p>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Footer */}
-        <div className="text-center py-8 border-t border-slate-800">
+        <div className="text-center py-8 border-t border-slate-800 mt-8">
           <p className="text-sm text-muted-foreground">
             📊 Reporte de {subjectName} • Hello World Platform
           </p>
