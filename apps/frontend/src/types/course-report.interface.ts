@@ -5,8 +5,9 @@
 
 export interface Course {
   id: string;
-  name: string;
-  period: string;
+  name: string;           // Nombre de la materia (ej: "Matemáticas I")
+  period: string;        // Período escolar (ej: "2026 - Primer Semestre")
+  schoolYear: string;     // Año escolar (ej: "2025-2026")
   startDate: string;
   endDate: string;
   totalStudents: number;
@@ -16,6 +17,7 @@ export interface CourseMetrics {
   courseId: string;
   courseName: string;
   period: string;
+  schoolYear: string;
   
   // Progreso y Rendimiento
   averageProgress: number;
@@ -92,4 +94,8 @@ export interface CourseReportKPIs {
   overallAverageGrade: number;
   topPerformingCourse: CourseMetrics | null;
   needsAttentionCourse: CourseMetrics | null;
+  
+  // Métricas de tendencia año a año
+  yearOverYearProgress: number;  // Cambio promedio en progreso vs año anterior
+  yearOverYearGrade: number;     // Cambio promedio en calificación vs año anterior
 }
