@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, User, Mail, Settings } from "lucide-react";
+import { Camera, User, Mail } from "lucide-react";
 
 // Mock user data - in a real app, this would come from an API
 const mockUser = {
@@ -19,18 +19,37 @@ const mockUser = {
 
 export default function AccountPage() {
   return (
-    <div className="container mx-auto py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Settings className="h-8 w-8 text-primary" />
-          Mi Cuenta
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Gestiona tu perfil y preferencias de cuenta
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
+      <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="container mx-auto py-12 px-6 relative z-10">
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
+              <User className="h-6 w-6" />
+            </div>
+            <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+              Cuenta
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
+            Mi Cuenta
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Gestiona tu perfil y preferencias de cuenta
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Profile Card */}
         <div className="lg:col-span-1">
           <Card>
@@ -225,6 +244,7 @@ export default function AccountPage() {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </div>
   );

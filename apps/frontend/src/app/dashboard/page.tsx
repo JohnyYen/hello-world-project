@@ -17,24 +17,34 @@ export default function Page() {
         </svg>
       </div>
 
-      <div className="container mx-auto py-12 px-6 relative z-10 space-y-6">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
-            Dashboard
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Resumen general del rendimiento y métricas clave
-          </p>
+      <div className="container mx-auto py-12 px-6 relative z-10 space-y-8">
+        {/* Page Header - Premium Design */}
+        <div className="relative">
+          <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 via-violet-500 to-indigo-500 rounded-full opacity-60" />
+          <div className="pl-6 space-y-2">
+            <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 dark:from-indigo-400 dark:via-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              Dashboard
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-xl">
+              Resumen general del rendimiento y métricas clave de tu proyecto
+            </p>
+          </div>
+          {/* Decorative elements */}
+          <div className="absolute -right-20 -top-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -right-10 top-20 w-24 h-24 bg-violet-500/10 rounded-full blur-2xl pointer-events-none" />
         </div>
 
         <SectionCards />
         
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
+        {/* Chart Section */}
+        <div className="group relative rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl shadow-indigo-500/5 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <ChartAreaInteractive />
         </div>
         
-        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
+        {/* Data Table Section */}
+        <div className="group relative rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl shadow-indigo-500/5 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <DataTable data={data} />
         </div>
       </div>
