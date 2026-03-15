@@ -6,53 +6,30 @@
 export interface Course {
   id: string;
   name: string;           // Nombre de la materia (ej: "Matemáticas I")
-  period: string;        // Período escolar (ej: "2026 - Primer Semestre")
-  schoolYear: string;     // Año escolar (ej: "2025-2026")
+  schoolYear: string;     // Año escolar completo (ej: "2025-2026")
   startDate: string;
   endDate: string;
   totalStudents: number;
-}
-
-export interface CourseMetrics {
-  courseId: string;
-  courseName: string;
-  period: string;
-  schoolYear: string;
   
-  // Progreso y Rendimiento
+  // Métricas del año completo
   averageProgress: number;
   averageGrade: number;
   completionRate: number;
   studentsCompleted: number;
-  
-  // Engagement
-  averageActiveTime: number; // minutos promedio
+  averageActiveTime: number;
   dailyActiveUsers: number;
   weeklyActiveUsers: number;
   averageSessionsPerStudent: number;
-  
-  // Distribución de rendimiento
   highPerformers: number;
   mediumPerformers: number;
   lowPerformers: number;
-  
-  // Tendencia (porcentaje de cambio vs período anterior)
+}
+
+export interface CourseMetrics extends Course {
+  // Tendencia vs año anterior
   progressTrend: number;
   gradeTrend: number;
   engagementTrend: number;
-}
-
-export interface CourseComparison {
-  courses: CourseMetrics[];
-  metrics: ComparisonMetric[];
-}
-
-export interface ComparisonMetric {
-  name: string;
-  key: keyof CourseMetrics;
-  values: number[];
-  unit: string;
-  higherIsBetter: boolean;
 }
 
 export interface CourseProgressOverTime {
@@ -64,16 +41,8 @@ export interface CourseProgressOverTime {
 export interface StudentActivitySummary {
   date: string;
   activeStudents: number;
-  totalTimeSpent: number; // minutos
+  totalTimeSpent: number;
   averageSessionTime: number;
-}
-
-export interface PerformanceDistribution {
-  range: string;
-  minScore: number;
-  maxScore: number;
-  count: number;
-  percentage: number;
 }
 
 // Tipos para filtros de reporte
@@ -96,6 +65,6 @@ export interface CourseReportKPIs {
   needsAttentionCourse: CourseMetrics | null;
   
   // Métricas de tendencia año a año
-  yearOverYearProgress: number;  // Cambio promedio en progreso vs año anterior
-  yearOverYearGrade: number;     // Cambio promedio en calificación vs año anterior
+  yearOverYearProgress: number;
+  yearOverYearGrade: number;
 }
