@@ -30,7 +30,12 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning className={`${shareTechMono.variable} ${fallbackFont.variable}`}>
       <body className="font-sans antialiased">
-        <ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
         </ThemeProvider>
       </body>

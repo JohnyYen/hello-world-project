@@ -1,4 +1,3 @@
-import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/context/auth-context";
 import { AppSidebar, SiteHeader } from "@/components/dashboard";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -9,36 +8,29 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <AuthProvider>
-        <div>
-          <SidebarProvider
-            style={
-              {
-                "--sidebar-width": "calc(var(--spacing) * 72)",
-                "--header-height": "calc(var(--spacing) * 12)",
-              } as React.CSSProperties
-            }
-          >
-            <AppSidebar variant="inset" />
-            <SidebarInset>
-              <SiteHeader />
-              <div className="flex flex-1 flex-col">
-                <div className="@container/main flex flex-1 flex-col gap-2">
-                  <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                    {children}
-                  </div>
+    <AuthProvider>
+      <div>
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "calc(var(--spacing) * 72)",
+              "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties
+          }
+        >
+          <AppSidebar variant="inset" />
+          <SidebarInset>
+            <SiteHeader />
+            <div className="flex flex-1 flex-col">
+              <div className="@container/main flex flex-1 flex-col gap-2">
+                <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                  {children}
                 </div>
               </div>
-            </SidebarInset>
-          </SidebarProvider>
-        </div>
-      </AuthProvider>
-    </ThemeProvider>
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+      </div>
+    </AuthProvider>
   );
 }
