@@ -1,11 +1,31 @@
+# Frontend Dockerfile.dev for pnpm monorepo
 FROM node:20-alpine
+
+# Install pnpm and curl for healthcheck
+RUN npm install -g pnpm && apk add --no-cache curl
 
 WORKDIR /app
 
-COPY package*.json ./
+# Copy root workspace files first (for dependency resolution)
+COPY pnpm-workspace.yaml ./
+COPY package.json ./package.json
+COPY pnpm-lock.yaml ./
 
-RUN npm install
+# Copy workspace packages (needed for workspace:* dependencies)
+COPY packages/ ./packages/
 
-COPY . .
+# Copy frontend app
+COPY apps/frontend/package.json ./apps/frontend/package.json
+COPY apps/frontend/pnpm-lock.yaml ./apps/frontend/pnpm-lock.yaml
+COPY apps/frontend/ ./apps/frontend/
 
-CMD ["npm", "run", "dev"]
+# Install dependencies from workspace root (this ensures workspace:* deps resolve)
+RUN pnpm install
+
+# Build the api-client-ts package first
+RUN pnpm --filter @workspace/api-client-ts build
+
+# Move to frontend directory and start
+WORKDIR /app/apps/frontend
+
+CMD ["pnpm", "run", "dev"]
