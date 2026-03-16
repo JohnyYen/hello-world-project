@@ -2,11 +2,9 @@
 
 import {
   IconCreditCard,
-  IconDotsVertical,
   IconLogout,
   IconNotification,
   IconSettings,
-  IconShield,
   IconUserCircle,
 } from "@tabler/icons-react";
 
@@ -113,9 +111,6 @@ export function NavUser({ user }: NavUserProps) {
                     {role}
                   </span>
                 </div>
-
-                {/* Chevron indicator */}
-                <IconDotsVertical className="ml-auto h-4 w-4 text-muted-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
               </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -170,44 +165,34 @@ export function NavUser({ user }: NavUserProps) {
 
             {/* Menu items */}
             <DropdownMenuGroup>
-              <DropdownMenuItem className="rounded-lg cursor-pointer group/item">
-                <IconUserCircle className="mr-2 h-4 w-4 text-primary transition-transform duration-200 group-hover/item:scale-110" />
-                <span>Mi Perfil</span>
-                <span className="ml-auto text-xs text-muted-foreground group-hover/item:text-primary">
-                  →
-                </span>
+              <DropdownMenuItem className="rounded-lg cursor-pointer group/item" asChild>
+                <Link href="/dashboard/account">
+                  <IconUserCircle className="mr-2 h-4 w-4 text-primary transition-transform duration-200 group-hover/item:scale-110" />
+                  <span>Mi Perfil</span>
+                  <span className="ml-auto text-xs text-muted-foreground group-hover/item:text-primary">
+                    →
+                  </span>
+                </Link>
               </DropdownMenuItem>
 
-              <DropdownMenuItem className="rounded-lg cursor-pointer group/item">
-                <IconSettings className="mr-2 h-4 w-4 text-accent transition-transform duration-200 group-hover/item:scale-110" />
-                <span>Configuración</span>
-                <span className="ml-auto text-xs text-muted-foreground group-hover/item:text-accent">
-                  →
-                </span>
+              <DropdownMenuItem className="rounded-lg cursor-pointer group/item" asChild>
+                <Link href="/dashboard/settings">
+                  <IconSettings className="mr-2 h-4 w-4 text-accent transition-transform duration-200 group-hover/item:scale-110" />
+                  <span>Configuración</span>
+                  <span className="ml-auto text-xs text-muted-foreground group-hover/item:text-accent">
+                    →
+                  </span>
+                </Link>
               </DropdownMenuItem>
 
-              <DropdownMenuItem className="rounded-lg cursor-pointer group/item">
-                <IconCreditCard className="mr-2 h-4 w-4 text-emerald-500 transition-transform duration-200 group-hover/item:scale-110" />
-                <span>Suscripción</span>
-                <span className="ml-auto text-xs text-muted-foreground group-hover/item:text-emerald-500">
-                  →
-                </span>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem className="rounded-lg cursor-pointer group/item">
-                <IconNotification className="mr-2 h-4 w-4 text-amber-500 transition-transform duration-200 group-hover/item:scale-110" />
-                <span>Notificaciones</span>
-                <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/10 px-1.5 text-xs font-medium text-primary">
-                  3
-                </span>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem className="rounded-lg cursor-pointer group/item">
-                <IconShield className="mr-2 h-4 w-4 text-violet-500 transition-transform duration-200 group-hover/item:scale-110" />
-                <span>Privacidad</span>
-                <span className="ml-auto text-xs text-muted-foreground group-hover/item:text-violet-500">
-                  →
-                </span>
+              <DropdownMenuItem className="rounded-lg cursor-pointer group/item" asChild>
+                <Link href="/dashboard/notifications">
+                  <IconNotification className="mr-2 h-4 w-4 text-amber-500 transition-transform duration-200 group-hover/item:scale-110" />
+                  <span>Notificaciones</span>
+                  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/10 px-1.5 text-xs font-medium text-primary">
+                    3
+                  </span>
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
 
