@@ -1,6 +1,12 @@
-# Hello World Backend
+# Hello World Backend ⚡
 
-Backend API para Hello World Project - una plataforma educativa basada en videojuegos interactivos para enseñar programación.
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009989)](https://fastapi.tiangolo.com)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB)](https://python.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)](https://postgresql.org)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Package Manager](https://img.shields.io/badge/uv-FAST-brightgreen)](https://github.com/astral-sh/uv)
+
+**Hello World Backend** es la API REST desarrollada en **FastAPI** que actúa como puente de comunicación entre el frontend Next.js y los videojuegos educativos. Proporciona autenticación, gestión de usuarios, almacenamiento de progreso y sincronización de datos.
 
 ## 📋 Descripción
 
@@ -322,21 +328,6 @@ uv run pytest tests/test_user.py::test_create_user
 
 ---
 
-## 🐳 Docker
-
-```bash
-# Construir imagen
-docker build -t hello-world-backend .
-
-# Ejecutar contenedor
-docker run -d -p 8000:8000 hello-world-backend
-
-# Con Docker Compose
-docker-compose up -d
-```
-
----
-
 ## 📚 API Endpoints
 
 ### Autenticación
@@ -367,10 +358,56 @@ docker-compose up -d
 
 ## 📄 Licencia
 
-Este proyecto está bajo desarrollo para fines educativos.
+MIT License - ver [LICENSE](LICENSE) para más detalles.
 
 ---
 
-## 📞 Soporte
+## 🗄️ Diseño de Base de Datos
 
-Para consultas sobre el proyecto, revisar `PROJECT_SPEC.md` para especificaciones completas.
+Consulta el documento de diseño conceptual de base de datos para más detalles:
+
+- **[docs/database-design.md](docs/database-design.md)** - Diagrama ER completo en Mermaid y descripción de todas las tablas
+
+### Dominios de la Base de Datos
+
+| Dominio | Tablas | Descripción |
+|---------|--------|-------------|
+| **Users** | users, roles, students, professors, teacher_settings, lms_credentials | Gestión de usuarios y autenticación |
+| **Game** | games, levels, segment_levels, game_instances | Catálogo de videojuegos y sesiones |
+| **Statistic** | feedbacks, progresses, metric_types, xapi_statement | Métricas y tracking de progreso |
+| **Sync** | sync_sessions, sync_events | Sincronización offline/online |
+
+---
+
+## 🐳 Docker
+
+```bash
+# Construir imagen
+docker build -t hello-world-backend .
+
+# Ejecutar contenedor
+docker run -d -p 8000:8000 hello-world-backend
+
+# Con Docker Compose (desde la raíz del proyecto)
+docker-compose -f infrastructure/docker/docker-compose.dev.yml up -d backend
+```
+
+---
+
+## 📚 Documentación Adicional
+
+| Documento | Descripción |
+|-----------|-------------|
+| [docs/database-design.md](docs/database-design.md) | Diseño conceptual de la base de datos |
+| [docs/user_stories.md](docs/user_stories.md) | Historias de usuario |
+| [GP.md](GP.md) | Glosario de términos |
+| [AGENTS.md](AGENTS.md) | Guías para agentes IA |
+
+---
+
+## 🌍 Links
+
+- **Website**: [hello-world-project.dev](https://hello-world-project.dev)
+- **Frontend**: [github.com/.../apps/frontend](https://github.com/tu-usuario/hello-world-project/apps/frontend)
+- **Game**: [github.com/.../apps/game](https://github.com/tu-usuario/hello-world-project/apps/game)
+- **API Client**: [github.com/.../packages/api-client-ts](https://github.com/tu-usuario/hello-world-project/packages/api-client-ts)

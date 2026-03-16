@@ -76,76 +76,80 @@ export function HeatMap({
         </div>
       )}
 
-      {/* Hour labels */}
-      <div className="flex">
-        <div className="w-10 flex-shrink-0" />
-        <div 
-          className="flex-1 grid gap-1" 
-          style={{ gridTemplateColumns: `repeat(24, minmax(0, 1fr))` }}
-        >
-          {HOURS.filter((h) => h % 3 === 0).map((hour) => (
-            <div 
-              key={hour} 
-              className="text-xs text-muted-foreground text-center"
-              style={{ gridColumn: "span 3" }}
-            >
-              {formatHour(hour)}
-            </div>
-          ))}
+      {/* Hour labels - scrollable container */}
+      <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600">
+        <div className="flex min-w-max">
+          <div className="w-10 flex-shrink-0" />
+          <div 
+            className="flex-1 grid gap-1" 
+            style={{ gridTemplateColumns: `repeat(24, minmax(0, 1fr))` }}
+          >
+            {HOURS.filter((h) => h % 3 === 0).map((hour) => (
+              <div 
+                key={hour} 
+                className="text-xs text-muted-foreground text-center"
+                style={{ gridColumn: "span 3" }}
+              >
+                {formatHour(hour)}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Grid */}
+      {/* Grid - scrollable container */}
       <div 
-        className="flex flex-col gap-1" 
+        className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600"
         style={{ height: Math.max(height - 60, 200) }}
       >
-        {DAYS.map((day) => (
-          <div key={day} className="flex items-center gap-1">
-            {/* Day label */}
-            <div className="w-10 flex-shrink-0 text-xs text-muted-foreground">
-              {day}
-            </div>
-            
-            {/* Heat cells */}
-            <div 
-              className="flex-1 grid gap-1" 
-              style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}
-            >
-              {HOURS.map((hour) => {
-                const key = `${day}-${hour}`;
-                const value = dataMap.get(key) || 0;
-                const isHovered = hoveredCell?.day === day && hoveredCell?.hour === hour;
-                
-                return (
-                  <div
-                    key={key}
-                    className="relative rounded-sm transition-all duration-200 cursor-pointer"
-                    style={{ 
-                      backgroundColor: getColor(value),
-                      aspectRatio: "1",
-                      transform: isHovered ? "scale(1.2)" : "scale(1)",
-                      zIndex: isHovered ? 10 : 1,
-                    }}
-                    onMouseEnter={() => showTooltip && setHoveredCell({ day, hour, value })}
-                    onMouseLeave={() => setHoveredCell(null)}
-                  >
-                    {isHovered && showTooltip && (
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50">
-                        <div className="rounded-lg border bg-card px-3 py-2 shadow-lg text-sm whitespace-nowrap">
-                          <p className="font-medium">{day} {formatHour(hour)}</p>
-                          <p className="text-muted-foreground">
-                            {tooltipFormatter ? tooltipFormatter(value, day, hour) : `${value} minutos`}
-                          </p>
+        <div className="flex flex-col gap-1 min-w-max">
+          {DAYS.map((day) => (
+            <div key={day} className="flex items-center gap-1">
+              {/* Day label */}
+              <div className="w-10 flex-shrink-0 text-xs text-muted-foreground">
+                {day}
+              </div>
+              
+              {/* Heat cells */}
+              <div 
+                className="flex-1 grid gap-1" 
+                style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}
+              >
+                {HOURS.map((hour) => {
+                  const key = `${day}-${hour}`;
+                  const value = dataMap.get(key) || 0;
+                  const isHovered = hoveredCell?.day === day && hoveredCell?.hour === hour;
+                  
+                  return (
+                    <div
+                      key={key}
+                      className="relative rounded-sm transition-all duration-200 cursor-pointer"
+                      style={{ 
+                        backgroundColor: getColor(value),
+                        aspectRatio: "1",
+                        transform: isHovered ? "scale(1.2)" : "scale(1)",
+                        zIndex: isHovered ? 10 : 1,
+                      }}
+                      onMouseEnter={() => showTooltip && setHoveredCell({ day, hour, value })}
+                      onMouseLeave={() => setHoveredCell(null)}
+                    >
+                      {isHovered && showTooltip && (
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50">
+                          <div className="rounded-lg border bg-card px-3 py-2 shadow-lg text-sm whitespace-nowrap">
+                            <p className="font-medium">{day} {formatHour(hour)}</p>
+                            <p className="text-muted-foreground">
+                              {tooltipFormatter ? tooltipFormatter(value, day, hour) : `${value} minutos`}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Legend */}
