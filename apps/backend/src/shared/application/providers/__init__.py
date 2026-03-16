@@ -50,6 +50,14 @@ from src.shared.application.providers.game_providers import (
     get_segment_level_service,
 )
 
+# Sync domain providers
+from src.shared.application.providers.sync_providers import (
+    get_sync_session_repository,
+    get_sync_event_repository,
+    get_sync_session_service,
+    get_sync_event_service,
+)
+
 __all__ = [
     # Users domain - Repositories
     "get_user_repository",
@@ -83,4 +91,10 @@ __all__ = [
     "get_level_service",
     "get_game_instance_service",
     "get_segment_level_service",
+    # Sync domain - Repositories
+    "get_sync_session_repository",
+    "get_sync_event_repository",
+    # Sync domain - Services
+    "get_sync_session_service",
+    "get_sync_event_service",
 ]

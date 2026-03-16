@@ -1,23 +1,27 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from src.sync.api.v1.schemas.sync_session import SyncSessionCreate, SyncSessionSchema
-import datetime
+from src.sync.application.service.sync_session_service import SyncSessionService
+from src.sync.api.v1.dependencies import get_sync_session_service
 
 
 router = APIRouter(prefix="/sync-sessions")
 
 
-@router.post("", response_model=SyncSessionSchema)
-async def start_sync_session(sync_session: SyncSessionCreate):
+@router.post("", response_model=SyncSessionSchema, status_code=status.HTTP_201_CREATED)
+async def start_sync_session(
+    sync_session: SyncSessionCreate,
+    service: SyncSessionService = Depends(get_sync_session_service),
+):
     """
     Inicia una sesión de sincronización.
     """
-    # Datos de prueba
-    mock_new_session = {
-        "id": 101,
-        "instance_id": sync_session.instance_id,
-        "is_active": True,
-        "started_at": datetime.datetime.now(),
-        "ended_at": None,
-    }
+    session = await service.create(instance_id=sync_session.instance_id)
 
-    return mock_new_session
+    return SyncSessionSchema(
+        id=session.id,
+        instance_id=session.instance_id,
+        is_active=session.status == "active",
+        start_time=session.start_time,
+        end_time=session.end_time,
+    )

@@ -1,12 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 
 
 class SyncEventBase(BaseModel):
-    sync_session_id: int
-    event_type: str
-    payload: Optional[dict] = None
+    sync_session_id: int = Field(..., description="ID of the sync session")
+    event_type: str = Field(..., description="Type of the event")
+    payload: Optional[dict] = Field(None, description="Event payload data")
 
 
 class SyncEventCreate(SyncEventBase):
@@ -14,13 +14,13 @@ class SyncEventCreate(SyncEventBase):
 
 
 class SyncEventUpdate(BaseModel):
-    payload: Optional[dict] = None
+    payload: Optional[dict] = Field(None, description="Event payload data")
 
 
 class SyncEventSchema(SyncEventBase):
-    id: int
-    timestamp: datetime
-    status: Optional[str] = None
+    id: int = Field(..., description="Event ID")
+    timestamp: datetime = Field(..., description="Event timestamp")
+    status: Optional[str] = Field(None, description="Event status")
 
     class Config:
         from_attributes = True
