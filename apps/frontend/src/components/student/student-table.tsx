@@ -44,7 +44,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
   const notifications = useNotifications();
 
   // Set default course filter to the most recent course (first in the sorted list)
-  const [courseFilter, setCourseFilter] = useState<string>(initialCourses[0] || "");
+  const [courseFilter, setCourseFilter] = useState<string>("all");
 
   // Filter students based on search term and course filter
   const filteredStudents = initialStudents.filter(
@@ -52,7 +52,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
       (student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
        student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
        student.maxLevel.toString().includes(searchTerm)) &&
-      (courseFilter === "" || student.course === courseFilter)
+      (courseFilter === "all" || student.course === courseFilter)
   );
 
   // Calculate pagination values
@@ -191,7 +191,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                   </div>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos los cursos</SelectItem>
+                  <SelectItem value="all">Todos los cursos</SelectItem>
                   {initialCourses.map((course) => (
                     <SelectItem key={course} value={course}>
                       {course}
