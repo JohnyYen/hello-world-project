@@ -1,10 +1,6 @@
 # Hello World Backend - AI Agent Ruleset
 
-> **Skills Reference**: For detailed patterns, use these skills:
-> - [`fastapi`](https://fastapi.tiangolo.com/) - Async patterns, JWT auth, Pydantic v2
-> - [`architecture-patterns`](#) - Clean Architecture (Service/UseCase)
-> - [`pytest`](https://docs.pytest.org/) - Generic pytest patterns
-> - [`tdd`](#) - Test-Driven Development workflow
+> **Skills Reference**: All skills are in `.agents/skills/`. Use the Skill tool to invoke them.
 
 ### Auto-invoke Skills
 

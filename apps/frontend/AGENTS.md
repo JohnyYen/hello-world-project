@@ -1,12 +1,6 @@
 # Hello World Frontend - AI Agent Ruleset
 
-> **Skills Reference**: For detailed patterns, use these skills:
-> - [`nextjs-15`](#) - App Router, Server Actions, streaming
-> - [`react-19`](#) - React Compiler, no useMemo/useCallback
-> - [`tailwind-4`](#) - cn() utility, modern CSS-first config
-> - [`typescript`](#) - Explicit typing, strict mode
-> - [`tdd`](#) - Test-Driven Development workflow
-> - [`frontend-design`](#) - Design atractive UI  
+> **Skills Reference**: All skills are in `.agents/skills/`. Use the Skill tool to invoke them.
 
 ### Auto-invoke Skills
 
