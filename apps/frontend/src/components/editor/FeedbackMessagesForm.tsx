@@ -20,7 +20,7 @@ export function FeedbackMessagesForm() {
 
   const handleAddHint = () => {
     if (newHint.trim()) {
-      updateFeedbackMessage('hints', [...config.feedback_messages.hints, newHint.trim()]);
+              updateFeedbackMessage('hints', [...config.feedback_messages.hints, newHint.trim()] as string[]);
       setNewHint('');
     }
   };
@@ -39,7 +39,7 @@ export function FeedbackMessagesForm() {
         {/* Mensaje de éxito */}
         <div>
           <Label htmlFor="successMessage" className="flex items-center gap-2">
-            <Badge variant="success" className="text-xs">✓ Éxito</Badge>
+            <Badge variant="secondary" className="text-xs text-green-600">✓ Éxito</Badge>
             Mensaje de éxito
           </Label>
           <Textarea
@@ -76,7 +76,7 @@ export function FeedbackMessagesForm() {
             {/* Lista de hints */}
             <div className="flex flex-wrap gap-2">
               {config.feedback_messages.hints.length > 0 ? (
-                config.feedback_messages.hints.map((hint, index) => (
+                config.feedback_messages.hints.map((hint: string, index: number) => (
                   <Badge
                     key={index}
                     variant="outline"

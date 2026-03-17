@@ -120,7 +120,7 @@ export function jsonToConfig(json: string): { success: boolean; config?: LevelCo
     if (!validation.success) {
       return {
         success: false,
-        error: 'JSON inválido: ' + validation.errors?.errors.map(e => e.message).join(', ')
+        error: 'JSON inválido: ' + validation.errors?.issues.map(e => e.message).join(', ')
       };
     }
 

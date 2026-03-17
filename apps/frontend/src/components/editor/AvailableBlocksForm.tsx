@@ -33,7 +33,7 @@ export function AvailableBlocksForm() {
         {/* Lista de bloques actuales */}
         <div className="flex flex-wrap gap-2">
           {config.available_blocks.length > 0 ? (
-            config.available_blocks.map((block, index) => (
+            config.available_blocks.map((block: string, index: number) => (
               <Badge
                 key={index}
                 variant="secondary"

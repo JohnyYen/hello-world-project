@@ -4,8 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { EditorState, EditorActions, LevelConfig, InitialState, ValidationCriterion, FeedbackMessages, UiConfig, DefinedAction } from '@/types/editor';
+import type { EditorState, EditorActions, LevelConfig } from '@/types/editor';
 import { saveToLocalStorage, loadFromLocalStorage, generateUniqueId, generateSegmentId, configToJson, jsonToConfig, deepClone } from '@/lib/editor-helpers';
 
 // Configuración inicial por defecto
@@ -43,7 +42,11 @@ interface EditorStoreState extends EditorState {
   actions: EditorActions;
 }
 
-export const useEditorStore = create<EditorStoreState>((set, get) => ({
+// Definir el tipo para el set y get del store
+type SetFn = (partial: Partial<EditorStoreState> | ((state: EditorStoreState) => Partial<EditorStoreState>)) => void;
+type GetFn = () => EditorStoreState;
+
+export const useEditorStore = create<EditorStoreState>((set: SetFn, get: GetFn) => ({
   config: createDefaultConfig(),
   saved: false,
   lastSaved: null,
@@ -51,16 +54,16 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
   
   actions: {
     // Actualizar campo simple del config
-    updateField: <K extends keyof LevelConfig>(field: K, value: LevelConfig[K]) => {
-      set(state => ({
+    updateField: <K extends keyof LevelConfig>(field: K, value: LevelConfig[K]): void => {
+      set((state: EditorStoreState) => ({
         config: { ...state.config, [field]: value },
         saved: false
       }));
     },
 
     // Actualizar campo en initial_state
-    updateInitialField: (key: string, value: unknown) => {
-      set(state => ({
+    updateInitialField: (key: string, value: unknown): void => {
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
           initial_state: {
@@ -73,8 +76,8 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Eliminar campo de initial_state
-    removeInitialField: (key: string) => {
-      set(state => {
+    removeInitialField: (key: string): void => {
+      set((state: EditorStoreState) => {
         const newState = { ...state.config.initial_state };
         delete newState[key];
         return {
@@ -88,8 +91,8 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Añadir bloque disponible
-    addAvailableBlock: (block: string) => {
-      set(state => ({
+    addAvailableBlock: (block: string): void => {
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
           available_blocks: [...state.config.available_blocks, block]
@@ -99,19 +102,19 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Eliminar bloque disponible
-    removeAvailableBlock: (index: number) => {
-      set(state => ({
+    removeAvailableBlock: (index: number): void => {
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
-          available_blocks: state.config.available_blocks.filter((_, i) => i !== index)
+          available_blocks: state.config.available_blocks.filter((_: string, i: number) => i !== index)
         },
         saved: false
       }));
     },
 
     // Actualizar criterio de validación
-    updateValidationCriterion: (index: number, criterion: ValidationCriterion) => {
-      set(state => {
+    updateValidationCriterion: (index: number, criterion: { condition: string; description: string }): void => {
+      set((state: EditorStoreState) => {
         const criteria = [...state.config.validation_criteria];
         criteria[index] = criterion;
         return {
@@ -125,8 +128,8 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Añadir criterio de validación
-    addValidationCriterion: () => {
-      set(state => ({
+    addValidationCriterion: (): void => {
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
           validation_criteria: [
@@ -139,19 +142,19 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Eliminar criterio de validación
-    removeValidationCriterion: (index: number) => {
-      set(state => ({
+    removeValidationCriterion: (index: number): void => {
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
-          validation_criteria: state.config.validation_criteria.filter((_, i) => i !== index)
+          validation_criteria: state.config.validation_criteria.filter((_, i: number) => i !== index)
         },
         saved: false
       }));
     },
 
     // Actualizar mensaje de feedback
-    updateFeedbackMessage: (type: 'success' | 'failure' | 'hints', value: unknown) => {
-      set(state => {
+    updateFeedbackMessage: (type: 'success' | 'failure' | 'hints', value: unknown): void => {
+      set((state: EditorStoreState) => {
         const feedback = { ...state.config.feedback_messages };
         
         if (type === 'success' || type === 'failure') {
@@ -171,8 +174,8 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Actualizar configuración de UI
-    updateUiConfig: (partialConfig: Partial<UiConfig>) => {
-      set(state => ({
+    updateUiConfig: (partialConfig: Partial<typeof import('@/types/editor').UiConfig>): void => {
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
           ui_config: {
@@ -185,8 +188,8 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Añadir acción definida
-    addAction: () => {
-      set(state => ({
+    addAction: (): void => {
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
           defined_actions: [
@@ -199,8 +202,8 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Actualizar acción definida
-    updateAction: (index: number, action: DefinedAction) => {
-      set(state => {
+    updateAction: (index: number, action: { name: string; value: string }): void => {
+      set((state: EditorStoreState) => {
         const actions = [...state.config.defined_actions];
         actions[index] = action;
         return {
@@ -214,18 +217,18 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Eliminar acción definida
-    removeAction: (index: number) => {
-      set(state => ({
+    removeAction: (index: number): void => {
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
-          defined_actions: state.config.defined_actions.filter((_, i) => i !== index)
+          defined_actions: state.config.defined_actions.filter((_, i: number) => i !== index)
         },
         saved: false
       }));
     },
 
     // Cargar configuración desde JSON
-    loadFromJson: (json: string) => {
+    loadFromJson: (json: string): boolean => {
       const result = jsonToConfig(json);
       if (result.success && result.config) {
         set({
@@ -234,18 +237,19 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
           lastSaved: null,
           currentId: null
         });
+        return true;
       }
-      return result.success;
+      return false;
     },
 
     // Exportar a JSON
-    exportToJson: () => {
+    exportToJson: (): string => {
       const { config } = get();
       return configToJson(config);
     },
 
     // Guardar en localStorage
-    saveToLocalStorage: () => {
+    saveToLocalStorage: (): string => {
       const { config, currentId } = get();
       const id = currentId || generateUniqueId();
       saveToLocalStorage(id, config);
@@ -258,7 +262,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Cargar desde localStorage
-    loadFromLocalStorage: (id: string) => {
+    loadFromLocalStorage: (id: string): boolean => {
       const data = loadFromLocalStorage(id);
       if (data) {
         set({
@@ -273,7 +277,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Resetear a configuración por defecto
-    reset: () => {
+    reset: (): void => {
       set({
         config: createDefaultConfig(),
         saved: false,
@@ -283,9 +287,9 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
 
     // Generar nuevo ID de segmento
-    generateNewSegmentId: () => {
+    generateNewSegmentId: (): number => {
       const id = generateSegmentId();
-      set(state => ({
+      set((state: EditorStoreState) => ({
         config: {
           ...state.config,
           segment_id: id

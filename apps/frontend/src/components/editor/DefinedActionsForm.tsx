@@ -25,7 +25,7 @@ export function DefinedActionsForm() {
         {/* Lista de acciones */}
         {config.defined_actions.length > 0 ? (
           <div className="space-y-3">
-            {config.defined_actions.map((action, index) => (
+            {            config.defined_actions.map((action: { name: string; value: string }, index: number) => (
               <Card key={index} className="p-3">
                 <div className="flex items-center gap-3">
                   <div className="flex-1 grid grid-cols-2 gap-3">
