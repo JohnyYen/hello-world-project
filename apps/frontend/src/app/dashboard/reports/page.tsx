@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { MetricCard, LineChart as LineChartComponent, BarChart, DonutChart } from '@/components/charts';
 import { ExportButton } from '@/components/export/ExportButton';
+import { CourseMultiSelector } from '@/components/reports/course-multi-selector';
 import { cn } from '@/lib/utils';
 import { 
   getCourses, 
@@ -77,123 +78,7 @@ function SectionHeader({
   );
 }
 
-// Year accordion selector
-function YearSelector({ 
-  courses, 
-  selectedCourses, 
-  onToggle,
-  latestYear 
-}: { 
-  courses: Course[];
-  selectedCourses: string[];
-  onToggle: (courseId: string) => void;
-  latestYear: string;
-}) {
-  const coursesByYear = useMemo(() => {
-    return courses.reduce<Record<string, Course[]>>((acc, course) => {
-      const year = course.schoolYear;
-      if (!acc[year]) acc[year] = [];
-      acc[year].push(course);
-      return acc;
-    }, {});
-  }, [courses]);
 
-  const sortedYears = Object.keys(coursesByYear).sort().reverse();
-
-  return (
-    <div className="space-y-2">
-      {sortedYears.map((year) => {
-        const yearCourses = coursesByYear[year].sort((a, b) => a.period.localeCompare(b.period));
-        const selectedInYear = yearCourses.filter(c => selectedCourses.includes(c.id)).length;
-        const allSelected = selectedInYear === yearCourses.length;
-        const isLatest = year === latestYear;
-
-        return (
-          <div 
-            key={year}
-            className="rounded-xl border border-slate-700/50 bg-slate-900/30 overflow-hidden"
-          >
-            {/* Year header */}
-            <button
-              onClick={() => {
-                yearCourses.forEach(c => {
-                  if (!allSelected) {
-                    if (!selectedCourses.includes(c.id)) onToggle(c.id);
-                  } else {
-                    if (selectedCourses.includes(c.id)) onToggle(c.id);
-                  }
-                });
-              }}
-              className="w-full flex items-center justify-between p-4 hover:bg-slate-800/50 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <div className={cn(
-                  "w-6 h-6 rounded-md flex items-center justify-center border-2 transition-colors",
-                  allSelected 
-                    ? "bg-indigo-500 border-indigo-500" 
-                    : selectedInYear > 0
-                    ? "bg-indigo-500/50 border-indigo-500"
-                    : "border-slate-600"
-                )}>
-                  {allSelected && <Check className="w-4 h-4 text-white" />}
-                  {selectedInYear > 0 && !allSelected && <div className="w-2 h-2 rounded-full bg-white" />}
-                </div>
-                <div className="text-left">
-                  <span className="font-semibold">{year}</span>
-                  <span className="text-muted-foreground text-sm ml-2">
-                    ({selectedInYear}/{yearCourses.length})
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                {isLatest && (
-                  <span className="px-2 py-1 text-xs font-bold bg-amber-500 text-white rounded-full">
-                    ACTUAL
-                  </span>
-                )}
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              </div>
-            </button>
-
-            {/* Periods in this year */}
-            <div className="border-t border-slate-700/50 p-3 pt-0 space-y-1">
-              {yearCourses.map((course) => (
-                <button
-                  key={course.id}
-                  onClick={() => onToggle(course.id)}
-                  className={cn(
-                    "w-full flex items-center gap-3 p-2 rounded-lg transition-all text-left",
-                    selectedCourses.includes(course.id)
-                      ? "bg-indigo-500/10 border border-indigo-500/30"
-                      : "hover:bg-slate-800/50 border border-transparent"
-                  )}
-                >
-                  <div className={cn(
-                    "w-4 h-4 rounded border flex items-center justify-center transition-colors",
-                    selectedCourses.includes(course.id)
-                      ? "bg-indigo-500 border-indigo-500"
-                      : "border-slate-600"
-                  )}>
-                    {selectedCourses.includes(course.id) && <Check className="w-3 h-3 text-white" />}
-                  </div>
-                  <span className={cn(
-                    "text-sm",
-                    selectedCourses.includes(course.id) ? "text-indigo-400" : "text-muted-foreground"
-                  )}>
-                    {course.period}
-                  </span>
-                  <span className="text-xs text-muted-foreground ml-auto">
-                    {course.totalStudents} est.
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 // Comparison badge
 function ComparisonBadge({ trend }: { trend: number }) {
@@ -455,12 +340,11 @@ export default function ReportsPage() {
                 </button>
               </div>
 
-              {/* Year accordion selector */}
-              <YearSelector 
+              {/* Course multiselect */}
+              <CourseMultiSelector
                 courses={courses}
                 selectedCourses={selectedCourses}
-                onToggle={toggleCourse}
-                latestYear={latestYear}
+                onSelectionChange={(selected) => setSelectedCourses(selected)}
               />
 
               {selectedCourses.length > 0 && (
