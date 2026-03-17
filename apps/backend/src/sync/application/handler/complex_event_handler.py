@@ -32,7 +32,7 @@ class ComplexEventHandler:
             db: AsyncSession for database operations
         """
         self.db = db
-        self.mapper = SyncEventToXAPIMapper()
+        self.mapper = SyncEventToXAPIMapper(db)
         self.xapi_repository = XAPIStatementRepository(db)
         self.xapi_service = XAPIStatementService(self.xapi_repository)
         self.progress_updater = ProgressUpdater(db)

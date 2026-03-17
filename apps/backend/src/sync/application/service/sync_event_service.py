@@ -68,8 +68,9 @@ class SyncEventService:
         for attempt in range(1, max_attempts + 1):
             try:
                 async with SessionLocal() as db:
+                    repository = SyncEventRepository(db)
                     pipeline = SyncToStatsPipelineService(db)
-                    event = await self.repository.get_by_id(event_id)
+                    event = await repository.get_by_id(event_id)
 
                     if not event:
                         logger.warning(
@@ -111,7 +112,8 @@ class SyncEventService:
                     DeadLetterHandler,
                 )
 
-                event = await self.repository.get_by_id(event_id)
+                repository = SyncEventRepository(db)
+                event = await repository.get_by_id(event_id)
                 if event:
                     dead_letter_handler = DeadLetterHandler(db)
                     await dead_letter_handler.handle(event, error_message)

@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
 from uuid import uuid4
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from src.sync.domain.sync_event import SyncEvent
 from src.statistic.api.v1.schemas.xapi_statement import (
@@ -30,8 +33,43 @@ class SyncEventToXAPIMapper:
         "hint_used": XAPIVerbs.PROGRESSED,
     }
 
-    def __init__(self):
-        pass
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def _get_student_id(self, event: SyncEvent) -> int | None:
+        """
+        Get student_id by traversing the relationship chain:
+        event -> sync_session -> game_instance -> student
+
+        Args:
+            event: The sync event
+
+        Returns:
+            int | None: The student ID if found
+        """
+        result = await self.db.execute(
+            select(SyncEvent)
+            .options(
+                selectinload(SyncEvent.sync_session)
+                .selectinload("game_instance")
+                .selectinload("student")
+            )
+            .where(SyncEvent.id == event.id)
+        )
+        loaded_event = result.scalar_one_or_none()
+
+        if not loaded_event:
+            return None
+
+        sync_session = loaded_event.sync_session
+        if not sync_session:
+            return None
+
+        game_instance = sync_session.game_instance
+        if not game_instance:
+            return None
+
+        return game_instance.student_id
 
     async def map(self, event: SyncEvent) -> XAPIStatementCreate:
         """
@@ -45,7 +83,9 @@ class SyncEventToXAPIMapper:
         """
         payload = event.payload or {}
 
-        student_id = payload.get("student_id")
+        student_id = await self._get_student_id(event)
+        if student_id is None:
+            student_id = payload.get("student_id")
         level_id = payload.get("level_id")
         segment_id = payload.get("segment_id")
         game_id = payload.get("game_id")
