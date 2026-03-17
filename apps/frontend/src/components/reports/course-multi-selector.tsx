@@ -20,6 +20,7 @@ export function CourseMultiSelector({
   maxSelection = undefined
 }: CourseMultiSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [expandedYears, setExpandedYears] = useState<Record<string, boolean>>({});
 
   // Group courses by school year
   const coursesByYear = useMemo(() => {
@@ -32,6 +33,14 @@ export function CourseMultiSelector({
   }, [courses]);
 
   const schoolYears = Object.keys(coursesByYear).sort().reverse();
+
+  // Toggle year expansion
+  const toggleYearExpansion = (year: string) => {
+    setExpandedYears(prev => ({
+      ...prev,
+      [year]: !prev[year]
+    }));
+  };
 
   const toggleCourse = (courseId: string) => {
     if (selectedCourses.includes(courseId)) {
@@ -141,59 +150,76 @@ export function CourseMultiSelector({
                 const yearCourses = coursesByYear[year];
                 const isFullySelected = isYearFullySelected(year);
                 const isPartiallySelected = isYearPartiallySelected(year);
+                const isExpanded = expandedYears[year] ?? false;
                 
                 return (
                   <div key={year} className="border-b border-slate-700 last:border-b-0">
                     {/* Year header */}
-                    <button
-                      onClick={() => toggleYear(year)}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-slate-700/50"
-                    >
-                      <div className={cn(
-                        "w-5 h-5 rounded border-2 flex items-center justify-center transition-all",
-                        isFullySelected 
-                          ? "bg-indigo-500 border-indigo-500" 
-                          : isPartiallySelected
-                          ? "bg-indigo-500/50 border-indigo-500"
-                          : "border-slate-500"
-                      )}>
-                        {isFullySelected && <Check className="h-3 w-3 text-white" />}
-                        {isPartiallySelected && <div className="w-2 h-2 rounded-full bg-white" />}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-slate-100">{year} (Todos)</p>
-                        <p className="text-xs text-slate-400">{yearCourses.length} períodos, {yearCourses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes</p>
-                      </div>
-                    </button>
+                    <div className="flex">
+                      <button
+                        onClick={() => toggleYearExpansion(year)}
+                        className="w-10 flex items-center justify-center transition-colors hover:bg-slate-700/30 border-r border-slate-700"
+                      >
+                        <ChevronDown className={cn(
+                          "h-4 w-4 text-slate-400 transition-transform duration-200",
+                          isExpanded && "rotate-180"
+                        )} />
+                      </button>
+                      <button
+                        onClick={() => toggleYear(year)}
+                        className="flex-1 flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-slate-700/50"
+                      >
+                        <div className={cn(
+                          "w-5 h-5 rounded border-2 flex items-center justify-center transition-all",
+                          isFullySelected 
+                            ? "bg-indigo-500 border-indigo-500" 
+                            : isPartiallySelected
+                            ? "bg-indigo-500/50 border-indigo-500"
+                            : "border-slate-500"
+                        )}>
+                          {isFullySelected && <Check className="h-3 w-3 text-white" />}
+                          {isPartiallySelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-slate-100">{year} (Todos)</p>
+                          <p className="text-xs text-slate-400">{yearCourses.length} períodos, {yearCourses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes</p>
+                        </div>
+                      </button>
+                    </div>
                     
-                    {/* Individual periods within the year */}
-                    {yearCourses.map((course) => {
-                      const isSelected = selectedCourses.includes(course.id);
-                      
-                      return (
-                        <button
-                          key={course.id}
-                          onClick={() => toggleCourse(course.id)}
-                          className={cn(
-                            "w-full flex items-center gap-7 px-4 py-2 text-left transition-colors hover:bg-slate-700/50 ml-6", // Indented under year
-                            isSelected && "bg-slate-700/70"
-                          )}
-                        >
-                          <div className={cn(
-                            "w-4 h-4 rounded border flex items-center justify-center transition-all",
-                            isSelected 
-                              ? "bg-indigo-500 border-indigo-500" 
-                              : "border-slate-500"
-                          )}>
-                            {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-slate-200">{course.period}</p>
-                            <p className="text-xs text-slate-400">{course.name} - {course.totalStudents} estudiantes</p>
-                          </div>
-                        </button>
-                      );
-                    })}
+                    {/* Individual periods within the year (only if expanded) */}
+                    {isExpanded && (
+                      <div className="bg-slate-900/30">
+                        {yearCourses.map((course) => {
+                          const isSelected = selectedCourses.includes(course.id);
+                          
+                          return (
+                            <button
+                              key={course.id}
+                              onClick={() => toggleCourse(course.id)}
+                              className={cn(
+                                "w-full flex items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-slate-700/50",
+                                isSelected && "bg-slate-700/70"
+                              )}
+                            >
+                              <div className="w-4" /> {/* Spacer for alignment */}
+                              <div className={cn(
+                                "w-4 h-4 rounded border flex items-center justify-center transition-all",
+                                isSelected 
+                                  ? "bg-indigo-500 border-indigo-500" 
+                                  : "border-slate-500"
+                              )}>
+                                {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-slate-200">{course.period}</p>
+                                <p className="text-xs text-slate-400">{course.name} - {course.totalStudents} estudiantes</p>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 );
               })}
