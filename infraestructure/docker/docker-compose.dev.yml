@@ -27,9 +27,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-      - ../../apps/backend/.env.local
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ../../apps/backend:/app
       - /app/__pycache__
