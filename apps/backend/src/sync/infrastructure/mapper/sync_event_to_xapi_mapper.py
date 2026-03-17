@@ -47,25 +47,28 @@ class SyncEventToXAPIMapper:
         Returns:
             int | None: The student ID if found
         """
-        result = await self.db.execute(
+        # First get the sync_session to find instance_id
+        sync_session_result = await self.db.execute(
             select(SyncEvent)
-            .options(
-                selectinload(SyncEvent.sync_session)
-                .selectinload("game_instance")
-                .selectinload("student")
-            )
+            .options(selectinload(SyncEvent.sync_session))
             .where(SyncEvent.id == event.id)
         )
-        loaded_event = result.scalar_one_or_none()
+        loaded_event = sync_session_result.scalar_one_or_none()
 
-        if not loaded_event:
+        if not loaded_event or not loaded_event.sync_session:
             return None
 
-        sync_session = loaded_event.sync_session
-        if not sync_session:
-            return None
+        # Get the instance_id from sync_session
+        instance_id = loaded_event.sync_session.instance_id
 
-        game_instance = sync_session.game_instance
+        # Now get the game_instance to find student_id
+        from src.game.domain.game_instance import GameInstance
+
+        instance_result = await self.db.execute(
+            select(GameInstance).where(GameInstance.id == instance_id)
+        )
+        game_instance = instance_result.scalar_one_or_none()
+
         if not game_instance:
             return None
 
