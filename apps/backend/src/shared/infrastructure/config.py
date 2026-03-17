@@ -2,10 +2,8 @@ import os
 
 from pydantic_settings import BaseSettings
 
-# Detectar automáticamente qué archivo .env usar
-# Prioridad: .env.local > .env
-# Esto permite tener configuración para desarrollo local (localhost) y Docker
-_env_file = ".env.local" if os.path.exists(".env.local") else ".env"
+# Always prefer environment variable over .env files
+# This ensures Docker's DATABASE_URL takes precedence
 
 
 class Settings(BaseSettings):
@@ -18,7 +16,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     class Config:
-        env_file = _env_file
+        env_file = ".env"
         env_file_encoding = "utf-8"
 
 
