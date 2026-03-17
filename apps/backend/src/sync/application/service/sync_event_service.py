@@ -1,3 +1,5 @@
+import asyncio
+import logging
 from datetime import datetime
 from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +12,13 @@ from src.sync.infrastructure.repositories.sync_session_repository import (
 )
 from src.sync.domain.sync_event import SyncEvent
 from src.sync.api.v1.schemas.sync_event import SyncEventCreate, SyncEventUpdate
+from src.sync.application.service.sync_to_stats_pipeline_service import (
+    SyncToStatsPipelineService,
+)
 from src.shared.domain.exceptions import NotFoundException
+from src.shared.infrastructure.session import SessionLocal
+
+logger = logging.getLogger(__name__)
 
 
 class SyncEventService:
@@ -41,7 +49,75 @@ class SyncEventService:
         event_dict["timestamp"] = datetime.utcnow()
         event_dict["status"] = "pending"
 
-        return await self.repository.create(event_dict)
+        event = await self.repository.create(event_dict)
+
+        asyncio.create_task(self._trigger_pipeline_with_retry(event.id))
+
+        return event
+
+    async def _trigger_pipeline_with_retry(self, event_id: int) -> None:
+        """
+        Trigger the stats pipeline with retry logic and exponential backoff.
+
+        Args:
+            event_id: ID of the event to process
+        """
+        max_attempts = 3
+        base_delay = 1.0
+
+        for attempt in range(1, max_attempts + 1):
+            try:
+                async with SessionLocal() as db:
+                    pipeline = SyncToStatsPipelineService(db)
+                    event = await self.repository.get_by_id(event_id)
+
+                    if not event:
+                        logger.warning(
+                            f"Event {event_id} not found for pipeline processing"
+                        )
+                        return
+
+                    await pipeline.process_event(event)
+                    logger.info(f"Pipeline processing completed for event {event_id}")
+                    return
+
+            except Exception as e:
+                logger.warning(
+                    f"Pipeline attempt {attempt}/{max_attempts} failed for event {event_id}: {str(e)}"
+                )
+
+                if attempt < max_attempts:
+                    delay = base_delay * (2 ** (attempt - 1))
+                    logger.info(f"Retrying in {delay} seconds...")
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(
+                        f"Pipeline failed after {max_attempts} attempts for event {event_id}. "
+                        f"Sending to dead letter."
+                    )
+                    await self._send_to_dead_letter(event_id, str(e))
+
+    async def _send_to_dead_letter(self, event_id: int, error_message: str) -> None:
+        """
+        Send a failed event to the dead letter handler.
+
+        Args:
+            event_id: ID of the failed event
+            error_message: Error message from the failure
+        """
+        try:
+            async with SessionLocal() as db:
+                from src.sync.application.handler.dead_letter_handler import (
+                    DeadLetterHandler,
+                )
+
+                event = await self.repository.get_by_id(event_id)
+                if event:
+                    dead_letter_handler = DeadLetterHandler(db)
+                    await dead_letter_handler.handle(event, error_message)
+                    logger.info(f"Event {event_id} sent to dead letter")
+        except Exception as e:
+            logger.error(f"Failed to send event {event_id} to dead letter: {str(e)}")
 
     async def create_batch(self, events_data: List[SyncEventCreate]) -> List[SyncEvent]:
         """
