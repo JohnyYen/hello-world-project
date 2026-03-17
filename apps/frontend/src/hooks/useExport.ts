@@ -7,7 +7,7 @@ import type { ExportOptions } from "@/components/export/types";
 type ExportState = "idle" | "loading" | "success" | "error";
 
 interface UseExportReturn {
-  exportPDF: (targetRef: React.RefObject<HTMLElement>, options?: Partial<ExportOptions>) => Promise<void>;
+  exportPDF: (targetRef: React.RefObject<HTMLElement | null>, options?: Partial<ExportOptions>) => Promise<void>;
   isExporting: boolean;
   error: string | null;
   resetError: () => void;
