@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-from src.database import get_db
+from src.shared.infrastructure.session import get_db
 from src.statistic.application.service.metric_type_service import MetricTypeService
 from src.statistic.api.v1.schemas.metric_type import (
     MetricTypeSchema,

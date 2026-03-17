@@ -1,4 +1,14 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, JSON, Text, Index
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    Boolean,
+    JSON,
+    Text,
+    Index,
+    ForeignKey,
+)
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
 
@@ -51,7 +61,7 @@ class XAPIStatement(Base):
     statement = Column(JSON, nullable=False)
 
     # Game-specific parsed fields (for easy querying)
-    student_id = Column(Integer, nullable=True, index=True)
+    student_id = Column(Integer, ForeignKey("students.id"), nullable=True, index=True)
     game_id = Column(Integer, nullable=True, index=True)
     level_id = Column(Integer, nullable=True, index=True)
     segment_id = Column(Integer, nullable=True, index=True)
