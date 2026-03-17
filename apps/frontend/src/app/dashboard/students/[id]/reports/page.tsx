@@ -1,10 +1,12 @@
 "use client";
 
+import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Trophy, Gamepad2, Clock, Target, Flame, TrendingUp, Activity, Zap, Award } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { MetricCard, LineChart, BarChart, DonutChart, AreaChart, HeatMap, generateHeatMapData } from "@/components/charts";
+import { ExportButton } from "@/components/export/ExportButton";
 import { useStudentReports } from "@/hooks/use-student-reports";
 
 function formatPlayTime(minutes: number): string {
@@ -54,6 +56,7 @@ function SectionHeader({ title, subtitle, icon: Icon, delay = 0 }: { title: stri
 export default function StudentReportPage() {
   const params = useParams();
   const studentId = params.id as string;
+  const containerRef = useRef<HTMLDivElement>(null);
   
   const { kpis, progressOverTime, levelPerformance, activityDistribution, isLoading, error } =
     useStudentReports(studentId);
@@ -127,7 +130,7 @@ export default function StudentReportPage() {
         </svg>
       </div>
 
-      <div className="container mx-auto py-12 px-6 relative z-10">
+      <div ref={containerRef} className="container mx-auto py-12 px-6 relative z-10">
         {/* Header */}
         <div className="mb-12">
           <Link href={`/dashboard/students/${studentId}`}>
@@ -150,12 +153,21 @@ export default function StudentReportPage() {
               </p>
             </div>
             
-            {/* Decorative badge */}
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800">
-              <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-              <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">Datos actualizados</span>
-              <span className="text-xs text-indigo-500 dark:text-indigo-400">•</span>
-              <span className="text-xs text-indigo-500 dark:text-indigo-400">{formatDate(kpis?.lastActivity || null)}</span>
+            <div className="flex items-center gap-4">
+              <ExportButton 
+                targetRef={containerRef}
+                fileName={`reporte-estudiante-${studentId}`}
+                variant="outline"
+                size="sm"
+                label="Exportar PDF"
+              />
+              {/* Decorative badge */}
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800">
+                <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">Datos actualizados</span>
+                <span className="text-xs text-indigo-500 dark:text-indigo-400">•</span>
+                <span className="text-xs text-indigo-500 dark:text-indigo-400">{formatDate(kpis?.lastActivity || null)}</span>
+              </div>
             </div>
           </div>
         </div>

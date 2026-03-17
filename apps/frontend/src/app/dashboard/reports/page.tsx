@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Users, 
   TrendingUp, 
@@ -18,6 +18,7 @@ import {
   X,
 } from 'lucide-react';
 import { MetricCard, LineChart as LineChartComponent, BarChart, DonutChart } from '@/components/charts';
+import { ExportButton } from '@/components/export/ExportButton';
 import { cn } from '@/lib/utils';
 import { 
   getCourses, 
@@ -223,6 +224,7 @@ function TrendArrow({ value }: { value: number }) {
 
 // Main component
 export default function ReportsPage() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
@@ -366,7 +368,7 @@ export default function ReportsPage() {
         </svg>
       </div>
 
-      <div className="container mx-auto py-12 px-6 relative z-10">
+      <div ref={containerRef} className="container mx-auto py-12 px-6 relative z-10">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
@@ -387,19 +389,28 @@ export default function ReportsPage() {
               </p>
             </div>
             
-            <div className="flex items-center gap-4 px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 backdrop-blur-sm">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-indigo-400" />
-                <span className="text-sm font-medium text-slate-300">
-                  {courses.length} períodos
-                </span>
-              </div>
-              <div className="w-px h-4 bg-slate-600" />
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-violet-400" />
-                <span className="text-sm font-medium text-slate-300">
-                  {courses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes
-                </span>
+            <div className="flex items-center gap-4">
+              <ExportButton 
+                targetRef={containerRef}
+                fileName="reporte-cursos"
+                variant="outline"
+                size="sm"
+                label="Exportar PDF"
+              />
+              <div className="flex items-center gap-4 px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 backdrop-blur-sm">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-indigo-400" />
+                  <span className="text-sm font-medium text-slate-300">
+                    {courses.length} períodos
+                  </span>
+                </div>
+                <div className="w-px h-4 bg-slate-600" />
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-violet-400" />
+                  <span className="text-sm font-medium text-slate-300">
+                    {courses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes
+                  </span>
+                </div>
               </div>
             </div>
           </div>
