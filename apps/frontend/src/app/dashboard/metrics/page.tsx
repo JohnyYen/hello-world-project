@@ -8,6 +8,7 @@ import { StudentProgressServer } from './student-progress-server';
 import { CourseCompletionServer } from './course-completion-server';
 import { EngagementServer } from './engagement-server';
 import { ActivityPerformanceServer } from './activity-performance-server';
+import { MetricTypesServer } from './metric-types-server';
 
 export default async function MetricsPage() {
   return (
@@ -72,6 +73,11 @@ export default async function MetricsPage() {
             <ActivityPerformanceServer />
           </Suspense>
         </div>
+
+        {/* Catálogo de tipos de métricas */}
+        <Suspense fallback={<LoadingState message="Cargando tipos de métricas..." />}>
+          <MetricTypesServer />
+        </Suspense>
       </div>
     </div>
   );
