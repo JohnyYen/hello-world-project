@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import type { EditorState, EditorActions, LevelConfig } from '@/types/editor';
+import type { EditorState, EditorActions, LevelConfig, UiConfig } from '@/types/editor';
 import { saveToLocalStorage, loadFromLocalStorage, generateUniqueId, generateSegmentId, configToJson, jsonToConfig, deepClone } from '@/lib/editor-helpers';
 
 // Configuración inicial por defecto
@@ -55,38 +55,46 @@ export const useEditorStore = create<EditorStoreState>((set: SetFn, get: GetFn) 
   actions: {
     // Actualizar campo simple del config
     updateField: <K extends keyof LevelConfig>(field: K, value: LevelConfig[K]): void => {
-      set((state: EditorStoreState) => ({
-        config: { ...state.config, [field]: value },
-        saved: false
-      }));
+      set((state: EditorStoreState) => {
+        const newState: Partial<EditorStoreState> = {
+          config: { ...state.config, [field]: value },
+          saved: false
+        };
+        return newState;
+      });
     },
 
     // Actualizar campo en initial_state
     updateInitialField: (key: string, value: unknown): void => {
-      set((state: EditorStoreState) => ({
-        config: {
-          ...state.config,
-          initial_state: {
-            ...state.config.initial_state,
-            [key]: value
-          }
-        },
-        saved: false
-      }));
+      set((state: EditorStoreState) => {
+        const newInitialState = {
+          ...state.config.initial_state,
+          [key]: value
+        };
+        const newState: Partial<EditorStoreState> = {
+          config: {
+            ...state.config,
+            initial_state: newInitialState as typeof state.config.initial_state
+          },
+          saved: false
+        };
+        return newState;
+      });
     },
 
     // Eliminar campo de initial_state
     removeInitialField: (key: string): void => {
       set((state: EditorStoreState) => {
-        const newState = { ...state.config.initial_state };
-        delete newState[key];
-        return {
+        const newInitialState = { ...state.config.initial_state };
+        delete newInitialState[key];
+        const newState: Partial<EditorStoreState> = {
           config: {
             ...state.config,
-            initial_state: newState
+            initial_state: newInitialState as typeof state.config.initial_state
           },
           saved: false
         };
+        return newState;
       });
     },
 
@@ -174,7 +182,7 @@ export const useEditorStore = create<EditorStoreState>((set: SetFn, get: GetFn) 
     },
 
     // Actualizar configuración de UI
-    updateUiConfig: (partialConfig: Partial<typeof import('@/types/editor').UiConfig>): void => {
+    updateUiConfig: (partialConfig: Partial<UiConfig>): void => {
       set((state: EditorStoreState) => ({
         config: {
           ...state.config,

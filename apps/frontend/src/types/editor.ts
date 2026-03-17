@@ -84,7 +84,7 @@ export interface EditorActions {
   addAction: () => void;
   updateAction: (index: number, action: DefinedAction) => void;
   removeAction: (index: number) => void;
-  loadFromJson: (json: string) => void;
+  loadFromJson: (json: string) => boolean;
   exportToJson: () => string;
   saveToLocalStorage: () => void;
   loadFromLocalStorage: (id: string) => boolean;

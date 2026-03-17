@@ -117,10 +117,10 @@ export function jsonToConfig(json: string): { success: boolean; config?: LevelCo
     const parsed = JSON.parse(json);
     const validation = validateLevelConfig(parsed);
     
-    if (!validation.success) {
+    if (!validation.success && validation.errors) {
       return {
         success: false,
-        error: 'JSON inválido: ' + validation.errors?.issues.map(e => e.message).join(', ')
+        error: 'JSON inválido: ' + validation.errors.issues.map((e: { message: string }) => e.message).join(', ')
       };
     }
 

@@ -57,7 +57,7 @@ export function ExportControls() {
 
   const handleLoadFromJson = () => {
     const success = loadFromJson(jsonInput);
-    if (success) {
+    if (success === true) {
       setShowLoadDialog(false);
       setJsonInput('');
     }
