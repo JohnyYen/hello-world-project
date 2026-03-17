@@ -1,7 +1,5 @@
 from typing import Optional
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.shared.infrastructure.session import get_db
+
 from src.users.infrastructure.teacher_settings_repository import (
     TeacherSettingsRepository,
 )
@@ -17,15 +15,17 @@ class TeacherSettingsService(BaseService):
     manejando la lógica de negocio antes de interactuar con la base de datos.
     """
 
-    def __init__(self, db: AsyncSession = Depends(get_db)):
+    def __init__(
+        self, repository: TeacherSettingsRepository, model: type[TeacherSettings]
+    ):
         """
-        Inicializa el servicio con una sesión de base de datos.
+        Inicializa el servicio con un repositorio y modelo.
 
         Args:
-            db: Sesión de base de datos asíncrona.
+            repository: Instancia del repositorio de configuraciones de profesor
+            model: Clase del modelo TeacherSettings
         """
-        repository = TeacherSettingsRepository(db)
-        super().__init__(repository, TeacherSettings)
+        super().__init__(repository, model)
 
     async def get_by_user_id(self, user_id: int) -> Optional[TeacherSettings]:
         """

@@ -4,8 +4,13 @@ import Link from "next/link";
 
 export function HeroSection() {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 flex flex-col align-center justify-center items-center ">
-      <div className="container px-4 md:px-6">
+    <section className="relative w-full py-12 md:py-24 lg:py-32 flex flex-col align-center justify-center items-center overflow-hidden">
+      {/* Dramatic indigo/violet gradient background */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-50 via-white to-violet-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,rgba(99,102,241,0.15),transparent_50%)] dark:opacity-100 opacity-60" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom_left,rgba(139,92,246,0.1),transparent_50%)]" />
+      
+      <div className="container px-4 md:px-6 relative z-10">
         <div className="flex flex-col items-center space-y-8 text-center">
           <div className="space-y-4">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
@@ -17,7 +22,7 @@ export function HeroSection() {
             </p>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Button asChild size="lg">
+            <Button asChild size="lg" variant="default">
               <Link href="/signup">
                 Comenzar
               </Link>
@@ -31,29 +36,29 @@ export function HeroSection() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl mt-12">
             <Card>
               <CardHeader>
-                <CardTitle>90%</CardTitle>
+                <CardTitle className="text-3xl">90%</CardTitle>
                 <CardDescription>Aumento de Participación</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Los estudiantes muestran una participación significativamente mayor con el aprendizaje basado en juegos en comparación con los métodos tradicionales.</p>
+                <p className="text-sm text-muted-foreground">Los estudiantes muestran una participación significativamente mayor con el aprendizaje basado en juegos en comparación con los métodos tradicionales.</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>En Tiempo Real</CardTitle>
+                <CardTitle className="text-3xl">En Tiempo Real</CardTitle>
                 <CardDescription>Seguimiento de Rendimiento</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Los docentes pueden monitorear el progreso de los estudiantes e identificar brechas de aprendizaje al instante.</p>
+                <p className="text-sm text-muted-foreground">Los docentes pueden monitorear el progreso de los estudiantes e identificar brechas de aprendizaje al instante.</p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>100+</CardTitle>
+                <CardTitle className="text-3xl">100+</CardTitle>
                 <CardDescription>Juegos Educativos</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Biblioteca integral de juegos diseñados para enseñar conceptos de programación de manera efectiva.</p>
+                <p className="text-sm text-muted-foreground">Biblioteca integral de juegos diseñados para enseñar conceptos de programación de manera efectiva.</p>
               </CardContent>
             </Card>
           </div>

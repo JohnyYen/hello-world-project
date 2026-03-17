@@ -1,5 +1,6 @@
 from fastapi import Depends
 
+from src.shared.application.providers.users_providers import get_user_service
 from src.users.application.service.user_service import UserService
 from src.shared.domain.exceptions import NotFoundException, InvalidCredentialsException
 from src.auth.infrastructure.security import verify_password, get_password_hash
@@ -24,7 +25,7 @@ class ChangePasswordUseCase:
     - (Opcional) Registrar evento de seguridad
     """
 
-    def __init__(self, user_service: UserService = Depends()):
+    def __init__(self, user_service: UserService = Depends(get_user_service)):
         self.user_service = user_service
 
     async def execute(

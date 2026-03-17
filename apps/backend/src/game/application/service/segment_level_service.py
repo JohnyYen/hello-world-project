@@ -1,13 +1,8 @@
 # app/services/segment_level_service.py
-from typing import List, Optional
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.shared.infrastructure.session import get_db
 from src.game.infrastructure.segment_level_repository import SegmentLevelRepository
-from src.game.api.v1.schemas.segment_level import SegmentLevelCreate, SegmentLevelUpdate
 from src.game.domain.segment_level import SegmentLevel
-from src.shared.domain.exceptions import NotFoundException
 from src.shared.application.usecase.base_service import BaseService
+
 
 class SegmentLevelService(BaseService):
     """
@@ -17,12 +12,12 @@ class SegmentLevelService(BaseService):
     manejando la lógica de negocio antes de interactuar con la base de datos.
     """
 
-    def __init__(self, db: AsyncSession = Depends(get_db)):
+    def __init__(self, repository: SegmentLevelRepository, model: type[SegmentLevel]):
         """
-        Inicializa el servicio con una sesión de base de datos.
+        Inicializa el servicio con un repositorio y modelo.
 
         Args:
-            db: Sesión de base de datos asíncrona.
+            repository: Instancia del repositorio de segmentos de nivel
+            model: Clase del modelo SegmentLevel
         """
-        repository = SegmentLevelRepository(db)
-        super().__init__(repository, SegmentLevel)
+        super().__init__(repository, model)

@@ -1,9 +1,6 @@
 # Hello World Game - AI Agent Ruleset
 
-> **Skills Reference**: For detailed patterns, use these skills:
-> - [`godot-4`](https://docs.godotengine.org/en/stable/) - GDScript 2.0, Signal patterns
-> - [`architecture-patterns`](#) - MVC in Game Development
-> - [`tdd`](#) - Test-Driven Development workflow
+> **Skills Reference**: All skills are in `.agents/skills/`. Use the Skill tool to invoke them.
 
 ### Auto-invoke Skills
 

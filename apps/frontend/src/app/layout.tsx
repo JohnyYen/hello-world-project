@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Share_Tech_Mono } from 'next/font/google';
 import "@/app/globals.css";
-import { Providers } from "@/components/shared/providers";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
-const inter = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["system-ui", "sans-serif"],
+const shareTechMono = Share_Tech_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: '400'
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  display: "swap",
-  fallback: ["monospace"],
-});
+// Fuente de respaldo si Google Fonts falla
+const fallbackFont = {
+  style: {
+    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  },
+  variable: '--font-sans',
+};
 
 export const metadata: Metadata = {
   title: "Plataforma Educativa",
@@ -28,11 +28,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}
-      >
-        <Providers>{children}</Providers>
+    <html lang="es" suppressHydrationWarning className={`${shareTechMono.variable} ${fallbackFont.variable}`}>
+      <body className="font-sans antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

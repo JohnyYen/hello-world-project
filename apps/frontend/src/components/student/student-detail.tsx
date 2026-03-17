@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mail, MessageCircle, ChevronLeft } from "lucide-react";
+import { Mail, MessageCircle, ChevronLeft, User } from "lucide-react";
 import Link from "next/link";
 import { Student } from "@/types/index";
 
@@ -13,43 +13,71 @@ type StudentDetailProps = {
 
 export default function StudentDetail({ student, studentId }: StudentDetailProps) {
   return (
-    <div className="container mx-auto py-10">
-      <div className="mb-6">
-        <Link href="/dashboard/students">
-          <Button variant="outline" className="mb-4">
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Volver a la lista de estudiantes
-          </Button>
-        </Link>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">{student.name}</h1>
-            <p className="text-muted-foreground">Perfil del estudiante</p>
-          </div>
-          <div className="flex space-x-2">
-            <Link href={`/dashboard/students/${studentId}/reports`}>
-              <Button variant="default">
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Ver Reportes
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
+      {/* Grid Pattern Overlay */}
+      <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+      </div>
+
+      <div className="container mx-auto py-10 px-6 relative z-10">
+        {/* Back Button and Header */}
+        <div className="mb-6">
+          <Link href="/dashboard/students">
+            <Button variant="outline" className="mb-4 border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30">
+              <ChevronLeft className="h-4 w-4 mr-2" />
+              Volver a la lista de estudiantes
+            </Button>
+          </Link>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
+                  <User className="h-6 w-6" />
+                </div>
+                <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                  Estudiante
+                </span>
+              </div>
+              <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
+                {student.name}
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                Perfil del estudiante
+              </p>
+            </div>
+            <div className="flex space-x-2">
+              <Link href={`/dashboard/students/${studentId}/reports`}>
+                <Button variant="default" className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25">
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Ver Reportes
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = `mailto:${student.email}`}
+                className="border-indigo-200 dark:border-indigo-800"
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Contactar
               </Button>
-            </Link>
-            <Button
-              variant="outline"
-              onClick={() => window.location.href = `mailto:${student.email}`}
-            >
-              <Mail className="h-4 w-4 mr-2" />
-              Contactar
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => alert(`Redirigiendo para enviar feedback a ${student.name}`)}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Feedback
-            </Button>
+              <Button
+                variant="outline"
+                onClick={() => alert(`Redirigiendo para enviar feedback a ${student.name}`)}
+                className="border-indigo-200 dark:border-indigo-800"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Feedback
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Student Info Card */}
@@ -89,7 +117,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
               <div>
                 <p className="text-sm text-muted-foreground">Nivel Máximo</p>
                 <p className="font-medium">
-                  <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                  <span className="inline-flex items-center rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-medium text-primary">
                     Nivel {student.maxLevel}
                   </span>
                 </p>
@@ -119,7 +147,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5">
                   <div
-                    className="bg-blue-600 h-2.5 rounded-full"
+                    className="bg-primary h-2.5 rounded-full"
                     style={{ width: `${student.progress}%` }}
                   ></div>
                 </div>
@@ -178,6 +206,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
               </div>
             </CardContent>
           </Card>
+        </div>
         </div>
       </div>
     </div>

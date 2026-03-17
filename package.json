@@ -1,14 +1,21 @@
 {
   "name": "hello-world-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Hello World Project - Multi-platform educational ecosystem",
+  "private": true,
   "directories": {
     "doc": "docs"
   },
   "packageManager": "pnpm@10.4.1",
   "scripts": {
-    "dev": "turbo run dev",
-    "generate:api-client": "pnpm exec openapi-generator-cli generate -i packages/api-contract/openapi.yaml -g typescript-fetch -o packages/api-client-ts"
+    "dev": "docker compose -f infraestructure/docker/docker-compose.dev.yml up",
+    "dev:backend": "cd apps/backend && poetry run fastapi dev src/main.py --reload",
+    "dev:frontend": "cd apps/frontend && pnpm dev",
+    "dev:frontend:prod": "cd apps/frontend && pnpm build && pnpm start",
+    "generate:api-client": "bash scripts/generate-api-client.sh",
+    "docker:up": "docker compose -f infraestructure/docker/docker-compose.dev.yml up",
+    "docker:down": "docker compose -f infraestructure/docker/docker-compose.dev.yml down",
+    "docker:logs": "docker compose -f infraestructure/docker/docker-compose.dev.yml logs -f"
   },
   "repository": {
     "type": "git",
@@ -23,8 +30,6 @@
   },
   "homepage": "https://github.com/JohnyYen/hello-world-project#readme",
   "devDependencies": {
-    "@mockoon/cli": "^9.5.0",
-    "@openapitools/openapi-generator-cli": "^2.30.0",
-    "turbo": "^2.8.10"
+    "@openapitools/openapi-generator-cli": "^2.30.0"
   }
 }

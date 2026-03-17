@@ -1,11 +1,15 @@
+'use client';
+
 import { ChangePasswordForm } from "@/components/auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, User, Mail, Settings } from "lucide-react";
+import { Camera, User, Mail, Calendar, BookOpen, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 // Mock user data - in a real app, this would come from an API
 const mockUser = {
@@ -13,217 +17,226 @@ const mockUser = {
   name: "Dr. María Rodríguez",
   email: "maria.rodriguez@educacion.com",
   role: "teacher",
-  avatar: "/placeholder-avatar.jpg", // This would be a real image URL
-  username: "mrodriguez"
+  avatar: "/placeholder-avatar.jpg",
+  username: "mrodriguez",
+  createdAt: "2024-01-15",
+  coursesCount: 5,
+  studentsCount: 127,
 };
 
 export default function AccountPage() {
   return (
-    <div className="container mx-auto py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Settings className="h-8 w-8 text-blue-600" />
-          Mi Cuenta
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Gestiona tu perfil y preferencias de cuenta
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
+      {/* Grid Pattern Overlay */}
+      <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Profile Card */}
-        <div className="lg:col-span-1">
-          <Card>
-            <CardHeader className="items-center">
-              <Avatar className="h-32 w-32">
-                <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
-                <AvatarFallback>
-                  {mockUser.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-center mt-4">
-                <h2 className="text-2xl font-bold flex items-center gap-2">
-                  {mockUser.name}
-                  <Badge variant="secondary" className="text-xs">
-                    {mockUser.role === "teacher" ? "Docente" : "Estudiante"}
-                  </Badge>
-                </h2>
-                <p className="text-muted-foreground mt-1">{mockUser.email}</p>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-2">
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Camera className="h-4 w-4" />
-                  Cambiar Avatar
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+      <div className="container mx-auto py-10 px-6 relative z-10">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
+              <User className="h-6 w-6" />
+            </div>
+            <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+              Cuenta
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
+            Mi Perfil
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Gestiona tu información personal y seguridad de tu cuenta
+          </p>
         </div>
 
-        {/* Account Details */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Información del Perfil</CardTitle>
-              <CardDescription>
-                Actualiza tu información personal y preferencias
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nombre Completo</Label>
-                  <div className="flex items-center gap-2">
-                    <Input id="name" defaultValue={mockUser.name} />
-                    <Button size="icon" variant="outline">
-                      <User className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Correo Electrónico</Label>
-                  <div className="flex items-center gap-2">
-                    <Input id="email" type="email" defaultValue={mockUser.email} />
-                    <Button size="icon" variant="outline">
-                      <Mail className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="username">Nombre de Usuario</Label>
-                  <div className="flex items-center gap-2">
-                    <Input id="username" defaultValue={mockUser.username} />
-                    <Button size="icon" variant="outline">
-                      <User className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="role">Rol</Label>
-                  <div className="flex items-center gap-2">
-                    <Input id="role" value={mockUser.role === "teacher" ? "Docente" : "Estudiante"} readOnly />
-                    <Button size="icon" variant="outline" disabled>
-                      <User className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Profile Card - Avatar & Basic Info */}
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="border-border/50 shadow-lg shadow-primary/5 overflow-hidden">
+              <div className="h-24 bg-gradient-to-r from-primary via-accent to-primary relative">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
-            </CardContent>
-          </Card>
+              <CardHeader className="items-center -mt-12 relative">
+                <Avatar className="h-28 w-28 ring-4 ring-background shadow-xl">
+                  <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
+                  <AvatarFallback className="text-2xl bg-gradient-to-br from-primary to-accent text-white">
+                    {mockUser.name.split(" ").map((n) => n[0]).join("")}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-center mt-3">
+                  <h2 className="text-xl font-bold flex items-center justify-center gap-2">
+                    {mockUser.name}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">@{mockUser.username}</p>
+                  <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20">
+                    {mockUser.role === "teacher" ? "👨‍🏫 Docente" : "🎓 Estudiante"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardHeader className="pt-0">
+                <Button variant="outline" className="w-full flex items-center gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all">
+                  <Camera className="h-4 w-4" />
+                  Cambiar Foto
+                </Button>
+              </CardHeader>
+            </Card>
 
-          <ChangePasswordForm />
+            {/* Quick Stats */}
+            <Card className="border-border/50 shadow-lg shadow-primary/5">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  Estadísticas
+                </CardTitle>
+              </CardHeader>
+              <div className="px-6 pb-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Calendar className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Miembro desde</p>
+                      <p className="font-medium">{mockUser.createdAt}</p>
+                    </div>
+                  </div>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-emerald-500/10">
+                      <BookOpen className="h-4 w-4 text-emerald-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Cursos activos</p>
+                      <p className="font-medium">{mockUser.coursesCount}</p>
+                    </div>
+                  </div>
+                </div>
+                <Separator />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-violet-500/10">
+                      <User className="h-4 w-4 text-violet-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Estudiantes</p>
+                      <p className="font-medium">{mockUser.studentsCount}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Conexiones Externas</CardTitle>
-              <CardDescription>
-                Conecta tu cuenta con otros servicios y plataformas
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="bg-red-100 p-2 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail text-red-600">
-                      <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                    </svg>
+          {/* Account Details - Editable Info */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Personal Information */}
+            <Card className="border-border/50 shadow-lg shadow-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5 text-primary" />
+                  Información Personal
+                </CardTitle>
+                <CardDescription>
+                  Actualiza tu información de perfil
+                </CardDescription>
+              </CardHeader>
+              <div className="px-6 pb-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nombre Completo</Label>
+                    <Input id="name" defaultValue={mockUser.name} className="bg-muted/30" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold">Google</h3>
-                    <p className="text-sm text-muted-foreground">Cuenta de Google conectada</p>
+                  <div className="space-y-2">
+                    <Label htmlFor="username">Nombre de Usuario</Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">@</span>
+                      <Input id="username" defaultValue={mockUser.username} className="pl-7 bg-muted/30" />
+                    </div>
                   </div>
-                </div>
-                <Button variant="outline">Desconectar</Button>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="bg-gray-800 p-2 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-apple text-white">
-                      <path d="M12 2c2 0 4 1 5 3 1 2 1 4 0 6-1 2-3 3-5 3s-4-1-5-3c-1-2-1-4 0-6 1-2 3-3 5-3z"></path>
-                      <path d="M12 13c1 0 2 1 2 2v3c0 1-1 2-2 2s-2-1-2-2v-3c0-1 1-2 2-2z"></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Apple</h3>
-                    <p className="text-sm text-muted-foreground">Conecta tu cuenta de Apple</p>
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="email">Correo Electrónico</Label>
+                    <Input id="email" type="email" defaultValue={mockUser.email} className="bg-muted/30" />
                   </div>
                 </div>
-                <Button variant="outline">Conectar</Button>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-500 p-2 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-school text-white">
-                      <path d="M14 22v-4a2 2 0 1 0-4 0v4"></path>
-                      <path d="M18 8h-6"></path>
-                      <path d="M10 8H4"></path>
-                      <path d="M18 12H4"></path>
-                      <path d="m8 16-3 3 3 3"></path>
-                      <path d="m16 19-3-3 3-3"></path>
-                      <path d="M16 16c-2 0-3 1-3 3 0 1 1 3 3 3 2 0 3-1 3-3 0-2-1-3-3-3Z"></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Google Classroom</h3>
-                    <p className="text-sm text-muted-foreground">Integrado con Google Classroom</p>
-                  </div>
+                <div className="flex justify-end">
+                  <Button className="bg-indigo-600 hover:bg-indigo-700">
+                    Guardar Cambios
+                  </Button>
                 </div>
-                <Button variant="outline">Configurar</Button>
               </div>
-              
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-600 p-2 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-languages text-white">
-                      <path d="m5 8 6 6"></path>
-                      <path d="m4 14 6-6 2-3"></path>
-                      <path d="M2 5h12"></path>
-                      <path d="M7 2h1"></path>
-                      <path d="m22 22-5-10-5 10"></path>
-                      <path d="M14 18h6"></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">Moodle</h3>
-                    <p className="text-sm text-muted-foreground">Cuenta de Moodle conectada</p>
-                  </div>
-                </div>
-                <Button variant="outline">Configurar</Button>
-              </div>
-            </CardContent>
-          </Card>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Preferencias</CardTitle>
-              <CardDescription>
-                Configura tus preferencias de cuenta
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Notificaciones por Email</Label>
-                  <p className="text-sm text-muted-foreground">Recibir actualizaciones sobre tu cuenta</p>
+            {/* Change Password */}
+            <ChangePasswordForm />
+
+            {/* Link to Settings */}
+            <Card className="border-border/50 shadow-lg shadow-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <svg className="h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  Configuración Adicional
+                </CardTitle>
+                <CardDescription>
+                  Otras opciones de personalización
+                </CardDescription>
+              </CardHeader>
+              <div className="px-6 pb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Link 
+                    href="/dashboard/settings" 
+                    className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/30 hover:border-primary/30 hover:bg-primary/5 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-indigo-500/10 group-hover:bg-indigo-500/20 transition-colors">
+                        <svg className="h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                          <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Configuración</h3>
+                        <p className="text-sm text-muted-foreground">Tema, idioma y más</p>
+                      </div>
+                    </div>
+                    <span className="text-muted-foreground group-hover:translate-x-1 transition-transform">→</span>
+                  </Link>
+
+                  <Link 
+                    href="/dashboard/notifications" 
+                    className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/30 hover:border-primary/30 hover:bg-primary/5 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-amber-500/10 group-hover:bg-amber-500/20 transition-colors">
+                        <svg className="h-5 w-5 text-amber-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Notificaciones</h3>
+                        <p className="text-sm text-muted-foreground">Centro de alertas</p>
+                      </div>
+                    </div>
+                    <span className="text-muted-foreground group-hover:translate-x-1 transition-transform">→</span>
+                  </Link>
                 </div>
-                <Button variant="outline">Activar</Button>
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Modo Oscuro</Label>
-                  <p className="text-sm text-muted-foreground">Cambiar entre temas claros y oscuros</p>
-                </div>
-                <Button variant="outline">Configurar</Button>
-              </div>
-            </CardContent>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

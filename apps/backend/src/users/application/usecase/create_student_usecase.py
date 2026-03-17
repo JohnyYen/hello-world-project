@@ -7,9 +7,13 @@ from src.users.domain.user import User
 from src.users.infrastructure.user_repository import UserRepository
 from src.users.infrastructure.student_repository import StudentRepository
 from src.users.infrastructure.role_repository import RoleRepository
+from src.users.infrastructure.teacher_settings_repository import (
+    TeacherSettingsRepository,
+)
 from src.users.application.service.teacher_settings_service import (
     TeacherSettingsService,
 )
+from src.users.domain.teacher_settings import TeacherSettings
 from src.users.api.v1.schemas.student import StudentCreate, StudentResponse
 
 
@@ -81,7 +85,9 @@ class CreateStudentUseCase:
         await student_repo.create({"user_id": user.id})
 
         # Crear StudentSettings automáticamente
-        settings_service = TeacherSettingsService(self.db)
+        settings_service = TeacherSettingsService(
+            TeacherSettingsRepository(self.db), TeacherSettings
+        )
         await settings_service.create_for_user(user.id)
 
         # Refrescar usuario para obtener relaciones

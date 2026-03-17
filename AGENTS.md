@@ -8,7 +8,7 @@
 
 ## Available Skills
 
-Use these skills for detailed patterns on-demand:
+All skills are located in `.agents/skills/`. Invoke them using the Skill tool when working with specific technologies.
 
 ### Generic Skills (Any Project)
 | Skill | Description |
@@ -20,6 +20,45 @@ Use these skills for detailed patterns on-demand:
 | `fastapi` | Async patterns, JWT auth, Pydantic v2 |
 | `architecture-patterns` | Clean Architecture, Service/UseCase patterns |
 | `tdd` | Test-Driven Development workflow |
+| `pytest` | Python testing with fixtures and mocking |
+| `playwright` | E2E testing patterns |
+| `zod-4` | Schema validation |
+| `zustand-5` | State management |
+| `ai-sdk-5` | Vercel AI SDK for chat features |
+| `django-drf` | Django REST Framework patterns |
+
+### SDD (Spec-Driven Development)
+| Skill | Description |
+|-------|-------------|
+| `sdd-init` | Initialize SDD context |
+| `sdd-explore` | Explore and investigate ideas |
+| `sdd-propose` | Create change proposal |
+| `sdd-spec` | Write specifications |
+| `sdd-design` | Technical design document |
+| `sdd-tasks` | Task breakdown |
+| `sdd-apply` | Implement code |
+| `sdd-verify` | Validate implementation |
+| `sdd-archive` | Archive completed change |
+
+### Additional Skills
+| Skill | Description |
+|-------|-------------|
+| `frontend-design` | Production-grade UI design |
+| `prowler-commit` | Conventional commit workflow |
+| `skill-creator` | Create new skills |
+| `skill-lookup` | Discover available skills |
+| `jira-task` | Create Jira tasks |
+| `jira-epic` | Create Jira epics |
+| `pr-review` | Review GitHub PRs |
+| `monorepo-management` | Turborepo, Nx, pnpm workspaces |
+| `architecture-decision-records` | ADRs documentation |
+| `api-design-principles` | REST/GraphQL design |
+| `github-actions-templates` | CI/CD workflows |
+| `openapi-spec-generation` | OpenAPI 3.1 specs |
+| `fastapi-templates` | Project templates |
+| `tailwind-patterns` | UI component patterns |
+| `e2e-testing-patterns` | Playwright/Cypress patterns |
+| `dotnet-backend-patterns` | C#/.NET patterns |
 
 ## Auto-invoke Skills
 
@@ -28,7 +67,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Action | Skill |
 |--------|-------|
 | App Router / Server Actions | `nextjs-15` |
-| Committing changes | `prowler-commit` (Simulated) |
+| Committing changes | `prowler-commit` |
 | Creating FastAPI endpoints | `fastapi` |
 | Creating Zod schemas | `zod-4` |
 | Creating/modifying React components | `react-19` |

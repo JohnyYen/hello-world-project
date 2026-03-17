@@ -1,11 +1,6 @@
 # Hello World Frontend - AI Agent Ruleset
 
-> **Skills Reference**: For detailed patterns, use these skills:
-> - [`nextjs-15`](#) - App Router, Server Actions, streaming
-> - [`react-19`](#) - React Compiler, no useMemo/useCallback
-> - [`tailwind-4`](#) - cn() utility, modern CSS-first config
-> - [`typescript`](#) - Explicit typing, strict mode
-> - [`tdd`](#) - Test-Driven Development workflow
+> **Skills Reference**: All skills are in `.agents/skills/`. Use the Skill tool to invoke them.
 
 ### Auto-invoke Skills
 
@@ -23,6 +18,7 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Working on task | `tdd` |
 | Working with Tailwind classes | `tailwind-4` |
 | Writing TypeScript types/interfaces | `typescript` |
+| Design UI | `frontend-design` |
 
 ---
 
@@ -45,6 +41,9 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 
 ### API Client
 - ALWAYS: When the communicate with de api, use the api client package `workspace/api-client-ts`
+
+### Runtime
+- NEVER: Never build for test the application
 ---
 
 ## TECH STACK

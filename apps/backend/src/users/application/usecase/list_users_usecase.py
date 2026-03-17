@@ -1,8 +1,7 @@
 from typing import List
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.shared.infrastructure.session import get_db
+from src.shared.application.providers.users_providers import get_user_service
 from src.users.application.service.user_service import UserService
 from src.users.api.v1.schemas.user import UserListResponse
 
@@ -23,10 +22,8 @@ class ListUsersUseCase:
 
     def __init__(
         self,
-        db: AsyncSession = Depends(get_db),
-        user_service: UserService = Depends(),
+        user_service: UserService = Depends(get_user_service),
     ):
-        self.db = db
         self.user_service = user_service
 
     async def execute(

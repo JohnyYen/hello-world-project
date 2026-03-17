@@ -4,10 +4,19 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* 🎨 INDIGO & VIOLET - Elegant Dark Palette */
+  
+  /* Background & Foreground */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-background-secondary: var(--bg-secondary);
+  
+  /* Fonts */
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+  
+  /* Sidebar */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -16,17 +25,23 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+  
+  /* Charts - Indigo & Violet with Complementary Accents */
+  --color-chart-1: var(--chart-1); /* Indigo Primary */
+  --color-chart-2: var(--chart-2); /* Complementary Accent 1 */
+  --color-chart-3: var(--chart-3); /* Complementary Accent 2 */
+  --color-chart-4: var(--chart-4); /* Complementary Accent 3 */
+  --color-chart-5: var(--chart-5); /* Muted Indigo */
+  
+  /* UI Elements */
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-success-foreground: var(--success-foreground);
+  --color-success: var(--success);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -37,6 +52,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  
+  /* Radius */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -44,101 +61,196 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.375rem;
   
-  /* 🎨 PALETA TECH EDUCATIVO - LIGHT MODE */
+  /* 🎨 Theme System - Indigo & Violet for Future Theme Switching */
+  --theme-primary: #6366f1;      /* indigo-600 */
+  --theme-accent: #8b5cf6;       /* violet-500 */
+  --theme-ring: #6366f1;          /* indigo-600 */
   
-  /* Background & Foreground */
-  --background: #F8FAFC;
-  --foreground: #1E293B;
-  
+  /* 🎨 INDIGO & VIOLET - Light Mode */
+
+  /* Background & Foreground - Deep grays instead of true black for light mode */
+  --background: #f8fafc; /* Very light slate */
+  --background-gradient: linear-gradient(180deg, #f8fafc 0%, #ffffff 50%, rgba(224, 231, 255, 0.3) 100%); /* from-slate-50 via-white to-indigo-50/30 */
+  --bg-secondary: #f1f5f9;
+  --foreground: #0f172a; /* Very dark slate */
+
   /* Cards & Popovers */
-  --card: #FFFFFF;
-  --card-foreground: #1E293B;
-  --popover: #FFFFFF;
-  --popover-foreground: #1E293B;
-  
-  /* Primarios - Azul Profesional */
-  --primary: #2563EB;
-  --primary-foreground: #FFFFFF;
-  
-  /* Secundarios - Verde Éxito */
-  --secondary: #10B981;
-  --secondary-foreground: #FFFFFF;
-  
-  /* Estados semánticos */
-  --accent: #F59E0B;
-  --accent-foreground: #1E293B;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
-  
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  /* Primary - Elegant Indigo */
+  --primary: #6366f1; /* indigo-600 */
+  --primary-foreground: #ffffff;
+
+  /* Secondary - Cool Slate */
+  --secondary: #64748b; /* slate-500 */
+  --secondary-foreground: #ffffff;
+
+  /* Accent - Violet (Complementary) */
+  --accent: #8b5cf6; /* violet-500 */
+  --accent-foreground: #ffffff;
+
+  /* Success - Emerald Green */
+  --success: #10b981; /* emerald-500 */
+  --success-foreground: #ffffff;
+
+  /* Semantic States */
+  --destructive: #ef4444; /* red-500 */
+  --destructive-foreground: #ffffff;
+
   /* Neutros */
-  --muted: #64748B;
-  --muted-foreground: #94A3B8;
-  --border: #E2E8F0;
-  --input: #E2E8F0;
-  --ring: #2563EB;
-  
-  /* Colores para gráficos */
-  --chart-1: #2563EB;
-  --chart-2: #10B981;
-  --chart-3: #F59E0B;
-  --chart-4: #EF4444;
-  --chart-5: #8B5CF6;
-  
+  --muted: #94a3b8; /* slate-400 */
+  --muted-foreground: #475569; /* slate-600 */
+  --border: #e2e8f0; /* slate-200 */
+  --input: #e2e8f0;
+  --ring: #6366f1; /* indigo-600 */
+
+  /* Chart Colors - Indigo & Violet with Complementary Accents */
+  --chart-1: #6366f1; /* Indigo Primary */
+  --chart-2: #8b5cf6; /* Violet - Complementary */
+  --chart-3: #10b981; /* Emerald - Success */
+  --chart-4: #ef4444; /* Red - Destructive */
+  --chart-5: #818cf8; /* Indigo Light */
+
   /* Sidebar */
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #1E293B;
-  --sidebar-primary: #2563EB;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F1F5F9;
-  --sidebar-accent-foreground: #1E293B;
-  --sidebar-border: #E2E8F0;
-  --sidebar-ring: #2563EB;
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #6366f1;
+
+  /* 🎨 GRADIENTS - Indigo & Violet Light Mode */
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #a5b4fc 100%);
+  --gradient-secondary: linear-gradient(135deg, #64748b 0%, #94a3b8 50%, #cbd5e1 100%);
+  --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c4b5fd 100%);
+  --gradient-background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  --gradient-card: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+
+  /* 🎨 GLASSMOPHISM - Backdrop blur max 20px for performance */
+  --glass-background: rgba(255, 255, 255, 0.7);
+  --glass-background-solid: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(226, 232, 240, 0.5);
+  --glass-blur-sm: blur(8px);
+  --glass-blur-md: blur(12px);
+  --glass-blur-lg: blur(16px);
+  --glass-blur-xl: blur(20px);
+
+  /* 🎨 ELEGANT SHADOWS - Not flat */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-glow-primary: 0 0 20px rgba(99, 102, 241, 0.25), 0 4px 12px rgba(99, 102, 241, 0.15);
+  --shadow-glow-accent: 0 0 20px rgba(139, 92, 246, 0.25), 0 4px 12px rgba(139, 92, 246, 0.15);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+  /* 🎨 FOCUS RINGS - Gradient focus rings for inputs */
+  --focus-ring: 0 0 0 3px rgba(99, 102, 241, 0.4);
+  --focus-ring-primary: 0 0 0 3px rgba(99, 102, 241, 0.5);
+  --focus-ring-accent: 0 0 0 3px rgba(139, 92, 246, 0.4);
+  --focus-ring-gradient: 0 0 0 3px rgba(99, 102, 241, 0.3), 0 0 0 5px rgba(139, 92, 246, 0.2);
 }
 
 .dark {
-  --background: #0F172A;
-  --foreground: #F1F5F9;
+  /* 🎨 INDIGO & VIOLET - Dark Mode (Elegant Indigo) */
+  /* Deep noir background with elegant indigo/violet accents */
+
+  --background: #020617; /* slate-950 - deep dark */
+  --bg-secondary: #0f172a; /* slate-900 */
+  --foreground: #e5e7eb; /* Light gray */
   
-  --card: #1E293B;
-  --card-foreground: #F1F5F9;
-  --popover: #1E293B;
-  --popover-foreground: #F1F5F9;
-  
-  /* Primarios más brillantes en dark */
-  --primary: #3B82F6;
-  --primary-foreground: #FFFFFF;
-  
-  --secondary: #10B981;
-  --secondary-foreground: #FFFFFF;
-  
-  --accent: #FBBF24;
-  --accent-foreground: #1E293B;
-  --destructive: #F87171;
-  --destructive-foreground: #FFFFFF;
-  
-  --muted: #94A3B8;
-  --muted-foreground: #64748B;
-  --border: #334155;
-  --input: #334155;
-  --ring: #3B82F6;
-  
-  /* Gráficos en dark - más brillantes */
-  --chart-1: #60A5FA;
-  --chart-2: #34D399;
-  --chart-3: #FBBF24;
-  --chart-4: #F87171;
-  --chart-5: #A78BFA;
-  
-  --sidebar: #1E293B;
-  --sidebar-foreground: #F1F5F9;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #334155;
-  --sidebar-accent-foreground: #F1F5F9;
-  --sidebar-border: #334155;
-  --sidebar-ring: #3B82F6;
+  --background-gradient: linear-gradient(180deg, #020617 0%, #0f172a 50%, rgba(49, 46, 129, 0.2) 100%); /* from-slate-950 via-slate-900 to-indigo-950/20 */
+
+  --card: #0f172a;
+  --card-foreground: #e5e7eb;
+  --popover: #0f172a;
+  --popover-foreground: #e5e7eb;
+
+  /* Primary - Elegant Indigo */
+  --primary: #6366f1; /* indigo-600 */
+  --primary-foreground: #ffffff;
+
+  /* Secondary - Cool Slate */
+  --secondary: #64748b; /* slate-500 */
+  --secondary-foreground: #ffffff;
+
+  /* Accent - Violet (Complementary) */
+  --accent: #8b5cf6; /* violet-500 */
+  --accent-foreground: #ffffff;
+
+  /* Success - Emerald Green */
+  --success: #10b981; /* emerald-500 */
+  --success-foreground: #020617;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --muted: #4b5563; /* gray-600 */
+  --muted-foreground: #9ca3af; /* gray-400 */
+  --border: #374151; /* gray-700 */
+  --input: #374151;
+  --ring: #818cf8; /* indigo-400 */
+
+  /* Chart Colors - Indigo & Violet with Complementary Accents */
+  --chart-1: #818cf8; /* Indigo Primary - brighter for dark mode */
+  --chart-2: #a78bfa; /* Violet - Complementary */
+  --chart-3: #10b981; /* Emerald - Success */
+  --chart-4: #ef4444; /* Red - Destructive */
+  --chart-5: #6366f1; /* Indigo - Secondary */
+
+  /* Sidebar Dark */
+  --sidebar: #020617;
+  --sidebar-foreground: #e5e7eb;
+  --sidebar-primary: #6366f1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e1b4b;
+  --sidebar-accent-foreground: #e5e7eb;
+  --sidebar-border: #3730a3;
+  --sidebar-ring: #818cf8;
+
+  /* 🎨 GRADIENTS - Indigo & Violet Dark Mode */
+  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #818cf8 50%, #a5b4fc 100%);
+  --gradient-secondary: linear-gradient(135deg, #475569 0%, #64748b 50%, #94a3b8 100%);
+  --gradient-accent: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
+  --gradient-background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+  --gradient-card: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+  --gradient-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.08) 100%);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+
+  /* 🎨 GLASSMOPHISM - Dark Mode */
+  --glass-background: rgba(15, 23, 42, 0.7);
+  --glass-background-solid: rgba(15, 23, 42, 0.85);
+  --glass-border: rgba(55, 65, 81, 0.5);
+  --glass-blur-sm: blur(8px);
+  --glass-blur-md: blur(12px);
+  --glass-blur-lg: blur(16px);
+  --glass-blur-xl: blur(20px);
+
+  /* 🎨 ELEGANT SHADOWS - Dark Mode */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-glow-primary: 0 0 25px rgba(99, 102, 241, 0.4), 0 4px 15px rgba(99, 102, 241, 0.3);
+  --shadow-glow-accent: 0 0 25px rgba(139, 92, 246, 0.35), 0 4px 15px rgba(139, 92, 246, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+
+  /* 🎨 FOCUS RINGS - Dark Mode Gradient focus rings */
+  --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.4);
+  --focus-ring-primary: 0 0 0 3px rgba(129, 140, 248, 0.5);
+  --focus-ring-accent: 0 0 0 3px rgba(167, 139, 250, 0.4);
+  --focus-ring-gradient: 0 0 0 3px rgba(129, 140, 248, 0.3), 0 0 0 5px rgba(165, 180, 252, 0.2);
 }
 
 @layer base {
@@ -146,6 +258,80 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
   }
+}
+
+/* Retro Grid Background Pattern */
+.retro-grid {
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Scanline Effect */
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Vintage Border Decoration */
+.vintage-border {
+  border: 2px solid var(--border);
+  box-shadow:
+    inset 0 0 0 1px var(--card),
+    0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Flat Shadow Effect (Design.md 4.3) */
+.flat-shadow {
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.8);
+}
+
+/* Monospace display for data */
+.font-mono-display {
+  font-feature-settings: "ss01" on, "ss02" on;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--foreground);
 }

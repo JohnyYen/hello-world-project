@@ -1,6 +1,7 @@
-// Metrics data provider with mock data
+// Metrics data provider con caching optimizado
+import { unstable_cache } from 'next/cache';
 
-// Define types for our metrics data
+// Types
 export type MetricSummary = {
   totalStudents: number;
   activeStudents: number;
@@ -40,7 +41,7 @@ export type ActivityPerformance = {
   difficulty: number;
 };
 
-// Mock data for metrics
+// Mock data - en producción vendría de API/DB
 const mockMetricSummary: MetricSummary = {
   totalStudents: 1250,
   activeStudents: 980,
@@ -91,30 +92,84 @@ const mockActivityPerformance: ActivityPerformance[] = [
   { activityId: "a8", name: "Herencia", avgScore: 52, completionRate: 48, difficulty: 8 },
 ];
 
+// Cache functions - revalidate cada 60 segundos en desarrollo, 5 min en producción
+const cacheOptions = { 
+  revalidate: process.env.NODE_ENV === 'production' ? 300 : 60,
+  tags: ['metrics'] 
+};
+
+// Functions cacheadas con unstable_cache
+const getMetricSummaryCached = unstable_cache(
+  async () => {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return mockMetricSummary;
+  },
+  ['metric-summary'],
+  cacheOptions
+);
+
+const getStudentProgressCached = unstable_cache(
+  async (limit: number = 5) => {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return [...mockStudentProgress]
+      .sort((a, b) => b.progress - a.progress)
+      .slice(0, limit);
+  },
+  ['student-progress'],
+  cacheOptions
+);
+
+const getCourseCompletionCached = unstable_cache(
+  async () => {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return mockCourseCompletion;
+  },
+  ['course-completion'],
+  cacheOptions
+);
+
+const getDailyActivityCached = unstable_cache(
+  async () => {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return mockDailyActivity;
+  },
+  ['daily-activity'],
+  cacheOptions
+);
+
+const getActivityPerformanceCached = unstable_cache(
+  async () => {
+    await new Promise(resolve => setTimeout(resolve, 50));
+    return mockActivityPerformance;
+  },
+  ['activity-performance'],
+  cacheOptions
+);
+
+// Export funciones optimizadas
 export async function getMetricSummary(): Promise<MetricSummary> {
-  // In a real application, this would be an API call to fetch data from a database
-  // Simulating an async operation
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return mockMetricSummary;
+  return getMetricSummaryCached();
 }
 
 export async function getStudentProgress(limit: number = 5): Promise<StudentProgress[]> {
-  await new Promise(resolve => setTimeout(resolve, 100));
-  // Sort by progress in descending order and take the top N
-  return [...mockStudentProgress].sort((a, b) => b.progress - a.progress).slice(0, limit);
+  return getStudentProgressCached(limit);
 }
 
 export async function getCourseCompletion(): Promise<CourseCompletion[]> {
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return mockCourseCompletion;
+  return getCourseCompletionCached();
 }
 
 export async function getDailyActivity(): Promise<DailyActivity[]> {
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return mockDailyActivity;
+  return getDailyActivityCached();
 }
 
 export async function getActivityPerformance(): Promise<ActivityPerformance[]> {
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return mockActivityPerformance;
+  return getActivityPerformanceCached();
+}
+
+// Función para invalidar cache (útil para when data changes)
+export function revalidateMetrics() {
+  // En Next.js 15, esto usaría la API de revalidation
+  // import { revalidateTag } from 'next/cache';
+  // revalidateTag('metrics');
 }

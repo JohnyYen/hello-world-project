@@ -1,40 +1,32 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from typing import List
+
 from src.sync.api.v1.schemas.sync_event import SyncEventSchema
-import datetime
+from src.sync.application.service.sync_event_service import SyncEventService
+from src.sync.api.v1.dependencies import get_sync_event_service
 
 
 router = APIRouter(prefix="/sync-events")
 
 
 @router.get("/{session_id}", response_model=List[SyncEventSchema])
-async def list_sync_events(session_id: int):
+async def list_sync_events(
+    session_id: int,
+    service: SyncEventService = Depends(get_sync_event_service),
+):
     """
     Lista eventos asociados a una sesión.
     """
-    # Datos de prueba
-    mock_events = [
-        {
-            "id": 1,
-            "session_id": session_id,
-            "event_type": "player_move",
-            "event_data": {"direction": "up", "x": 10, "y": 20},
-            "timestamp": datetime.datetime.now() - datetime.timedelta(minutes=5),
-        },
-        {
-            "id": 2,
-            "session_id": session_id,
-            "event_type": "level_complete",
-            "event_data": {"level_id": 5, "score": 1500},
-            "timestamp": datetime.datetime.now() - datetime.timedelta(minutes=3),
-        },
-        {
-            "id": 3,
-            "session_id": session_id,
-            "event_type": "item_collected",
-            "event_data": {"item_id": "power_up", "quantity": 1},
-            "timestamp": datetime.datetime.now() - datetime.timedelta(minutes=1),
-        },
-    ]
+    events = await service.get_events_by_session(session_id=session_id)
 
-    return mock_events
+    return [
+        SyncEventSchema(
+            id=event.id,
+            sync_session_id=event.sync_session_id,
+            event_type=event.event_type,
+            payload=event.payload,
+            timestamp=event.timestamp,
+            status=event.status,
+        )
+        for event in events
+    ]

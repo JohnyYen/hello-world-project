@@ -44,7 +44,7 @@ const StudentRanking = ({ students }: StudentRankingProps) => {
                 </TableCell>
                 <TableCell className="font-medium">{student.name}</TableCell>
                 <TableCell>
-                  <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                  <span className="inline-flex items-center rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-medium text-primary">
                     {student.averageGrade}%
                   </span>
                 </TableCell>

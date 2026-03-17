@@ -4,6 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.shared.infrastructure.config import settings
 from src.shared.infrastructure.session import get_db
+from src.shared.application.providers.users_providers import (
+    get_user_service,
+    get_teacher_settings_service,
+)
 from src.auth.infrastructure.security import create_access_token
 from src.users.application.service.user_service import UserService
 from src.users.application.service.teacher_settings_service import (
@@ -35,12 +39,15 @@ class RegisterUserUseCase:
     def __init__(
         self,
         db: AsyncSession = Depends(get_db),
-        user_service: UserService = Depends(),
+        user_service: UserService = Depends(get_user_service),
+        teacher_settings_service: TeacherSettingsService = Depends(
+            get_teacher_settings_service
+        ),
     ):
         self.db = db
         self.user_service = user_service
+        self.teacher_settings_service = teacher_settings_service
         self.role_repository = RoleRepository(db)
-        self.teacher_settings_service = TeacherSettingsService(db)
         self.professor_repository = ProfessorRepository(db)
 
     async def execute(self, user_data: UserCreate) -> UserLoginResponse:

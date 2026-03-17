@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
-from .base_repository import BaseRepository
+from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.sync.domain.sync_event import SyncEvent
 
 
