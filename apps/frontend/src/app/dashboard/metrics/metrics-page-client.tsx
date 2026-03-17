@@ -1,20 +1,28 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { ExportButton } from "@/components/export/ExportButton";
 import { Suspense } from "react";
 import { LoadingState } from "@/components/ui/loading-state";
 import { BarChart2 } from "lucide-react";
 
-// Server Components
-import { MetricsKPIServer } from "./metrics-kpi-server";
-import { StudentProgressServer } from "./student-progress-server";
-import { CourseCompletionServer } from "./course-completion-server";
-import { EngagementServer } from "./engagement-server";
-import { ActivityPerformanceServer } from "./activity-performance-server";
-import { MetricTypesServer } from "./metric-types-server";
+interface MetricsPageClientProps {
+  kpis: ReactNode;
+  studentProgress: ReactNode;
+  courseCompletion: ReactNode;
+  engagement: ReactNode;
+  activityPerformance: ReactNode;
+  metricTypes: ReactNode;
+}
 
-export function MetricsPageClient() {
+export function MetricsPageClient({
+  kpis,
+  studentProgress,
+  courseCompletion,
+  engagement,
+  activityPerformance,
+  metricTypes,
+}: MetricsPageClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -67,32 +75,32 @@ export function MetricsPageClient() {
       <div ref={containerRef} className="max-w-7xl mx-auto px-6 md:px-12 py-8 relative z-10">
         {/* KPIs - Server Component con streaming */}
         <Suspense fallback={<LoadingState message="Cargando métricas..." />}>
-          <MetricsKPIServer />
+          {kpis}
         </Suspense>
 
         {/* Gráficos principales */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <Suspense fallback={<div className="h-80 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-xl" />}>
-            <StudentProgressServer />
+            {studentProgress}
           </Suspense>
           <Suspense fallback={<div className="h-80 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-xl" />}>
-            <CourseCompletionServer />
+            {courseCompletion}
           </Suspense>
         </div>
 
         {/* Métricas de engagement y rendimiento */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <Suspense fallback={<div className="h-80 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-xl" />}>
-            <EngagementServer />
+            {engagement}
           </Suspense>
           <Suspense fallback={<div className="h-80 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-xl" />}>
-            <ActivityPerformanceServer />
+            {activityPerformance}
           </Suspense>
         </div>
 
         {/* Catálogo de tipos de métricas */}
         <Suspense fallback={<LoadingState message="Cargando tipos de métricas..." />}>
-          <MetricTypesServer />
+          {metricTypes}
         </Suspense>
       </div>
     </div>
