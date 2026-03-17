@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { BarChart3, Check, ChevronDown, X } from 'lucide-react';
@@ -21,6 +21,18 @@ export function CourseMultiSelector({
 }: CourseMultiSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Group courses by school year
+  const coursesByYear = useMemo(() => {
+    return courses.reduce<Record<string, Course[]>>((acc, course) => {
+      const year = course.schoolYear;
+      if (!acc[year]) acc[year] = [];
+      acc[year].push(course);
+      return acc;
+    }, {});
+  }, [courses]);
+
+  const schoolYears = Object.keys(coursesByYear).sort().reverse();
+
   const toggleCourse = (courseId: string) => {
     if (selectedCourses.includes(courseId)) {
       onSelectionChange(selectedCourses.filter(id => id !== courseId));
@@ -29,9 +41,57 @@ export function CourseMultiSelector({
     }
   };
 
-  const selectedCourseNames = courses
-    .filter(c => selectedCourses.includes(c.id))
-    .map(c => `${c.period} - ${c.schoolYear}`);
+  // Toggle all courses in a year
+  const toggleYear = (year: string) => {
+    const yearCourses = coursesByYear[year].map(c => c.id);
+    const allSelected = yearCourses.every(courseId => selectedCourses.includes(courseId));
+    
+    if (allSelected) {
+      // Deselect all courses in this year
+      const newSelection = selectedCourses.filter(id => !yearCourses.includes(id));
+      onSelectionChange(newSelection);
+    } else {
+      // Select all courses in this year and deselect any that were not in this year
+      onSelectionChange(yearCourses);
+    }
+  };
+
+  // Generate display names for selected courses (grouped by year if all courses in year are selected)
+  const selectedCourseNames = useMemo(() => {
+    const result: string[] = [];
+    
+    for (const year of schoolYears) {
+      const yearCourses = coursesByYear[year];
+      const yearCourseIds = yearCourses.map(c => c.id);
+      const selectedInYear = yearCourseIds.filter(id => selectedCourses.includes(id));
+      
+      if (selectedInYear.length === yearCourseIds.length) {
+        // All courses in this year are selected
+        result.push(`${year} (Todos)`);
+      } else if (selectedInYear.length > 0) {
+        // Some courses in this year are selected
+        result.push(...selectedInYear.map(courseId => {
+          const course = courses.find(c => c.id === courseId);
+          return course ? `${course.period} - ${course.schoolYear}` : '';
+        }).filter(name => name !== ''));
+      }
+    }
+    
+    return result;
+  }, [selectedCourses, courses, coursesByYear, schoolYears]);
+
+  // Check if a year is fully selected
+  const isYearFullySelected = (year: string) => {
+    const yearCourses = coursesByYear[year].map(c => c.id);
+    return yearCourses.every(courseId => selectedCourses.includes(courseId));
+  };
+
+  // Check if a year has partial selection
+  const isYearPartiallySelected = (year: string) => {
+    const yearCourses = coursesByYear[year].map(c => c.id);
+    const selectedInYear = yearCourses.filter(id => selectedCourses.includes(id));
+    return selectedInYear.length > 0 && selectedInYear.length < yearCourses.length;
+  };
 
   return (
     <Card className="border-0 shadow-lg bg-slate-900/30 border border-slate-700/50">
@@ -77,35 +137,64 @@ export function CourseMultiSelector({
           {/* Dropdown menu */}
           {isOpen && (
             <div className="absolute z-50 w-full mt-2 bg-slate-800 rounded-lg border border-slate-700 shadow-xl max-h-64 overflow-y-auto">
-              {courses.map((course) => {
-                const isSelected = selectedCourses.includes(course.id);
-                const isDisabled = !isSelected && maxSelection !== undefined && selectedCourses.length >= maxSelection;
+              {schoolYears.map((year) => {
+                const yearCourses = coursesByYear[year];
+                const isFullySelected = isYearFullySelected(year);
+                const isPartiallySelected = isYearPartiallySelected(year);
                 
                 return (
-                  <button
-                    key={course.id}
-                    onClick={() => !isDisabled && toggleCourse(course.id)}
-                    disabled={isDisabled}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3 text-left transition-colors",
-                      isDisabled && "opacity-50 cursor-not-allowed",
-                      !isDisabled && "hover:bg-slate-700/50",
-                      isSelected && "bg-slate-700/70"
-                    )}
-                  >
-                    <div className={cn(
-                      "w-5 h-5 rounded border-2 flex items-center justify-center transition-all",
-                      isSelected 
-                        ? "bg-indigo-500 border-indigo-500" 
-                        : "border-slate-500"
-                    )}>
-                      {isSelected && <Check className="h-3 w-3 text-white" />}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-slate-100">{course.period} - {course.schoolYear}</p>
-                      <p className="text-xs text-slate-400">{course.name} - {course.totalStudents} estudiantes</p>
-                    </div>
-                  </button>
+                  <div key={year} className="border-b border-slate-700 last:border-b-0">
+                    {/* Year header */}
+                    <button
+                      onClick={() => toggleYear(year)}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-slate-700/50"
+                    >
+                      <div className={cn(
+                        "w-5 h-5 rounded border-2 flex items-center justify-center transition-all",
+                        isFullySelected 
+                          ? "bg-indigo-500 border-indigo-500" 
+                          : isPartiallySelected
+                          ? "bg-indigo-500/50 border-indigo-500"
+                          : "border-slate-500"
+                      )}>
+                        {isFullySelected && <Check className="h-3 w-3 text-white" />}
+                        {isPartiallySelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-slate-100">{year} (Todos)</p>
+                        <p className="text-xs text-slate-400">{yearCourses.length} períodos, {yearCourses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes</p>
+                      </div>
+                    </button>
+                    
+                    {/* Individual periods within the year */}
+                    {yearCourses.map((course) => {
+                      const isSelected = selectedCourses.includes(course.id);
+                      
+                      return (
+                        <button
+                          key={course.id}
+                          onClick={() => toggleCourse(course.id)}
+                          className={cn(
+                            "w-full flex items-center gap-7 px-4 py-2 text-left transition-colors hover:bg-slate-700/50 ml-6", // Indented under year
+                            isSelected && "bg-slate-700/70"
+                          )}
+                        >
+                          <div className={cn(
+                            "w-4 h-4 rounded border flex items-center justify-center transition-all",
+                            isSelected 
+                              ? "bg-indigo-500 border-indigo-500" 
+                              : "border-slate-500"
+                          )}>
+                            {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-slate-200">{course.period}</p>
+                            <p className="text-xs text-slate-400">{course.name} - {course.totalStudents} estudiantes</p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 );
               })}
             </div>
@@ -115,24 +204,50 @@ export function CourseMultiSelector({
         {/* Selected pills */}
         {selectedCourses.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-3">
-            {selectedCourses.map((courseId) => {
-              const course = courses.find(c => c.id === courseId);
-              if (!course) return null;
+            {schoolYears.map((year) => {
+              const yearCourses = coursesByYear[year];
+              const yearCourseIds = yearCourses.map(c => c.id);
+              const selectedInYear = yearCourseIds.filter(id => selectedCourses.includes(id));
               
-              return (
-                <span
-                  key={courseId}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500/20 text-indigo-200 text-sm rounded-full border border-indigo-500/30"
-                >
-                  {course.period} - {course.schoolYear}
-                  <button
-                    onClick={() => toggleCourse(courseId)}
-                    className="hover:bg-indigo-600/50 rounded-full p-0.5 ml-1"
+              if (selectedInYear.length === yearCourseIds.length) {
+                // Show single pill for the whole year
+                return (
+                  <span
+                    key={year}
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500/20 text-indigo-200 text-sm rounded-full border border-indigo-500/30"
                   >
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              );
+                    {year} (Todos)
+                    <button
+                      onClick={() => toggleYear(year)}
+                      className="hover:bg-indigo-600/50 rounded-full p-0.5 ml-1"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                );
+              } else if (selectedInYear.length > 0) {
+                // Show individual pills for selected courses in the year
+                return selectedInYear.map(courseId => {
+                  const course = courses.find(c => c.id === courseId);
+                  if (!course) return null;
+                  
+                  return (
+                    <span
+                      key={courseId}
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500/20 text-indigo-200 text-sm rounded-full border border-indigo-500/30"
+                    >
+                      {course.period} - {course.schoolYear}
+                      <button
+                        onClick={() => toggleCourse(courseId)}
+                        className="hover:bg-indigo-600/50 rounded-full p-0.5 ml-1"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  );
+                });
+              }
+              return null;
             })}
           </div>
         )}
