@@ -1,38 +1,67 @@
-'use client';
-
-import { ChangePasswordForm } from "@/components/auth";
+import { redirect } from "next/navigation";
+import { getTeacherProfile } from "@/services/users";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, User, Mail, Calendar, BookOpen, TrendingUp } from "lucide-react";
+import { Camera, User, Calendar, BookOpen, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { ChangePasswordForm } from "@/components/auth";
+import { AvatarUploadButton, ProfileForm } from "@/components/account";
 
-// Mock user data - in a real app, this would come from an API
-const mockUser = {
-  id: "1",
-  name: "Dr. María Rodríguez",
-  email: "maria.rodriguez@educacion.com",
-  role: "teacher",
-  avatar: "/placeholder-avatar.jpg",
-  username: "mrodriguez",
-  createdAt: "2024-01-15",
-  coursesCount: 5,
-  studentsCount: 127,
-};
+export interface TeacherProfileData {
+  id: string;
+  fullName: string;
+  email: string;
+  username: string;
+  avatarUrl: string | null;
+  department: string;
+  createdAt: string;
+}
 
-export default function AccountPage() {
+async function fetchTeacherProfile(): Promise<TeacherProfileData | null> {
+  try {
+    const profile = await getTeacherProfile();
+    return {
+      id: String(profile.id),
+      fullName: `${profile.name} ${profile.lastname}`.trim(),
+      email: profile.email,
+      username: profile.username,
+      avatarUrl: profile.avatarUrl ?? null,
+      department: profile.department,
+      createdAt: profile.createdAt
+        ? new Date(profile.createdAt).toLocaleDateString("es-ES", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+export default async function AccountPage() {
+  const profile = await fetchTeacherProfile();
+
+  if (!profile) {
+    redirect("/login");
+  }
+
+  const initials = profile.fullName
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
-      {/* Grid Pattern Overlay */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
@@ -40,7 +69,6 @@ export default function AccountPage() {
       </div>
 
       <div className="container mx-auto py-10 px-6 relative z-10">
-        {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
@@ -59,7 +87,6 @@ export default function AccountPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profile Card - Avatar & Basic Info */}
           <div className="lg:col-span-1 space-y-6">
             <Card className="border-border/50 shadow-lg shadow-primary/5 overflow-hidden">
               <div className="h-24 bg-gradient-to-r from-primary via-accent to-primary relative">
@@ -67,30 +94,26 @@ export default function AccountPage() {
               </div>
               <CardHeader className="items-center -mt-12 relative">
                 <Avatar className="h-28 w-28 ring-4 ring-background shadow-xl">
-                  <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
+                  <AvatarImage src={profile.avatarUrl ?? undefined} alt={profile.fullName} />
                   <AvatarFallback className="text-2xl bg-gradient-to-br from-primary to-accent text-white">
-                    {mockUser.name.split(" ").map((n) => n[0]).join("")}
+                    {initials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="text-center mt-3">
                   <h2 className="text-xl font-bold flex items-center justify-center gap-2">
-                    {mockUser.name}
+                    {profile.fullName}
                   </h2>
-                  <p className="text-sm text-muted-foreground mt-1">@{mockUser.username}</p>
+                  <p className="text-sm text-muted-foreground mt-1">@{profile.username}</p>
                   <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary border-primary/20">
-                    {mockUser.role === "teacher" ? "👨‍🏫 Docente" : "🎓 Estudiante"}
+                    👨‍🏫 Docente
                   </Badge>
                 </div>
               </CardHeader>
               <CardHeader className="pt-0">
-                <Button variant="outline" className="w-full flex items-center gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all">
-                  <Camera className="h-4 w-4" />
-                  Cambiar Foto
-                </Button>
+                <AvatarUploadButton />
               </CardHeader>
             </Card>
 
-            {/* Quick Stats */}
             <Card className="border-border/50 shadow-lg shadow-primary/5">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
@@ -106,7 +129,7 @@ export default function AccountPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Miembro desde</p>
-                      <p className="font-medium">{mockUser.createdAt}</p>
+                      <p className="font-medium">{profile.createdAt}</p>
                     </div>
                   </div>
                 </div>
@@ -118,7 +141,7 @@ export default function AccountPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Cursos activos</p>
-                      <p className="font-medium">{mockUser.coursesCount}</p>
+                      <p className="font-medium">—</p>
                     </div>
                   </div>
                 </div>
@@ -130,7 +153,7 @@ export default function AccountPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Estudiantes</p>
-                      <p className="font-medium">{mockUser.studentsCount}</p>
+                      <p className="font-medium">—</p>
                     </div>
                   </div>
                 </div>
@@ -138,49 +161,11 @@ export default function AccountPage() {
             </Card>
           </div>
 
-          {/* Account Details - Editable Info */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Personal Information */}
-            <Card className="border-border/50 shadow-lg shadow-primary/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-primary" />
-                  Información Personal
-                </CardTitle>
-                <CardDescription>
-                  Actualiza tu información de perfil
-                </CardDescription>
-              </CardHeader>
-              <div className="px-6 pb-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Nombre Completo</Label>
-                    <Input id="name" defaultValue={mockUser.name} className="bg-muted/30" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="username">Nombre de Usuario</Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">@</span>
-                      <Input id="username" defaultValue={mockUser.username} className="pl-7 bg-muted/30" />
-                    </div>
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="email">Correo Electrónico</Label>
-                    <Input id="email" type="email" defaultValue={mockUser.email} className="bg-muted/30" />
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <Button className="bg-indigo-600 hover:bg-indigo-700">
-                    Guardar Cambios
-                  </Button>
-                </div>
-              </div>
-            </Card>
+            <ProfileForm profile={profile} />
 
-            {/* Change Password */}
             <ChangePasswordForm />
 
-            {/* Link to Settings */}
             <Card className="border-border/50 shadow-lg shadow-primary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -196,8 +181,8 @@ export default function AccountPage() {
               </CardHeader>
               <div className="px-6 pb-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Link 
-                    href="/dashboard/settings" 
+                  <Link
+                    href="/dashboard/settings"
                     className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/30 hover:border-primary/30 hover:bg-primary/5 transition-all group"
                   >
                     <div className="flex items-center gap-3">
@@ -215,8 +200,8 @@ export default function AccountPage() {
                     <span className="text-muted-foreground group-hover:translate-x-1 transition-transform">→</span>
                   </Link>
 
-                  <Link 
-                    href="/dashboard/notifications" 
+                  <Link
+                    href="/dashboard/notifications"
                     className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/30 hover:border-primary/30 hover:bg-primary/5 transition-all group"
                   >
                     <div className="flex items-center gap-3">
