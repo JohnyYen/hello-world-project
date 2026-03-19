@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import {
   Configuration,
   UsersApi,
@@ -21,23 +20,29 @@ import {
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function getAuthToken(): Promise<string> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("access_token");
-  return token?.value || "";
+  if (typeof window !== "undefined") {
+    // Cliente: obtener token de localStorage (guardado por auth-context)
+    const token = localStorage.getItem("auth_token");
+    return token || "";
+  } else {
+    // Servidor: importar cookies dinámicamente
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token");
+    return token?.value || "";
+  }
 }
 
-function createUsersApiConfiguration(): Configuration {
+function createUsersApiConfiguration(token?: string): Configuration {
   return new Configuration({
     basePath: API_BASE_URL,
-    accessToken: async () => {
-      const token = await getAuthToken();
-      return token;
-    },
+    accessToken: token,
   });
 }
 
-function getUsersApi(): UsersApi {
-  return new UsersApi(createUsersApiConfiguration());
+async function getUsersApi(): Promise<UsersApi> {
+  const token = await getAuthToken();
+  return new UsersApi(createUsersApiConfiguration(token));
 }
 
 interface GetUsersParams {
@@ -46,8 +51,8 @@ interface GetUsersParams {
   includeDeleted?: boolean;
 }
 
-async function getUsers(params: GetUsersParams = {}): Promise<UserListResponse> {
-  const api = getUsersApi();
+export async function getUsers(params: GetUsersParams = {}): Promise<UserListResponse> {
+  const api = await getUsersApi();
   const response = await api.getAllUsersApiV1UsersGet({
     skip: params.skip,
     limit: params.limit,
@@ -56,14 +61,14 @@ async function getUsers(params: GetUsersParams = {}): Promise<UserListResponse> 
   return response;
 }
 
-async function getUser(userId: number): Promise<SingleUserResponse> {
-  const api = getUsersApi();
+export async function getUser(userId: number): Promise<SingleUserResponse> {
+  const api = await getUsersApi();
   const response = await api.getUserApiV1UsersUserIdGet({ userId });
   return response;
 }
 
-async function createUser(userCreate: UserCreate): Promise<SingleUserResponse> {
-  const api = getUsersApi();
+export async function createUser(userCreate: UserCreate): Promise<SingleUserResponse> {
+  const api = await getUsersApi();
   const response = await api.createUserApiV1UsersPost({ userCreate });
   return response;
 }
@@ -74,8 +79,8 @@ interface GetStudentsParams {
   search?: string;
 }
 
-async function getStudents(params: GetStudentsParams = {}): Promise<StudentListResponse> {
-  const api = getUsersApi();
+export async function getStudents(params: GetStudentsParams = {}): Promise<StudentListResponse> {
+  const api = await getUsersApi();
   const response = await api.listStudentsApiV1UsersStudentsGet({
     skip: params.skip,
     limit: params.limit,
@@ -84,61 +89,61 @@ async function getStudents(params: GetStudentsParams = {}): Promise<StudentListR
   return response;
 }
 
-async function getStudent(id: number): Promise<StudentResponse> {
-  const api = getUsersApi();
+export async function getStudent(id: number): Promise<StudentResponse> {
+  const api = await getUsersApi();
   const response = await api.getStudentApiV1UsersStudentsIdGet({ id });
   return response;
 }
 
-async function createStudent(studentCreate: StudentCreate): Promise<StudentResponse> {
-  const api = getUsersApi();
+export async function createStudent(studentCreate: StudentCreate): Promise<StudentResponse> {
+  const api = await getUsersApi();
   const response = await api.createStudentApiV1UsersStudentsPost({ studentCreate });
   return response;
 }
 
-async function updateStudent(id: number, studentUpdate: StudentUpdate): Promise<StudentResponse> {
-  const api = getUsersApi();
+export async function updateStudent(id: number, studentUpdate: StudentUpdate): Promise<StudentResponse> {
+  const api = await getUsersApi();
   const response = await api.updateStudentApiV1UsersStudentsIdPut({ id, studentUpdate });
   return response;
 }
 
-async function deleteStudent(id: number): Promise<void> {
-  const api = getUsersApi();
+export async function deleteStudent(id: number): Promise<void> {
+  const api = await getUsersApi();
   await api.deleteStudentApiV1UsersStudentsIdDelete({ id });
 }
 
-async function getStudentProgress(id: number): Promise<StudentProgressResponse> {
-  const api = getUsersApi();
+export async function getStudentProgress(id: number): Promise<StudentProgressResponse> {
+  const api = await getUsersApi();
   const response = await api.getStudentProgressApiV1UsersStudentsIdProgressGet({ id });
   return response;
 }
 
-async function getStudentReports(id: number): Promise<StudentReportsResponse> {
-  const api = getUsersApi();
+export async function getStudentReports(id: number): Promise<StudentReportsResponse> {
+  const api = await getUsersApi();
   const response = await api.getStudentReportsApiV1UsersStudentsIdReportsGet({ id });
   return response;
 }
 
-async function getTeacherProfile(): Promise<TeacherProfileResponseSchema> {
-  const api = getUsersApi();
+export async function getTeacherProfile(): Promise<TeacherProfileResponseSchema["data"]> {
+  const api = await getUsersApi();
   const response = await api.getTeacherProfileApiV1UsersProfessorsMeGet();
-  return response;
+  return response.data;
 }
 
-async function updateTeacherProfile(profile: TeacherProfileUpdate): Promise<TeacherUpdateResponseSchema> {
-  const api = getUsersApi();
+export async function updateTeacherProfile(profile: TeacherProfileUpdate): Promise<TeacherUpdateResponseSchema> {
+  const api = await getUsersApi();
   const response = await api.updateTeacherProfileApiV1UsersProfessorsMePut({ teacherProfileUpdate: profile });
   return response;
 }
 
-async function getTeacherSettings(): Promise<TeacherSettingsResponseSchema> {
-  const api = getUsersApi();
+export async function getTeacherSettings(): Promise<TeacherSettingsResponseSchema["data"]> {
+  const api = await getUsersApi();
   const response = await api.getTeacherSettingsApiV1UsersProfessorsSettingsGet();
-  return response;
+  return response.data;
 }
 
-async function updateTeacherSettings(settings: TeacherSettingsUpdate): Promise<TeacherSettingsResponseSchema> {
-  const api = getUsersApi();
+export async function updateTeacherSettings(settings: TeacherSettingsUpdate): Promise<TeacherSettingsResponseSchema> {
+  const api = await getUsersApi();
   const response = await api.updateTeacherSettingsApiV1UsersProfessorsSettingsPut({ teacherSettingsUpdate: settings });
   return response;
 }

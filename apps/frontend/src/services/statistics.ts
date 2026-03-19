@@ -1,11 +1,17 @@
-import { cookies } from "next/headers";
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function getAuthToken(): Promise<string> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("access_token");
-  return token?.value || "";
+  if (typeof window !== "undefined") {
+    // Cliente: obtener token de localStorage (guardado por auth-context)
+    const token = localStorage.getItem("auth_token");
+    return token || "";
+  } else {
+    // Servidor: importar cookies dinámicamente
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token");
+    return token?.value || "";
+  }
 }
 
 async function fetchApi<T>(
