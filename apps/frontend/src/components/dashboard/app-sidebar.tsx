@@ -6,19 +6,17 @@ import {
   IconCamera,
   IconChartBar,
   IconDashboard,
-  IconDatabase,
   IconFileAi,
   IconFileDescription,
-  IconFileWord,
   IconFolder,
   IconHelp,
   IconInnerShadowTop,
   IconListDetails,
-  IconReport,
+  IconPlus,
   IconSettings,
 } from "@tabler/icons-react"
 
-import { NavDocuments, NavMain, NavSecondary } from "@/components/shared/navigation"
+import { NavGameManagement, NavMain, NavSecondary } from "@/components/shared/navigation"
 import {
   Sidebar,
   SidebarContent,
@@ -55,6 +53,18 @@ const data = {
       url: "/dashboard/reports",
       icon: IconFolder,
     }
+  ],
+  navGameManagement: [
+    {
+      title: "Niveles",
+      url: "/dashboard/levels",
+      icon: IconListDetails,
+    },
+    {
+      title: "Crear Nivel",
+      url: "/dashboard/levels/create",
+      icon: IconPlus,
+    },
   ],
   navClouds: [
     {
@@ -116,23 +126,7 @@ const data = {
       icon: IconHelp,
     }
   ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
+
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -154,8 +148,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        <NavMain items={data.navMain} label="Estadísticas" />
+        <NavGameManagement items={data.navGameManagement} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
     </Sidebar>
