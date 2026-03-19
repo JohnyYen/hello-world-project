@@ -1,4 +1,4 @@
-import html2canvas from "html2canvas";
+import * as html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { ExportProvider, type ExportOptions } from "../types";
 
@@ -12,7 +12,7 @@ export class PDFExportProvider extends ExportProvider {
       const scale = this.options.scale || 2;
       const quality = this.options.quality || 1;
 
-      const canvas = await html2canvas(element, {
+      const canvas = await html2canvas.default(element, {
         scale,
         useCORS: true,
         allowTaint: true,
