@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import {
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -14,15 +15,18 @@ import Link from "next/link"
 
 export function NavMain({
   items,
+  label,
 }: {
   items: {
     title: string
     url: string
     icon?: Icon
   }[]
+  label?: string
 }) {
   return (
     <SidebarGroup>
+      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">

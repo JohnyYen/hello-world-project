@@ -78,7 +78,7 @@ export function SectionCards() {
           <CardHeader className="relative pb-2">
             <CardDescription className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
               <span className={`p-1.5 rounded-lg bg-gradient-to-br ${card.gradient} bg-opacity-10`}>
-                {React.cloneElement(card.icon as React.ReactElement, { 
+                {React.cloneElement(card.icon as React.ReactElement<{ className?: string }>, { 
                   className: `w-3.5 h-3.5 bg-gradient-to-br ${card.gradient} bg-clip-text text-transparent` 
                 })}
               </span>

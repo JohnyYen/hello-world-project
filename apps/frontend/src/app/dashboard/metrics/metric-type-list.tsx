@@ -22,7 +22,7 @@ const metricTypeSchema = {
 };
 
 export function MetricTypeList({ initialMetricTypes }: MetricTypeListProps) {
-  const [metricTypes, setMetricTypes] = useState<Array<MetricTypeSchema>>(initialMetricTypes);
+  const [metricTypes, setMetricTypes] = useState<Array<MetricType>>(initialMetricTypes);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState(metricTypeSchema);
   const [isSubmitting, setIsSubmitting] = useState(false);

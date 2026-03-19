@@ -77,7 +77,7 @@ export function LoginForm({
                 )}
               </Field>
               <Field>
-                <Button type="submit" disabled={isPending} variant="retro" className="w-full">
+                <Button type="submit" disabled={isPending} variant="default" className="w-full">
                   {isPending ? "Iniciando sesión..." : "Iniciar Sesión"}
                 </Button>
                 {state?.message && (

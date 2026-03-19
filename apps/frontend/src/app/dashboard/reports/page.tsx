@@ -590,9 +590,9 @@ export default function ReportsPage() {
                     data={selectedMetrics.map(m => ({ name: m.period.replace(' - ', '\n'), Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
                     xAxisDataKey="name"
                     bars={[
-                      { dataKey: "Progreso", color: "#10B981" },
-                      { dataKey: "Calificación", color: "#06B6D4" },
-                      { dataKey: "Completación", color: "#F59E0B" },
+                      { dataKey: "Progreso", name: "Progreso", color: "#10B981" },
+                      { dataKey: "Calificación", name: "Calificación", color: "#06B6D4" },
+                      { dataKey: "Completación", name: "Completación", color: "#F59E0B" },
                     ]}
                     title=""
                     subtitle=""
