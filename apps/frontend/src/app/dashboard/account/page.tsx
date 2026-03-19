@@ -1,11 +1,10 @@
 import { redirect } from "next/navigation";
 import { getTeacherProfile } from "@/services/users";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, User, Calendar, BookOpen, TrendingUp } from "lucide-react";
+import { User, Calendar, BookOpen, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { ChangePasswordForm } from "@/components/auth";
 import { AvatarUploadButton, ProfileForm } from "@/components/account";
