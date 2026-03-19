@@ -147,12 +147,17 @@ export type CacheDuration =
   | false;    // sin caché
 
 // 🔐 Tipos de Autenticación
+// Legacy types (snake_case) - mantienen compatibilidad con el API actual
 export interface AuthTokens {
   accessToken: string;
   tokenType: string;
   expiresIn: number;
 }
 
+// Legacy types para backward compatibility con componentes existentes
+// NOTA: LoginResponse/SignupResponse usan snake_case (access_token, token_type)
+// mientras api-client-ts usa camelCase (accessToken, tokenType, expiresIn).
+// Mantenemos estas definiciones para no romper código existente.
 export interface LoginRequest {
   username?: string;
   email?: string;
@@ -191,6 +196,46 @@ export interface AuthUser {
     name: string;
   };
 }
+
+// =============================================================================
+// Type aliases para migración gradual hacia api-client-ts
+// =============================================================================
+// Estos aliases permiten usar tipos del api-client-ts manteniendo backward
+// compatibility con código existente que importa desde types/api.ts
+//
+// Uso recomendado:
+//   import { LoginRequest, SignupRequest } from "@/types/api";  // Legacy
+//   import { UserLogin, UserCreate } from "@workspace/api-client-ts";  // Nuevo
+//
+// ⚠️  ALGUNOS ALIASES NO SON DIRECTAMENTE COMPATIBLES:
+//   - LoginResponse/SignupResponse: campos snake_case vs camelCase del API
+//   - AuthUser: tiene 'role' que TeacherProfileResponse no tiene
+//   Usar con precaución en migraciones.
+// =============================================================================
+
+import type {
+  UserLogin,
+  UserCreate,
+  UserLoginResponse,
+  TeacherProfileResponse,
+} from "@workspace/api-client-ts";
+
+export type LoginRequestLegacy = LoginRequest;
+export type LoginRequestNew = UserLogin;
+
+export type SignupRequestLegacy = SignupRequest;
+export type SignupRequestNew = UserCreate;
+
+export type LoginResponseLegacy = LoginResponse;
+export type LoginResponseNew = UserLoginResponse;
+
+export type SignupResponseLegacy = SignupResponse;
+export type SignupResponseNew = UserLoginResponse;
+
+export type AuthUserLegacy = AuthUser;
+export type AuthUserNew = TeacherProfileResponse;
+
+export type { UserLogin, UserCreate, UserLoginResponse, TeacherProfileResponse };
 
 // 📝 Form State Types
 export interface FormState<T> {

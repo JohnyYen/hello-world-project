@@ -1,26 +1,31 @@
-import { Configuration, AuthenticationApi, UserLogin, UserCreate, UserLoginResponse } from "@workspace/api-client-ts";
+import { Configuration, AuthenticationApi, UsersApi, UserLogin, UserCreate, UserLoginResponse, TeacherProfileResponse, UserChangePassword, SingleUserResponse } from "@workspace/api-client-ts";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-const authConfiguration = new Configuration({
-  basePath: API_BASE_URL,
-});
+const createConfig = (token?: string) =>
+  new Configuration({
+    basePath: API_BASE_URL,
+    accessToken: token,
+  });
 
-const authenticationApi = new AuthenticationApi(authConfiguration);
+const authenticationApi = new AuthenticationApi(createConfig());
+const usersApi = new UsersApi(createConfig());
 
-interface LoginParams {
+export interface LoginParams {
   username?: string;
   email?: string;
   password: string;
 }
 
-interface RegisterParams {
+export interface RegisterParams {
   username: string;
   email: string;
   name: string;
   lastname?: string;
   password: string;
 }
+
+export type UserProfileResponse = TeacherProfileResponse;
 
 async function login(params: LoginParams): Promise<UserLoginResponse> {
   const userLogin: UserLogin = {
@@ -52,9 +57,43 @@ async function register(params: RegisterParams): Promise<UserLoginResponse> {
   return response;
 }
 
+async function getMe(token?: string): Promise<TeacherProfileResponse> {
+  const api = token ? new UsersApi(createConfig(token)) : usersApi;
+  const response = await api.getTeacherProfileApiV1UsersProfessorsMeGet();
+  return response.data;
+}
+
+async function changePassword(
+  userId: number,
+  currentPassword: string,
+  newPassword: string,
+  token: string
+): Promise<SingleUserResponse> {
+  const api = new AuthenticationApi(createConfig(token));
+  const userChangePassword: UserChangePassword = {
+    currentPassword,
+    newPassword,
+  };
+
+  return api.changePasswordApiV1AuthChangePasswordPost({
+    userId,
+    userChangePassword,
+  });
+}
+
+async function logout(): Promise<void> {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("auth_token");
+    document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  }
+}
+
 export const authService = {
   login,
   register,
+  getMe,
+  changePassword,
+  logout,
 };
 
-export type { LoginParams, RegisterParams };
+export { login, register, getMe, changePassword, logout };

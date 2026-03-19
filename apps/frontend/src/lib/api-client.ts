@@ -257,6 +257,22 @@ export class ReportsService {
   }
 }
 
+/**
+ * @deprecated desde 2026-03-19
+ * 
+ * ⚠️ **MIGRACIÓN REQUERIDA**
+ * 
+ * Esta clase ha sido reemplazada por el módulo `services/auth.ts`.
+ * 
+ * **Cambios necesarios:**
+ * - `login()` → usar `login(params: LoginParams)` desde `@/services/auth`
+ * - `getMe()` → usar `getMe(token: string)` desde `@/services/auth`
+ * - `signup()` → usar `register(params: RegisterParams)` desde `@/services/auth`
+ * 
+ * **Ver también:** `lib/actions.ts` - acciones Server Actions refactorizadas
+ * 
+ * Esta clase se eliminará en la próxima versión mayor (v2.0).
+ */
 export class AuthService {
   // eslint-disable-next-line no-unused-vars
   constructor(private _client: APIClient) {}
@@ -307,4 +323,8 @@ export class AuthService {
 // 🏭 Service instances
 export const studentService = new StudentService(apiClient);
 export const reportsService = new ReportsService(apiClient);
+
+/**
+ * @deprecated authService - usar funciones desde `@/services/auth` (login, register, getMe, logout, changePassword)
+ */
 export const authService = new AuthService(apiClient);

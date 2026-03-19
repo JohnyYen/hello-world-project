@@ -4,8 +4,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { authService, apiClient } from "@/lib/api-client";
-import { AuthenticationApi, Configuration, UsersApi } from "@workspace/api-client-ts";
+import { Configuration, UsersApi } from "@workspace/api-client-ts";
+import { login as authLogin, register as authRegister, getMe as authGetMe, changePassword as authChangePassword } from "@/services/auth";
 
 // 📝 Type para las acciones
 export type ActionState = {
@@ -13,19 +13,6 @@ export type ActionState = {
   errors?: Record<string, string[]>;
   success?: boolean;
 };
-
-// 🔐 Helper para obtener instancia de API configurada
-async function getAuthApi(): Promise<AuthenticationApi> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
-  
-  const config = new Configuration({
-    basePath: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
-    accessToken: token,
-  });
-  
-  return new AuthenticationApi(config);
-}
 
 // 🔐 Helper para obtener instancia de Users API configurada
 async function getUsersApi(): Promise<UsersApi> {
@@ -96,42 +83,30 @@ export async function changePasswordAction(
 
     const { currentPassword, newPassword } = validatedFields.data;
     
-    // Obtener token para las peticiones del servicio
     const cookieStore = await cookies();
     const token = cookieStore.get("auth_token")?.value;
-    if (token) {
-      apiClient.setAuthToken(token);
-    }
-
-    // Obtener el ID del usuario actual
-    const userResponse = await authService.getMe();
-    if (!userResponse.success || !userResponse.data.id) {
+    if (!token) {
       return {
         success: false,
-        message: "No se pudo obtener la información del usuario",
+        message: "No autenticado",
       };
     }
 
-    const authApi = await getAuthApi();
-    await authApi.changePasswordApiV1AuthChangePasswordPost({
-      userId: userResponse.data.id,
-      userChangePassword: {
-        currentPassword,
-        newPassword,
-      },
-    });
+    const user = await authGetMe(token);
+    await authChangePassword(user.id, currentPassword, newPassword, token);
 
     return {
       success: true,
       message: "Contraseña actualizada exitosamente",
     };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Error de red o del servidor";
     console.error("Error changing password:", error);
     return {
       success: false,
-      message: error.message || "Error al actualizar la contraseña",
-      errors: { _form: [error.message || "Error de red o del servidor"] },
+      message,
+      errors: { _form: [message] },
     };
   }
 }
@@ -157,14 +132,14 @@ export async function loginAction(
 
     const { email, password } = validatedFields.data;
     
-    const result = await authService.login({
-      username: email, // Backend accepts email in username field or has email field
+    const result = await authLogin({
+      username: email,
       password: password,
     });
 
-    if (result.access_token) {
+    if (result.accessToken) {
       const cookieStore = await cookies();
-      cookieStore.set("auth_token", result.access_token, {
+      cookieStore.set("auth_token", result.accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
@@ -172,14 +147,15 @@ export async function loginAction(
       });
     }
     
-  } catch (error: any) {
-    if (error?.message?.includes("NEXT_REDIRECT")) {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
+    const detail = (error as { detail?: string }).detail;
     return {
       success: false,
-      message: error.detail || error.message || "Error al iniciar sesión",
-      errors: { _form: [error.detail || "Credenciales inválidas"] },
+      message: detail || "Error al iniciar sesión",
+      errors: { _form: [detail || "Credenciales inválidas"] },
     };
   }
   
@@ -212,22 +188,22 @@ export async function signupAction(
 
     const { name, username, email, password } = validatedFields.data;
     
-    await authService.signup({
+    await authRegister({
       name,
       username,
       email,
       password,
     });
     
-  } catch (error: any) {
-    if (error?.message?.includes("NEXT_REDIRECT")) {
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
-    
+    const detail = (error as { detail?: string }).detail;
     return {
       success: false,
-      message: error.detail || error.message || "Error al crear cuenta",
-      errors: { _form: [error.detail || "Email o usuario ya existe"] },
+      message: detail || "Error al crear cuenta",
+      errors: { _form: [detail || "Email o usuario ya existe"] },
     };
   }
 
@@ -281,12 +257,14 @@ export async function createStudentAction(
       message: "Estudiante creado exitosamente" 
     };
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error creating student:", error);
+    const detail = (error as { detail?: string }).detail;
+    const message = error instanceof Error ? error.message : "Error al crear estudiante";
     return {
       success: false,
-      message: error.detail || error.message || "Error al crear estudiante",
-      errors: { _form: [error.detail || "Error al guardar en base de datos"] },
+      message,
+      errors: { _form: [detail || "Error al guardar en base de datos"] },
     };
   }
 }
