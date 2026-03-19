@@ -1,65 +1,160 @@
 /**
- * Página de lista de niveles guardados localmente
+ * Página de lista de niveles del backend
  */
 
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PageHeader, PageHeaderDescription, PageHeaderTitle } from '@/components/ui/page-header';
-import { Plus, Edit, Trash2, FileJson, Copy, Eye } from 'lucide-react';
-import { listSavedLevels, loadFromLocalStorage, removeFromLocalStorage, formatDate, configToJson } from '@/lib/editor-helpers';
-import { Badge } from '@/components/ui/badge';
+import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeader, PageHeaderDescription, PageHeaderTitle } from "@/components/ui/page-header";
+import { Plus, Edit, Trash2, FileJson, Copy } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { gamesService } from "@/services/games";
+import type { GameResponse } from "@workspace/api-client-ts";
 
-interface SavedLevel {
-  id: string;
+interface LevelDisplay {
+  id: number;
   title: string;
-  savedAt: string;
+  description: string | null;
+  goal: string | null;
+  levelNumber: number;
+  gameId: number;
+  createdAt: Date;
+  updatedAt: Date | null;
 }
 
 export default function LevelsListPage() {
-  const [levels, setLevels] = useState<SavedLevel[]>([]);
+  const [games, setGames] = useState<GameResponse[]>([]);
+  const [selectedGameId, setSelectedGameId] = useState<number | null>(null);
+  const [levels, setLevels] = useState<LevelDisplay[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingLevels, setIsLoadingLevels] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadLevels();
+  const loadGames = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await gamesService.getGames();
+      if (response.data && response.data.length > 0) {
+        setGames(response.data);
+        setSelectedGameId(response.data[0].id);
+      }
+    } catch {
+      setError("Error al cargar los juegos. Verifica que el backend esté disponible.");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const loadLevels = () => {
-    const savedLevels = listSavedLevels();
-    setLevels(savedLevels);
-  };
+  const loadLevels = useCallback(async (gameId: number) => {
+    try {
+      setIsLoadingLevels(true);
+      const response = await gamesService.getLevels(gameId);
+      if (response.data) {
+        setLevels(
+          response.data.map((level): LevelDisplay => ({
+            id: level.id,
+            title: level.title,
+            description: level.description ?? null,
+            goal: level.goal ?? null,
+            levelNumber: level.levelNumber,
+            gameId: level.gameId,
+            createdAt: level.createdAt,
+            updatedAt: level.updatedAt ?? null,
+          }))
+        );
+      }
+    } catch {
+      setError("Error al cargar los niveles.");
+    } finally {
+      setIsLoadingLevels(false);
+    }
+  }, []);
 
-  const handleDelete = (id: string) => {
-    if (confirm('¿Estás seguro de que quieres eliminar este nivel?')) {
-      removeFromLocalStorage(id);
-      loadLevels();
+  useEffect(() => {
+    loadGames();
+  }, [loadGames]);
+
+  useEffect(() => {
+    if (selectedGameId !== null) {
+      loadLevels(selectedGameId);
+    }
+  }, [selectedGameId, loadLevels]);
+
+  const handleDelete = async (levelId: number) => {
+    try {
+      await gamesService.deleteLevel(levelId);
+      if (selectedGameId !== null) {
+        loadLevels(selectedGameId);
+      }
+    } catch {
+      setError("Error al eliminar el nivel.");
     }
   };
 
-  const handleCopyJson = async (id: string) => {
-    const data = loadFromLocalStorage(id);
-    if (data) {
-      const json = configToJson(data.config);
-      await navigator.clipboard.writeText(json);
-    }
+  const handleCopyJson = async (level: LevelDisplay) => {
+    const json = JSON.stringify(
+      {
+        title: level.title,
+        description: level.description,
+        goal: level.goal,
+        levelNumber: level.levelNumber,
+      },
+      null,
+      2
+    );
+    await navigator.clipboard.writeText(json);
   };
 
-  const handleDownloadJson = (id: string, title: string) => {
-    const data = loadFromLocalStorage(id);
-    if (data) {
-      const json = configToJson(data.config);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${title}.json`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
+  const handleDownloadJson = (level: LevelDisplay) => {
+    const json = JSON.stringify(
+      {
+        title: level.title,
+        description: level.description,
+        goal: level.goal,
+        levelNumber: level.levelNumber,
+      },
+      null,
+      2
+    );
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${level.title || "nivel"}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const formatDate = (date: Date): string => {
+    return new Date(date).toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   return (
@@ -67,9 +162,9 @@ export default function LevelsListPage() {
       <PageHeader>
         <div className="flex items-center justify-between">
           <div>
-            <PageHeaderTitle>Niveles Guardados</PageHeaderTitle>
+            <PageHeaderTitle>Niveles</PageHeaderTitle>
             <PageHeaderDescription>
-              Gestiona los niveles creados localmente.
+              Gestiona los niveles de los juegos.
             </PageHeaderDescription>
           </div>
           <Button asChild>
@@ -82,89 +177,173 @@ export default function LevelsListPage() {
       </PageHeader>
 
       <div className="flex-1 p-4 overflow-auto">
-        {levels.length === 0 ? (
+        {isLoading ? (
+          <Card className="text-center py-12">
+            <CardContent className="pt-6">
+              <p className="text-muted-foreground">Cargando juegos...</p>
+            </CardContent>
+          </Card>
+        ) : error && games.length === 0 ? (
+          <Card className="text-center py-12">
+            <CardContent className="pt-6">
+              <p className="text-red-500 mb-4">{error}</p>
+              <Button onClick={loadGames}>Reintentar</Button>
+            </CardContent>
+          </Card>
+        ) : games.length === 0 ? (
           <Card className="text-center py-12">
             <CardContent className="pt-6">
               <p className="text-muted-foreground mb-4">
-                No hay niveles guardados todavía.
+                No hay juegos disponibles.
               </p>
               <Button asChild>
-                <Link href="/dashboard/levels/create">
+                <Link href="/dashboard/games/create">
                   <Plus size={16} className="mr-2" />
-                  Crear tu primer nivel
+                  Crear tu primer juego
                 </Link>
               </Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {levels.map((level) => (
-              <Card key={level.id} className="flex flex-col">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <CardTitle className="truncate text-base">
-                        {level.title || 'Sin título'}
-                      </CardTitle>
-                      <CardDescription className="flex items-center gap-2 mt-1">
-                        <Badge variant="outline" className="text-xs">
-                          ID: {level.id.substring(0, 12)}...
-                        </Badge>
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1 flex flex-col justify-between gap-3">
-                  <div className="text-xs text-muted-foreground">
-                    Última edición: {formatDate(level.savedAt)}
-                  </div>
-                  
-                  <div className="flex gap-2 flex-wrap">
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="h-7 text-xs"
-                    >
-                      <Link href={`/dashboard/levels/${level.id}/edit`}>
-                        <Edit size={12} className="mr-1" />
-                        Editar
-                      </Link>
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 text-xs"
-                      onClick={() => handleCopyJson(level.id)}
-                    >
-                      <Copy size={12} className="mr-1" />
-                      JSON
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 text-xs"
-                      onClick={() => handleDownloadJson(level.id, level.title)}
-                    >
-                      <FileJson size={12} className="mr-1" />
-                      Descargar
-                    </Button>
-                    
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 text-xs text-red-600 hover:text-red-700 ml-auto"
-                      onClick={() => handleDelete(level.id)}
-                    >
-                      <Trash2 size={12} />
-                    </Button>
-                  </div>
+          <>
+            <div className="mb-4 flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Juego:</span>
+                <Select
+                  value={selectedGameId?.toString() ?? ""}
+                  onValueChange={(value) => setSelectedGameId(Number(value))}
+                >
+                  <SelectTrigger className="w-[250px]">
+                    <SelectValue placeholder="Selecciona un juego" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {games.map((game) => (
+                      <SelectItem key={game.id} value={game.id.toString()}>
+                        {game.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {isLoadingLevels ? (
+              <Card className="text-center py-12">
+                <CardContent className="pt-6">
+                  <p className="text-muted-foreground">Cargando niveles...</p>
                 </CardContent>
               </Card>
-            ))}
-          </div>
+            ) : levels.length === 0 ? (
+              <Card className="text-center py-12">
+                <CardContent className="pt-6">
+                  <p className="text-muted-foreground mb-4">
+                    No hay niveles para este juego.
+                  </p>
+                  <Button asChild>
+                    <Link href={`/dashboard/levels/create?gameId=${selectedGameId}`}>
+                      <Plus size={16} className="mr-2" />
+                      Crear tu primer nivel
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {levels.map((level) => (
+                  <Card key={level.id} className="flex flex-col">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="truncate text-base">
+                            {level.title || "Sin título"}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-2 mt-1">
+                            <Badge variant="outline" className="text-xs">
+                              Nivel {level.levelNumber}
+                            </Badge>
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-1 flex flex-col justify-between gap-3">
+                      <div className="text-xs text-muted-foreground">
+                        Creado: {formatDate(level.createdAt)}
+                        {level.updatedAt && (
+                          <>
+                            <br />
+                            Actualizado: {formatDate(level.updatedAt)}
+                          </>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2 flex-wrap">
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs"
+                        >
+                          <Link href={`/dashboard/levels/${level.id}/edit`}>
+                            <Edit size={12} className="mr-1" />
+                            Editar
+                          </Link>
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs"
+                          onClick={() => handleCopyJson(level)}
+                        >
+                          <Copy size={12} className="mr-1" />
+                          JSON
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs"
+                          onClick={() => handleDownloadJson(level)}
+                        >
+                          <FileJson size={12} className="mr-1" />
+                          Descargar
+                        </Button>
+
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-xs text-red-600 hover:text-red-700 ml-auto"
+                            >
+                              <Trash2 size={12} />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Eliminar nivel</DialogTitle>
+                              <DialogDescription>
+                                ¿Estás seguro de que quieres eliminar el nivel &quot;{level.title}&quot;? Esta acción no se puede deshacer.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                              <Button variant="outline">Cancelar</Button>
+                              <Button
+                                onClick={() => handleDelete(level.id)}
+                                className="bg-red-600 hover:bg-red-700"
+                              >
+                                Eliminar
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
