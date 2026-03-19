@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,8 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Eye } from "lucide-react";
+import { EyeOff } from "lucide-react";
 import { signupAction, ActionState } from "@/lib/actions";
 import { toast } from "sonner";
 
@@ -22,6 +24,15 @@ export function SignupForm({
     signupAction,
     null
   );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formValues, setFormValues] = useState({
+    name: '',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
   useEffect(() => {
     if (state?.success) {
@@ -55,6 +66,8 @@ export function SignupForm({
             type="text" 
             placeholder="Juan Pérez" 
             required 
+            value={formValues.name}
+            onChange={(e) => setFormValues(prev => ({ ...prev, name: e.target.value }))}
             aria-invalid={!!state?.errors?.name}
           />
           {state?.errors?.name && (
@@ -70,6 +83,8 @@ export function SignupForm({
             type="text" 
             placeholder="juanperez" 
             required 
+            value={formValues.username}
+            onChange={(e) => setFormValues(prev => ({ ...prev, username: e.target.value }))}
             aria-invalid={!!state?.errors?.username}
           />
           {state?.errors?.username && (
@@ -85,6 +100,8 @@ export function SignupForm({
             type="email" 
             placeholder="m@example.com" 
             required 
+            value={formValues.email}
+            onChange={(e) => setFormValues(prev => ({ ...prev, email: e.target.value }))}
             aria-invalid={!!state?.errors?.email}
           />
           {state?.errors?.email && (
@@ -97,13 +114,29 @@ export function SignupForm({
 
         <Field>
           <FieldLabel htmlFor="password">Contraseña</FieldLabel>
-          <Input 
-            id="password" 
-            name="password" 
-            type="password" 
-            required 
-            aria-invalid={!!state?.errors?.password}
-          />
+          <div className="relative">
+            <Input 
+              id="password" 
+              name="password" 
+              type={showPassword ? "text" : "password"} 
+              required 
+              value={formValues.password}
+              onChange={(e) => setFormValues(prev => ({ ...prev, password: e.target.value }))}
+              aria-invalid={!!state?.errors?.password}
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </button>
+          </div>
           {state?.errors?.password && (
             <p className="text-destructive text-xs mt-1">{state.errors.password[0]}</p>
           )}
@@ -114,13 +147,29 @@ export function SignupForm({
 
         <Field>
           <FieldLabel htmlFor="confirm-password">Confirmar Contraseña</FieldLabel>
-          <Input 
-            id="confirm-password" 
-            name="confirmPassword" 
-            type="password" 
-            required 
-            aria-invalid={!!state?.errors?.confirmPassword}
-          />
+          <div className="relative">
+            <Input 
+              id="confirm-password" 
+              name="confirmPassword" 
+              type={showConfirmPassword ? "text" : "password"} 
+              required 
+              value={formValues.confirmPassword}
+              onChange={(e) => setFormValues(prev => ({ ...prev, confirmPassword: e.target.value }))}
+              aria-invalid={!!state?.errors?.confirmPassword}
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+            </button>
+          </div>
           {state?.errors?.confirmPassword && (
             <p className="text-destructive text-xs mt-1">{state.errors.confirmPassword[0]}</p>
           )}

@@ -18,7 +18,7 @@ test.describe("Register Flow", () => {
     await page.goto("/signup");
     
     // Should have a link to go back to login with exact text
-    const loginLink = page.getByRole("link", { name: "Iniciar sesión", href: "/login" });
+    const loginLink = page.getByRole("link", { name: "Iniciar sesión" });
     await expect(loginLink).toBeVisible();
   });
 
