@@ -133,7 +133,7 @@ export async function loginAction(
     const { email, password } = validatedFields.data;
     
     const result = await authLogin({
-      username: email,
+      email: email,
       password: password,
     });
 
