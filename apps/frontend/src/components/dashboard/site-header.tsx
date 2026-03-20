@@ -55,8 +55,8 @@ export function SiteHeader() {
         name: user.lastname ? `${user.name} ${user.lastname}` : user.name,
         email: user.email,
         avatar: `/avatars/${user.username}.jpg`,
-        role: user.role?.roleName || "Usuario",
-        status: user.isActive ? "online" as const : "offline" as const,
+        role: user.role?.role_name || user.role?.roleName || "Usuario",
+        status: user.is_active ? "online" as const : "offline" as const,
       }
     : DEMO_USER;
 

@@ -1,14 +1,18 @@
 import { AuthProvider } from "@/context/auth-context";
 import { AppSidebar, SiteHeader } from "@/components/dashboard";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { getServerUser } from "@/lib/auth-server";
 
-export default function Layout({
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Obtener el usuario desde la cookie del servidor
+  const { user, token } = await getServerUser();
+
   return (
-    <AuthProvider>
+    <AuthProvider initialUser={user} initialToken={token}>
       <div>
         <SidebarProvider
           style={
