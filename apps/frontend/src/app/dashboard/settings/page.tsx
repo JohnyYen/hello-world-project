@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { getTeacherSettings } from "@/services/users";
+import { getServerUser } from "@/lib/auth-server";
 import { Settings } from "lucide-react";
 import { SettingsContent } from "@/components/settings";
 
@@ -10,8 +9,10 @@ export interface TeacherSettingsData {
   interfaceLanguage: string;
 }
 
-async function fetchTeacherSettings(): Promise<TeacherSettingsData | null> {
+async function fetchTeacherSettings(): Promise<TeacherSettingsData> {
+  // Intentar obtener settings del servidor
   try {
+    const { getTeacherSettings } = await import("@/services/users");
     const settings = await getTeacherSettings();
     return {
       theme: settings.theme ?? "light",
@@ -20,16 +21,27 @@ async function fetchTeacherSettings(): Promise<TeacherSettingsData | null> {
       interfaceLanguage: settings.interfaceLanguage ?? "es",
     };
   } catch {
-    return null;
+    // Si falla (usuario sin perfil de profesor), usar valores por defecto
+    return {
+      theme: "light",
+      notificationsEnabled: true,
+      notificationFrequency: "daily",
+      interfaceLanguage: "es",
+    };
   }
 }
 
 export default async function SettingsPage() {
-  const settings = await fetchTeacherSettings();
-
-  if (!settings) {
+  // Verificar que el usuario esté autenticado
+  const { user } = await getServerUser();
+  
+  if (!user) {
+    // Si no hay usuario, redirigir al login
+    const { redirect } = await import("next/navigation");
     redirect("/login");
   }
+
+  const settings = await fetchTeacherSettings();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
