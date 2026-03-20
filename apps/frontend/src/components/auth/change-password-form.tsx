@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { Lock } from "lucide-react";
+import { useActionState, useEffect, useState } from "react";
+import { Lock, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,66 @@ import {
   FieldGroup,
 } from "@/components/ui/field";
 import { changePasswordAction } from "@/lib/actions";
+
+function PasswordInput({ 
+  id, 
+  name, 
+  placeholder, 
+  required = true 
+}: { 
+  id: string; 
+  name: string; 
+  placeholder: string; 
+  required?: boolean;
+}) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showTimer, setShowTimer] = useState<NodeJS.Timeout | null>(null);
+
+  const handleShowPassword = () => {
+    setShowPassword(true);
+    
+    // Limpiar timer anterior si existe
+    if (showTimer) {
+      clearTimeout(showTimer);
+    }
+    
+    // Ocultar después de 3 segundos
+    const timer = setTimeout(() => {
+      setShowPassword(false);
+    }, 3000);
+    
+    setShowTimer(timer);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (showTimer) {
+        clearTimeout(showTimer);
+      }
+    };
+  }, [showTimer]);
+
+  return (
+    <div className="flex items-center gap-2 mt-2">
+      <Input
+        id={id}
+        name={name}
+        type={showPassword ? "text" : "password"}
+        placeholder={placeholder}
+        required={required}
+      />
+      <Button 
+        size="icon" 
+        variant="outline" 
+        type="button"
+        onClick={handleShowPassword}
+        className="shrink-0"
+      >
+        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </Button>
+    </div>
+  );
+}
 
 export function ChangePasswordForm() {
   const [state, action, isPending] = useActionState(changePasswordAction, null);
@@ -45,18 +105,11 @@ export function ChangePasswordForm() {
           <FieldGroup className="space-y-4">
             <Field>
               <Label htmlFor="currentPassword">Contraseña Actual</Label>
-              <div className="flex items-center gap-2 mt-2">
-                <Input
-                  id="currentPassword"
-                  name="currentPassword"
-                  type="password"
-                  placeholder="Ingresa tu contraseña actual"
-                  required
-                />
-                <Button size="icon" variant="outline" type="button">
-                  <Lock className="h-4 w-4" />
-                </Button>
-              </div>
+              <PasswordInput
+                id="currentPassword"
+                name="currentPassword"
+                placeholder="Ingresa tu contraseña actual"
+              />
               {state?.errors?.currentPassword && (
                 <FieldDescription className="text-red-500">
                   {state.errors.currentPassword[0]}
@@ -68,18 +121,11 @@ export function ChangePasswordForm() {
 
             <Field>
               <Label htmlFor="newPassword">Nueva Contraseña</Label>
-              <div className="flex items-center gap-2 mt-2">
-                <Input
-                  id="newPassword"
-                  name="newPassword"
-                  type="password"
-                  placeholder="Ingresa una nueva contraseña"
-                  required
-                />
-                <Button size="icon" variant="outline" type="button">
-                  <Lock className="h-4 w-4" />
-                </Button>
-              </div>
+              <PasswordInput
+                id="newPassword"
+                name="newPassword"
+                placeholder="Ingresa una nueva contraseña"
+              />
               {state?.errors?.newPassword && (
                 <FieldDescription className="text-red-500">
                   {state.errors.newPassword[0]}
@@ -89,18 +135,11 @@ export function ChangePasswordForm() {
 
             <Field>
               <Label htmlFor="confirmPassword">Confirmar Nueva Contraseña</Label>
-              <div className="flex items-center gap-2 mt-2">
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  placeholder="Confirma la nueva contraseña"
-                  required
-                />
-                <Button size="icon" variant="outline" type="button">
-                  <Lock className="h-4 w-4" />
-                </Button>
-              </div>
+              <PasswordInput
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Confirma la nueva contraseña"
+              />
               {state?.errors?.confirmPassword && (
                 <FieldDescription className="text-red-500">
                   {state.errors.confirmPassword[0]}

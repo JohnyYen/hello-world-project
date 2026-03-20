@@ -92,7 +92,17 @@ export async function changePasswordAction(
       };
     }
 
-    const user = await authGetMe(token);
+    // Obtener usuario desde el servidor
+    const { getServerUser } = await import("@/lib/auth-server");
+    const { user } = await getServerUser();
+    
+    if (!user || !user.id) {
+      return {
+        success: false,
+        message: "No se pudo obtener la información del usuario",
+      };
+    }
+
     await authChangePassword(user.id, currentPassword, newPassword, token);
 
     return {

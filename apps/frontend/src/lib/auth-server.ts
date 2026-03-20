@@ -1,36 +1,22 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { decodeJWT } from "@/lib/jwt";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-interface SimpleUser {
+export interface SimpleUser {
   id: number;
   username: string;
   email: string;
   name: string;
   lastname: string | null;
   is_active: boolean;
+  created_at?: string;
   role: {
     id: number;
     role_name: string;
   } | null;
-}
-
-/**
- * Decodifica un JWT sin verificar la firma (solo para extraer datos)
- */
-function decodeJWT(token: string): { sub: string; exp: number } | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-    
-    const payload = parts[1];
-    const decoded = Buffer.from(payload, "base64url").toString("utf-8");
-    return JSON.parse(decoded);
-  } catch {
-    return null;
-  }
 }
 
 /**
@@ -66,17 +52,48 @@ export async function getServerUser(): Promise<{
     });
 
     if (response.ok) {
-      const user = await response.json();
+      const data = await response.json();
+      // El endpoint devuelve { data: {...} }
+      const user = data.data || data;
       return { user, token };
     }
 
-    // Si falla (usuario sin perfil de profesor), decodificamos el JWT
-    // y devolvemos los datos básicos del usuario
+    // Si falla (usuario sin perfil de profesor), intentar obtener de la lista de usuarios
+    const usersResponse = await fetch(`${API_BASE_URL}/api/v1/users/?limit=1000`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
+
+    if (usersResponse.ok) {
+      const usersData = await usersResponse.json();
+      const users = usersData.data || usersData;
+      const foundUser = users.find((u: { username: string }) => u.username === decoded.sub);
+      
+      if (foundUser) {
+        return { 
+          user: {
+            id: foundUser.id,
+            username: foundUser.username,
+            email: foundUser.email,
+            name: foundUser.name || foundUser.username,
+            lastname: foundUser.lastname || null,
+            is_active: foundUser.is_active,
+            created_at: foundUser.created_at,
+            role: foundUser.role || { id: 2, role_name: "professor" },
+          }, 
+          token 
+        };
+      }
+    }
+
+    // Último recurso: devolver datos básicos del JWT
     const basicUser: SimpleUser = {
-      id: 0, // No tenemos el ID del JWT
+      id: 0,
       username: decoded.sub,
-      email: "", // No disponible en el JWT
-      name: decoded.sub, // Usar username como name temporal
+      email: "",
+      name: decoded.sub,
       lastname: null,
       is_active: true,
       role: {
