@@ -23,6 +23,9 @@ class XAPIStatement(Base):
 
     __tablename__ = "xapi_statements"
 
+    # Primary key - UUID string as per xAPI specification
+    id = Column(String(36), primary_key=True)
+
     # Parsed fields for efficient queries
     actor_mbox = Column(String(255), nullable=True, index=True)
     actor_account_name = Column(String(255), nullable=True, index=True)
