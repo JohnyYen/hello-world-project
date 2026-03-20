@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getTeacherProfile } from "@/services/users";
+import { getServerUser } from "@/lib/auth-server";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -20,26 +20,47 @@ export interface TeacherProfileData {
 }
 
 async function fetchTeacherProfile(): Promise<TeacherProfileData | null> {
-  try {
-    const profile = await getTeacherProfile();
+  const { user } = await getServerUser();
+  
+  if (!user) {
+    return null;
+  }
+
+  // Si el usuario tiene datos de perfil de profesor (TeacherProfileResponse)
+  if ('department' in user) {
     return {
-      id: String(profile.id),
-      fullName: `${profile.name} ${profile.lastname}`.trim(),
-      email: profile.email,
-      username: profile.username,
-      avatarUrl: profile.avatarUrl ?? null,
-      department: profile.department,
-      createdAt: profile.createdAt
-        ? new Date(profile.createdAt).toLocaleDateString("es-ES", {
+      id: String(user.id),
+      fullName: `${user.name} ${user.lastname || ''}`.trim(),
+      email: user.email,
+      username: user.username,
+      avatarUrl: ('avatarUrl' in user && user.avatarUrl) ? user.avatarUrl as string : null,
+      department: ('department' in user && user.department) ? user.department as string : "",
+      createdAt: user.created_at
+        ? new Date(user.created_at).toLocaleDateString("es-ES", {
             year: "numeric",
             month: "short",
             day: "numeric",
           })
         : "",
     };
-  } catch {
-    return null;
   }
+
+  // Si el usuario es un usuario básico (sin perfil de profesor)
+  return {
+    id: String(user.id),
+    fullName: user.name || user.username,
+    email: user.email || "",
+    username: user.username,
+    avatarUrl: null,
+    department: "",
+    createdAt: user.created_at
+      ? new Date(user.created_at).toLocaleDateString("es-ES", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : "",
+  };
 }
 
 export default async function AccountPage() {
