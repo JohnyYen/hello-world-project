@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, use, useState, useEffect, type ReactNode } from "react";
-import { UserResponse } from "@workspace/api-client-ts";
+import { TeacherProfileResponse } from "@workspace/api-client-ts";
 import { authService, type LoginParams, type RegisterParams } from "@/services/auth";
 
 interface AuthContextValue {
-  user: UserResponse | null;
+  user: TeacherProfileResponse | null;
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -20,20 +20,28 @@ const TOKEN_KEY = "auth_token";
 
 interface AuthProviderProps {
   children: ReactNode;
+  initialUser?: TeacherProfileResponse | null;
+  initialToken?: string | null;
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<UserResponse | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export function AuthProvider({ children, initialUser, initialToken }: AuthProviderProps) {
+  // Si tenemos datos iniciales del servidor, confiar en ellos
+  const hasServerData = initialUser !== null && initialToken !== null;
+  
+  const [user, setUser] = useState<TeacherProfileResponse | null>(initialUser ?? null);
+  const [token, setToken] = useState<string | null>(initialToken ?? null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (storedToken) {
-      setToken(storedToken);
+    // Solo leer de localStorage si NO tenemos datos del servidor
+    if (!hasServerData) {
+      const storedToken = localStorage.getItem(TOKEN_KEY);
+      // Verificar que el token sea válido (no null, undefined string, etc.)
+      if (storedToken && storedToken !== "undefined" && storedToken !== "null") {
+        setToken(storedToken);
+      }
     }
-    setIsLoading(false);
-  }, []);
+  }, [hasServerData]);
 
   const login = async (_params: LoginParams) => {
     const response = await authService.login(_params);
