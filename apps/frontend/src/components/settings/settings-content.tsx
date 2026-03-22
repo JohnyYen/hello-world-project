@@ -49,7 +49,7 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
 
   // Local state for all settings
   const [settings, setSettings] = useState<TeacherSettingsFormData>({
-    theme: initialSettings.theme,
+    theme: initialSettings.theme as "light" | "dark",
     notificationsEnabled: initialSettings.notificationsEnabled,
     notificationFrequency: initialSettings.notificationFrequency as "realtime" | "daily" | "weekly" | "disabled",
     interfaceLanguage: initialSettings.interfaceLanguage as "es" | "en",
