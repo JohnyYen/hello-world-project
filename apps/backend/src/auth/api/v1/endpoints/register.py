@@ -5,10 +5,14 @@ from src.users.api.v1.schemas.user import UserLoginResponse, UserCreate
 from src.shared.domain.exceptions import DuplicateEntryException
 
 
-router = APIRouter(prefix="/register")
+router = APIRouter(prefix="/register", dependencies=[])
 
 
-@router.post("", response_model=UserLoginResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=UserLoginResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 async def register_user(
     user_data: UserCreate,
     register_uc: RegisterUserUseCase = Depends(),

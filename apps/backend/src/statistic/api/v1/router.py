@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from fastapi.security import HTTPBearer
 
 from src.statistic.api.v1.endpoints.submit_feedback import (
     router as submit_feedback_router,
@@ -11,7 +12,9 @@ from src.statistic.api.v1.endpoints.metric_types import (
 )
 
 
-router = APIRouter(prefix="/statistic", tags=["Statistics"])
+router = APIRouter(
+    prefix="/statistic", tags=["Statistics"], dependencies=[Depends(HTTPBearer())]
+)
 
 # Incluir todos los routers de endpoints
 router.include_router(submit_feedback_router)
