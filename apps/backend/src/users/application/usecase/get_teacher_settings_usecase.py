@@ -12,6 +12,9 @@ from src.users.api.v1.schemas.teacher import (
     TeacherSettingsResponseSchema,
     TeacherSettingsResponse,
 )
+from src.shared.application.providers.users_providers import (
+    get_teacher_settings_service,
+)
 
 
 class GetTeacherSettingsUseCase:
@@ -29,10 +32,13 @@ class GetTeacherSettingsUseCase:
         self,
         db: AsyncSession = Depends(get_db),
         current_user: User = Depends(get_current_user),
+        settings_service: TeacherSettingsService = Depends(
+            get_teacher_settings_service
+        ),
     ):
         self.db = db
         self.current_user = current_user
-        self.settings_service = TeacherSettingsService(db)
+        self.settings_service = settings_service
 
     async def execute(self) -> TeacherSettingsResponseSchema:
         """

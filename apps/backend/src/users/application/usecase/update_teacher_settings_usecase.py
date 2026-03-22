@@ -16,6 +16,10 @@ from src.users.api.v1.schemas.teacher import (
     TeacherSettingsResponseSchema,
     TeacherSettingsResponse,
 )
+from src.shared.application.providers.users_providers import (
+    get_teacher_settings_service,
+    get_teacher_settings_repository,
+)
 
 
 class UpdateTeacherSettingsUseCase:
@@ -34,11 +38,17 @@ class UpdateTeacherSettingsUseCase:
         self,
         db: AsyncSession = Depends(get_db),
         current_user: User = Depends(get_current_user),
+        settings_service: TeacherSettingsService = Depends(
+            get_teacher_settings_service
+        ),
+        settings_repo: TeacherSettingsRepository = Depends(
+            get_teacher_settings_repository
+        ),
     ):
         self.db = db
         self.current_user = current_user
-        self.settings_service = TeacherSettingsService(db)
-        self.settings_repo = TeacherSettingsRepository(db)
+        self.settings_service = settings_service
+        self.settings_repo = settings_repo
 
     async def execute(
         self, settings_data: TeacherSettingsUpdate

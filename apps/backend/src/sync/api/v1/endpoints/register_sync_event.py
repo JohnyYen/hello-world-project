@@ -41,7 +41,7 @@ async def register_sync_event(
         event_type = str(event.event_type)
         classification = SyncEventType.classify(event_type)
 
-        # Process complex events through xAPI pipeline
+        # Process events through xAPI pipeline (complex events only)
         if classification == SyncEventType.COMPLEX:
             mapper = SyncEventToXAPIMapper(db)
             xapi_repository = XAPIStatementRepository(db)
@@ -50,9 +50,9 @@ async def register_sync_event(
             xapi_statement = await mapper.map(event)
             await xapi_service.save_statement(xapi_statement)
 
-            # Update progress
-            progress_updater = ProgressUpdater(db)
-            await progress_updater.update(event)
+        # Update progress for ALL events (both simple and complex)
+        progress_updater = ProgressUpdater(db)
+        await progress_updater.update(event)
 
         # Update event status
         event.status = "processed"
@@ -75,4 +75,7 @@ async def register_sync_event(
             status=str(updated_event.status),
         )
     except NotFoundException as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Recurso no encontrado en sync: {str(e)}",
+        )
