@@ -52,7 +52,17 @@ class CreateStudentUseCase:
             HTTPException 409: Si email o username ya existen
         """
         # Validar rol
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.info(f"Current user role: {self.current_user.role}")
+        logger.info(
+            f"Role name: {self.current_user.role.role_name if self.current_user.role else 'None'}"
+        )
         if self.current_user.role.role_name not in ["admin", "professor"]:
+            logger.warning(
+                f"User {self.current_user.username} with role {self.current_user.role.role_name} attempted to create student"
+            )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="No tiene permisos para crear estudiantes",
