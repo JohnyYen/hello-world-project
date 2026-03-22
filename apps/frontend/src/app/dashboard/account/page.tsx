@@ -16,6 +16,7 @@ export interface TeacherProfileData {
   username: string;
   avatarUrl: string | null;
   department: string;
+  contactPhone: string | null;
   createdAt: string;
 }
 
@@ -35,6 +36,7 @@ async function fetchTeacherProfile(): Promise<TeacherProfileData | null> {
       username: user.username,
       avatarUrl: ('avatarUrl' in user && user.avatarUrl) ? user.avatarUrl as string : null,
       department: ('department' in user && user.department) ? user.department as string : "",
+      contactPhone: (user as Record<string, unknown>)?.contact_phone as string || null,
       createdAt: user.created_at
         ? new Date(user.created_at).toLocaleDateString("es-ES", {
             year: "numeric",
@@ -53,6 +55,7 @@ async function fetchTeacherProfile(): Promise<TeacherProfileData | null> {
     username: user.username,
     avatarUrl: null,
     department: "",
+    contactPhone: null,
     createdAt: user.created_at
       ? new Date(user.created_at).toLocaleDateString("es-ES", {
           year: "numeric",

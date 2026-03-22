@@ -24,15 +24,18 @@ El frontend proporciona:
 
 | Tecnología | Propósito |
 |------------|-----------|
-| **Next.js 15** | Framework React con App Router |
-| **React 19** | Biblioteca de UI |
+| **Next.js 15.5.4** | Framework React con App Router |
+| **React 19.1.0** | Biblioteca de UI |
 | **TypeScript 5** | Tipado estático |
 | **Tailwind CSS 4** | Estilos |
 | **shadcn/ui** | Componentes UI |
 | **Zod 4** | Validación de esquemas |
 | **pnpm** | Gestor de paquetes |
 | **@dnd-kit** | Drag & Drop |
-| **Recharts** | Gráficos y estadísticas |
+| **Recharts 2.15.4** | Gráficos y estadísticas |
+| **Zustand 5** | Gestión de estado |
+| **Vitest** | Testing unitario |
+| **Playwright** | Testing E2E |
 | **Vercel AI SDK** | (Preparado para features de IA) |
 
 ---
@@ -45,44 +48,45 @@ apps/frontend/
 ├── .vscode/                 # Config de VS Code
 ├── public/                  # Archivos estáticos
 ├── src/
+│   ├── adapters/            # Adaptadores y wrappers de API
 │   ├── app/                 # App Router (Next.js 15)
 │   │   ├── (auth)/         # Rutas de autenticación
 │   │   │   ├── login/      # Login page
 │   │   │   └── register/   # Registro page
-│   │   ├── (dashboard)/    # Rutas protegidas
-│   │   │   ├── admin/      # Panel de admin
-│   │   │   ├── professor/  # Panel de profesor
-│   │   │   └── student/    # Panel de estudiante
-│   │   ├── api/            # API Routes (Server Actions)
+│   │   ├── (landing-page)/ # Páginas de landing
+│   │   ├── admin/          # Panel de admin
+│   │   ├── dashboard/      # Dashboard principal
+│   │   ├── actions/        # Server Actions
+│   │   ├── docs/           # Documentación
 │   │   ├── layout.tsx      # Root layout
-│   │   └── page.tsx        # Home page
+│   │   ├── error.tsx       # Manejo de errores
+│   │   ├── not-found.tsx   # Página 404
+│   │   └── globals.css     # Estilos globales
 │   ├── components/
 │   │   ├── ui/             # Componentes shadcn/ui
-│   │   │   ├── button.tsx
-│   │   │   ├── card.tsx
-│   │   │   ├── dialog.tsx
-│   │   │   ├── input.tsx
-│   │   │   └── ...
-│   │   ├── auth/           # Componentes de auth
+│   │   ├── account/        # Componentes de cuenta
+│   │   ├── auth/           # Componentes de autenticación
+│   │   ├── charts/         # Componentes de gráficos
 │   │   ├── dashboard/      # Componentes del dashboard
-│   │   └── game/           # Componentes de juego
+│   │   ├── docs/           # Componentes de documentación
+│   │   ├── editor/         # Editor de contenido
+│   │   ├── export/         # Funcionalidades de exportación
+│   │   ├── landing/        # Componentes de landing
+│   │   ├── metrics/        # Componentes de métricas
+│   │   ├── reports/        # Reportes
+│   │   ├── settings/       # Configuración
+│   │   ├── shared/         # Componentes compartidos
+│   │   ├── student/        # Componentes de estudiante
+│   │   └── theme/          # Sistema de temas
+│   ├── context/            # React Context providers
 │   ├── hooks/              # Custom React hooks
-│   │   ├── use-auth.ts     # Hook de autenticación
-│   │   └── use-game.ts     # Hook de estado de juego
 │   ├── lib/                # Utilidades
 │   │   ├── utils.ts        # cn() utility
 │   │   ├── api.ts          # Configuración de API
 │   │   └── constants.ts    # Constantes globales
 │   ├── services/           # Capa de servicios API
-│   │   ├── auth-service.ts
-│   │   ├── game-service.ts
-│   │   └── user-service.ts
 │   ├── types/              # Definiciones TypeScript
-│   │   ├── user.types.ts
-│   │   ├── game.types.ts
-│   │   └── api.types.ts
-│   └── styles/
-│       └── globals.css     # Estilos globales
+│   └── adapters/           # Adaptadores de datos/API
 ├── .env                    # Variables de entorno
 ├── .env.example            # Ejemplo de variables
 ├── components.json         # Config de shadcn/ui
@@ -156,8 +160,17 @@ pnpm run start
 # Linting
 pnpm run lint
 
-# type-check
-pnpm run type-check
+# Type checking
+pnpm run typecheck
+
+# Tests unitarios
+pnpm run test
+
+# Tests en watch mode
+pnpm run test:watch
+
+# Tests con cobertura
+pnpm run test:coverage
 ```
 
 ---
@@ -382,13 +395,11 @@ El proyecto usa un tema **Blue-Noir** con acentos en azul y negro. Los colores s
 /                           # Landing page (público)
 /login                      # Login de usuario
 /register                   # Registro (profesor)
-/dashboard                  # Redirect según rol
-/dashboard/admin            # Panel de admin
-/dashboard/professor        # Panel de profesor
-/dashboard/professor/games # Gestión de juegos
-/dashboard/professor/students # Gestión de estudiantes
-/dashboard/student         # Panel de estudiante
-/dashboard/student/progress # Ver progreso
+/dashboard                  # Dashboard principal
+/admin                      # Panel de admin
+/docs                       # Documentación
+/error                      # Página de error
+/not-found                  # Página 404
 ```
 
 ---
