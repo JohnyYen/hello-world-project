@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Configuration, UsersApi } from "@workspace/api-client-ts";
@@ -155,6 +155,10 @@ export async function loginAction(
         sameSite: "lax",
         path: "/",
       });
+      // Invalidate student-related caches after login
+      revalidateTag('students-list');
+      revalidateTag('all-students');
+      revalidateTag('student-detail');
     }
     
   } catch (error: unknown) {
@@ -275,6 +279,89 @@ export async function createStudentAction(
       success: false,
       message,
       errors: { _form: [detail || "Error al guardar en base de datos"] },
+    };
+  }
+}
+
+// 👤 Schema de validación para actualización de perfil
+const profileUpdateSchema = z.object({
+  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres").max(100, "El nombre no puede exceder 100 caracteres").optional(),
+  lastname: z.string().max(100, "El apellido no puede exceder 100 caracteres").optional(),
+  email: z.string().email("Email inválido").optional().or(z.literal("")),
+  department: z.string().max(100, "El departamento no puede exceder 100 caracteres").optional().or(z.literal("")),
+  contactPhone: z.string().max(20, "El teléfono no puede exceder 20 caracteres").regex(/^[\d\s\-\+\(\)]*$/, "Formato de teléfono inválido").optional().or(z.literal("")),
+});
+
+// 👤 Server action para actualizar perfil
+export async function updateProfileAction(
+  prevState: ActionState | null,
+  formData: FormData
+): Promise<ActionState> {
+  try {
+    const validatedFields = profileUpdateSchema.safeParse({
+      name: formData.get("name"),
+      lastname: formData.get("lastname"),
+      email: formData.get("email"),
+      department: formData.get("department"),
+      contactPhone: formData.get("contactPhone"),
+    });
+
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        message: "Errores de validación",
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token")?.value;
+    if (!token) {
+      return { success: false, message: "No autenticado" };
+    }
+
+    const { getServerUser } = await import("@/lib/auth-server");
+    const { user } = await getServerUser();
+    if (!user || !user.id) {
+      return { success: false, message: "No se pudo obtener la información del usuario" };
+    }
+
+    const { name, lastname, email, department, contactPhone } = validatedFields.data;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+    // Direct fetch call instead of API client (API client has header bug)
+    const response = await fetch(`${API_URL}/api/v1/users/professors/me`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: name || undefined,
+        lastname: lastname || undefined,
+        email: email || undefined,
+        department: department || undefined,
+        contact_phone: contactPhone || undefined,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || `Error ${response.status}`);
+    }
+
+    revalidatePath("/dashboard/account");
+
+    return { success: true, message: "Perfil actualizado exitosamente" };
+
+  } catch (error: unknown) {
+    console.error("Error updating profile:", error);
+    const message = error instanceof Error ? error.message : "Error al actualizar el perfil";
+    
+    return {
+      success: false,
+      message,
+      errors: { _form: [message] },
     };
   }
 }
