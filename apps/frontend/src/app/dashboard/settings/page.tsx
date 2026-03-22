@@ -7,6 +7,18 @@ export interface TeacherSettingsData {
   notificationsEnabled: boolean;
   notificationFrequency: string;
   interfaceLanguage: string;
+  // Session settings
+  autoLogout: boolean;
+  sessionDurationMinutes: number;
+  rememberLogin: boolean;
+  // Appearance settings
+  colorTheme: string;
+  animationsEnabled: boolean;
+  // Notification settings (extended)
+  emailNotifications: boolean;
+  // Language settings (extended)
+  dateFormat: string;
+  timezone: string;
 }
 
 async function fetchTeacherSettings(): Promise<TeacherSettingsData> {
@@ -14,19 +26,40 @@ async function fetchTeacherSettings(): Promise<TeacherSettingsData> {
   try {
     const { getTeacherSettings } = await import("@/services/users");
     const settings = await getTeacherSettings();
+    // Mapear snake_case (API) → camelCase (frontend)
     return {
       theme: settings.theme ?? "light",
-      notificationsEnabled: settings.notificationsEnabled ?? true,
-      notificationFrequency: settings.notificationFrequency ?? "daily",
-      interfaceLanguage: settings.interfaceLanguage ?? "es",
+      notificationsEnabled: settings.notifications_enabled ?? true,
+      notificationFrequency: settings.notification_frequency ?? "realtime",
+      interfaceLanguage: settings.interface_language ?? "es",
+      // Session defaults
+      autoLogout: settings.auto_logout ?? false,
+      sessionDurationMinutes: settings.session_duration_minutes ?? 60,
+      rememberLogin: settings.remember_login ?? true,
+      // Appearance defaults
+      colorTheme: settings.color_theme ?? "Indigo",
+      animationsEnabled: settings.animations_enabled ?? true,
+      // Notification defaults
+      emailNotifications: settings.email_notifications ?? false,
+      // Language defaults
+      dateFormat: settings.date_format ?? "ddmmyyyy",
+      timezone: settings.timezone ?? "gmt-5",
     };
   } catch {
     // Si falla (usuario sin perfil de profesor), usar valores por defecto
     return {
       theme: "light",
       notificationsEnabled: true,
-      notificationFrequency: "daily",
+      notificationFrequency: "realtime",
       interfaceLanguage: "es",
+      autoLogout: false,
+      sessionDurationMinutes: 60,
+      rememberLogin: true,
+      colorTheme: "Indigo",
+      animationsEnabled: true,
+      emailNotifications: false,
+      dateFormat: "ddmmyyyy",
+      timezone: "gmt-5",
     };
   }
 }
