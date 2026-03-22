@@ -27,7 +27,17 @@ app = FastAPI(
         "url": "http://tuwebsite.com",
         "email": "jhonnyantonio892@gmail.com",
     },
-    security=[{"HTTPBearer": []}],
+    openapi_extra={
+        "components": {
+            "securitySchemes": {
+                "BearerAuth": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT",
+                }
+            }
+        }
+    },
 )
 
 
@@ -71,6 +81,7 @@ app.include_router(router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to FastAPI!"}
+
 
 @app.get("/health")
 def verify_health():
