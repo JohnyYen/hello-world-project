@@ -7,14 +7,14 @@ Esquema para la respuesta de una instancia de juego
 
 Name | Type
 ------------ | -------------
+`created_at` | Date
+`game_id` | number
 `id` | number
-`gameId` | number
-`studentId` | number
+`is_deleted` | boolean
+`start_instance` | Date
 `status` | string
-`startInstance` | Date
-`createdAt` | Date
-`updatedAt` | Date
-`isDeleted` | boolean
+`student_id` | number
+`updated_at` | Date
 
 ## Example
 
@@ -23,14 +23,14 @@ import type { GameInstanceResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
+  "created_at": null,
+  "game_id": null,
   "id": null,
-  "gameId": null,
-  "studentId": null,
+  "is_deleted": null,
+  "start_instance": null,
   "status": null,
-  "startInstance": null,
-  "createdAt": null,
-  "updatedAt": null,
-  "isDeleted": null,
+  "student_id": null,
+  "updated_at": null,
 } satisfies GameInstanceResponse
 
 console.log(example)

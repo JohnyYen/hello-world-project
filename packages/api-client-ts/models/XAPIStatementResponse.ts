@@ -57,22 +57,22 @@ import {
 export interface XAPIStatementResponse {
     /**
      * 
-     * @type {string}
-     * @memberof XAPIStatementResponse
-     */
-    id: string;
-    /**
-     * 
      * @type {XAPIActor}
      * @memberof XAPIStatementResponse
      */
     actor: XAPIActor;
     /**
      * 
-     * @type {XAPIVerb}
+     * @type {XAPIContextOutput}
      * @memberof XAPIStatementResponse
      */
-    verb: XAPIVerb;
+    context?: XAPIContextOutput | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof XAPIStatementResponse
+     */
+    id: string;
     /**
      * 
      * @type {XAPIActivity}
@@ -87,10 +87,10 @@ export interface XAPIStatementResponse {
     result?: XAPIResult | null;
     /**
      * 
-     * @type {XAPIContextOutput}
+     * @type {Date}
      * @memberof XAPIStatementResponse
      */
-    context?: XAPIContextOutput | null;
+    stored: Date;
     /**
      * 
      * @type {Date}
@@ -99,22 +99,22 @@ export interface XAPIStatementResponse {
     timestamp: Date;
     /**
      * 
-     * @type {Date}
+     * @type {XAPIVerb}
      * @memberof XAPIStatementResponse
      */
-    stored: Date;
+    verb: XAPIVerb;
 }
 
 /**
  * Check if a given object implements the XAPIStatementResponse interface.
  */
 export function instanceOfXAPIStatementResponse(value: object): value is XAPIStatementResponse {
-    if (!('id' in value) || value['id'] === undefined) return false;
     if (!('actor' in value) || value['actor'] === undefined) return false;
-    if (!('verb' in value) || value['verb'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
     if (!('object' in value) || value['object'] === undefined) return false;
-    if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
     if (!('stored' in value) || value['stored'] === undefined) return false;
+    if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
+    if (!('verb' in value) || value['verb'] === undefined) return false;
     return true;
 }
 
@@ -128,14 +128,14 @@ export function XAPIStatementResponseFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
-        'id': json['id'],
         'actor': XAPIActorFromJSON(json['actor']),
-        'verb': XAPIVerbFromJSON(json['verb']),
+        'context': json['context'] == null ? undefined : XAPIContextOutputFromJSON(json['context']),
+        'id': json['id'],
         'object': XAPIActivityFromJSON(json['object']),
         'result': json['result'] == null ? undefined : XAPIResultFromJSON(json['result']),
-        'context': json['context'] == null ? undefined : XAPIContextOutputFromJSON(json['context']),
-        'timestamp': (new Date(json['timestamp'])),
         'stored': (new Date(json['stored'])),
+        'timestamp': (new Date(json['timestamp'])),
+        'verb': XAPIVerbFromJSON(json['verb']),
     };
 }
 
@@ -150,14 +150,14 @@ export function XAPIStatementResponseToJSONTyped(value?: XAPIStatementResponse |
 
     return {
         
-        'id': value['id'],
         'actor': XAPIActorToJSON(value['actor']),
-        'verb': XAPIVerbToJSON(value['verb']),
+        'context': XAPIContextOutputToJSON(value['context']),
+        'id': value['id'],
         'object': XAPIActivityToJSON(value['object']),
         'result': XAPIResultToJSON(value['result']),
-        'context': XAPIContextOutputToJSON(value['context']),
-        'timestamp': value['timestamp'].toISOString(),
         'stored': value['stored'].toISOString(),
+        'timestamp': value['timestamp'].toISOString(),
+        'verb': XAPIVerbToJSON(value['verb']),
     };
 }
 

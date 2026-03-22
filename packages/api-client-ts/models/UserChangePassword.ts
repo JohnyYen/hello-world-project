@@ -24,21 +24,21 @@ export interface UserChangePassword {
      * @type {string}
      * @memberof UserChangePassword
      */
-    currentPassword: string;
+    current_password: string;
     /**
      * 
      * @type {string}
      * @memberof UserChangePassword
      */
-    newPassword: string;
+    new_password: string;
 }
 
 /**
  * Check if a given object implements the UserChangePassword interface.
  */
 export function instanceOfUserChangePassword(value: object): value is UserChangePassword {
-    if (!('currentPassword' in value) || value['currentPassword'] === undefined) return false;
-    if (!('newPassword' in value) || value['newPassword'] === undefined) return false;
+    if (!('current_password' in value) || value['current_password'] === undefined) return false;
+    if (!('new_password' in value) || value['new_password'] === undefined) return false;
     return true;
 }
 
@@ -52,8 +52,8 @@ export function UserChangePasswordFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'currentPassword': json['current_password'],
-        'newPassword': json['new_password'],
+        'current_password': json['current_password'],
+        'new_password': json['new_password'],
     };
 }
 
@@ -68,8 +68,8 @@ export function UserChangePasswordToJSONTyped(value?: UserChangePassword | null,
 
     return {
         
-        'current_password': value['currentPassword'],
-        'new_password': value['newPassword'],
+        'current_password': value['current_password'],
+        'new_password': value['new_password'],
     };
 }
 

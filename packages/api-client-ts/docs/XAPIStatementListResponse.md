@@ -7,10 +7,10 @@ List of xAPI statements with pagination.
 
 Name | Type
 ------------ | -------------
+`limit` | number
+`skip` | number
 `statements` | [Array&lt;XAPIStatementResponse&gt;](XAPIStatementResponse.md)
 `total` | number
-`skip` | number
-`limit` | number
 
 ## Example
 
@@ -19,10 +19,10 @@ import type { XAPIStatementListResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
+  "limit": null,
+  "skip": null,
   "statements": null,
   "total": null,
-  "skip": null,
-  "limit": null,
 } satisfies XAPIStatementListResponse
 
 console.log(example)

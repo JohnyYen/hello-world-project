@@ -29,10 +29,10 @@ import {
 export interface GameCreateResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {GameResponse}
      * @memberof GameCreateResponse
      */
-    success?: boolean;
+    data: GameResponse;
     /**
      * 
      * @type {string}
@@ -41,10 +41,10 @@ export interface GameCreateResponse {
     message?: string;
     /**
      * 
-     * @type {GameResponse}
+     * @type {boolean}
      * @memberof GameCreateResponse
      */
-    data: GameResponse;
+    success?: boolean;
 }
 
 /**
@@ -65,9 +65,9 @@ export function GameCreateResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': GameResponseFromJSON(json['data']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -82,9 +82,9 @@ export function GameCreateResponseToJSONTyped(value?: GameCreateResponse | null,
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': GameResponseToJSON(value['data']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

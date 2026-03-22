@@ -7,10 +7,10 @@ Respuesta para un solo usuario
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [UserResponse](UserResponse.md)
 `error` | [](.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -19,10 +19,10 @@ import type { SingleUserResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
   "error": null,
+  "message": null,
+  "success": null,
 } satisfies SingleUserResponse
 
 console.log(example)

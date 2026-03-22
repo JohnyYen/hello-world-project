@@ -7,10 +7,10 @@ Esquema para actualización de nivel
 
 Name | Type
 ------------ | -------------
-`levelNumber` | number
-`title` | string
 `description` | string
 `goal` | string
+`level_number` | number
+`title` | string
 
 ## Example
 
@@ -19,10 +19,10 @@ import type { LevelUpdate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "levelNumber": null,
-  "title": null,
   "description": null,
   "goal": null,
+  "level_number": null,
+  "title": null,
 } satisfies LevelUpdate
 
 console.log(example)

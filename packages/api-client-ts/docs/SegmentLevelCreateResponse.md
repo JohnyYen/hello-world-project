@@ -7,9 +7,9 @@ Esquema para respuesta de creación de segmento
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [SegmentLevelResponse](SegmentLevelResponse.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { SegmentLevelCreateResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
+  "message": null,
+  "success": null,
 } satisfies SegmentLevelCreateResponse
 
 console.log(example)

@@ -21,43 +21,43 @@ import { mapValues } from '../runtime';
 export interface SyncSessionSchema {
     /**
      * 
-     * @type {number}
+     * @type {Date}
      * @memberof SyncSessionSchema
      */
-    instanceId: number;
+    end_time?: Date | null;
     /**
-     * 
-     * @type {boolean}
-     * @memberof SyncSessionSchema
-     */
-    isActive?: boolean;
-    /**
-     * 
+     * Session ID
      * @type {number}
      * @memberof SyncSessionSchema
      */
     id: number;
     /**
-     * 
-     * @type {Date}
+     * ID of the game instance
+     * @type {number}
      * @memberof SyncSessionSchema
      */
-    startedAt: Date;
+    instance_id: number;
     /**
-     * 
+     * Whether the session is active
+     * @type {boolean}
+     * @memberof SyncSessionSchema
+     */
+    is_active?: boolean;
+    /**
+     * Session start timestamp
      * @type {Date}
      * @memberof SyncSessionSchema
      */
-    endedAt?: Date | null;
+    start_time: Date;
 }
 
 /**
  * Check if a given object implements the SyncSessionSchema interface.
  */
 export function instanceOfSyncSessionSchema(value: object): value is SyncSessionSchema {
-    if (!('instanceId' in value) || value['instanceId'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('startedAt' in value) || value['startedAt'] === undefined) return false;
+    if (!('instance_id' in value) || value['instance_id'] === undefined) return false;
+    if (!('start_time' in value) || value['start_time'] === undefined) return false;
     return true;
 }
 
@@ -71,11 +71,11 @@ export function SyncSessionSchemaFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'instanceId': json['instance_id'],
-        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'end_time': json['end_time'] == null ? undefined : (new Date(json['end_time'])),
         'id': json['id'],
-        'startedAt': (new Date(json['started_at'])),
-        'endedAt': json['ended_at'] == null ? undefined : (new Date(json['ended_at'])),
+        'instance_id': json['instance_id'],
+        'is_active': json['is_active'] == null ? undefined : json['is_active'],
+        'start_time': (new Date(json['start_time'])),
     };
 }
 
@@ -90,11 +90,11 @@ export function SyncSessionSchemaToJSONTyped(value?: SyncSessionSchema | null, i
 
     return {
         
-        'instance_id': value['instanceId'],
-        'is_active': value['isActive'],
+        'end_time': value['end_time'] == null ? value['end_time'] : value['end_time'].toISOString(),
         'id': value['id'],
-        'started_at': value['startedAt'].toISOString(),
-        'ended_at': value['endedAt'] == null ? value['endedAt'] : value['endedAt'].toISOString(),
+        'instance_id': value['instance_id'],
+        'is_active': value['is_active'],
+        'start_time': value['start_time'].toISOString(),
     };
 }
 

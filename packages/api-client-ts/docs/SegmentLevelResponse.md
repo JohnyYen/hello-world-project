@@ -7,12 +7,12 @@ Esquema para la respuesta de un segmento de nivel
 
 Name | Type
 ------------ | -------------
-`id` | number
-`levelNumberId` | number
 `_configuration` | object
-`createdAt` | Date
-`updatedAt` | Date
-`isDeleted` | boolean
+`created_at` | Date
+`id` | number
+`is_deleted` | boolean
+`level_number_id` | number
+`updated_at` | Date
 
 ## Example
 
@@ -21,12 +21,12 @@ import type { SegmentLevelResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
-  "levelNumberId": null,
   "_configuration": null,
-  "createdAt": null,
-  "updatedAt": null,
-  "isDeleted": null,
+  "created_at": null,
+  "id": null,
+  "is_deleted": null,
+  "level_number_id": null,
+  "updated_at": null,
 } satisfies SegmentLevelResponse
 
 console.log(example)

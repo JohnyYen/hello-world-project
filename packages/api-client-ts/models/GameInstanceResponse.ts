@@ -21,22 +21,34 @@ import { mapValues } from '../runtime';
 export interface GameInstanceResponse {
     /**
      * 
+     * @type {Date}
+     * @memberof GameInstanceResponse
+     */
+    created_at: Date;
+    /**
+     * 
+     * @type {number}
+     * @memberof GameInstanceResponse
+     */
+    game_id: number;
+    /**
+     * 
      * @type {number}
      * @memberof GameInstanceResponse
      */
     id: number;
     /**
      * 
-     * @type {number}
+     * @type {boolean}
      * @memberof GameInstanceResponse
      */
-    gameId: number;
+    is_deleted?: boolean;
     /**
      * 
-     * @type {number}
+     * @type {Date}
      * @memberof GameInstanceResponse
      */
-    studentId: number;
+    start_instance: Date;
     /**
      * 
      * @type {string}
@@ -45,40 +57,28 @@ export interface GameInstanceResponse {
     status: string;
     /**
      * 
-     * @type {Date}
+     * @type {number}
      * @memberof GameInstanceResponse
      */
-    startInstance: Date;
+    student_id: number;
     /**
      * 
      * @type {Date}
      * @memberof GameInstanceResponse
      */
-    createdAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof GameInstanceResponse
-     */
-    updatedAt?: Date | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof GameInstanceResponse
-     */
-    isDeleted?: boolean;
+    updated_at?: Date | null;
 }
 
 /**
  * Check if a given object implements the GameInstanceResponse interface.
  */
 export function instanceOfGameInstanceResponse(value: object): value is GameInstanceResponse {
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
+    if (!('game_id' in value) || value['game_id'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('gameId' in value) || value['gameId'] === undefined) return false;
-    if (!('studentId' in value) || value['studentId'] === undefined) return false;
+    if (!('start_instance' in value) || value['start_instance'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
-    if (!('startInstance' in value) || value['startInstance'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('student_id' in value) || value['student_id'] === undefined) return false;
     return true;
 }
 
@@ -92,14 +92,14 @@ export function GameInstanceResponseFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
+        'created_at': (new Date(json['created_at'])),
+        'game_id': json['game_id'],
         'id': json['id'],
-        'gameId': json['game_id'],
-        'studentId': json['student_id'],
+        'is_deleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'start_instance': (new Date(json['start_instance'])),
         'status': json['status'],
-        'startInstance': (new Date(json['start_instance'])),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
-        'isDeleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'student_id': json['student_id'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
     };
 }
 
@@ -114,14 +114,14 @@ export function GameInstanceResponseToJSONTyped(value?: GameInstanceResponse | n
 
     return {
         
+        'created_at': value['created_at'].toISOString(),
+        'game_id': value['game_id'],
         'id': value['id'],
-        'game_id': value['gameId'],
-        'student_id': value['studentId'],
+        'is_deleted': value['is_deleted'],
+        'start_instance': value['start_instance'].toISOString(),
         'status': value['status'],
-        'start_instance': value['startInstance'].toISOString(),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
-        'is_deleted': value['isDeleted'],
+        'student_id': value['student_id'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
     };
 }
 

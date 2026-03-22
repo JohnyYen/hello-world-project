@@ -27,7 +27,11 @@ import type { SyncLmsDataApiV1UsersLmsSyncUserIdPostRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new LMSIntegrationApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new LMSIntegrationApi(config);
 
   const body = {
     // number
@@ -59,7 +63,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 

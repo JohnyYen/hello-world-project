@@ -21,22 +21,40 @@ import { mapValues } from '../runtime';
 export interface GameInstanceDetailResponse {
     /**
      * 
+     * @type {Date}
+     * @memberof GameInstanceDetailResponse
+     */
+    created_at: Date;
+    /**
+     * 
+     * @type {number}
+     * @memberof GameInstanceDetailResponse
+     */
+    game_id: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameInstanceDetailResponse
+     */
+    game_title?: string | null;
+    /**
+     * 
      * @type {number}
      * @memberof GameInstanceDetailResponse
      */
     id: number;
     /**
      * 
-     * @type {number}
+     * @type {boolean}
      * @memberof GameInstanceDetailResponse
      */
-    gameId: number;
+    is_deleted?: boolean;
     /**
      * 
-     * @type {number}
+     * @type {Date}
      * @memberof GameInstanceDetailResponse
      */
-    studentId: number;
+    start_instance: Date;
     /**
      * 
      * @type {string}
@@ -45,52 +63,34 @@ export interface GameInstanceDetailResponse {
     status: string;
     /**
      * 
-     * @type {Date}
+     * @type {number}
      * @memberof GameInstanceDetailResponse
      */
-    startInstance: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof GameInstanceDetailResponse
-     */
-    createdAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof GameInstanceDetailResponse
-     */
-    updatedAt?: Date | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof GameInstanceDetailResponse
-     */
-    isDeleted?: boolean;
+    student_id: number;
     /**
      * 
      * @type {string}
      * @memberof GameInstanceDetailResponse
      */
-    gameTitle?: string | null;
+    student_username?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof GameInstanceDetailResponse
      */
-    studentUsername?: string | null;
+    updated_at?: Date | null;
 }
 
 /**
  * Check if a given object implements the GameInstanceDetailResponse interface.
  */
 export function instanceOfGameInstanceDetailResponse(value: object): value is GameInstanceDetailResponse {
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
+    if (!('game_id' in value) || value['game_id'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('gameId' in value) || value['gameId'] === undefined) return false;
-    if (!('studentId' in value) || value['studentId'] === undefined) return false;
+    if (!('start_instance' in value) || value['start_instance'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
-    if (!('startInstance' in value) || value['startInstance'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('student_id' in value) || value['student_id'] === undefined) return false;
     return true;
 }
 
@@ -104,16 +104,16 @@ export function GameInstanceDetailResponseFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
+        'created_at': (new Date(json['created_at'])),
+        'game_id': json['game_id'],
+        'game_title': json['game_title'] == null ? undefined : json['game_title'],
         'id': json['id'],
-        'gameId': json['game_id'],
-        'studentId': json['student_id'],
+        'is_deleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'start_instance': (new Date(json['start_instance'])),
         'status': json['status'],
-        'startInstance': (new Date(json['start_instance'])),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
-        'isDeleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
-        'gameTitle': json['game_title'] == null ? undefined : json['game_title'],
-        'studentUsername': json['student_username'] == null ? undefined : json['student_username'],
+        'student_id': json['student_id'],
+        'student_username': json['student_username'] == null ? undefined : json['student_username'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
     };
 }
 
@@ -128,16 +128,16 @@ export function GameInstanceDetailResponseToJSONTyped(value?: GameInstanceDetail
 
     return {
         
+        'created_at': value['created_at'].toISOString(),
+        'game_id': value['game_id'],
+        'game_title': value['game_title'],
         'id': value['id'],
-        'game_id': value['gameId'],
-        'student_id': value['studentId'],
+        'is_deleted': value['is_deleted'],
+        'start_instance': value['start_instance'].toISOString(),
         'status': value['status'],
-        'start_instance': value['startInstance'].toISOString(),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
-        'is_deleted': value['isDeleted'],
-        'game_title': value['gameTitle'],
-        'student_username': value['studentUsername'],
+        'student_id': value['student_id'],
+        'student_username': value['student_username'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
     };
 }
 

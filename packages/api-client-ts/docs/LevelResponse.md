@@ -7,15 +7,15 @@ Esquema para respuesta de nivel
 
 Name | Type
 ------------ | -------------
-`levelNumber` | number
-`title` | string
+`created_at` | Date
 `description` | string
+`game_id` | number
 `goal` | string
 `id` | number
-`gameId` | number
-`createdAt` | Date
-`updatedAt` | Date
-`isDeleted` | boolean
+`is_deleted` | boolean
+`level_number` | number
+`title` | string
+`updated_at` | Date
 
 ## Example
 
@@ -24,15 +24,15 @@ import type { LevelResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "levelNumber": null,
-  "title": null,
+  "created_at": null,
   "description": null,
+  "game_id": null,
   "goal": null,
   "id": null,
-  "gameId": null,
-  "createdAt": null,
-  "updatedAt": null,
-  "isDeleted": null,
+  "is_deleted": null,
+  "level_number": null,
+  "title": null,
+  "updated_at": null,
 } satisfies LevelResponse
 
 console.log(example)

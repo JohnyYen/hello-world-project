@@ -7,10 +7,10 @@ Respuesta para listado de usuarios
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [Array&lt;UserResponse&gt;](UserResponse.md)
 `error` | [](.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -19,10 +19,10 @@ import type { UserListResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
   "error": null,
+  "message": null,
+  "success": null,
 } satisfies UserListResponse
 
 console.log(example)

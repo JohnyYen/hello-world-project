@@ -21,16 +21,10 @@ import { mapValues } from '../runtime';
 export interface StudentResponse {
     /**
      * 
-     * @type {number}
+     * @type {Date}
      * @memberof StudentResponse
      */
-    id: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof StudentResponse
-     */
-    username: string;
+    created_at?: Date | null;
     /**
      * 
      * @type {string}
@@ -39,10 +33,16 @@ export interface StudentResponse {
     email: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof StudentResponse
      */
-    name: string;
+    id: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StudentResponse
+     */
+    is_active: boolean;
     /**
      * 
      * @type {string}
@@ -51,34 +51,34 @@ export interface StudentResponse {
     lastname: string;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof StudentResponse
      */
-    isActive: boolean;
+    name: string;
     /**
      * 
      * @type {Date}
      * @memberof StudentResponse
      */
-    createdAt?: Date | null;
+    updated_at?: Date | null;
     /**
      * 
-     * @type {Date}
+     * @type {string}
      * @memberof StudentResponse
      */
-    updatedAt?: Date | null;
+    username: string;
 }
 
 /**
  * Check if a given object implements the StudentResponse interface.
  */
 export function instanceOfStudentResponse(value: object): value is StudentResponse {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('username' in value) || value['username'] === undefined) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('is_active' in value) || value['is_active'] === undefined) return false;
     if (!('lastname' in value) || value['lastname'] === undefined) return false;
-    if (!('isActive' in value) || value['isActive'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -92,14 +92,14 @@ export function StudentResponseFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'id': json['id'],
-        'username': json['username'],
+        'created_at': json['created_at'] == null ? undefined : (new Date(json['created_at'])),
         'email': json['email'],
-        'name': json['name'],
+        'id': json['id'],
+        'is_active': json['is_active'],
         'lastname': json['lastname'],
-        'isActive': json['is_active'],
-        'createdAt': json['created_at'] == null ? undefined : (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
+        'name': json['name'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
+        'username': json['username'],
     };
 }
 
@@ -114,14 +114,14 @@ export function StudentResponseToJSONTyped(value?: StudentResponse | null, ignor
 
     return {
         
-        'id': value['id'],
-        'username': value['username'],
+        'created_at': value['created_at'] == null ? value['created_at'] : value['created_at'].toISOString(),
         'email': value['email'],
-        'name': value['name'],
+        'id': value['id'],
+        'is_active': value['is_active'],
         'lastname': value['lastname'],
-        'is_active': value['isActive'],
-        'created_at': value['createdAt'] == null ? value['createdAt'] : value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
+        'name': value['name'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
+        'username': value['username'],
     };
 }
 

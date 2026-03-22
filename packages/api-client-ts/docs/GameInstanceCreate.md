@@ -7,9 +7,9 @@ Esquema para crear una nueva instancia de juego
 
 Name | Type
 ------------ | -------------
-`gameId` | number
-`studentId` | number
+`game_id` | number
 `status` | string
+`student_id` | number
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { GameInstanceCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "gameId": null,
-  "studentId": null,
+  "game_id": null,
   "status": null,
+  "student_id": null,
 } satisfies GameInstanceCreate
 
 console.log(example)

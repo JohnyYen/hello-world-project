@@ -29,6 +29,18 @@ import {
 export interface XAPIStatementListResponse {
     /**
      * 
+     * @type {number}
+     * @memberof XAPIStatementListResponse
+     */
+    limit: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof XAPIStatementListResponse
+     */
+    skip: number;
+    /**
+     * 
      * @type {Array<XAPIStatementResponse>}
      * @memberof XAPIStatementListResponse
      */
@@ -39,28 +51,16 @@ export interface XAPIStatementListResponse {
      * @memberof XAPIStatementListResponse
      */
     total: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof XAPIStatementListResponse
-     */
-    skip: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof XAPIStatementListResponse
-     */
-    limit: number;
 }
 
 /**
  * Check if a given object implements the XAPIStatementListResponse interface.
  */
 export function instanceOfXAPIStatementListResponse(value: object): value is XAPIStatementListResponse {
+    if (!('limit' in value) || value['limit'] === undefined) return false;
+    if (!('skip' in value) || value['skip'] === undefined) return false;
     if (!('statements' in value) || value['statements'] === undefined) return false;
     if (!('total' in value) || value['total'] === undefined) return false;
-    if (!('skip' in value) || value['skip'] === undefined) return false;
-    if (!('limit' in value) || value['limit'] === undefined) return false;
     return true;
 }
 
@@ -74,10 +74,10 @@ export function XAPIStatementListResponseFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
+        'limit': json['limit'],
+        'skip': json['skip'],
         'statements': ((json['statements'] as Array<any>).map(XAPIStatementResponseFromJSON)),
         'total': json['total'],
-        'skip': json['skip'],
-        'limit': json['limit'],
     };
 }
 
@@ -92,10 +92,10 @@ export function XAPIStatementListResponseToJSONTyped(value?: XAPIStatementListRe
 
     return {
         
+        'limit': value['limit'],
+        'skip': value['skip'],
         'statements': ((value['statements'] as Array<any>).map(XAPIStatementResponseToJSON)),
         'total': value['total'],
-        'skip': value['skip'],
-        'limit': value['limit'],
     };
 }
 

@@ -21,34 +21,22 @@ import { mapValues } from '../runtime';
 export interface TeacherProfileResponse {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof TeacherProfileResponse
      */
-    id: number;
+    avatar_url?: string | null;
     /**
      * 
      * @type {string}
      * @memberof TeacherProfileResponse
      */
-    username: string;
+    contact_phone?: string | null;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof TeacherProfileResponse
      */
-    name: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TeacherProfileResponse
-     */
-    lastname: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TeacherProfileResponse
-     */
-    email: string;
+    created_at?: Date | null;
     /**
      * 
      * @type {string}
@@ -60,43 +48,55 @@ export interface TeacherProfileResponse {
      * @type {string}
      * @memberof TeacherProfileResponse
      */
-    contactPhone?: string | null;
+    email: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof TeacherProfileResponse
      */
-    avatarUrl?: string | null;
+    id: number;
     /**
      * 
      * @type {boolean}
      * @memberof TeacherProfileResponse
      */
-    isActive?: boolean;
+    is_active?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherProfileResponse
+     */
+    lastname: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherProfileResponse
+     */
+    name: string;
     /**
      * 
      * @type {Date}
      * @memberof TeacherProfileResponse
      */
-    createdAt?: Date | null;
+    updated_at?: Date | null;
     /**
      * 
-     * @type {Date}
+     * @type {string}
      * @memberof TeacherProfileResponse
      */
-    updatedAt?: Date | null;
+    username: string;
 }
 
 /**
  * Check if a given object implements the TeacherProfileResponse interface.
  */
 export function instanceOfTeacherProfileResponse(value: object): value is TeacherProfileResponse {
-    if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('username' in value) || value['username'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
-    if (!('lastname' in value) || value['lastname'] === undefined) return false;
-    if (!('email' in value) || value['email'] === undefined) return false;
     if (!('department' in value) || value['department'] === undefined) return false;
+    if (!('email' in value) || value['email'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -110,17 +110,17 @@ export function TeacherProfileResponseFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'id': json['id'],
-        'username': json['username'],
-        'name': json['name'],
-        'lastname': json['lastname'],
-        'email': json['email'],
+        'avatar_url': json['avatar_url'] == null ? undefined : json['avatar_url'],
+        'contact_phone': json['contact_phone'] == null ? undefined : json['contact_phone'],
+        'created_at': json['created_at'] == null ? undefined : (new Date(json['created_at'])),
         'department': json['department'],
-        'contactPhone': json['contact_phone'] == null ? undefined : json['contact_phone'],
-        'avatarUrl': json['avatar_url'] == null ? undefined : json['avatar_url'],
-        'isActive': json['is_active'] == null ? undefined : json['is_active'],
-        'createdAt': json['created_at'] == null ? undefined : (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
+        'email': json['email'],
+        'id': json['id'],
+        'is_active': json['is_active'] == null ? undefined : json['is_active'],
+        'lastname': json['lastname'],
+        'name': json['name'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
+        'username': json['username'],
     };
 }
 
@@ -135,17 +135,17 @@ export function TeacherProfileResponseToJSONTyped(value?: TeacherProfileResponse
 
     return {
         
-        'id': value['id'],
-        'username': value['username'],
-        'name': value['name'],
-        'lastname': value['lastname'],
-        'email': value['email'],
+        'avatar_url': value['avatar_url'],
+        'contact_phone': value['contact_phone'],
+        'created_at': value['created_at'] == null ? value['created_at'] : value['created_at'].toISOString(),
         'department': value['department'],
-        'contact_phone': value['contactPhone'],
-        'avatar_url': value['avatarUrl'],
-        'is_active': value['isActive'],
-        'created_at': value['createdAt'] == null ? value['createdAt'] : value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
+        'email': value['email'],
+        'id': value['id'],
+        'is_active': value['is_active'],
+        'lastname': value['lastname'],
+        'name': value['name'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
+        'username': value['username'],
     };
 }
 

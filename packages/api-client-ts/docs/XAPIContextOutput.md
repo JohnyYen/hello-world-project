@@ -7,13 +7,13 @@ xAPI Context - Additional context information.
 
 Name | Type
 ------------ | -------------
-`registration` | string
-`platform` | string
-`language` | string
-`instructor` | [XAPIActor](XAPIActor.md)
-`team` | [XAPIActor](XAPIActor.md)
-`contextActivities` | object
+`context_activities` | object
 `extensions` | object
+`instructor` | [XAPIActor](XAPIActor.md)
+`language` | string
+`platform` | string
+`registration` | string
+`team` | [XAPIActor](XAPIActor.md)
 
 ## Example
 
@@ -22,13 +22,13 @@ import type { XAPIContextOutput } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "registration": null,
-  "platform": null,
-  "language": null,
-  "instructor": null,
-  "team": null,
-  "contextActivities": null,
+  "context_activities": null,
   "extensions": null,
+  "instructor": null,
+  "language": null,
+  "platform": null,
+  "registration": null,
+  "team": null,
 } satisfies XAPIContextOutput
 
 console.log(example)

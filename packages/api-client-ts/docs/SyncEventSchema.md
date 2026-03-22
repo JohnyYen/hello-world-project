@@ -6,12 +6,12 @@
 
 Name | Type
 ------------ | -------------
-`syncSessionId` | number
-`eventType` | string
-`payload` | object
+`event_type` | string
 `id` | number
-`timestamp` | Date
+`payload` | object
 `status` | string
+`sync_session_id` | number
+`timestamp` | Date
 
 ## Example
 
@@ -20,12 +20,12 @@ import type { SyncEventSchema } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "syncSessionId": null,
-  "eventType": null,
-  "payload": null,
+  "event_type": null,
   "id": null,
-  "timestamp": null,
+  "payload": null,
   "status": null,
+  "sync_session_id": null,
+  "timestamp": null,
 } satisfies SyncEventSchema
 
 console.log(example)

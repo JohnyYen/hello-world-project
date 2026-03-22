@@ -7,16 +7,16 @@ Esquema para respuesta detallada de nivel con segmentos
 
 Name | Type
 ------------ | -------------
-`levelNumber` | number
-`title` | string
+`created_at` | Date
 `description` | string
+`game_id` | number
 `goal` | string
 `id` | number
-`gameId` | number
-`createdAt` | Date
-`updatedAt` | Date
-`isDeleted` | boolean
-`segmentsCount` | number
+`is_deleted` | boolean
+`level_number` | number
+`segments_count` | number
+`title` | string
+`updated_at` | Date
 
 ## Example
 
@@ -25,16 +25,16 @@ import type { LevelDetailResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "levelNumber": null,
-  "title": null,
+  "created_at": null,
   "description": null,
+  "game_id": null,
   "goal": null,
   "id": null,
-  "gameId": null,
-  "createdAt": null,
-  "updatedAt": null,
-  "isDeleted": null,
-  "segmentsCount": null,
+  "is_deleted": null,
+  "level_number": null,
+  "segments_count": null,
+  "title": null,
+  "updated_at": null,
 } satisfies LevelDetailResponse
 
 console.log(example)

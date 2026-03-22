@@ -24,31 +24,31 @@ export interface SyncResultResponse {
      * @type {string}
      * @memberof SyncResultResponse
      */
-    status?: string;
+    message: string;
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof SyncResultResponse
      */
-    message: string;
+    next_sync_scheduled?: Date | null;
     /**
      * 
      * @type {{ [key: string]: number; }}
      * @memberof SyncResultResponse
      */
-    recordsSynced: { [key: string]: number; };
+    records_synced: { [key: string]: number; };
+    /**
+     * 
+     * @type {string}
+     * @memberof SyncResultResponse
+     */
+    status?: string;
     /**
      * 
      * @type {Date}
      * @memberof SyncResultResponse
      */
-    syncTime: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof SyncResultResponse
-     */
-    nextSyncScheduled?: Date | null;
+    sync_time: Date;
 }
 
 /**
@@ -56,8 +56,8 @@ export interface SyncResultResponse {
  */
 export function instanceOfSyncResultResponse(value: object): value is SyncResultResponse {
     if (!('message' in value) || value['message'] === undefined) return false;
-    if (!('recordsSynced' in value) || value['recordsSynced'] === undefined) return false;
-    if (!('syncTime' in value) || value['syncTime'] === undefined) return false;
+    if (!('records_synced' in value) || value['records_synced'] === undefined) return false;
+    if (!('sync_time' in value) || value['sync_time'] === undefined) return false;
     return true;
 }
 
@@ -71,11 +71,11 @@ export function SyncResultResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'status': json['status'] == null ? undefined : json['status'],
         'message': json['message'],
-        'recordsSynced': json['records_synced'],
-        'syncTime': (new Date(json['sync_time'])),
-        'nextSyncScheduled': json['next_sync_scheduled'] == null ? undefined : (new Date(json['next_sync_scheduled'])),
+        'next_sync_scheduled': json['next_sync_scheduled'] == null ? undefined : (new Date(json['next_sync_scheduled'])),
+        'records_synced': json['records_synced'],
+        'status': json['status'] == null ? undefined : json['status'],
+        'sync_time': (new Date(json['sync_time'])),
     };
 }
 
@@ -90,11 +90,11 @@ export function SyncResultResponseToJSONTyped(value?: SyncResultResponse | null,
 
     return {
         
-        'status': value['status'],
         'message': value['message'],
-        'records_synced': value['recordsSynced'],
-        'sync_time': value['syncTime'].toISOString(),
-        'next_sync_scheduled': value['nextSyncScheduled'] == null ? value['nextSyncScheduled'] : value['nextSyncScheduled'].toISOString(),
+        'next_sync_scheduled': value['next_sync_scheduled'] == null ? value['next_sync_scheduled'] : value['next_sync_scheduled'].toISOString(),
+        'records_synced': value['records_synced'],
+        'status': value['status'],
+        'sync_time': value['sync_time'].toISOString(),
     };
 }
 

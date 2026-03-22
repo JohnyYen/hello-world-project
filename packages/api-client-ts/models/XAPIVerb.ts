@@ -20,17 +20,17 @@ import { mapValues } from '../runtime';
  */
 export interface XAPIVerb {
     /**
-     * IRI of the verb
-     * @type {string}
-     * @memberof XAPIVerb
-     */
-    id: string;
-    /**
      * 
      * @type {{ [key: string]: string; }}
      * @memberof XAPIVerb
      */
     display?: { [key: string]: string; } | null;
+    /**
+     * IRI of the verb
+     * @type {string}
+     * @memberof XAPIVerb
+     */
+    id: string;
 }
 
 /**
@@ -51,8 +51,8 @@ export function XAPIVerbFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
     }
     return {
         
-        'id': json['id'],
         'display': json['display'] == null ? undefined : json['display'],
+        'id': json['id'],
     };
 }
 
@@ -67,8 +67,8 @@ export function XAPIVerbToJSONTyped(value?: XAPIVerb | null, ignoreDiscriminator
 
     return {
         
-        'id': value['id'],
         'display': value['display'],
+        'id': value['id'],
     };
 }
 

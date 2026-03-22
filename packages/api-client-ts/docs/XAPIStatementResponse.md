@@ -7,14 +7,14 @@ xAPI Statement response after storage.
 
 Name | Type
 ------------ | -------------
-`id` | string
 `actor` | [XAPIActor](XAPIActor.md)
-`verb` | [XAPIVerb](XAPIVerb.md)
+`context` | [XAPIContextOutput](XAPIContextOutput.md)
+`id` | string
 `object` | [XAPIActivity](XAPIActivity.md)
 `result` | [XAPIResult](XAPIResult.md)
-`context` | [XAPIContextOutput](XAPIContextOutput.md)
-`timestamp` | Date
 `stored` | Date
+`timestamp` | Date
+`verb` | [XAPIVerb](XAPIVerb.md)
 
 ## Example
 
@@ -23,14 +23,14 @@ import type { XAPIStatementResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
   "actor": null,
-  "verb": null,
+  "context": null,
+  "id": null,
   "object": null,
   "result": null,
-  "context": null,
-  "timestamp": null,
   "stored": null,
+  "timestamp": null,
+  "verb": null,
 } satisfies XAPIStatementResponse
 
 console.log(example)

@@ -7,11 +7,11 @@ Esquema para creación de usuario.  Note: El role_id NO se incluye en el registr
 
 Name | Type
 ------------ | -------------
-`username` | string
 `email` | string
-`name` | string
 `lastname` | string
+`name` | string
 `password` | string
+`username` | string
 
 ## Example
 
@@ -20,11 +20,11 @@ import type { UserCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "username": usuario,
   "email": usuario@example.com,
-  "name": John,
   "lastname": null,
+  "name": John,
   "password": Password123!,
+  "username": usuario,
 } satisfies UserCreate
 
 console.log(example)

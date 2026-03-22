@@ -28,6 +28,12 @@ import {
  */
 export interface XAPIActivity {
     /**
+     * 
+     * @type {XAPIActivityDefinition}
+     * @memberof XAPIActivity
+     */
+    definition?: XAPIActivityDefinition | null;
+    /**
      * IRI of the activity
      * @type {string}
      * @memberof XAPIActivity
@@ -38,13 +44,7 @@ export interface XAPIActivity {
      * @type {string}
      * @memberof XAPIActivity
      */
-    objectType?: string | null;
-    /**
-     * 
-     * @type {XAPIActivityDefinition}
-     * @memberof XAPIActivity
-     */
-    definition?: XAPIActivityDefinition | null;
+    object_type?: string | null;
 }
 
 /**
@@ -65,9 +65,9 @@ export function XAPIActivityFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'id': json['id'],
-        'objectType': json['object_type'] == null ? undefined : json['object_type'],
         'definition': json['definition'] == null ? undefined : XAPIActivityDefinitionFromJSON(json['definition']),
+        'id': json['id'],
+        'object_type': json['object_type'] == null ? undefined : json['object_type'],
     };
 }
 
@@ -82,9 +82,9 @@ export function XAPIActivityToJSONTyped(value?: XAPIActivity | null, ignoreDiscr
 
     return {
         
-        'id': value['id'],
-        'object_type': value['objectType'],
         'definition': XAPIActivityDefinitionToJSON(value['definition']),
+        'id': value['id'],
+        'object_type': value['object_type'],
     };
 }
 

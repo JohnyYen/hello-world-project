@@ -29,18 +29,6 @@ import {
 export interface StudentListResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof StudentListResponse
-     */
-    success?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof StudentListResponse
-     */
-    message?: string;
-    /**
-     * 
      * @type {Array<StudentResponse>}
      * @memberof StudentListResponse
      */
@@ -50,7 +38,19 @@ export interface StudentListResponse {
      * @type {}
      * @memberof StudentListResponse
      */
-    error?: any | null;
+    error?:  | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof StudentListResponse
+     */
+    message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StudentListResponse
+     */
+    success?: boolean;
 }
 
 /**
@@ -71,10 +71,10 @@ export function StudentListResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': ((json['data'] as Array<any>).map(StudentResponseFromJSON)),
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -89,10 +89,10 @@ export function StudentListResponseToJSONTyped(value?: StudentListResponse | nul
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': ((value['data'] as Array<any>).map(StudentResponseToJSON)),
-        'error': value['error'],
+        'error': ToJSON(value['error']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

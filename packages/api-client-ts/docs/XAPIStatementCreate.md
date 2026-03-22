@@ -7,17 +7,17 @@ xAPI Statement schema for receiving statements from game client. Supports full x
 
 Name | Type
 ------------ | -------------
-`id` | string
 `actor` | [XAPIActor](XAPIActor.md)
-`verb` | [XAPIVerb](XAPIVerb.md)
+`attachments` | Array&lt;object&gt;
+`authority` | [XAPIActor](XAPIActor.md)
+`context` | [XAPIContextInput](XAPIContextInput.md)
+`id` | string
 `object` | [XAPIActivity](XAPIActivity.md)
 `result` | [XAPIResult](XAPIResult.md)
-`context` | [XAPIContextInput](XAPIContextInput.md)
-`timestamp` | Date
 `stored` | Date
-`authority` | [XAPIActor](XAPIActor.md)
+`timestamp` | Date
+`verb` | [XAPIVerb](XAPIVerb.md)
 `version` | string
-`attachments` | Array&lt;object&gt;
 
 ## Example
 
@@ -26,17 +26,17 @@ import type { XAPIStatementCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
   "actor": null,
-  "verb": null,
+  "attachments": null,
+  "authority": null,
+  "context": null,
+  "id": null,
   "object": null,
   "result": null,
-  "context": null,
-  "timestamp": null,
   "stored": null,
-  "authority": null,
+  "timestamp": null,
+  "verb": null,
   "version": null,
-  "attachments": null,
 } satisfies XAPIStatementCreate
 
 console.log(example)

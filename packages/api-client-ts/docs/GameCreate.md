@@ -7,11 +7,11 @@ Esquema para creación de juego
 
 Name | Type
 ------------ | -------------
-`title` | string
-`description` | string
 `creator` | string
+`description` | string
+`publication_status` | string
 `subject` | string
-`publicationStatus` | string
+`title` | string
 
 ## Example
 
@@ -20,11 +20,11 @@ import type { GameCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "title": Juego de Matemáticas,
-  "description": null,
   "creator": null,
+  "description": null,
+  "publication_status": null,
   "subject": null,
-  "publicationStatus": null,
+  "title": Juego de Matemáticas,
 } satisfies GameCreate
 
 console.log(example)

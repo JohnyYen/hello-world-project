@@ -7,8 +7,8 @@ xAPI Verb - The action performed.
 
 Name | Type
 ------------ | -------------
-`id` | string
 `display` | { [key: string]: string; }
+`id` | string
 
 ## Example
 
@@ -17,8 +17,8 @@ import type { XAPIVerb } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
   "display": null,
+  "id": null,
 } satisfies XAPIVerb
 
 console.log(example)

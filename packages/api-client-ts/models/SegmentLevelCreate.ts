@@ -21,16 +21,16 @@ import { mapValues } from '../runtime';
 export interface SegmentLevelCreate {
     /**
      * 
-     * @type {number}
-     * @memberof SegmentLevelCreate
-     */
-    levelId?: number | null;
-    /**
-     * 
      * @type {object}
      * @memberof SegmentLevelCreate
      */
     _configuration?: object | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SegmentLevelCreate
+     */
+    level_id?: number | null;
 }
 
 /**
@@ -50,8 +50,8 @@ export function SegmentLevelCreateFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'levelId': json['level_id'] == null ? undefined : json['level_id'],
         '_configuration': json['configuration'] == null ? undefined : json['configuration'],
+        'level_id': json['level_id'] == null ? undefined : json['level_id'],
     };
 }
 
@@ -66,8 +66,8 @@ export function SegmentLevelCreateToJSONTyped(value?: SegmentLevelCreate | null,
 
     return {
         
-        'level_id': value['levelId'],
         'configuration': value['_configuration'],
+        'level_id': value['level_id'],
     };
 }
 

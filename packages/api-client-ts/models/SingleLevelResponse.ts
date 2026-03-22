@@ -29,10 +29,10 @@ import {
 export interface SingleLevelResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {LevelDetailResponse}
      * @memberof SingleLevelResponse
      */
-    success?: boolean;
+    data?: LevelDetailResponse | null;
     /**
      * 
      * @type {string}
@@ -41,10 +41,10 @@ export interface SingleLevelResponse {
     message?: string;
     /**
      * 
-     * @type {LevelDetailResponse}
+     * @type {boolean}
      * @memberof SingleLevelResponse
      */
-    data?: LevelDetailResponse | null;
+    success?: boolean;
 }
 
 /**
@@ -64,9 +64,9 @@ export function SingleLevelResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : LevelDetailResponseFromJSON(json['data']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -81,9 +81,9 @@ export function SingleLevelResponseToJSONTyped(value?: SingleLevelResponse | nul
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': LevelDetailResponseToJSON(value['data']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

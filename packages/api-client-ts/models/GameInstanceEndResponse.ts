@@ -29,10 +29,10 @@ import {
 export interface GameInstanceEndResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {GameInstanceResponse}
      * @memberof GameInstanceEndResponse
      */
-    success?: boolean;
+    data: GameInstanceResponse;
     /**
      * 
      * @type {string}
@@ -41,10 +41,10 @@ export interface GameInstanceEndResponse {
     message?: string;
     /**
      * 
-     * @type {GameInstanceResponse}
+     * @type {boolean}
      * @memberof GameInstanceEndResponse
      */
-    data: GameInstanceResponse;
+    success?: boolean;
 }
 
 /**
@@ -65,9 +65,9 @@ export function GameInstanceEndResponseFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': GameInstanceResponseFromJSON(json['data']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -82,9 +82,9 @@ export function GameInstanceEndResponseToJSONTyped(value?: GameInstanceEndRespon
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': GameInstanceResponseToJSON(value['data']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

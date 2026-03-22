@@ -21,18 +21,6 @@ import { mapValues } from '../runtime';
 export interface SegmentLevelResponse {
     /**
      * 
-     * @type {number}
-     * @memberof SegmentLevelResponse
-     */
-    id: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof SegmentLevelResponse
-     */
-    levelNumberId: number;
-    /**
-     * 
      * @type {object}
      * @memberof SegmentLevelResponse
      */
@@ -42,28 +30,40 @@ export interface SegmentLevelResponse {
      * @type {Date}
      * @memberof SegmentLevelResponse
      */
-    createdAt: Date;
+    created_at: Date;
     /**
      * 
-     * @type {Date}
+     * @type {number}
      * @memberof SegmentLevelResponse
      */
-    updatedAt?: Date | null;
+    id: number;
     /**
      * 
      * @type {boolean}
      * @memberof SegmentLevelResponse
      */
-    isDeleted?: boolean;
+    is_deleted?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof SegmentLevelResponse
+     */
+    level_number_id: number;
+    /**
+     * 
+     * @type {Date}
+     * @memberof SegmentLevelResponse
+     */
+    updated_at?: Date | null;
 }
 
 /**
  * Check if a given object implements the SegmentLevelResponse interface.
  */
 export function instanceOfSegmentLevelResponse(value: object): value is SegmentLevelResponse {
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('levelNumberId' in value) || value['levelNumberId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('level_number_id' in value) || value['level_number_id'] === undefined) return false;
     return true;
 }
 
@@ -77,12 +77,12 @@ export function SegmentLevelResponseFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'id': json['id'],
-        'levelNumberId': json['level_number_id'],
         '_configuration': json['configuration'] == null ? undefined : json['configuration'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
-        'isDeleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'created_at': (new Date(json['created_at'])),
+        'id': json['id'],
+        'is_deleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'level_number_id': json['level_number_id'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
     };
 }
 
@@ -97,12 +97,12 @@ export function SegmentLevelResponseToJSONTyped(value?: SegmentLevelResponse | n
 
     return {
         
-        'id': value['id'],
-        'level_number_id': value['levelNumberId'],
         'configuration': value['_configuration'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
-        'is_deleted': value['isDeleted'],
+        'created_at': value['created_at'].toISOString(),
+        'id': value['id'],
+        'is_deleted': value['is_deleted'],
+        'level_number_id': value['level_number_id'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
     };
 }
 

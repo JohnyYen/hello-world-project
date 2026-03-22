@@ -7,15 +7,15 @@ Schema for LMS credential response (password masked).
 
 Name | Type
 ------------ | -------------
+`access_token` | string
+`created_at` | Date
+`expire_at` | Date
 `id` | number
-`userId` | number
-`lmsUrl` | string
-`lmsEmail` | string
-`lmsProvider` | string
-`accessToken` | string
-`expireAt` | Date
-`createdAt` | Date
-`updatedAt` | Date
+`lms_email` | string
+`lms_provider` | string
+`lms_url` | string
+`updated_at` | Date
+`user_id` | number
 
 ## Example
 
@@ -24,15 +24,15 @@ import type { LMSCredentialResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
+  "access_token": null,
+  "created_at": null,
+  "expire_at": null,
   "id": null,
-  "userId": null,
-  "lmsUrl": null,
-  "lmsEmail": null,
-  "lmsProvider": null,
-  "accessToken": null,
-  "expireAt": null,
-  "createdAt": null,
-  "updatedAt": null,
+  "lms_email": null,
+  "lms_provider": null,
+  "lms_url": null,
+  "updated_at": null,
+  "user_id": null,
 } satisfies LMSCredentialResponse
 
 console.log(example)

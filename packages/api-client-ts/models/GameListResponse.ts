@@ -29,18 +29,6 @@ import {
 export interface GameListResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof GameListResponse
-     */
-    success?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof GameListResponse
-     */
-    message?: string;
-    /**
-     * 
      * @type {Array<GameResponse>}
      * @memberof GameListResponse
      */
@@ -50,7 +38,13 @@ export interface GameListResponse {
      * @type {number}
      * @memberof GameListResponse
      */
-    total?: number;
+    limit?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameListResponse
+     */
+    message?: string;
     /**
      * 
      * @type {number}
@@ -59,10 +53,16 @@ export interface GameListResponse {
     skip?: number;
     /**
      * 
+     * @type {boolean}
+     * @memberof GameListResponse
+     */
+    success?: boolean;
+    /**
+     * 
      * @type {number}
      * @memberof GameListResponse
      */
-    limit?: number;
+    total?: number;
 }
 
 /**
@@ -82,12 +82,12 @@ export function GameListResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : ((json['data'] as Array<any>).map(GameResponseFromJSON)),
-        'total': json['total'] == null ? undefined : json['total'],
-        'skip': json['skip'] == null ? undefined : json['skip'],
         'limit': json['limit'] == null ? undefined : json['limit'],
+        'message': json['message'] == null ? undefined : json['message'],
+        'skip': json['skip'] == null ? undefined : json['skip'],
+        'success': json['success'] == null ? undefined : json['success'],
+        'total': json['total'] == null ? undefined : json['total'],
     };
 }
 
@@ -102,12 +102,12 @@ export function GameListResponseToJSONTyped(value?: GameListResponse | null, ign
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': value['data'] == null ? undefined : ((value['data'] as Array<any>).map(GameResponseToJSON)),
-        'total': value['total'],
-        'skip': value['skip'],
         'limit': value['limit'],
+        'message': value['message'],
+        'skip': value['skip'],
+        'success': value['success'],
+        'total': value['total'],
     };
 }
 
