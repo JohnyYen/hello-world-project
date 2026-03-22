@@ -70,12 +70,24 @@ class GetTeacherSettingsUseCase:
                 detail="No existen configuraciones de profesor para este usuario",
             )
 
-        # Construir respuesta
+        # Construir respuesta con todos los campos
         settings_data = TeacherSettingsResponse(
             theme=settings.theme,
             notifications_enabled=settings.notifications_enabled,
             notification_frequency=settings.notification_frequency,
             interface_language=settings.interface_language,
+            # Session settings
+            auto_logout=settings.auto_logout,
+            session_duration_minutes=settings.session_duration_minutes,
+            remember_login=settings.remember_login,
+            # Appearance settings
+            color_theme=settings.color_theme,
+            animations_enabled=settings.animations_enabled,
+            # Notification settings (extended)
+            email_notifications=settings.email_notifications,
+            # Language settings (extended)
+            date_format=settings.date_format,
+            timezone=settings.timezone,
         )
 
         return TeacherSettingsResponseSchema(

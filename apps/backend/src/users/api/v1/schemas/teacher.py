@@ -46,6 +46,7 @@ class TeacherProfileResponse(BaseModel):
 class TeacherSettingsUpdate(BaseModel):
     """Esquema para actualización de configuraciones de profesor"""
 
+    # Original fields
     theme: Optional[str] = Field(
         None, example="dark", description="Tema de la interfaz: light o dark"
     )
@@ -54,21 +55,71 @@ class TeacherSettingsUpdate(BaseModel):
     )
     notification_frequency: Optional[str] = Field(
         None,
-        example="instant",
-        description="Frecuencia de notificaciones: instant, daily, weekly",
+        example="realtime",
+        description="Frecuencia de notificaciones: realtime, daily, weekly, disabled",
     )
     interface_language: Optional[str] = Field(
         None, example="es", description="Idioma de la interfaz"
+    )
+    # Session settings
+    auto_logout: Optional[bool] = Field(
+        None, example=False, description="Cerrar sesión automáticamente por inactividad"
+    )
+    session_duration_minutes: Optional[int] = Field(
+        None,
+        ge=0,
+        example=60,
+        description="Duración de la sesión en minutos (0 = permanente)",
+    )
+    remember_login: Optional[bool] = Field(
+        None, example=True, description="Recordar inicio de sesión en este dispositivo"
+    )
+    # Appearance settings
+    color_theme: Optional[str] = Field(
+        None,
+        example="Indigo",
+        description="Tema de color: Indigo, Violeta, Esmeralda, Azul, Rosa, Naranja",
+    )
+    animations_enabled: Optional[bool] = Field(
+        None, example=True, description="Habilitar animaciones y transiciones"
+    )
+    # Notification settings (extended)
+    email_notifications: Optional[bool] = Field(
+        None, example=False, description="Recibir notificaciones por email"
+    )
+    # Language settings (extended)
+    date_format: Optional[str] = Field(
+        None,
+        example="ddmmyyyy",
+        description="Formato de fecha: ddmmyyyy, mmddyyyy, yyyymmdd",
+    )
+    timezone: Optional[str] = Field(
+        None,
+        example="gmt-5",
+        description="Zona horaria: gmt-5, gmt-6, gmt-3, gmt0, gmt1",
     )
 
 
 class TeacherSettingsResponse(BaseModel):
     """Esquema para respuesta de configuraciones de profesor"""
 
+    # Original fields
     theme: str = "light"
     notifications_enabled: bool = True
-    notification_frequency: str = "instant"
+    notification_frequency: str = "realtime"
     interface_language: str = "es"
+    # Session settings
+    auto_logout: Optional[bool] = None
+    session_duration_minutes: Optional[int] = None
+    remember_login: Optional[bool] = None
+    # Appearance settings
+    color_theme: Optional[str] = None
+    animations_enabled: Optional[bool] = None
+    # Notification settings (extended)
+    email_notifications: Optional[bool] = None
+    # Language settings (extended)
+    date_format: Optional[str] = None
+    timezone: Optional[str] = None
 
     class Config:
         from_attributes = True

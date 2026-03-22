@@ -85,7 +85,7 @@ class UpdateTeacherSettingsUseCase:
                 detail="No existen configuraciones de profesor para este usuario",
             )
 
-        # Actualizar campos
+        # Actualizar campos (solo los que se proporcionan)
         update_data = {}
         if settings_data.theme is not None:
             update_data["theme"] = settings_data.theme
@@ -95,18 +95,52 @@ class UpdateTeacherSettingsUseCase:
             update_data["notification_frequency"] = settings_data.notification_frequency
         if settings_data.interface_language is not None:
             update_data["interface_language"] = settings_data.interface_language
+        # Session settings
+        if settings_data.auto_logout is not None:
+            update_data["auto_logout"] = settings_data.auto_logout
+        if settings_data.session_duration_minutes is not None:
+            update_data["session_duration_minutes"] = (
+                settings_data.session_duration_minutes
+            )
+        if settings_data.remember_login is not None:
+            update_data["remember_login"] = settings_data.remember_login
+        # Appearance settings
+        if settings_data.color_theme is not None:
+            update_data["color_theme"] = settings_data.color_theme
+        if settings_data.animations_enabled is not None:
+            update_data["animations_enabled"] = settings_data.animations_enabled
+        # Notification settings (extended)
+        if settings_data.email_notifications is not None:
+            update_data["email_notifications"] = settings_data.email_notifications
+        # Language settings (extended)
+        if settings_data.date_format is not None:
+            update_data["date_format"] = settings_data.date_format
+        if settings_data.timezone is not None:
+            update_data["timezone"] = settings_data.timezone
 
         if update_data:
             await self.settings_repo.update(settings.id, update_data)
             # Refrescar para obtener valores actualizados
             settings = await self.settings_repo.get_by_id(settings.id)
 
-        # Construir respuesta
+        # Construir respuesta con todos los campos
         settings_response = TeacherSettingsResponse(
             theme=settings.theme,
             notifications_enabled=settings.notifications_enabled,
             notification_frequency=settings.notification_frequency,
             interface_language=settings.interface_language,
+            # Session settings
+            auto_logout=settings.auto_logout,
+            session_duration_minutes=settings.session_duration_minutes,
+            remember_login=settings.remember_login,
+            # Appearance settings
+            color_theme=settings.color_theme,
+            animations_enabled=settings.animations_enabled,
+            # Notification settings (extended)
+            email_notifications=settings.email_notifications,
+            # Language settings (extended)
+            date_format=settings.date_format,
+            timezone=settings.timezone,
         )
 
         return TeacherSettingsResponseSchema(
