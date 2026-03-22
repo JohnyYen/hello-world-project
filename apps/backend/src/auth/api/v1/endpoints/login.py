@@ -5,7 +5,7 @@ from src.users.api.v1.schemas.user import UserLoginResponse, UserLogin
 from src.shared.domain.exceptions import InvalidCredentialsException
 
 
-router = APIRouter(prefix="/login")
+router = APIRouter(prefix="/login", security=[])
 
 
 @router.post("", response_model=UserLoginResponse)
