@@ -181,7 +181,7 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                     <Label className="text-base font-medium">Modo Oscuro</Label>
                     <p className="text-sm text-muted-foreground">Cambiar entre tema claro y oscuro</p>
                   </div>
-                  <ThemeToggle />
+                  <ThemeToggle initialTheme={settings.theme} />
                 </div>
                 <Separator />
                 <div className="space-y-3">

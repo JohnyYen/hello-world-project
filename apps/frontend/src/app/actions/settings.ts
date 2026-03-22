@@ -75,3 +75,16 @@ export async function saveTeacherSettings(
     };
   }
 }
+
+export async function updateTheme(
+  theme: "light" | "dark"
+): Promise<{ success: boolean }> {
+  try {
+    const { updateTeacherSettings } = await import("@/services/users");
+    await updateTeacherSettings({ theme });
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving theme:", error);
+    return { success: false };
+  }
+}
