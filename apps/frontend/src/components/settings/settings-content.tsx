@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { toast } from "sonner";
 import {
   Bell,
   Globe,
@@ -16,7 +17,6 @@ import {
   Palette,
   Database,
   Save,
-  Check,
   Loader2,
 } from "lucide-react";
 import type { TeacherSettingsData } from "@/app/dashboard/settings/page";
@@ -45,7 +45,6 @@ interface SettingsContentProps {
 export function SettingsContent({ initialSettings }: SettingsContentProps) {
   const [activeSection, setActiveSection] = useState("session");
   const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
 
   // Local state for all settings
   const [settings, setSettings] = useState<TeacherSettingsFormData>({
@@ -68,20 +67,20 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
     value: TeacherSettingsFormData[K]
   ) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
-    setSaveStatus("idle");
   };
 
   const handleSave = async () => {
     setIsSaving(true);
-    setSaveStatus("idle");
 
     const result = await saveTeacherSettings(settings);
 
     setIsSaving(false);
-    setSaveStatus(result.success ? "success" : "error");
 
-    // Reset status after 3 seconds
-    setTimeout(() => setSaveStatus("idle"), 3000);
+    if (result.success) {
+      toast.success("Configuración guardada exitosamente");
+    } else {
+      toast.error(result.message || "Error al guardar la configuración");
+    }
   };
 
   const themeColors = ["Indigo", "Violeta", "Esmeralda", "Azul", "Rosa", "Naranja"];
@@ -471,28 +470,14 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
           <Button
             onClick={handleSave}
             disabled={isSaving}
-            className={`flex items-center gap-2 shadow-lg transition-all ${
-              saveStatus === "success"
-                ? "bg-green-600 hover:bg-green-700 shadow-green-500/25"
-                : saveStatus === "error"
-                ? "bg-red-600 hover:bg-red-700 shadow-red-500/25"
-                : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/25"
-            } text-white`}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
           >
             {isSaving ? (
               <Loader2 className="h-4 w-4 animate-spin" />
-            ) : saveStatus === "success" ? (
-              <Check className="h-4 w-4" />
             ) : (
               <Save className="h-4 w-4" />
             )}
-            {isSaving
-              ? "Guardando..."
-              : saveStatus === "success"
-              ? "Guardado exitosamente"
-              : saveStatus === "error"
-              ? "Error al guardar"
-              : "Guardar Cambios"}
+            {isSaving ? "Guardando..." : "Guardar Cambios"}
           </Button>
         </div>
       </div>
