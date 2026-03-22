@@ -272,13 +272,50 @@ export async function createStudentAction(
     };
     
   } catch (error: unknown) {
+    // Enhanced error logging for debugging 403 issue
     console.error("Error creating student:", error);
-    const detail = (error as { detail?: string }).detail;
+    
+    // Extract ResponseError details if available
+    let errorDetail = "Error al guardar en base de datos";
+    let errorStatus: number | null = null;
+    let errorBody: unknown = null;
+    
+    if (error && typeof error === 'object') {
+      const err = error as Record<string, unknown>;
+      
+      // Check for ResponseError from api-client-ts
+      if (err.response && typeof err.response === 'object') {
+        const response = err.response as Record<string, unknown>;
+        errorStatus = response.status as number | null;
+        errorBody = response.body;
+        
+        // Try to parse body if it's a string
+        if (typeof response.body === 'string') {
+          try {
+            errorBody = JSON.parse(response.body);
+          } catch {
+            // Keep as string if not JSON
+          }
+        }
+        
+        console.error(`Backend response: ${response.status} ${response.statusText}`, errorBody);
+      }
+      
+      // Check for detail property (common in FastAPI errors)
+      if (err.detail && typeof err.detail === 'string') {
+        errorDetail = err.detail;
+      }
+    }
+    
     const message = error instanceof Error ? error.message : "Error al crear estudiante";
+    
+    // Include status in error detail for debugging
+    const statusInfo = errorStatus ? ` [HTTP ${errorStatus}]` : '';
+    
     return {
       success: false,
       message,
-      errors: { _form: [detail || "Error al guardar en base de datos"] },
+      errors: { _form: [errorDetail + statusInfo] },
     };
   }
 }
