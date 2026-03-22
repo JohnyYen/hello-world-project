@@ -27,6 +27,17 @@ app = FastAPI(
         "url": "http://tuwebsite.com",
         "email": "jhonnyantonio892@gmail.com",
     },
+    openapi_extra={
+        "components": {
+            "securitySchemes": {
+                "BearerAuth": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT",
+                }
+            }
+        }
+    },
 )
 
 

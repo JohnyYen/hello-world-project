@@ -9,7 +9,8 @@ This module provides a central router that includes all API routers from:
 - Statistics (statistic)
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from fastapi.security import HTTPBearer
 
 # Import routers from all domains
 from src.auth.api.router import router as auth_router
@@ -19,7 +20,7 @@ from src.sync.api.v1.router import router as sync_router
 from src.statistic.api.v1.router import router as statistic_router
 
 # Create the central API router
-router = APIRouter(prefix="/api/v1")
+router = APIRouter(prefix="/api/v1", dependencies=[Depends(HTTPBearer())])
 
 # Include all domain routers
 router.include_router(auth_router)
