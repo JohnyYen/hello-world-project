@@ -20,7 +20,7 @@ from src.sync.api.v1.router import router as sync_router
 from src.statistic.api.v1.router import router as statistic_router
 
 # Create the central API router
-router = APIRouter(prefix="/api/v1", security=[{"BearerAuth": []}])
+router = APIRouter(prefix="/api/v1")
 
 # Include all domain routers
 router.include_router(auth_router)

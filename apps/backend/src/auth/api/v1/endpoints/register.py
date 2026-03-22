@@ -5,7 +5,7 @@ from src.users.api.v1.schemas.user import UserLoginResponse, UserCreate
 from src.shared.domain.exceptions import DuplicateEntryException
 
 
-router = APIRouter(prefix="/register", dependencies=[], security=[])
+router = APIRouter(prefix="/register", dependencies=[])
 
 
 @router.post(

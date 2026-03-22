@@ -38,6 +38,7 @@ app = FastAPI(
             }
         }
     },
+    security=[{"BearerAuth": []}],
 )
 
 
