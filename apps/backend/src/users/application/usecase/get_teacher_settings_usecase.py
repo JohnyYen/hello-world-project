@@ -71,10 +71,15 @@ class GetTeacherSettingsUseCase:
             )
 
         # Construir respuesta con todos los campos
+        # Normalizar "instant" legacy a "realtime"
+        freq = settings.notification_frequency
+        if freq == "instant":
+            freq = "realtime"
+
         settings_data = TeacherSettingsResponse(
             theme=settings.theme,
             notifications_enabled=settings.notifications_enabled,
-            notification_frequency=settings.notification_frequency,
+            notification_frequency=freq,
             interface_language=settings.interface_language,
             # Session settings
             auto_logout=settings.auto_logout,

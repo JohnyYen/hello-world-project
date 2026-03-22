@@ -92,7 +92,11 @@ class UpdateTeacherSettingsUseCase:
         if settings_data.notifications_enabled is not None:
             update_data["notifications_enabled"] = settings_data.notifications_enabled
         if settings_data.notification_frequency is not None:
-            update_data["notification_frequency"] = settings_data.notification_frequency
+            # Normalizar "instant" legacy a "realtime"
+            freq = settings_data.notification_frequency
+            if freq == "instant":
+                freq = "realtime"
+            update_data["notification_frequency"] = freq
         if settings_data.interface_language is not None:
             update_data["interface_language"] = settings_data.interface_language
         # Session settings

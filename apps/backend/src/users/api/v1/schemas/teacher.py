@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from typing import Optional, Literal
 from datetime import datetime
 from src.shared.api.schemas.base import ResponseSchema
 
@@ -47,18 +47,20 @@ class TeacherSettingsUpdate(BaseModel):
     """Esquema para actualización de configuraciones de profesor"""
 
     # Original fields
-    theme: Optional[str] = Field(
+    theme: Optional[Literal["light", "dark"]] = Field(
         None, example="dark", description="Tema de la interfaz: light o dark"
     )
     notifications_enabled: Optional[bool] = Field(
         None, example=True, description="Habilitar notificaciones"
     )
-    notification_frequency: Optional[str] = Field(
+    notification_frequency: Optional[
+        Literal["realtime", "daily", "weekly", "disabled"]
+    ] = Field(
         None,
         example="realtime",
         description="Frecuencia de notificaciones: realtime, daily, weekly, disabled",
     )
-    interface_language: Optional[str] = Field(
+    interface_language: Optional[Literal["es", "en"]] = Field(
         None, example="es", description="Idioma de la interfaz"
     )
     # Session settings
@@ -75,7 +77,9 @@ class TeacherSettingsUpdate(BaseModel):
         None, example=True, description="Recordar inicio de sesión en este dispositivo"
     )
     # Appearance settings
-    color_theme: Optional[str] = Field(
+    color_theme: Optional[
+        Literal["Indigo", "Violeta", "Esmeralda", "Azul", "Rosa", "Naranja"]
+    ] = Field(
         None,
         example="Indigo",
         description="Tema de color: Indigo, Violeta, Esmeralda, Azul, Rosa, Naranja",
@@ -88,12 +92,12 @@ class TeacherSettingsUpdate(BaseModel):
         None, example=False, description="Recibir notificaciones por email"
     )
     # Language settings (extended)
-    date_format: Optional[str] = Field(
+    date_format: Optional[Literal["ddmmyyyy", "mmddyyyy", "yyyymmdd"]] = Field(
         None,
         example="ddmmyyyy",
         description="Formato de fecha: ddmmyyyy, mmddyyyy, yyyymmdd",
     )
-    timezone: Optional[str] = Field(
+    timezone: Optional[Literal["gmt-5", "gmt-6", "gmt-3", "gmt0", "gmt1"]] = Field(
         None,
         example="gmt-5",
         description="Zona horaria: gmt-5, gmt-6, gmt-3, gmt0, gmt1",
@@ -104,22 +108,26 @@ class TeacherSettingsResponse(BaseModel):
     """Esquema para respuesta de configuraciones de profesor"""
 
     # Original fields
-    theme: str = "light"
+    theme: Literal["light", "dark"] = "light"
     notifications_enabled: bool = True
-    notification_frequency: str = "realtime"
-    interface_language: str = "es"
+    notification_frequency: Literal["realtime", "daily", "weekly", "disabled"] = (
+        "realtime"
+    )
+    interface_language: Literal["es", "en"] = "es"
     # Session settings
     auto_logout: Optional[bool] = None
     session_duration_minutes: Optional[int] = None
     remember_login: Optional[bool] = None
     # Appearance settings
-    color_theme: Optional[str] = None
+    color_theme: Optional[
+        Literal["Indigo", "Violeta", "Esmeralda", "Azul", "Rosa", "Naranja"]
+    ] = None
     animations_enabled: Optional[bool] = None
     # Notification settings (extended)
     email_notifications: Optional[bool] = None
     # Language settings (extended)
-    date_format: Optional[str] = None
-    timezone: Optional[str] = None
+    date_format: Optional[Literal["ddmmyyyy", "mmddyyyy", "yyyymmdd"]] = None
+    timezone: Optional[Literal["gmt-5", "gmt-6", "gmt-3", "gmt0", "gmt1"]] = None
 
     class Config:
         from_attributes = True
