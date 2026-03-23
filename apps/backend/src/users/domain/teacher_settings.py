@@ -6,7 +6,6 @@ from src.shared.infrastructure.base import Base
 class TeacherSettings(Base):
     __tablename__ = "teacher_settings"
 
-    id = Column(Integer, primary_key=True, index=True)
     theme = Column(String(50), default="light", nullable=False)  # light or dark
     notifications_enabled = Column(Boolean, default=True, nullable=False)
     notification_frequency = Column(

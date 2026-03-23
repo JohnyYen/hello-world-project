@@ -13,7 +13,6 @@ class LMSCredential(Base):
 
     __tablename__ = "lms_credentials"
 
-    id = Column(Integer, primary_key=True, index=True)
     lms_email = Column(String(255), unique=True, nullable=False)
     lms_password = Column(String(255), nullable=False)
     lms_provider = Column(String(255), nullable=False)
