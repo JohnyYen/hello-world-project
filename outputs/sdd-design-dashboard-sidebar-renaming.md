@@ -8,7 +8,7 @@
 - **Key Decisions**: 4 architecture decisions documented (NavMain label prop, NavGameManagement structure, icon selection, data structure)
 - **Files Affected**: 1 new, 3 modified, 0 deleted
 - **Testing Strategy**: Unit tests for label rendering, integration tests for new section, E2E for navigation
-
+wwsto es una tallaraa
 ### Open Questions
 - Should we remove the `documents` data array entirely? **Recommend**: Remove entirely since placeholder items point to "#"
 - Should NavGameManagement support mobile collapsible behavior? **Recommend**: No, keep simple like NavSecondary for consistency with bottom section
