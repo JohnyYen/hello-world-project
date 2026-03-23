@@ -17,3 +17,4 @@ class Level(Base):
     # Relationships
     game = relationship("Game", back_populates="levels")
     segments = relationship("SegmentLevel", back_populates="level")
+    feedbacks = relationship("Feedback", back_populates="level")
