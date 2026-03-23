@@ -17,43 +17,7 @@ interface UseStudentReportsReturn {
   error: string | null;
 }
 
-// Mock data temporal - reemplazar con llamada real a API
-const MOCK_KPIS: StudentReportKPIs = {
-  totalLevelsCompleted: 12,
-  totalGamesPlayed: 28,
-  totalPlayTime: 1840,
-  averageScore: 85,
-  currentStreak: 5,
-  lastActivity: "2026-02-25T14:30:00Z",
-};
-
-const MOCK_PROGRESS_OVER_TIME: ProgressOverTime[] = [
-  { date: "Ene 1", level: 1, score: 75, timeSpent: 120 },
-  { date: "Ene 8", level: 2, score: 82, timeSpent: 145 },
-  { date: "Ene 15", level: 3, score: 78, timeSpent: 130 },
-  { date: "Ene 22", level: 4, score: 90, timeSpent: 110 },
-  { date: "Ene 29", level: 5, score: 88, timeSpent: 125 },
-  { date: "Feb 5", level: 6, score: 92, timeSpent: 95 },
-  { date: "Feb 12", level: 7, score: 85, timeSpent: 140 },
-  { date: "Feb 19", level: 8, score: 95, timeSpent: 85 },
-  { date: "Feb 26", level: 9, score: 87, timeSpent: 130 },
-];
-
-const MOCK_LEVEL_PERFORMANCE: LevelPerformance[] = [
-  { levelName: "Nivel 1 - Introducción", score: 85, attempts: 2, timeSpent: 120, completed: true },
-  { levelName: "Nivel 2 - Variables", score: 78, attempts: 3, timeSpent: 180, completed: true },
-  { levelName: "Nivel 3 - Condicionales", score: 92, attempts: 1, timeSpent: 90, completed: true },
-  { levelName: "Nivel 4 - Ciclos", score: 88, attempts: 2, timeSpent: 150, completed: true },
-  { levelName: "Nivel 5 - Funciones", score: 75, attempts: 4, timeSpent: 240, completed: true },
-  { levelName: "Nivel 6 - Arrays", score: 95, attempts: 1, timeSpent: 85, completed: true },
-];
-
-const MOCK_ACTIVITY_DISTRIBUTION: ActivityDistribution[] = [
-  { gameName: "Hello World", timeSpent: 720, sessions: 12 },
-  { gameName: "Blockly Puzzles", timeSpent: 480, sessions: 8 },
-  { gameName: "Code Runner", timeSpent: 360, sessions: 5 },
-  { gameName: "Debug Master", timeSpent: 280, sessions: 3 },
-];
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export function useStudentReports(studentId: string): UseStudentReportsReturn {
   const [kpis, setKpis] = useState<StudentReportKPIs | null>(null);
@@ -69,20 +33,68 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
       setError(null);
 
       try {
-        // Simular llamada a API
-        // En producción, usar:
-        // const response = await fetch(`/api/v1/users/students/${studentId}/reports`);
-        // const data = await response.json();
+        const response = await fetch(
+          `${API_BASE_URL}/api/v1/statistic/students/${studentId}/progress`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-        // Mock data
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error("No se encontró progreso para este estudiante");
+          }
+          if (response.status === 401) {
+            throw new Error("No autorizado");
+          }
+          throw new Error("Error al cargar los datos del reporte");
+        }
 
-        setKpis(MOCK_KPIS);
-        setProgressOverTime(MOCK_PROGRESS_OVER_TIME);
-        setLevelPerformance(MOCK_LEVEL_PERFORMANCE);
-        setActivityDistribution(MOCK_ACTIVITY_DISTRIBUTION);
+        const data = await response.json();
+
+        setKpis({
+          totalLevelsCompleted: data.kpis.total_levels_completed,
+          totalGamesPlayed: data.kpis.total_games_played,
+          totalPlayTime: data.kpis.total_play_time,
+          averageScore: data.kpis.average_score,
+          currentStreak: data.kpis.current_streak,
+          lastActivity: data.kpis.last_activity,
+        });
+
+        setProgressOverTime(
+          data.progress_over_time.map((item: { date: string; level: number; score: number; time_spent: number }) => ({
+            date: item.date,
+            level: item.level,
+            score: item.score,
+            timeSpent: item.time_spent,
+          }))
+        );
+
+        setLevelPerformance(
+          data.level_performance.map((item: { level_name: string; score: number; attempts: number; time_spent: number; completed: boolean }) => ({
+            levelName: item.level_name,
+            score: item.score,
+            attempts: item.attempts,
+            timeSpent: item.time_spent,
+            completed: item.completed,
+          }))
+        );
+
+        setActivityDistribution(
+          data.activity_distribution.map((item: { game_name: string; time_spent: number; sessions: number }) => ({
+            gameName: item.game_name,
+            timeSpent: item.time_spent,
+            sessions: item.sessions,
+          }))
+        );
       } catch (err) {
-        setError("Error al cargar los datos del reporte");
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Error al cargar los datos del reporte");
+        }
       } finally {
         setIsLoading(false);
       }

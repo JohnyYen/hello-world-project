@@ -1,4 +1,5 @@
 from typing import List, Optional
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.statistic.domain.progress import Progress
@@ -16,7 +17,7 @@ class ProgressRepository(BaseRepository[Progress]):
 
     async def get_by_student_id(
         self,
-        student_id: int,
+        student_id: UUID,
         include_deleted: bool = False,
         skip: int = 0,
         limit: int = 100,
@@ -25,7 +26,7 @@ class ProgressRepository(BaseRepository[Progress]):
         Obtiene progresos por ID de estudiante.
 
         Args:
-            student_id: ID del estudiante
+            student_id: UUID del estudiante
             include_deleted: Si True, incluye progresos marcados como eliminados
             skip: Número de registros a saltar
             limit: Máximo número de registros a devolver
