@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, JSON, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
 
@@ -13,8 +14,10 @@ class Progress(Base):
     objectives_completed = Column(Integer, default=0, nullable=False)
     efficiency_rating = Column(Integer, default=0, nullable=False)
 
-    student_id = Column(Integer, ForeignKey("students.id"), nullable=False)
-    segment_level_id = Column(Integer, ForeignKey("segment_levels.id"), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=False)
+    segment_level_id = Column(
+        UUID(as_uuid=True), ForeignKey("segment_levels.id"), nullable=False
+    )
 
     # Relationships
     student = relationship("Student", back_populates="progresses")

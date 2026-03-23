@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
+from sqlalchemy import Column, String, Boolean, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
 
@@ -32,7 +33,7 @@ class TeacherSettings(Base):
     timezone = Column(String(50), nullable=True)
 
     # Foreign key to connect with user
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
     # Relationship
     user = relationship("User", back_populates="teacher_settings")

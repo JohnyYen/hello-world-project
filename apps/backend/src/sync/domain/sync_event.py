@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, DateTime, JSON, Integer, ForeignKey
+from sqlalchemy import Column, String, DateTime, JSON, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
 
@@ -11,7 +12,9 @@ class SyncEvent(Base):
     timestamp = Column(DateTime, nullable=False)
     status = Column(String(255), nullable=True)
 
-    sync_session_id = Column(Integer, ForeignKey("sync_sessions.id"), nullable=False)
+    sync_session_id = Column(
+        UUID(as_uuid=True), ForeignKey("sync_sessions.id"), nullable=False
+    )
 
     # Relationships using string references to avoid circular imports
     sync_session = relationship(
