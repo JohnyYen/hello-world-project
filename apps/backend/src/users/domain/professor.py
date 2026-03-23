@@ -14,3 +14,4 @@ class Professor(Base):
 
     user = relationship("User", back_populates="professor")
     feedbacks = relationship("Feedback", back_populates="professor")
+    course_professors = relationship("CourseProfessor", back_populates="professor")
