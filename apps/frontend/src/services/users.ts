@@ -34,9 +34,10 @@ async function getAuthToken(): Promise<string> {
 }
 
 function createUsersApiConfiguration(token?: string): Configuration {
+  const accessTokenFn = async () => token || "";
   return new Configuration({
     basePath: API_BASE_URL,
-    accessToken: token,
+    accessToken: accessTokenFn,
   });
 }
 
@@ -81,7 +82,7 @@ interface GetStudentsParams {
 
 export async function getStudents(params: GetStudentsParams = {}): Promise<StudentListResponse> {
   const api = await getUsersApi();
-  const response = await api.listStudentsApiV1UsersStudentsGet({
+  const response = await api.getAllStudentsApiV1UsersStudentsGet({
     skip: params.skip,
     limit: params.limit,
     search: params.search,

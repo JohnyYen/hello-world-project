@@ -1,62 +1,39 @@
-import { unstable_cache } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { Student } from "@/types";
 import { getStudents as apiGetStudents, getStudent as apiGetStudent } from "@/services/users";
 import { studentListResponseToStudents, studentResponseToStudent } from "@/adapters/student.adapter";
 
-const cacheOptions = { 
-  revalidate: process.env.NODE_ENV === 'production' ? 300 : 60,
-  tags: ['students'] 
-};
-
-const getStudentCached = unstable_cache(
-  async (id: string) => {
-    try {
-      const response = await apiGetStudent(parseInt(id, 10));
-      return studentResponseToStudent(response);
-    } catch {
-      return null;
-    }
-  },
-  ['student-detail'],
-  cacheOptions
-);
-
-const getAllStudentsCached = unstable_cache(
-  async () => {
-    try {
-      const response = await apiGetStudents();
-      return studentListResponseToStudents(response);
-    } catch {
-      return [];
-    }
-  },
-  ['all-students'],
-  cacheOptions
-);
-
-const getStudentsListCached = unstable_cache(
-  async () => {
-    try {
-      const response = await apiGetStudents();
-      return studentListResponseToStudents(response);
-    } catch {
-      return [];
-    }
-  },
-  ['students-list'],
-  cacheOptions
-);
-
+/**
+ * Obtiene los estudiantes SIN cache.
+ * Los datos de estudiantes dependen del token de autenticación del usuario,
+ * por lo que cachear resultados sin considerar el contexto de auth会导致
+ * que usuarios no autenticados pollute el cache con datos vacíos.
+ */
 export async function getStudent(id: string): Promise<Student | null> {
-  return getStudentCached(id);
+  try {
+    const response = await apiGetStudent(parseInt(id, 10));
+    return studentResponseToStudent(response);
+  } catch {
+    return null;
+  }
 }
 
 export async function getAllStudents(): Promise<Student[]> {
-  return getAllStudentsCached();
+  try {
+    const response = await apiGetStudents();
+    return studentListResponseToStudents(response);
+  } catch {
+    return [];
+  }
 }
 
 export async function getStudents(): Promise<Student[]> {
-  return getStudentsListCached();
+  try {
+    const response = await apiGetStudents();
+    return studentListResponseToStudents(response);
+  } catch {
+    return [];
+  }
 }
 
 export async function getUniqueCourses(): Promise<string[]> {

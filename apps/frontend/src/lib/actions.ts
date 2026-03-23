@@ -147,9 +147,9 @@ export async function loginAction(
       password: password,
     });
 
-    if (result.accessToken) {
+    if (result.access_token) {
       const cookieStore = await cookies();
-      cookieStore.set("auth_token", result.accessToken, {
+      cookieStore.set("auth_token", result.access_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
