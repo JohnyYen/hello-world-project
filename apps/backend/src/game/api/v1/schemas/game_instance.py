@@ -43,7 +43,8 @@ class GameInstanceResponse(BaseModel):
     game_id: int
     student_id: int
     status: str
-    start_instance: datetime
+    started_at: datetime
+    ended_at: Optional[datetime] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
     is_deleted: bool = False
