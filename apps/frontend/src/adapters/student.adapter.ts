@@ -10,8 +10,8 @@ function studentResponseToStudent(response: StudentResponse): Student {
     .join(' ')
     .trim();
 
-  const registrationDate = response.createdAt
-    ? new Date(response.createdAt).toISOString()
+  const registrationDate = response.created_at
+    ? new Date(response.created_at).toISOString()
     : new Date().toISOString();
 
   return {
@@ -19,10 +19,10 @@ function studentResponseToStudent(response: StudentResponse): Student {
     name: fullName || response.username,
     email: response.email,
     maxLevel: 0,
-    status: response.isActive ? 'active' : 'inactive',
+    status: response.is_active ? 'active' : 'inactive',
     registrationDate,
-    lastActivity: response.updatedAt
-      ? new Date(response.updatedAt).toISOString()
+    lastActivity: response.updated_at
+      ? new Date(response.updated_at).toISOString()
       : registrationDate,
     completedLessons: 0,
     totalLessons: 0,

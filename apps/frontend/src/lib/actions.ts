@@ -165,11 +165,44 @@ export async function loginAction(
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
-    const detail = (error as { detail?: string }).detail;
+
+    // Enhanced error handling - extract backend error message properly
+    let errorMessage = "Error al iniciar sesión";
+    let errorFormMessage = "Credenciales inválidas";
+
+    // Check if it's a ResponseError from the API client
+    if (error && typeof error === 'object' && 'response' in error) {
+      const responseError = error as { response?: Response; message?: string };
+      
+      if (responseError.response) {
+        try {
+          const response = responseError.response;
+          const body = await response.json().catch(() => ({}));
+          
+          if (body && typeof body === 'object') {
+            const detail = (body as { detail?: string }).detail;
+            
+            if (detail) {
+              errorMessage = detail;
+              errorFormMessage = detail;
+            }
+          }
+        } catch {
+          // Failed to parse response body, use default
+        }
+      } else if (responseError.message) {
+        errorMessage = responseError.message;
+        errorFormMessage = responseError.message;
+      }
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+      errorFormMessage = error.message;
+    }
+
     return {
       success: false,
-      message: detail || "Error al iniciar sesión",
-      errors: { _form: [detail || "Credenciales inválidas"] },
+      message: errorMessage,
+      errors: { _form: [errorFormMessage] },
     };
   }
   
@@ -213,11 +246,56 @@ export async function signupAction(
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
-    const detail = (error as { detail?: string }).detail;
+
+    // Enhanced error handling - extract backend error message properly
+    let errorMessage = "Error al crear cuenta";
+    let errorFormMessage = "Email o usuario ya existe";
+
+    // Check if it's a ResponseError from the API client
+    if (error && typeof error === 'object' && 'response' in error) {
+      const responseError = error as { response?: Response; message?: string };
+      
+      if (responseError.response) {
+        try {
+          const response = responseError.response;
+          const body = await response.json().catch(() => ({}));
+          
+          // Backend returns { detail: string } for validation errors
+          // or { detail: string, error: string } for AppException
+          if (body && typeof body === 'object') {
+            const detail = (body as { detail?: string }).detail;
+            
+            if (detail) {
+              errorMessage = detail;
+              
+              // Map specific backend errors to user-friendly messages
+              if (detail.toLowerCase().includes('email')) {
+                errorFormMessage = "El email ya está registrado";
+              } else if (detail.toLowerCase().includes('username')) {
+                errorFormMessage = "El nombre de usuario ya está en uso";
+              } else {
+                errorFormMessage = detail;
+              }
+            }
+          }
+        } catch {
+          // Failed to parse response body, use default
+        }
+      } else if (responseError.message) {
+        // Fallback: use message property if available
+        errorMessage = responseError.message;
+        errorFormMessage = responseError.message;
+      }
+    } else if (error instanceof Error) {
+      // Generic error handling
+      errorMessage = error.message;
+      errorFormMessage = error.message;
+    }
+
     return {
       success: false,
-      message: detail || "Error al crear cuenta",
-      errors: { _form: [detail || "Email o usuario ya existe"] },
+      message: errorMessage,
+      errors: { _form: [errorFormMessage] },
     };
   }
 
