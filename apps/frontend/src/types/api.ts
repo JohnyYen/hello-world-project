@@ -275,3 +275,40 @@ export interface ActivityDistribution {
   timeSpent: number;
   sessions: number;
 }
+
+// 📊 Tipos para Overview del Dashboard
+export interface OverviewKPIs {
+  totalStudents: number;
+  activeStudentsThisWeek: number;
+  activeStudentsThisMonth: number;
+  totalLevelsCompleted: number;
+  totalPlayTimeMinutes: number;
+  averageScore: number;
+}
+
+export interface ActivityOverTimeItem {
+  date: string;
+  sessions: number;
+  activeStudents: number;
+  playTimeMinutes: number;
+}
+
+export interface LevelPerformanceItem {
+  levelName: string;
+  completionRate: number;
+  averageAttempts: number;
+  averageTimeMinutes: number;
+}
+
+export interface OverviewTrends {
+  studentsChangePercent: number;
+  activityChangePercent: number;
+  scoreChangePercent: number;
+}
+
+export interface OverviewResponse {
+  kpis: OverviewKPIs;
+  activityOverTime: ActivityOverTimeItem[];
+  levelPerformance: LevelPerformanceItem[];
+  trends: OverviewTrends;
+}
