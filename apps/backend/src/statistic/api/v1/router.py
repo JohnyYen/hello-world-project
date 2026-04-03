@@ -13,6 +13,9 @@ from src.statistic.api.v1.endpoints.metric_types import (
 from src.statistic.api.v1.endpoints.student_progress import (
     router as student_progress_router,
 )
+from src.statistic.api.v1.endpoints.overview import (
+    router as overview_router,
+)
 
 
 router = APIRouter(
@@ -24,3 +27,4 @@ router.include_router(submit_feedback_router)
 router.include_router(xapi_statements_router)
 router.include_router(metric_types_router)
 router.include_router(student_progress_router)
+router.include_router(overview_router)
