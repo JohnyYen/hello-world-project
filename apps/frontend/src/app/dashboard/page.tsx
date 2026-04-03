@@ -4,14 +4,13 @@ import * as React from "react"
 import { ChartAreaInteractive, SectionCards, DataTable } from "@/components/dashboard"
 import { useDashboardStats } from "@/hooks/use-dashboard-stats"
 
-import data from "./data.json"
-
 export default function Page() {
   const [period, setPeriod] = React.useState<"7d" | "30d" | "3m">("30d")
   
   const { 
     kpis, 
     activityOverTime, 
+    levelPerformance,
     trends, 
     isLoading, 
     error, 
@@ -87,10 +86,14 @@ export default function Page() {
           />
         </div>
         
-        {/* Data Table Section */}
+        {/* Data Table Section - Uses levelPerformance from overview endpoint */}
         <div className="group relative rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl shadow-indigo-500/5 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <DataTable data={data} />
+          <DataTable 
+            data={levelPerformance}
+            isLoading={isLoading}
+            error={error}
+          />
         </div>
       </div>
     </div>

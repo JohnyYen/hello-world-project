@@ -43,42 +43,42 @@ interface CardData {
   gradient: string
 }
 
-// Fallback data for when no props provided
+// Fallback data for when no props provided (educational platform context)
 const fallbackCardsData: CardData[] = [
   {
-    title: "Ingresos Totales",
-    value: "$1,250.00",
-    change: 12.5,
+    title: "Estudiantes Totales",
+    value: "0",
+    change: 0,
     trend: "up",
-    description: "Tendencia al alza este mes",
-    icon: <IconCurrencyDollar className="w-4 h-4" />,
+    description: "Total de estudiantes registrados",
+    icon: <IconSchool className="w-4 h-4" />,
     gradient: "from-emerald-500 to-teal-600",
   },
   {
-    title: "Nuevos Clientes",
-    value: "1,234",
-    change: -20,
-    trend: "down",
-    description: "La adquisición necesita atención",
+    title: "Estudiantes Activos",
+    value: "0",
+    change: 0,
+    trend: "up",
+    description: "Activos en los últimos 30 días",
     icon: <IconUsers className="w-4 h-4" />,
     gradient: "from-rose-500 to-orange-500",
   },
   {
-    title: "Cuentas Activas",
-    value: "45,678",
-    change: 12.5,
+    title: "Niveles Completados",
+    value: "0",
+    change: 0,
     trend: "up",
-    description: "Fuerte retención de usuarios",
-    icon: <IconActivity className="w-4 h-4" />,
+    description: "Total de niveles completados",
+    icon: <IconTarget className="w-4 h-4" />,
     gradient: "from-indigo-500 to-violet-600",
   },
   {
-    title: "Tasa de Crecimiento",
-    value: "4.5%",
-    change: 4.5,
+    title: "Tiempo de Juego",
+    value: "0m",
+    change: 0,
     trend: "up",
-    description: "Aumento constante del rendimiento",
-    icon: <IconChartBar className="w-4 h-4" />,
+    description: "Tiempo total de juego",
+    icon: <IconClock className="w-4 h-4" />,
     gradient: "from-amber-500 to-yellow-500",
   },
 ]
