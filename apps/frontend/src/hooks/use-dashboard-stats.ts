@@ -20,6 +20,13 @@ interface UseDashboardStatsReturn {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+// Get token from cookies (client-side)
+function getAuthToken(): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(/auth_token=([^;]+)/);
+  return match ? match[1] : null;
+}
+
 export function useDashboardStats(
   period: "7d" | "30d" | "3m" = "30d"
 ): UseDashboardStatsReturn {
@@ -35,20 +42,28 @@ export function useDashboardStats(
     setError(null);
 
     try {
+      const token = getAuthToken();
+      
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(
         `${API_BASE_URL}/api/v1/statistic/overview?period=${period}`,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers,
         }
       );
 
       if (!response.ok) {
         if (response.status === 401) {
-          throw new Error("No autorizado");
+          throw new Error("No autorizado. Por favor, inicia sesión.");
         }
-        throw new Error("Error al cargar las estadísticas");
+        throw new Error(`Error al cargar las estadísticas: ${response.status}`);
       }
 
       const data = await response.json();
