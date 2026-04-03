@@ -1,8 +1,27 @@
-import { ChartAreaInteractive, SectionCards, DataTable } from "@/components/dashboard";
+"use client"
 
-import data from "./data.json";
+import * as React from "react"
+import { ChartAreaInteractive, SectionCards, DataTable } from "@/components/dashboard"
+import { useDashboardStats } from "@/hooks/use-dashboard-stats"
+
+import data from "./data.json"
 
 export default function Page() {
+  const [period, setPeriod] = React.useState<"7d" | "30d" | "3m">("30d")
+  
+  const { 
+    kpis, 
+    activityOverTime, 
+    trends, 
+    isLoading, 
+    error, 
+    refetch 
+  } = useDashboardStats(period)
+
+  const handlePeriodChange = (newPeriod: "7d" | "30d" | "3m") => {
+    setPeriod(newPeriod)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
       {/* Background pattern */}
@@ -34,12 +53,38 @@ export default function Page() {
           <div className="absolute -right-10 top-20 w-24 h-24 bg-violet-500/10 rounded-full blur-2xl pointer-events-none" />
         </div>
 
-        <SectionCards />
+        {/* Error State */}
+        {error && (
+          <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-red-600 dark:text-red-400">
+                {error}
+              </div>
+              <button
+                onClick={() => refetch()}
+                className="text-sm font-medium text-red-600 dark:text-red-400 hover:underline"
+              >
+                Reintentar
+              </button>
+            </div>
+          </div>
+        )}
+
+        <SectionCards 
+          kpis={kpis || null} 
+          trends={trends || null}
+          isLoading={isLoading}
+        />
         
         {/* Chart Section */}
         <div className="group relative rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl shadow-indigo-500/5 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <ChartAreaInteractive />
+          <ChartAreaInteractive 
+            data={activityOverTime}
+            period={period}
+            onPeriodChange={handlePeriodChange}
+            isLoading={isLoading}
+          />
         </div>
         
         {/* Data Table Section */}
@@ -49,5 +94,5 @@ export default function Page() {
         </div>
       </div>
     </div>
-  );
+  )
 }
