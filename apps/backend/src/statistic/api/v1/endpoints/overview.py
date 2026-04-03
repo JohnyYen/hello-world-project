@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from typing import Optional
-from datetime import date
+from datetime import date as datetime_date
 
 from src.statistic.application.usecase.get_overview_stats_usecase import (
     GetOverviewStatsUseCase,
@@ -29,10 +29,12 @@ _CACHE_TTL_SECONDS = 60
     status_code=status.HTTP_200_OK,
 )
 async def get_overview_stats(
-    start_date: Optional[date] = Query(
+    start_date: Optional[datetime_date] = Query(
         None, description="Fecha de inicio para filtrar"
     ),
-    end_date: Optional[date] = Query(None, description="Fecha de fin para filtrar"),
+    end_date: Optional[datetime_date] = Query(
+        None, description="Fecha de fin para filtrar"
+    ),
     period: Optional[str] = Query(None, description="Período: 7d, 30d, 3m"),
     db: AsyncSession = Depends(get_db),
 ) -> OverviewResponse:

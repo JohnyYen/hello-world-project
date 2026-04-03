@@ -1,10 +1,10 @@
 from pydantic import BaseModel, Field
-from datetime import date
-from typing import List, Optional
+from datetime import date as datetime_date
+from typing import List, Optional, Literal
 
 
 class OverviewKPIs(BaseModel):
-    """KPIs globales del sistema educativo."""
+    """KPIs globales del sistema educativa."""
 
     total_students: int = Field(
         ..., ge=0, description="Total de estudiantes registrados"
@@ -29,7 +29,7 @@ class OverviewKPIs(BaseModel):
 class ActivityOverTimeItem(BaseModel):
     """Item individual de actividad temporal."""
 
-    date: date = Field(..., description="Fecha del registro")
+    date: datetime_date = Field(..., description="Fecha del registro")
     sessions: int = Field(..., ge=0, description="Número de sesiones")
     active_students: int = Field(..., ge=0, description="Estudiantes activos ese día")
     play_time_minutes: int = Field(
@@ -82,9 +82,13 @@ class OverviewResponse(BaseModel):
 class OverviewQueryParams(BaseModel):
     """Parámetros de query para el endpoint de overview."""
 
-    start_date: Optional[date] = Field(None, description="Fecha de inicio para filtrar")
-    end_date: Optional[date] = Field(None, description="Fecha de fin para filtrar")
-    period: Optional[str] = Field(
+    start_date: Optional[datetime_date] = Field(
+        None, description="Fecha de inicio para filtrar"
+    )
+    end_date: Optional[datetime_date] = Field(
+        None, description="Fecha de fin para filtrar"
+    )
+    period: Optional[Literal["7d", "30d", "3m"]] = Field(
         None,
         description="Período predefinido: 7d (7 días), 30d (30 días), 3m (3 meses)",
     )

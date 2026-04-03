@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date as datetime_date, timedelta
 from typing import Optional, List, Dict, Any
 
 from src.statistic.infrastructure.progress_repository import ProgressRepository
@@ -28,8 +28,8 @@ class GetOverviewStatsUseCase:
 
     async def execute(
         self,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None,
+        start_date: Optional[datetime_date] = None,
+        end_date: Optional[datetime_date] = None,
         period: Optional[str] = None,
     ) -> OverviewResponse:
         """
@@ -71,12 +71,12 @@ class GetOverviewStatsUseCase:
 
     def _resolve_dates(
         self,
-        start_date: Optional[date],
-        end_date: Optional[date],
+        start_date: Optional[datetime_date],
+        end_date: Optional[datetime_date],
         period: Optional[str],
-    ) -> tuple[date, date]:
+    ) -> tuple[datetime_date, datetime_date]:
         """Resuelve las fechas efectivas basándose en los parámetros."""
-        today = date.today()
+        today = datetime_date.today()
 
         if period:
             if period == "7d":
@@ -94,7 +94,7 @@ class GetOverviewStatsUseCase:
         return start_date or (today - timedelta(days=30)), end_date or today
 
     async def calculate_kpis(
-        self, start_date: Optional[date], end_date: Optional[date]
+        self, start_date: Optional[datetime_date], end_date: Optional[datetime_date]
     ) -> OverviewKPIs:
         """Calcula los KPIs globales."""
         # Total de estudiantes
@@ -119,7 +119,7 @@ class GetOverviewStatsUseCase:
         )
 
     async def calculate_activity_over_time(
-        self, start_date: date, end_date: date
+        self, start_date: datetime_date, end_date: datetime_date
     ) -> List[ActivityOverTimeItem]:
         """Calcula la evolución temporal de actividad."""
         raw_activity = await self.progress_repo.aggregate_activity_by_date(
@@ -151,7 +151,7 @@ class GetOverviewStatsUseCase:
         ]
 
     async def calculate_trends(
-        self, start_date: Optional[date], end_date: Optional[date]
+        self, start_date: Optional[datetime_date], end_date: Optional[datetime_date]
     ) -> OverviewTrends:
         """Calcula tendencias vs período anterior."""
         # Calcular período anterior
