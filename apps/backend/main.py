@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from src.api.router import router
 from src.shared.infrastructure.config import settings
 from src.shared.seed.run_seed import run_all_seeds
@@ -38,6 +39,15 @@ app = FastAPI(
             }
         }
     },
+)
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
