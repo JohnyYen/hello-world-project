@@ -17,7 +17,16 @@ import {
   TeacherSettingsUpdate,
 } from "@workspace/api-client-ts";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+function getApiBaseUrl(): string {
+  if (typeof window !== "undefined") {
+    // Client-side: use public URL (browser accessible)
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  }
+  // Server-side: use internal Docker URL
+  return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 async function getAuthToken(): Promise<string> {
   if (typeof window !== "undefined") {
@@ -81,14 +90,15 @@ interface GetStudentsParams {
 }
 
 export async function getStudents(params: GetStudentsParams = {}): Promise<StudentListResponse> {
-  const api = await getUsersApi();
-  const response = await api.getAllStudentsApiV1UsersStudentsGet({
-    skip: params.skip,
-    limit: params.limit,
-    search: params.search,
-  });
-  return response;
-}
+   const api = await getUsersApi();
+   const response = await api.listStudentsApiV1UsersStudentsGet({
+     skip: params.skip,
+     limit: params.limit,
+     search: params.search,
+   });
+   console.log('Students API Response:', response);
+   return response;
+ }
 
 export async function getStudent(id: number): Promise<StudentResponse> {
   const api = await getUsersApi();

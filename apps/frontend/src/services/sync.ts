@@ -7,7 +7,14 @@ import {
   SyncEventSchema,
 } from "@workspace/api-client-ts";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+function getApiBaseUrl(): string {
+  if (typeof window !== "undefined") {
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  }
+  return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 async function getAuthToken(): Promise<string> {
   if (typeof window !== "undefined") {

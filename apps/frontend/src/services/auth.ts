@@ -1,6 +1,15 @@
 import { Configuration, AuthenticationApi, UsersApi, UserLogin, UserCreate, UserLoginResponse, TeacherProfileResponse, UserChangePassword, SingleUserResponse } from "@workspace/api-client-ts";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+function getApiBaseUrl(): string {
+  if (typeof window !== "undefined") {
+    // Client-side: use public URL (browser accessible)
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  }
+  // Server-side: use internal Docker URL
+  return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 const createConfig = (token?: string) =>
   new Configuration({
