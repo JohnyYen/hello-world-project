@@ -5,7 +5,7 @@ from src.game.domain import Game, GameInstance, SegmentLevel, Level
 from src.users.domain import User, Professor, Student, TeacherSettings, Role
 
 # Statistic Domain Models
-from src.statistic.domain import Feedback, MetricType, Progress
+from src.statistic.domain import Feedback, MetricType, Progress, XAPIStatement
 
 # Sync Domain Models
 from src.sync.domain import SyncSession, SyncEvent
