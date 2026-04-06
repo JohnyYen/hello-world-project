@@ -71,7 +71,8 @@ class CreateStudentUseCase:
         # Obtener rol de student
         role_repo = RoleRepository(self.db)
         student_role = await role_repo.get_student_role()
-        student_role_id = int(student_role.id)
+        # Usar UUID directamente, no convertir a int
+        student_role_id = student_role.id
 
         # Preparar datos para crear usuario
         user_data = {

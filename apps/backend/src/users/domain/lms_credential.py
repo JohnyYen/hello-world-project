@@ -1,4 +1,6 @@
 from sqlalchemy import Column, String, DateTime, Integer
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
 
@@ -20,7 +22,9 @@ class LMSCredential(Base):
     access_token = Column(String(500), nullable=True)
     refresh_token = Column(String(500), nullable=True)
     expire_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime(timezone=True), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
     updated_at = Column(DateTime(timezone=True), nullable=True)
 
     # Relationship with User

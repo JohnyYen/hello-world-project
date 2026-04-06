@@ -305,7 +305,8 @@ class UserRepository(BaseRepository[User]):
         # Obtener el rol de student
         role_repo = RoleRepository(self.db)
         student_role = await role_repo.get_student_role()
-        student_role_id = int(student_role.id)
+        # Usar UUID directamente, no convertir a int
+        student_role_id = student_role.id
 
         # Construir query base
         query = select(User).where(
