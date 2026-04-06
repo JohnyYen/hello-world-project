@@ -31,7 +31,8 @@ export async function getStudents(): Promise<Student[]> {
   try {
     const response = await apiGetStudents();
     return studentListResponseToStudents(response);
-  } catch {
+  } catch (error) {
+    console.error('Error fetching students:', error);
     return [];
   }
 }
