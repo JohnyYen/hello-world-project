@@ -1,12 +1,12 @@
 "use client";
 
 import { createContext, use, useState, useEffect, type ReactNode } from "react";
-import { TeacherProfileResponse } from "@workspace/api-client-ts";
+import type { TeacherProfileResponse, UserResponse } from "@/api/types";
 import { authService, type LoginParams, type RegisterParams } from "@/services/auth";
 import { SimpleUser } from "@/lib/auth-server";
 
-// Union type to support both SimpleUser (from server) and TeacherProfileResponse (from API)
-type User = SimpleUser | TeacherProfileResponse;
+// Union type to support SimpleUser (from server), TeacherProfileResponse, and UserResponse (from API login)
+type User = SimpleUser | TeacherProfileResponse | UserResponse;
 
 interface AuthContextValue {
   user: User | null;
@@ -49,7 +49,7 @@ export function AuthProvider({ children, initialUser, initialToken }: AuthProvid
 
   const login = async (_params: LoginParams) => {
     const response = await authService.login(_params);
-    const { accessToken, user: userData } = response;
+    const { access_token: accessToken, user: userData } = response;
 
     localStorage.setItem(TOKEN_KEY, accessToken);
     setToken(accessToken);
@@ -58,7 +58,7 @@ export function AuthProvider({ children, initialUser, initialToken }: AuthProvid
 
   const register = async (_params: RegisterParams) => {
     const response = await authService.register(_params);
-    const { accessToken, user: userData } = response;
+    const { access_token: accessToken, user: userData } = response;
 
     localStorage.setItem(TOKEN_KEY, accessToken);
     setToken(accessToken);

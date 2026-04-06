@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { cookies } from "next/headers";
 
 const TeacherSettingsSchema = z.object({
   theme: z.enum(["light", "dark"]).optional(),
@@ -61,7 +62,13 @@ export async function saveTeacherSettings(
       Object.entries(snakeCaseData).filter(([, v]) => v !== undefined)
     );
 
-    await updateTeacherSettings(filtered);
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token")?.value;
+    if (!token) {
+      return { success: false, message: "No autenticado" };
+    }
+
+    await updateTeacherSettings(token, filtered as any);
 
     return {
       success: true,
@@ -81,7 +88,12 @@ export async function updateTheme(
 ): Promise<{ success: boolean }> {
   try {
     const { updateTeacherSettings } = await import("@/services/users");
-    await updateTeacherSettings({ theme });
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token")?.value;
+    if (!token) {
+      return { success: false };
+    }
+    await updateTeacherSettings(token, { theme });
     return { success: true };
   } catch (error) {
     console.error("Error saving theme:", error);

@@ -51,9 +51,17 @@ class AuthenticateUseCase:
         """
         # 1. Autenticar usuario usando el repositorio (soporta username o email)
         user_repo = UserRepository(self.db)
-        user = await user_repo.authenticate_by_username_or_email(
-            username=username, email=email, password=password
-        )
+        try:
+            user = await user_repo.authenticate_by_username_or_email(
+                username=username, email=email, password=password
+            )
+        except InvalidCredentialsException:
+            raise
+        except Exception:
+            raise InvalidCredentialsException("Credenciales incorrectas")
+
+        if user is None:
+            raise InvalidCredentialsException("Credenciales incorrectas")
 
         # 2. Cargar relaciones eager para evitar lazy loading
         stmt = select(User).options(selectinload(User.role)).where(User.id == user.id)

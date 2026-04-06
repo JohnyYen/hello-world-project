@@ -28,22 +28,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { gamesService } from "@/services/games";
-import type { GameResponse } from "@workspace/api-client-ts";
+import type { GameResponse } from "@/api/types";
 
 interface LevelDisplay {
-  id: number;
+  id: string;
   title: string;
   description: string | null;
   goal: string | null;
   levelNumber: number;
-  gameId: number;
-  createdAt: Date;
-  updatedAt: Date | null;
+  gameId: string;
+  createdAt: string;
+  updatedAt: string | null;
 }
 
 export default function LevelsListPage() {
   const [games, setGames] = useState<GameResponse[]>([]);
-  const [selectedGameId, setSelectedGameId] = useState<number | null>(null);
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [levels, setLevels] = useState<LevelDisplay[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingLevels, setIsLoadingLevels] = useState(false);
@@ -65,21 +65,22 @@ export default function LevelsListPage() {
     }
   }, []);
 
-  const loadLevels = useCallback(async (gameId: number) => {
+  const loadLevels = useCallback(async (gameId: string) => {
     try {
       setIsLoadingLevels(true);
-      const response = await gamesService.getLevels(gameId);
+      const response = await gamesService.getLevels();
       if (response.data) {
+        const filtered = response.data.filter(l => l.game_id === gameId);
         setLevels(
-          response.data.map((level): LevelDisplay => ({
+          filtered.map((level): LevelDisplay => ({
             id: level.id,
             title: level.title,
             description: level.description ?? null,
             goal: level.goal ?? null,
-            levelNumber: level.levelNumber,
-            gameId: level.gameId,
-            createdAt: level.createdAt,
-            updatedAt: level.updatedAt ?? null,
+            levelNumber: level.level_number,
+            gameId: level.game_id,
+            createdAt: level.created_at,
+            updatedAt: level.updated_at ?? null,
           }))
         );
       }
@@ -100,7 +101,7 @@ export default function LevelsListPage() {
     }
   }, [selectedGameId, loadLevels]);
 
-  const handleDelete = async (levelId: number) => {
+  const handleDelete = async (levelId: string) => {
     try {
       await gamesService.deleteLevel(levelId);
       if (selectedGameId !== null) {
@@ -147,7 +148,7 @@ export default function LevelsListPage() {
     URL.revokeObjectURL(url);
   };
 
-  const formatDate = (date: Date): string => {
+  const formatDate = (date: string | Date): string => {
     return new Date(date).toLocaleDateString("es-ES", {
       day: "2-digit",
       month: "2-digit",
@@ -211,7 +212,7 @@ export default function LevelsListPage() {
                 <span className="text-sm text-muted-foreground">Juego:</span>
                 <Select
                   value={selectedGameId?.toString() ?? ""}
-                  onValueChange={(value) => setSelectedGameId(Number(value))}
+                  onValueChange={(value) => setSelectedGameId(value)}
                 >
                   <SelectTrigger className="w-[250px]">
                     <SelectValue placeholder="Selecciona un juego" />

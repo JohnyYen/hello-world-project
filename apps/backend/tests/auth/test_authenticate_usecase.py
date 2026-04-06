@@ -326,6 +326,63 @@ class TestAuthenticateUseCaseErrorHandling:
     """Test suite for error handling edge cases."""
 
     @pytest.mark.asyncio
+    async def test_execute_does_not_exist_error_converted_to_invalid_credentials(
+        self,
+    ):
+        """
+        RED: Verify that DoesNotExistError (or any user-not-found exception)
+        from the repository is caught and converted to InvalidCredentialsException.
+
+        This is the acceptance test for the bug fix: when a user doesn't exist,
+        the backend should return "Credenciales incorrectas" (401) instead of
+        an unhandled DoesNotExistError (500).
+        """
+        mock_db = MagicMock()
+        mock_user_repo = MagicMock()
+        # Simulate the DoesNotExistError that currently propagates unhandled
+        mock_user_repo.authenticate_by_username_or_email = AsyncMock(
+            side_effect=Exception("DoesNotExistError")
+        )
+
+        with patch(
+            "src.auth.application.usecase.authenticate_usecase.UserRepository",
+            return_value=mock_user_repo,
+        ):
+            uc = AuthenticateUseCase(db=mock_db)
+
+            # After fix: should raise InvalidCredentialsException, not generic Exception
+            with pytest.raises(InvalidCredentialsException) as exc_info:
+                await uc.execute(
+                    email="nonexistent@example.com", password="anypassword"
+                )
+
+            assert "Credenciales incorrectas" in str(exc_info.value)
+
+    @pytest.mark.asyncio
+    async def test_execute_repository_returns_none_converted_to_invalid_credentials(
+        self,
+    ):
+        """
+        RED: Verify that when repository returns None (user not found),
+        it's converted to InvalidCredentialsException instead of raising AttributeError.
+        """
+        mock_db = MagicMock()
+        mock_user_repo = MagicMock()
+        mock_user_repo.authenticate_by_username_or_email = AsyncMock(return_value=None)
+
+        with patch(
+            "src.auth.application.usecase.authenticate_usecase.UserRepository",
+            return_value=mock_user_repo,
+        ):
+            uc = AuthenticateUseCase(db=mock_db)
+
+            # After fix: should raise InvalidCredentialsException, not AttributeError
+            with pytest.raises(InvalidCredentialsException) as exc_info:
+                await uc.execute(email="nonexistent@example.com", password="anypassword")
+
+            assert "Credenciales incorrectas" in str(exc_info.value)
+
+    @pytest.mark.asyncio
     async def test_execute_database_error_handling(self, mock_user):
         """
         Verify database errors are handled gracefully.

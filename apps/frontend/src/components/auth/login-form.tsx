@@ -47,9 +47,9 @@ export function LoginForm({
                   required
                   aria-describedby="email-error"
                 />
-                {(state?.errors?.email || state?.errors?._form) && (
+                {state?.errors?.email && (
                   <FieldDescription id="email-error" className="text-red-500">
-                    {state.errors?.email?.[0] || state.errors?._form?.[0]}
+                    {state.errors.email[0]}
                   </FieldDescription>
                 )}
               </Field>
@@ -80,14 +80,14 @@ export function LoginForm({
                 <Button type="submit" disabled={isPending} variant="default" className="w-full">
                   {isPending ? "Iniciando sesión..." : "Iniciar Sesión"}
                 </Button>
-                {state?.message && (
-                  <FieldDescription className={state.success ? "text-green-500" : "text-red-500"}>
-                    {state.message}
-                  </FieldDescription>
-                )}
                 {state?.errors?._form && (
                   <FieldDescription className="text-red-500">
                     {state.errors._form[0]}
+                  </FieldDescription>
+                )}
+                {state?.message && state.success && (
+                  <FieldDescription className="text-green-500">
+                    {state.message}
                   </FieldDescription>
                 )}
                 <FieldDescription className="text-center">

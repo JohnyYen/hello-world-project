@@ -4,8 +4,9 @@ import { z } from "zod";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { Configuration, UsersApi } from "@workspace/api-client-ts";
+import { ApiError } from "@/api/client";
 import { login as authLogin, register as authRegister, getMe as authGetMe, changePassword as authChangePassword } from "@/services/auth";
+import { usersApi } from "@/api/client";
 
 // 📝 Type para las acciones
 export type ActionState = {
@@ -14,17 +15,10 @@ export type ActionState = {
   success?: boolean;
 };
 
-// 🔐 Helper para obtener instancia de Users API configurada
-async function getUsersApi(): Promise<UsersApi> {
+// 🔐 Helper para obtener token de auth
+async function getAuthToken(): Promise<string | undefined> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
-  
-  const config = new Configuration({
-    basePath: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
-    accessToken: token,
-  });
-  
-  return new UsersApi(config);
+  return cookieStore.get("auth_token")?.value;
 }
 
 // 🔐 Schema de validación para login
@@ -103,7 +97,7 @@ export async function changePasswordAction(
       };
     }
 
-    await authChangePassword(user.id, currentPassword, newPassword, token);
+    await authChangePassword(String(user.id), currentPassword, newPassword, token);
 
     return {
       success: true,
@@ -333,67 +327,40 @@ export async function createStudentAction(
       };
     }
 
-    const usersApi = await getUsersApi();
-    await usersApi.createStudentApiV1UsersStudentsPost({
-      studentCreate: {
-        ...validatedFields.data,
-        isActive: true,
-      }
-    });
-    
+    const token = await getAuthToken();
+    if (!token) {
+      return { success: false, message: "No autenticado" };
+    }
+
+    await usersApi.createStudent(
+      { ...validatedFields.data, is_active: true },
+      token
+    );
+
     // Revalidar caché
     revalidatePath("/dashboard/students");
-    
-    return { 
+
+    return {
       success: true,
-      message: "Estudiante creado exitosamente" 
+      message: "Estudiante creado exitosamente"
     };
-    
+
   } catch (error: unknown) {
-    // Enhanced error logging for debugging 403 issue
     console.error("Error creating student:", error);
-    
-    // Extract ResponseError details if available
+
     let errorDetail = "Error al guardar en base de datos";
-    let errorStatus: number | null = null;
-    let errorBody: unknown = null;
-    
-    if (error && typeof error === 'object') {
-      const err = error as Record<string, unknown>;
-      
-      // Check for ResponseError from api-client-ts
-      if (err.response && typeof err.response === 'object') {
-        const response = err.response as Record<string, unknown>;
-        errorStatus = response.status as number | null;
-        errorBody = response.body;
-        
-        // Try to parse body if it's a string
-        if (typeof response.body === 'string') {
-          try {
-            errorBody = JSON.parse(response.body);
-          } catch {
-            // Keep as string if not JSON
-          }
-        }
-        
-        console.error(`Backend response: ${response.status} ${response.statusText}`, errorBody);
-      }
-      
-      // Check for detail property (common in FastAPI errors)
-      if (err.detail && typeof err.detail === 'string') {
-        errorDetail = err.detail;
-      }
+
+    if (error instanceof ApiError) {
+      errorDetail = error.detail;
+      console.error(`Backend response: ${error.status} ${error.message}`);
+    } else if (error instanceof Error) {
+      errorDetail = error.message;
     }
-    
-    const message = error instanceof Error ? error.message : "Error al crear estudiante";
-    
-    // Include status in error detail for debugging
-    const statusInfo = errorStatus ? ` [HTTP ${errorStatus}]` : '';
-    
+
     return {
       success: false,
-      message,
-      errors: { _form: [errorDetail + statusInfo] },
+      message: errorDetail,
+      errors: { _form: [errorDetail] },
     };
   }
 }
@@ -442,28 +409,14 @@ export async function updateProfileAction(
     }
 
     const { name, lastname, email, department, contactPhone } = validatedFields.data;
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-    // Direct fetch call instead of API client (API client has header bug)
-    const response = await fetch(`${API_URL}/api/v1/users/professors/me`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        name: name || undefined,
-        lastname: lastname || undefined,
-        email: email || undefined,
-        department: department || undefined,
-        contact_phone: contactPhone || undefined,
-      }),
+    await usersApi.updateTeacherProfile(token, {
+      name: name || undefined,
+      lastname: lastname || undefined,
+      email: email || undefined,
+      department: department || undefined,
+      contact_phone: contactPhone || undefined,
     });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || `Error ${response.status}`);
-    }
 
     revalidatePath("/dashboard/account");
 

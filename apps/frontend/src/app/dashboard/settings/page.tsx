@@ -25,7 +25,13 @@ async function fetchTeacherSettings(): Promise<TeacherSettingsData> {
   // Intentar obtener settings del servidor
   try {
     const { getTeacherSettings } = await import("@/services/users");
-    const settings = await getTeacherSettings();
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token")?.value;
+    if (!token) {
+      throw new Error("No autenticado");
+    }
+    const settings = await getTeacherSettings(token);
     // Mapear snake_case (API) → camelCase (frontend)
     return {
       theme: settings.theme ?? "light",

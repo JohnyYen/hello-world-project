@@ -1,46 +1,25 @@
-import type {
-  StudentResponse,
-  StudentListResponse,
-} from '@workspace/api-client-ts';
-import type { Student } from '@/types/student.interface';
+import type { StudentResponse, StudentListResponse } from '@/api/types';
 
-function studentResponseToStudent(response: StudentResponse): Student {
-  const fullName = [response.name, response.lastname]
-    .filter(Boolean)
-    .join(' ')
-    .trim();
+/**
+ * Adapter to convert API responses to domain models.
+ */
 
-  const registrationDate = response.created_at
-    ? new Date(response.created_at).toISOString()
-    : new Date().toISOString();
-
+export function studentResponseToStudent(response: StudentResponse) {
   return {
-    id: String(response.id),
-    name: fullName || response.username,
+    id: response.id,
+    username: response.username,
     email: response.email,
-    maxLevel: 0,
-    status: response.is_active ? 'active' : 'inactive',
-    registrationDate,
-    lastActivity: response.updated_at
-      ? new Date(response.updated_at).toISOString()
-      : registrationDate,
-    completedLessons: 0,
-    totalLessons: 0,
-    progress: 0,
-    achievements: [],
-    course: 'General',
+    name: response.name,
+    lastname: response.lastname,
+    isActive: response.is_active,
+    createdAt: response.created_at,
+    updatedAt: response.updated_at,
   };
 }
 
-function studentListResponseToStudents(
-  list: StudentListResponse
-): Student[] {
-  return list.data.map(studentResponseToStudent);
+export function studentListResponseToStudents(response: StudentListResponse) {
+  return (response.data ?? []).map(studentResponseToStudent);
 }
 
-export {
-  studentResponseToStudent,
-  studentListResponseToStudents,
-};
-
+// Re-export types for convenience
 export type { StudentResponse, StudentListResponse };
