@@ -3,9 +3,13 @@
 import { createContext, use, useState, useEffect, type ReactNode } from "react";
 import { TeacherProfileResponse } from "@workspace/api-client-ts";
 import { authService, type LoginParams, type RegisterParams } from "@/services/auth";
+import { SimpleUser } from "@/lib/auth-server";
+
+// Union type to support both SimpleUser (from server) and TeacherProfileResponse (from API)
+type User = SimpleUser | TeacherProfileResponse;
 
 interface AuthContextValue {
-  user: TeacherProfileResponse | null;
+  user: User | null;
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -20,15 +24,15 @@ const TOKEN_KEY = "auth_token";
 
 interface AuthProviderProps {
   children: ReactNode;
-  initialUser?: TeacherProfileResponse | null;
+  initialUser?: User | null;
   initialToken?: string | null;
 }
 
 export function AuthProvider({ children, initialUser, initialToken }: AuthProviderProps) {
   // Si tenemos datos iniciales del servidor, confiar en ellos
   const hasServerData = initialUser !== null && initialToken !== null;
-  
-  const [user, setUser] = useState<TeacherProfileResponse | null>(initialUser ?? null);
+
+  const [user, setUser] = useState<User | null>(initialUser ?? null);
   const [token, setToken] = useState<string | null>(initialToken ?? null);
   const [isLoading, setIsLoading] = useState(false);
 
