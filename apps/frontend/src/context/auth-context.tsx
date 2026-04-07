@@ -3,78 +3,86 @@
 import { createContext, use, useState, useEffect, type ReactNode } from "react";
 import type { TeacherProfileResponse, UserResponse } from "@/api/types";
 import { authService, type LoginParams, type RegisterParams } from "@/services/auth";
-import { SimpleUser } from "@/lib/auth-server";
 
 // Union type to support SimpleUser (from server), TeacherProfileResponse, and UserResponse (from API login)
-type User = SimpleUser | TeacherProfileResponse | UserResponse;
+type User = TeacherProfileResponse | UserResponse | null;
 
 interface AuthContextValue {
-  user: User | null;
-  token: string | null;
+  user: User;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (params: LoginParams) => Promise<void>;
   register: (params: RegisterParams) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const TOKEN_KEY = "auth_token";
-
 interface AuthProviderProps {
   children: ReactNode;
-  initialUser?: User | null;
-  initialToken?: string | null;
 }
 
-export function AuthProvider({ children, initialUser, initialToken }: AuthProviderProps) {
-  // Si tenemos datos iniciales del servidor, confiar en ellos
-  const hasServerData = initialUser !== null && initialToken !== null;
+export function AuthProvider({ children }: AuthProviderProps) {
+  // Token is managed via HTTP-only cookies, no client-side storage needed
+  const [user, setUser] = useState<User>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [user, setUser] = useState<User | null>(initialUser ?? null);
-  const [token, setToken] = useState<string | null>(initialToken ?? null);
-  const [isLoading, setIsLoading] = useState(false);
-
+  // Fetch user profile on mount and when auth state changes
   useEffect(() => {
-    // Solo leer de localStorage si NO tenemos datos del servidor
-    if (!hasServerData) {
-      const storedToken = localStorage.getItem(TOKEN_KEY);
-      // Verificar que el token sea válido (no null, undefined string, etc.)
-      if (storedToken && storedToken !== "undefined" && storedToken !== "null") {
-        setToken(storedToken);
+    let cancelled = false;
+
+    const fetchUser = async () => {
+      try {
+        const userData = await authService.getMeFromCookie();
+        if (!cancelled) {
+          setUser(userData);
+          setIsAuthenticated(!!userData);
+        }
+      } catch {
+        // No valid session or profile fetch failed
+        if (!cancelled) {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
-    }
-  }, [hasServerData]);
+    };
 
-  const login = async (_params: LoginParams) => {
-    const response = await authService.login(_params);
-    const { access_token: accessToken, user: userData } = response;
+    fetchUser();
 
-    localStorage.setItem(TOKEN_KEY, accessToken);
-    setToken(accessToken);
+    return () => { cancelled = true };
+  }, []);
+
+  const login = async (params: LoginParams) => {
+    await authService.login(params);
+    // After login, cookie is set by server, fetch user profile
+    const userData = await authService.getMeFromCookie();
     setUser(userData);
+    setIsAuthenticated(true);
   };
 
-  const register = async (_params: RegisterParams) => {
-    const response = await authService.register(_params);
-    const { access_token: accessToken, user: userData } = response;
-
-    localStorage.setItem(TOKEN_KEY, accessToken);
-    setToken(accessToken);
+  const register = async (params: RegisterParams) => {
+    await authService.register(params);
+    // After register, cookie is set by server, fetch user profile
+    const userData = await authService.getMeFromCookie();
     setUser(userData);
+    setIsAuthenticated(true);
   };
 
-  const logout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    setToken(null);
+  const logout = async () => {
+    // Call Next.js API route to clear cookie server-side
+    await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
+    setIsAuthenticated(false);
   };
 
   const value: AuthContextValue = {
     user,
-    token,
-    isAuthenticated: !!token && !!user,
+    isAuthenticated,
     isLoading,
     login,
     register,

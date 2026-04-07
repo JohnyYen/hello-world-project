@@ -27,7 +27,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { gamesService } from "@/services/games";
 import type { GameResponse } from "@/api/types";
 
 interface LevelDisplay {
@@ -53,10 +52,14 @@ export default function LevelsListPage() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await gamesService.getGames();
-      if (response.data && response.data.length > 0) {
-        setGames(response.data);
-        setSelectedGameId(response.data[0].id);
+      // Use backend API via server-side fetch with cookie
+      const response = await fetch("/api/games");
+      if (!response.ok) throw new Error("Failed to load games");
+      const data = await response.json();
+      const gamesData = data.data || data;
+      if (gamesData && gamesData.length > 0) {
+        setGames(gamesData);
+        setSelectedGameId(gamesData[0].id);
       }
     } catch {
       setError("Error al cargar los juegos. Verifica que el backend esté disponible.");
@@ -68,11 +71,14 @@ export default function LevelsListPage() {
   const loadLevels = useCallback(async (gameId: string) => {
     try {
       setIsLoadingLevels(true);
-      const response = await gamesService.getLevels();
-      if (response.data) {
-        const filtered = response.data.filter(l => l.game_id === gameId);
+      const response = await fetch("/api/levels");
+      if (!response.ok) throw new Error("Failed to load levels");
+      const data = await response.json();
+      const levelsData = data.data || data;
+      if (levelsData) {
+        const filtered = levelsData.filter((l: { game_id: string }) => l.game_id === gameId);
         setLevels(
-          filtered.map((level): LevelDisplay => ({
+          filtered.map((level: { id: string; title: string; description: string | null; goal: string | null; level_number: number; game_id: string; created_at: string; updated_at: string | null }): LevelDisplay => ({
             id: level.id,
             title: level.title,
             description: level.description ?? null,
@@ -103,7 +109,8 @@ export default function LevelsListPage() {
 
   const handleDelete = async (levelId: string) => {
     try {
-      await gamesService.deleteLevel(levelId);
+      const response = await fetch(`/api/levels/${levelId}`, { method: "DELETE" });
+      if (!response.ok) throw new Error("Failed to delete level");
       if (selectedGameId !== null) {
         loadLevels(selectedGameId);
       }

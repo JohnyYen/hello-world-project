@@ -1,13 +1,26 @@
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { Student } from "@/types";
 import { getStudents as apiGetStudents, getStudent as apiGetStudent } from "@/services/users";
 
 /**
- * Obtiene el token de autenticación desde las cookies del servidor.
+ * Obtiene el token de autenticación desde múltiples fuentes:
+ * 1. Cookies del servidor (httpOnly)
+ * 2. Authorization header
  */
 async function getAuthToken(): Promise<string | undefined> {
+  // Intentar desde cookies del servidor
   const cookieStore = await cookies();
-  return cookieStore.get("auth_token")?.value;
+  const cookieToken = cookieStore.get("auth_token")?.value;
+  if (cookieToken) return cookieToken;
+
+  // Intentar desde Authorization header
+  const headersList = await headers();
+  const authHeader = headersList.get('authorization');
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.substring(7);
+  }
+
+  return undefined;
 }
 
 /**
@@ -19,22 +32,28 @@ export async function getStudentById(id: string): Promise<Student | null> {
     if (!token) return null;
 
     const response = await apiGetStudent(id, token);
-    if (!response.data) return null;
+    
+    // El backend devuelve directamente el objeto StudentResponse, no envuelto en ApiResponse
+    // response puede ser el objeto directo o estar dentro de data
+    const studentData = response.data || response;
+    
+    if (!studentData || !studentData.id) return null;
 
     return {
-      id: response.data.id,
-      name: `${response.data.name} ${response.data.lastname || ''}`.trim(),
-      email: response.data.email,
+      id: studentData.id,
+      name: `${studentData.name} ${studentData.lastname || ''}`.trim(),
+      email: studentData.email,
       maxLevel: 0,
-      status: response.data.is_active ? 'active' : 'inactive',
-      registrationDate: response.data.created_at ?? '',
-      lastActivity: response.data.updated_at ?? '',
+      status: studentData.is_active ? 'active' : 'inactive',
+      registrationDate: studentData.created_at ?? '',
+      lastActivity: studentData.updated_at ?? '',
       completedLessons: 0,
       totalLessons: 0,
       progress: 0,
       achievements: [],
     };
-  } catch {
+  } catch (error) {
+    console.error('Error fetching student by ID:', error);
     return null;
   }
 }

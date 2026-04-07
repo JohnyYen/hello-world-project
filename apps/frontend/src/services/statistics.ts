@@ -9,9 +9,9 @@ const API_BASE_URL = getApiBaseUrl();
 
 async function getAuthToken(): Promise<string> {
   if (typeof window !== "undefined") {
-    // Cliente: obtener token de localStorage (guardado por auth-context)
-    const token = localStorage.getItem("auth_token");
-    return token || "";
+    // Client-side: token is in HTTP-only cookie, not accessible from JS
+    // Return empty string; calls should use Next.js API routes as proxy
+    return "";
   } else {
     // Servidor: importar cookies dinámicamente
     const { cookies } = await import("next/headers");

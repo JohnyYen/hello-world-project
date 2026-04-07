@@ -20,13 +20,6 @@ interface UseDashboardStatsReturn {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010";
 
-// Get token from cookies (client-side)
-function getAuthToken(): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(/auth_token=([^;]+)/);
-  return match ? match[1] : null;
-}
-
 export function useDashboardStats(
   period: "7d" | "30d" | "3m" = "30d"
 ): UseDashboardStatsReturn {
@@ -42,21 +35,9 @@ export function useDashboardStats(
     setError(null);
 
     try {
-      const token = getAuthToken();
-      
-      const headers: HeadersInit = {
-        "Content-Type": "application/json",
-      };
-      
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
+      // Use Next.js API route as proxy (reads cookie server-side, forwards to backend)
       const response = await fetch(
-        `${API_BASE_URL}/api/v1/statistic/overview?period=${period}`,
-        {
-          headers,
-        }
+        `/api/statistic/overview?period=${period}`
       );
 
       if (!response.ok) {

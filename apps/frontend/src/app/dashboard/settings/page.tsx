@@ -1,5 +1,9 @@
-import { getServerUser } from "@/lib/auth-server";
-import { Settings } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
+import { Settings, Loader2 } from "lucide-react";
 import { SettingsContent } from "@/components/settings";
 
 export interface TeacherSettingsData {
@@ -7,80 +11,85 @@ export interface TeacherSettingsData {
   notificationsEnabled: boolean;
   notificationFrequency: string;
   interfaceLanguage: string;
-  // Session settings
   autoLogout: boolean;
   sessionDurationMinutes: number;
   rememberLogin: boolean;
-  // Appearance settings
   colorTheme: string;
   animationsEnabled: boolean;
-  // Notification settings (extended)
   emailNotifications: boolean;
-  // Language settings (extended)
   dateFormat: string;
   timezone: string;
 }
 
-async function fetchTeacherSettings(): Promise<TeacherSettingsData> {
-  // Intentar obtener settings del servidor
-  try {
-    const { getTeacherSettings } = await import("@/services/users");
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const token = cookieStore.get("auth_token")?.value;
-    if (!token) {
-      throw new Error("No autenticado");
+const DEFAULT_SETTINGS: TeacherSettingsData = {
+  theme: "light",
+  notificationsEnabled: true,
+  notificationFrequency: "realtime",
+  interfaceLanguage: "es",
+  autoLogout: false,
+  sessionDurationMinutes: 60,
+  rememberLogin: true,
+  colorTheme: "Indigo",
+  animationsEnabled: true,
+  emailNotifications: false,
+  dateFormat: "ddmmyyyy",
+  timezone: "gmt-5",
+};
+
+export default function SettingsPage() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const [settings, setSettings] = useState<TeacherSettingsData>(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+      return;
     }
-    const settings = await getTeacherSettings(token);
-    // Mapear snake_case (API) → camelCase (frontend)
-    return {
-      theme: settings.theme ?? "light",
-      notificationsEnabled: settings.notifications_enabled ?? true,
-      notificationFrequency: settings.notification_frequency ?? "realtime",
-      interfaceLanguage: settings.interface_language ?? "es",
-      // Session defaults
-      autoLogout: settings.auto_logout ?? false,
-      sessionDurationMinutes: settings.session_duration_minutes ?? 60,
-      rememberLogin: settings.remember_login ?? true,
-      // Appearance defaults
-      colorTheme: settings.color_theme ?? "Indigo",
-      animationsEnabled: settings.animations_enabled ?? true,
-      // Notification defaults
-      emailNotifications: settings.email_notifications ?? false,
-      // Language defaults
-      dateFormat: settings.date_format ?? "ddmmyyyy",
-      timezone: settings.timezone ?? "gmt-5",
-    };
-  } catch {
-    // Si falla (usuario sin perfil de profesor), usar valores por defecto
-    return {
-      theme: "light",
-      notificationsEnabled: true,
-      notificationFrequency: "realtime",
-      interfaceLanguage: "es",
-      autoLogout: false,
-      sessionDurationMinutes: 60,
-      rememberLogin: true,
-      colorTheme: "Indigo",
-      animationsEnabled: true,
-      emailNotifications: false,
-      dateFormat: "ddmmyyyy",
-      timezone: "gmt-5",
-    };
-  }
-}
 
-export default async function SettingsPage() {
-  // Verificar que el usuario esté autenticado
-  const { user } = await getServerUser();
-  
-  if (!user) {
-    // Si no hay usuario, redirigir al login
-    const { redirect } = await import("next/navigation");
-    redirect("/login");
-  }
+    if (isAuthenticated) {
+      // Try to fetch settings from API via Next.js proxy route
+      fetch("/api/users/professors/settings")
+        .then((res) => {
+          if (!res.ok) return;
+          return res.json();
+        })
+        .then((s) => {
+          if (s) {
+            setSettings({
+              theme: s.theme ?? "light",
+              notificationsEnabled: s.notifications_enabled ?? true,
+              notificationFrequency: s.notification_frequency ?? "realtime",
+              interfaceLanguage: s.interface_language ?? "es",
+              autoLogout: s.auto_logout ?? false,
+              sessionDurationMinutes: s.session_duration_minutes ?? 60,
+              rememberLogin: s.remember_login ?? true,
+              colorTheme: s.color_theme ?? "Indigo",
+              animationsEnabled: s.animations_enabled ?? true,
+              emailNotifications: s.email_notifications ?? false,
+              dateFormat: s.date_format ?? "ddmmyyyy",
+              timezone: s.timezone ?? "gmt-5",
+            });
+          }
+        })
+        .catch(() => {
+          // Use defaults if API fails
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [isAuthenticated, isLoading, router]);
 
-  const settings = await fetchTeacherSettings();
+  if (isLoading || loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Cargando configuración...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">

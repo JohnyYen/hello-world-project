@@ -15,7 +15,6 @@ import {
 import { PageHeader, PageHeaderDescription, PageHeaderTitle } from "@/components/ui/page-header";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { gamesService } from "@/services/games";
 import type { LevelUpdate } from "@/api/types";
 
 export default function EditLevelPage({
@@ -46,13 +45,16 @@ export default function EditLevelPage({
     try {
       setIsLoading(true);
       setError(null);
-      const response = await gamesService.getLevel(levelId);
-      if (response.data) {
-        setTitle(response.data.title);
-        setDescription(response.data.description ?? "");
-        setGoal(response.data.goal ?? "");
-        setLevelNumber(Number(response.data.level_number));
-        setGameId(response.data.game_id);
+      const response = await fetch(`/api/levels/${levelId}`);
+      if (!response.ok) throw new Error("Failed to load level");
+      const data = await response.json();
+      const levelData = data.data || data;
+      if (levelData) {
+        setTitle(levelData.title);
+        setDescription(levelData.description ?? "");
+        setGoal(levelData.goal ?? "");
+        setLevelNumber(Number(levelData.level_number));
+        setGameId(levelData.game_id);
       }
     } catch {
       setError("Error al cargar el nivel. Verifica que el backend esté disponible.");
@@ -78,7 +80,12 @@ export default function EditLevelPage({
         level_number: levelNumber,
       };
 
-      await gamesService.updateLevel(levelId, updateData);
+      const response = await fetch(`/api/levels/${levelId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updateData),
+      });
+      if (!response.ok) throw new Error("Failed to update level");
       setSuccess("Nivel actualizado correctamente");
       router.refresh();
     } catch {

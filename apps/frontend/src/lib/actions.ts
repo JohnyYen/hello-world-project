@@ -425,11 +425,18 @@ export async function updateProfileAction(
   } catch (error: unknown) {
     console.error("Error updating profile:", error);
     const message = error instanceof Error ? error.message : "Error al actualizar el perfil";
-    
+
     return {
       success: false,
       message,
       errors: { _form: [message] },
     };
   }
+}
+
+// 🔓 Logout Action - clears auth cookie
+export async function logoutAction(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete("auth_token");
+  revalidatePath("/");
 }
