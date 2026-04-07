@@ -1,8 +1,8 @@
-import { 
-  ApiResponse, 
-  ApiError, 
-  Student, 
-  CreateStudentRequest, 
+import {
+  ApiResponse,
+  ApiError,
+  Student,
+  CreateStudentRequest,
   UpdateStudentRequest,
   StudentMetrics,
   StudentProgress,
@@ -16,6 +16,13 @@ import {
   LoginResponse,
   AuthUser
 } from '@/types/api';
+import type {
+  Course,
+  CourseMetrics,
+  CourseProgressOverTime,
+  StudentActivitySummary,
+  CourseReportKPIs,
+} from '@/types/course-report.interface';
 
 /**
  * 🚀 API Client Type-Safe para Next.js 15
@@ -257,6 +264,40 @@ export class ReportsService {
   }
 }
 
+export class CourseReportsService {
+  // eslint-disable-next-line no-unused-vars
+  constructor(private _client: APIClient) {}
+
+  // 📚 Get all courses with enrollment counts
+  async getCourses(): Promise<ApiResponse<Course[]>> {
+    return this._client.get('/courses/');
+  }
+
+  // 📊 Get report-level KPIs
+  async getReportKPIs(): Promise<ApiResponse<CourseReportKPIs>> {
+    return this._client.get('/courses/reports/kpis');
+  }
+
+  // 📈 Get metrics for multiple courses
+  async getCourseMetrics(courseIds: string[]): Promise<ApiResponse<CourseMetrics[]>> {
+    return this._client.get('/courses/metrics', {
+      params: { course_ids: courseIds.join(',') },
+    });
+  }
+
+  // 📉 Get progress over time for a course
+  async getProgressOverTime(courseId: string): Promise<ApiResponse<CourseProgressOverTime[]>> {
+    return this._client.get(`/courses/${courseId}/progress-over-time`);
+  }
+
+  // 📅 Get activity summary for a course
+  async getActivitySummary(courseId: string, days = 30): Promise<ApiResponse<StudentActivitySummary[]>> {
+    return this._client.get(`/courses/${courseId}/activity-summary`, {
+      params: { days },
+    });
+  }
+}
+
 /**
  * @deprecated desde 2026-03-19
  * 
@@ -323,6 +364,7 @@ export class AuthService {
 // 🏭 Service instances
 export const studentService = new StudentService(apiClient);
 export const reportsService = new ReportsService(apiClient);
+export const courseReportsService = new CourseReportsService(apiClient);
 
 /**
  * @deprecated authService - usar funciones desde `@/services/auth` (login, register, getMe, logout, changePassword)

@@ -4,7 +4,7 @@
  */
 
 export interface Course {
-  id: string;
+  id: number | string;
   name: string;
   period: string;
   schoolYear: string;

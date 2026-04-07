@@ -9,3 +9,6 @@ from src.statistic.domain import Feedback, MetricType, Progress
 
 # Sync Domain Models
 from src.sync.domain import SyncSession, SyncEvent
+
+# Course Domain Models
+from src.course.domain import Course, CourseEnrollment

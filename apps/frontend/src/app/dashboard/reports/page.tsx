@@ -21,12 +21,7 @@ import { MetricCard, LineChart as LineChartComponent, BarChart, DonutChart } fro
 import { ExportButton } from '@/components/export/ExportButton';
 import { CourseMultiSelector } from '@/components/reports/course-multi-selector';
 import { cn } from '@/lib/utils';
-import { 
-  getCourses, 
-  getSelectedCourseMetrics, 
-  getCourseProgressOverTime,
-  getReportKPIs 
-} from '@/components/reports/course-report-data';
+import { courseReportsService, apiClient } from '@/lib/api-client';
 import type { Course, CourseMetrics, CourseReportKPIs, CourseProgressOverTime } from '@/types/course-report.interface';
 
 // Utility functions
@@ -131,20 +126,23 @@ export default function ReportsPage() {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const [coursesData, kpisData] = await Promise.all([
-          getCourses(),
-          getReportKPIs()
+        const [coursesResponse, kpisResponse] = await Promise.all([
+          courseReportsService.getCourses(),
+          courseReportsService.getReportKPIs()
         ]);
-        
+
+        const coursesData = coursesResponse.data || [];
+        const kpisData = kpisResponse.data || null;
+
         setCourses(coursesData);
         setKpis(kpisData);
-        
+
         // Select latest year by default
         if (coursesData.length > 0) {
           const sorted = [...coursesData].sort((a, b) => b.schoolYear.localeCompare(a.schoolYear));
           const latestSchoolYear = sorted[0].schoolYear;
           const latestYearCourses = coursesData.filter(c => c.schoolYear === latestSchoolYear);
-          setSelectedCourses(latestYearCourses.map(c => c.id));
+          setSelectedCourses(latestYearCourses.map(c => String(c.id)));
         }
       } catch (error) {
         console.error('Error loading reports data:', error);
@@ -164,18 +162,20 @@ export default function ReportsPage() {
       }
 
       try {
-        const metrics = await getSelectedCourseMetrics(selectedCourses);
+        const metricsResponse = await courseReportsService.getCourseMetrics(selectedCourses);
+        const metrics = metricsResponse.data || [];
         const sortedMetrics = [...metrics].sort((a, b) => {
           if (a.schoolYear === b.schoolYear) {
             return a.period.localeCompare(b.period);
           }
           return a.schoolYear.localeCompare(b.schoolYear);
         });
-        
+
         setSelectedMetrics(sortedMetrics);
 
         const progressPromises = selectedCourses.map(async (courseId) => {
-          const data = await getCourseProgressOverTime(courseId);
+          const response = await courseReportsService.getProgressOverTime(courseId);
+          const data = response.data || [];
           return { courseId, data };
         });
 
