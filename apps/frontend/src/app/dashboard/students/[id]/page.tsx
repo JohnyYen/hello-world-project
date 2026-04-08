@@ -7,7 +7,7 @@ export default async function StudentPage({ params }: { params: Promise<{ id: st
   const student = await getStudentById(id);
 
   if (!student) {
-    return <StudentNotFound studentId={id} />;
+    return <StudentNotFound />;
   }
 
   return <StudentDetail student={student} studentId={id} />;

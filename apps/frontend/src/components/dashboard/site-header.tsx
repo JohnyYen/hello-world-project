@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/shared/navigation/nav-user";
@@ -30,8 +31,14 @@ const languages = [
 ];
 
 export function SiteHeader() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [currentLang, setCurrentLang] = useState("es");
+
+  const handleLogout = (): void => {
+    logout();
+    router.push("/login");
+  };
 
   // If still loading, show skeleton
   if (isLoading) {
@@ -114,7 +121,7 @@ export function SiteHeader() {
           <ThemeToggle />
 
           {/* User Menu */}
-          <NavUser user={navUser} />
+          <NavUser user={navUser} onLogout={handleLogout} />
         </div>
       </div>
     </header>

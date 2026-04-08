@@ -2,18 +2,17 @@ import { AuthProvider } from "@/context/auth-context";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { AppSidebar, SiteHeader } from "@/components/dashboard";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { getServerUser } from "@/lib/auth-server";
 
 export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Obtener el usuario desde la cookie del servidor
-  const { user, token } = await getServerUser();
-
+  // Don't pass server auth data - let the client handle auth via localStorage.
+  // The Server Action login path sets httpOnly cookies, but the client-side
+  // login path uses localStorage. To support both, we let the client manage auth.
   return (
-    <AuthProvider initialUser={user} initialToken={token}>
+    <AuthProvider>
       <AuthGuard>
         <div>
           <SidebarProvider
