@@ -38,22 +38,28 @@ class GetCourseReportUseCase:
 
     async def execute_metrics(self, course_ids: List[int]) -> List[Dict]:
         """
-        Obtiene métricas para múltiples cursos.
+        Obtiene métricas para múltiples cursos usando batch queries (2 queries total).
         """
+        if not course_ids:
+            return []
+
+        # Batch: 2 queries total regardless of course count
+        batch_metrics = await self.progress_repo.aggregate_by_course_ids(course_ids)
+        courses = await self.course_repo.get_courses_by_ids(course_ids)
+        course_map = {c.id: c for c in courses}
+
         results = []
         for course_id in course_ids:
-            student_ids = await self.course_repo.get_student_ids_for_course(course_id)
-            metrics = await self.progress_repo.aggregate_by_student_ids(student_ids)
-
-            course_result = await self.course_repo.get_by_id(course_id)
-            if not course_result:
+            course = course_map.get(course_id)
+            if not course:
                 continue
 
+            metrics = batch_metrics.get(course_id, {})
             results.append({
                 "course_id": str(course_id),
-                "course_name": course_result.name,
-                "period": course_result.display_period or f"{course_result.school_year} - {course_result.period_label}",
-                "school_year": course_result.school_year,
+                "course_name": course.name,
+                "period": course.display_period or f"{course.school_year} - {course.period_label}",
+                "school_year": course.school_year,
                 **metrics,
             })
 
@@ -61,19 +67,33 @@ class GetCourseReportUseCase:
 
     async def execute_kpis(self) -> Dict:
         """
-        Obtiene KPIs generales para todos los cursos.
+        Obtiene KPIs generales para todos los cursos usando batch query (2 queries total).
         """
         course_tuples = await self.course_repo.get_all_with_enrollment_counts()
-        all_metrics = []
+        all_course_ids = [c.id for c, _ in course_tuples]
 
+        if not all_course_ids:
+            return {
+                "totalCourses": 0, "totalStudents": 0,
+                "overallCompletionRate": 0, "overallAverageGrade": 0,
+                "topPerformingCourse": None, "needsAttentionCourse": None,
+                "yearOverYearProgress": 0, "yearOverYearGrade": 0,
+            }
+
+        # Single batch query for all course metrics
+        batch_metrics = await self.progress_repo.aggregate_by_course_ids(all_course_ids)
+        course_map = {c.id: c for c, _ in course_tuples}
+
+        all_metrics = []
         for course, _ in course_tuples:
-            student_ids = await self.course_repo.get_student_ids_for_course(course.id)
-            metrics = await self.progress_repo.aggregate_by_student_ids(student_ids)
-            metrics["course_id"] = str(course.id)
-            metrics["course_name"] = course.name
-            metrics["period"] = course.display_period or f"{course.school_year} - {course.period_label}"
-            metrics["school_year"] = course.school_year
-            all_metrics.append(metrics)
+            metrics = batch_metrics.get(course.id, {})
+            all_metrics.append({
+                "course_id": str(course.id),
+                "course_name": course.name,
+                "period": course.display_period or f"{course.school_year} - {course.period_label}",
+                "school_year": course.school_year,
+                **metrics,
+            })
 
         total_students = sum(m["total_students"] for m in all_metrics)
         avg_completion = (
@@ -136,6 +156,7 @@ class GetCourseReportUseCase:
     def _build_metrics_response(self, metrics: Optional[Dict]) -> Optional[Dict]:
         if not metrics:
             return None
+        # Build new dict instead of mutating the repo result
         return {
             "course_id": metrics["course_id"],
             "course_name": metrics["course_name"],
@@ -146,12 +167,14 @@ class GetCourseReportUseCase:
             "completionRate": metrics["completion_rate"],
             "studentsCompleted": metrics["students_completed"],
             "averageActiveTime": metrics["average_active_time"],
+            # TODO: Implementar cálculo real desde logs de actividad del servidor
             "dailyActiveUsers": 0,
             "weeklyActiveUsers": 0,
             "averageSessionsPerStudent": metrics["average_sessions"],
             "highPerformers": metrics["high_performers"],
             "mediumPerformers": metrics["medium_performers"],
             "lowPerformers": metrics["low_performers"],
+            # TODO: Implementar cálculo de tendencias comparando períodos consecutivos
             "progressTrend": 0.0,
             "gradeTrend": 0.0,
             "engagementTrend": 0.0,

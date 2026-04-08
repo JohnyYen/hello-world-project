@@ -265,35 +265,43 @@ export class ReportsService {
 }
 
 export class CourseReportsService {
-  // eslint-disable-next-line no-unused-vars
   constructor(private _client: APIClient) {}
 
-  // 📚 Get all courses with enrollment counts
   async getCourses(): Promise<ApiResponse<Course[]>> {
     return this._client.get('/courses/');
   }
 
-  // 📊 Get report-level KPIs
   async getReportKPIs(): Promise<ApiResponse<CourseReportKPIs>> {
     return this._client.get('/courses/reports/kpis');
   }
 
-  // 📈 Get metrics for multiple courses
-  async getCourseMetrics(courseIds: string[]): Promise<ApiResponse<CourseMetrics[]>> {
+  async getCourseMetrics(
+    courseIds: string[],
+    options?: { signal?: AbortSignal },
+  ): Promise<ApiResponse<CourseMetrics[]>> {
     return this._client.get('/courses/metrics', {
       params: { course_ids: courseIds.join(',') },
+      signal: options?.signal,
     });
   }
 
-  // 📉 Get progress over time for a course
-  async getProgressOverTime(courseId: string): Promise<ApiResponse<CourseProgressOverTime[]>> {
-    return this._client.get(`/courses/${courseId}/progress-over-time`);
+  async getProgressOverTime(
+    courseId: string,
+    options?: { signal?: AbortSignal },
+  ): Promise<ApiResponse<CourseProgressOverTime[]>> {
+    return this._client.get(`/courses/${courseId}/progress-over-time`, {
+      signal: options?.signal,
+    });
   }
 
-  // 📅 Get activity summary for a course
-  async getActivitySummary(courseId: string, days = 30): Promise<ApiResponse<StudentActivitySummary[]>> {
+  async getActivitySummary(
+    courseId: string,
+    days = 30,
+    options?: { signal?: AbortSignal },
+  ): Promise<ApiResponse<StudentActivitySummary[]>> {
     return this._client.get(`/courses/${courseId}/activity-summary`, {
       params: { days },
+      signal: options?.signal,
     });
   }
 }

@@ -155,14 +155,25 @@ export default function ReportsPage() {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+    let cancelled = false;
+
     const loadSelectedMetrics = async () => {
       if (selectedCourses.length === 0) {
-        setSelectedMetrics([]);
+        if (!cancelled) {
+          setSelectedMetrics([]);
+          setProgressData({});
+        }
         return;
       }
 
       try {
-        const metricsResponse = await courseReportsService.getCourseMetrics(selectedCourses);
+        const metricsResponse = await courseReportsService.getCourseMetrics(
+          selectedCourses,
+          { signal: controller.signal }
+        );
+        if (cancelled) return;
+
         const metrics = metricsResponse.data || [];
         const sortedMetrics = [...metrics].sort((a, b) => {
           if (a.schoolYear === b.schoolYear) {
@@ -174,23 +185,33 @@ export default function ReportsPage() {
         setSelectedMetrics(sortedMetrics);
 
         const progressPromises = selectedCourses.map(async (courseId) => {
-          const response = await courseReportsService.getProgressOverTime(courseId);
-          const data = response.data || [];
-          return { courseId, data };
+          const response = await courseReportsService.getProgressOverTime(courseId, {
+            signal: controller.signal,
+          });
+          return { courseId, data: response.data || [] };
         });
 
         const progressResults = await Promise.all(progressPromises);
+        if (cancelled) return;
+
         const progressMap: Record<string, CourseProgressOverTime[]> = {};
         progressResults.forEach(({ courseId, data }) => {
           progressMap[courseId] = data;
         });
         setProgressData(progressMap);
       } catch (error) {
-        console.error('Error loading selected metrics:', error);
+        if (!cancelled && !(error instanceof DOMException && error.name === 'AbortError')) {
+          console.error('Error loading selected metrics:', error);
+        }
       }
     };
 
     loadSelectedMetrics();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
   }, [selectedCourses]);
 
   const toggleCourse = (courseId: string) => {

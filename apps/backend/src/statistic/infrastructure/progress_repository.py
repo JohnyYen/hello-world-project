@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, case
+from sqlalchemy import select, func, text
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.statistic.domain.progress import Progress
 
@@ -124,7 +124,7 @@ class ProgressRepository(BaseRepository[Progress]):
         student_ids: List[int],
     ) -> dict:
         """
-        Agrega métricas de progreso para una lista de estudiantes.
+        Agrega métricas de progreso para una lista de estudiantes usando SQL nativo.
 
         Returns:
             Dict con: average_progress, average_grade, completion_rate,
@@ -139,41 +139,38 @@ class ProgressRepository(BaseRepository[Progress]):
                 "medium_performers": 0, "low_performers": 0, "total_students": 0,
             }
 
-        # Get all progress records for these students
-        query = select(Progress).where(Progress.student_id.in_(student_ids))
-        result = await self.db.execute(query)
-        progresses = result.scalars().all()
+        # Raw SQL aggregation with GROUP BY per student
+        query = text("""
+            SELECT
+                student_id,
+                AVG(efficiency_rating) as avg_efficiency,
+                SUM(attempt_count) as total_attempts,
+                COUNT(*) as record_count,
+                MAX(CASE WHEN efficiency_rating > 0 OR objectives_completed > 0
+                    THEN 1 ELSE 0 END) as has_progress
+            FROM progresses
+            WHERE student_id = ANY(:student_ids)
+              AND deleted_at IS NULL
+            GROUP BY student_id
+        """)
+        result = await self.db.execute(query, {"student_ids": student_ids})
+        rows = result.fetchall()
 
-        if not progresses:
+        total_students = len(student_ids)
+
+        if not rows:
             return {
                 "average_progress": 0, "average_grade": 0, "completion_rate": 0,
                 "students_completed": 0, "average_active_time": 0,
                 "average_sessions": 0, "high_performers": 0,
-                "medium_performers": 0, "low_performers": 0, "total_students": len(student_ids),
+                "medium_performers": 0, "low_performers": 0, "total_students": total_students,
             }
 
-        # Aggregate per student
-        student_stats = {}
-        for p in progresses:
-            if p.student_id not in student_stats:
-                student_stats[p.student_id] = {
-                    "efficiency_sum": 0, "attempts_sum": 0, "count": 0, "has_progress": False
-                }
-            student_stats[p.student_id]["efficiency_sum"] += p.efficiency_rating
-            student_stats[p.student_id]["attempts_sum"] += p.attempt_count
-            student_stats[p.student_id]["count"] += 1
-            if p.efficiency_rating > 0 or p.objectives_completed > 0:
-                student_stats[p.student_id]["has_progress"] = True
+        all_efficiencies = [float(r.avg_efficiency) for r in rows]
+        all_attempts = [int(r.total_attempts) for r in rows]
+        students_completed = sum(1 for r in rows if r.has_progress)
 
-        total_students = len(student_ids)
-        students_with_data = len(student_stats)
-        students_completed = sum(1 for s in student_stats.values() if s["has_progress"])
-
-        all_efficiencies = [s["efficiency_sum"] / max(s["count"], 1) for s in student_stats.values()]
-        all_attempts = [s["attempts_sum"] for s in student_stats.values()]
-
-        avg_progress = sum(all_efficiencies) / max(len(all_efficiencies), 1)
-        avg_grade = avg_progress  # Same source in current schema
+        avg_progress = sum(all_efficiencies) / len(all_efficiencies)
         completion_rate = (students_completed / max(total_students, 1)) * 100
         avg_active_time = sum(all_attempts) * 5  # 5 min per attempt convention
         avg_sessions = sum(all_attempts) / max(len(all_attempts), 1)
@@ -185,7 +182,7 @@ class ProgressRepository(BaseRepository[Progress]):
 
         return {
             "average_progress": round(avg_progress, 1),
-            "average_grade": round(avg_grade, 1),
+            "average_grade": round(avg_progress, 1),
             "completion_rate": round(completion_rate, 1),
             "students_completed": students_completed,
             "average_active_time": round(avg_active_time, 1),
@@ -195,6 +192,83 @@ class ProgressRepository(BaseRepository[Progress]):
             "low_performers": low,
             "total_students": total_students,
         }
+
+    async def aggregate_by_course_ids(
+        self,
+        course_ids: List[int],
+    ) -> Dict[int, dict]:
+        """
+        Computa métricas agregadas para múltiples cursos en una sola query SQL.
+
+        Args:
+            course_ids: Lista de IDs de cursos a agregar.
+
+        Returns:
+            Dict mapeando course_id -> dict de métricas agregadas.
+            Cursos sin enrollments retornan métricas en cero.
+        """
+        if not course_ids:
+            return {}
+
+        # Single SQL query: JOIN course_enrollments + progresses, GROUP BY course_id
+        query = text("""
+            SELECT
+                ce.course_id,
+                COUNT(DISTINCT ce.student_id) AS total_students,
+                COALESCE(AVG(sa.avg_efficiency), 0) AS average_progress,
+                COALESCE(COUNT(DISTINCT CASE WHEN sa.has_progress = 1 THEN ce.student_id END) * 100.0
+                    / NULLIF(COUNT(DISTINCT ce.student_id), 0), 0) AS completion_rate,
+                COUNT(DISTINCT CASE WHEN sa.has_progress = 1 THEN ce.student_id END) AS students_completed,
+                COALESCE(SUM(sa.total_attempts), 0) AS total_attempts,
+                COALESCE(AVG(sa.total_attempts), 0) AS avg_sessions,
+                COUNT(DISTINCT CASE WHEN sa.avg_efficiency >= 80 THEN ce.student_id END) AS high_performers,
+                COUNT(DISTINCT CASE WHEN sa.avg_efficiency BETWEEN 50 AND 79 THEN ce.student_id END) AS medium_performers,
+                COUNT(DISTINCT CASE WHEN sa.avg_efficiency < 50 THEN ce.student_id END) AS low_performers
+            FROM course_enrollments ce
+            LEFT JOIN (
+                SELECT
+                    student_id,
+                    AVG(efficiency_rating) AS avg_efficiency,
+                    SUM(attempt_count) AS total_attempts,
+                    MAX(CASE WHEN efficiency_rating > 0 OR objectives_completed > 0
+                        THEN 1 ELSE 0 END) AS has_progress
+                FROM progresses
+                WHERE deleted_at IS NULL
+                GROUP BY student_id
+            ) sa ON ce.student_id = sa.student_id
+            WHERE ce.course_id = ANY(:course_ids)
+              AND ce.deleted_at IS NULL
+            GROUP BY ce.course_id
+        """)
+        result = await self.db.execute(query, {"course_ids": course_ids})
+        rows = result.fetchall()
+
+        metrics_map: Dict[int, dict] = {}
+        for row in rows:
+            metrics_map[row.course_id] = {
+                "average_progress": round(float(row.average_progress), 1),
+                "average_grade": round(float(row.average_progress), 1),
+                "completion_rate": round(float(row.completion_rate), 1),
+                "students_completed": int(row.students_completed),
+                "average_active_time": round(float(row.total_attempts) * 5, 1),
+                "average_sessions": round(float(row.avg_sessions), 1),
+                "high_performers": int(row.high_performers),
+                "medium_performers": int(row.medium_performers),
+                "low_performers": int(row.low_performers),
+                "total_students": int(row.total_students),
+            }
+
+        # Ensure all requested course_ids are present (zero out missing ones)
+        for cid in course_ids:
+            if cid not in metrics_map:
+                metrics_map[cid] = {
+                    "average_progress": 0, "average_grade": 0, "completion_rate": 0,
+                    "students_completed": 0, "average_active_time": 0,
+                    "average_sessions": 0, "high_performers": 0,
+                    "medium_performers": 0, "low_performers": 0, "total_students": 0,
+                }
+
+        return metrics_map
 
     async def get_progress_over_time_by_student_ids(
         self,
@@ -209,8 +283,8 @@ class ProgressRepository(BaseRepository[Progress]):
         if not student_ids:
             return []
 
-        # Use raw SQL for date extraction
-        query = """
+        # Return raw month/year integers - frontend handles locale formatting
+        query = text("""
             SELECT
                 EXTRACT(MONTH FROM created_at) as month,
                 EXTRACT(YEAR FROM created_at) as year,
@@ -221,10 +295,8 @@ class ProgressRepository(BaseRepository[Progress]):
               AND deleted_at IS NULL
             GROUP BY EXTRACT(MONTH FROM created_at), EXTRACT(YEAR FROM created_at)
             ORDER BY year, month
-        """
-        result = await self.db.execute(
-            query, {"student_ids": student_ids}
-        )
+        """)
+        result = await self.db.execute(query, {"student_ids": student_ids})
         rows = result.fetchall()
 
         month_names = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
@@ -234,7 +306,7 @@ class ProgressRepository(BaseRepository[Progress]):
             {
                 "date": f"{month_names[int(r[0]) - 1]} {int(r[1])}",
                 "averageProgress": round(float(r[2]), 1),
-                "averageGrade": round(float(r[2]), 1),  # Same source
+                "averageGrade": round(float(r[2]), 1),
             }
             for r in rows
         ]
@@ -253,7 +325,8 @@ class ProgressRepository(BaseRepository[Progress]):
         if not student_ids:
             return []
 
-        query = """
+        # Use text() with bound parameters - make_interval requires literal value
+        query = text("""
             SELECT
                 DATE(created_at) as activity_date,
                 COUNT(DISTINCT student_id) as active_students,
@@ -261,15 +334,12 @@ class ProgressRepository(BaseRepository[Progress]):
                 AVG(attempt_count) * 5 as avg_session_time
             FROM progresses
             WHERE student_id = ANY(:student_ids)
-              AND created_at >= CURRENT_DATE - INTERVAL ':days days'
+              AND created_at >= CURRENT_DATE - make_interval(days := :days)
               AND deleted_at IS NULL
             GROUP BY DATE(created_at)
             ORDER BY activity_date
-        """
-        result = await self.db.execute(
-            query.replace(":days", str(days)),
-            {"student_ids": student_ids}
-        )
+        """)
+        result = await self.db.execute(query, {"student_ids": student_ids, "days": days})
         rows = result.fetchall()
 
         return [

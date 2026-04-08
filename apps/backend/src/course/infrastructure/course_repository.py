@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
@@ -47,3 +47,43 @@ class CourseRepository(BaseRepository[Course]):
         )
         result = await self.db.execute(query)
         return [row[0] for row in result.all()]
+
+    async def get_all_student_ids_batch(
+        self,
+        course_ids: Optional[List[int]] = None,
+    ) -> Dict[int, List[int]]:
+        """
+        Obtiene IDs de estudiantes para múltiples cursos en una sola query.
+
+        Args:
+            course_ids: Si se proporciona, filtra solo estos cursos.
+                        Si None, retorna todos los cursos.
+
+        Returns:
+            Dict mapeando course_id -> lista de student_ids.
+        """
+        query = select(CourseEnrollment.course_id, CourseEnrollment.student_id)
+        if course_ids:
+            query = query.where(CourseEnrollment.course_id.in_(course_ids))
+
+        result = await self.db.execute(query)
+        rows = result.all()
+
+        mapping: Dict[int, List[int]] = {}
+        for course_id, student_id in rows:
+            if course_id not in mapping:
+                mapping[course_id] = []
+            mapping[course_id].append(student_id)
+
+        return mapping
+
+    async def get_courses_by_ids(self, course_ids: List[int]) -> List[Course]:
+        """
+        Obtiene múltiples objetos Course por ID en una sola query.
+        """
+        query = select(Course).where(
+            Course.id.in_(course_ids),
+            Course.is_deleted == False,
+        )
+        result = await self.db.execute(query)
+        return list(result.scalars().all())

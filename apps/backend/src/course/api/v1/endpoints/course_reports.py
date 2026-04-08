@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
@@ -67,8 +67,7 @@ async def get_course_metrics_single(
     """
     metrics_list = await usecase.execute_metrics([course_id])
     if not metrics_list:
-        from fastapi import HTTPException
-        raise HTTPException(status_code=404, detail="Course not found")
+        raise HTTPException(status_code=404, detail="Course not found or has no metrics")
     return schemas.CourseMetricsResponse.model_validate(metrics_list[0])
 
 
