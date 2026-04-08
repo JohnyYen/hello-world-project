@@ -24,19 +24,13 @@ export interface TeacherProfileUpdate {
      * @type {string}
      * @memberof TeacherProfileUpdate
      */
-    name?: string | null;
+    avatar_url?: string | null;
     /**
      * 
      * @type {string}
      * @memberof TeacherProfileUpdate
      */
-    lastname?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof TeacherProfileUpdate
-     */
-    email?: string | null;
+    contact_phone?: string | null;
     /**
      * 
      * @type {string}
@@ -48,13 +42,19 @@ export interface TeacherProfileUpdate {
      * @type {string}
      * @memberof TeacherProfileUpdate
      */
-    contactPhone?: string | null;
+    email?: string | null;
     /**
      * 
      * @type {string}
      * @memberof TeacherProfileUpdate
      */
-    avatarUrl?: string | null;
+    lastname?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherProfileUpdate
+     */
+    name?: string | null;
 }
 
 /**
@@ -74,12 +74,12 @@ export function TeacherProfileUpdateFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'name': json['name'] == null ? undefined : json['name'],
-        'lastname': json['lastname'] == null ? undefined : json['lastname'],
-        'email': json['email'] == null ? undefined : json['email'],
+        'avatar_url': json['avatar_url'] == null ? undefined : json['avatar_url'],
+        'contact_phone': json['contact_phone'] == null ? undefined : json['contact_phone'],
         'department': json['department'] == null ? undefined : json['department'],
-        'contactPhone': json['contact_phone'] == null ? undefined : json['contact_phone'],
-        'avatarUrl': json['avatar_url'] == null ? undefined : json['avatar_url'],
+        'email': json['email'] == null ? undefined : json['email'],
+        'lastname': json['lastname'] == null ? undefined : json['lastname'],
+        'name': json['name'] == null ? undefined : json['name'],
     };
 }
 
@@ -94,12 +94,12 @@ export function TeacherProfileUpdateToJSONTyped(value?: TeacherProfileUpdate | n
 
     return {
         
-        'name': value['name'],
-        'lastname': value['lastname'],
-        'email': value['email'],
+        'avatar_url': value['avatar_url'],
+        'contact_phone': value['contact_phone'],
         'department': value['department'],
-        'contact_phone': value['contactPhone'],
-        'avatar_url': value['avatarUrl'],
+        'email': value['email'],
+        'lastname': value['lastname'],
+        'name': value['name'],
     };
 }
 

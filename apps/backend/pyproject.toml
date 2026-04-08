@@ -42,7 +42,6 @@ dev = [
     "ruff>=0.8.0",
     "pip-audit>=2.7.0",
     "types-passlib>=1.7.0",
-    "types-bcrypt>=4.1.0",
     "types-python-jose>=3.3.0",
 ]
 
@@ -90,3 +89,8 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+
+[dependency-groups]
+dev = [
+    "aiosqlite>=0.22.1",
+]

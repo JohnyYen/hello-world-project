@@ -1,10 +1,25 @@
 'use client'
+import { useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/components/theme/useTheme";
 import { Button } from "@/components/ui/button";
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  initialTheme?: string;
+}
+
+export function ThemeToggle({ initialTheme }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
+
+  // Initialize theme from backend if provided
+  useEffect(() => {
+    if (initialTheme && (initialTheme === "light" || initialTheme === "dark")) {
+      // Only set if different from current (to avoid unnecessary backend calls)
+      if (theme !== initialTheme) {
+        setTheme(initialTheme);
+      }
+    }
+  }, [initialTheme]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Button

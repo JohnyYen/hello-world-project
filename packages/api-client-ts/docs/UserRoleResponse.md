@@ -8,7 +8,7 @@ Esquema para respuesta de rol
 Name | Type
 ------------ | -------------
 `id` | number
-`roleName` | string
+`role_name` | string
 
 ## Example
 
@@ -18,7 +18,7 @@ import type { UserRoleResponse } from ''
 // TODO: Update the object below with actual values
 const example = {
   "id": null,
-  "roleName": null,
+  "role_name": null,
 } satisfies UserRoleResponse
 
 console.log(example)

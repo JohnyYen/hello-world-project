@@ -21,18 +21,6 @@ import { mapValues } from '../runtime';
 export interface LevelUpdate {
     /**
      * 
-     * @type {number}
-     * @memberof LevelUpdate
-     */
-    levelNumber?: number | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof LevelUpdate
-     */
-    title?: string | null;
-    /**
-     * 
      * @type {string}
      * @memberof LevelUpdate
      */
@@ -43,6 +31,18 @@ export interface LevelUpdate {
      * @memberof LevelUpdate
      */
     goal?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof LevelUpdate
+     */
+    level_number?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LevelUpdate
+     */
+    title?: string | null;
 }
 
 /**
@@ -62,10 +62,10 @@ export function LevelUpdateFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'levelNumber': json['level_number'] == null ? undefined : json['level_number'],
-        'title': json['title'] == null ? undefined : json['title'],
         'description': json['description'] == null ? undefined : json['description'],
         'goal': json['goal'] == null ? undefined : json['goal'],
+        'level_number': json['level_number'] == null ? undefined : json['level_number'],
+        'title': json['title'] == null ? undefined : json['title'],
     };
 }
 
@@ -80,10 +80,10 @@ export function LevelUpdateToJSONTyped(value?: LevelUpdate | null, ignoreDiscrim
 
     return {
         
-        'level_number': value['levelNumber'],
-        'title': value['title'],
         'description': value['description'],
         'goal': value['goal'],
+        'level_number': value['level_number'],
+        'title': value['title'],
     };
 }
 

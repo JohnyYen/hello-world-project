@@ -21,16 +21,16 @@ import { mapValues } from '../runtime';
 export interface GameDeleteResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof GameDeleteResponse
-     */
-    success?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof GameDeleteResponse
      */
     message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GameDeleteResponse
+     */
+    success?: boolean;
 }
 
 /**
@@ -50,8 +50,8 @@ export function GameDeleteResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -66,8 +66,8 @@ export function GameDeleteResponseToJSONTyped(value?: GameDeleteResponse | null,
 
     return {
         
-        'success': value['success'],
         'message': value['message'],
+        'success': value['success'],
     };
 }
 

@@ -7,9 +7,9 @@ Esquema para listado de segmentos de nivel
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [Array&lt;SegmentLevelResponse&gt;](SegmentLevelResponse.md)
+`message` | string
+`success` | boolean
 `total` | number
 
 ## Example
@@ -19,9 +19,9 @@ import type { SegmentLevelListResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
+  "message": null,
+  "success": null,
   "total": null,
 } satisfies SegmentLevelListResponse
 

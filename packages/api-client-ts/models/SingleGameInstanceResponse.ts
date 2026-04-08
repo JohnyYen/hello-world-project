@@ -29,10 +29,10 @@ import {
 export interface SingleGameInstanceResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {GameInstanceDetailResponse}
      * @memberof SingleGameInstanceResponse
      */
-    success?: boolean;
+    data?: GameInstanceDetailResponse | null;
     /**
      * 
      * @type {string}
@@ -41,10 +41,10 @@ export interface SingleGameInstanceResponse {
     message?: string;
     /**
      * 
-     * @type {GameInstanceDetailResponse}
+     * @type {boolean}
      * @memberof SingleGameInstanceResponse
      */
-    data?: GameInstanceDetailResponse | null;
+    success?: boolean;
 }
 
 /**
@@ -64,9 +64,9 @@ export function SingleGameInstanceResponseFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : GameInstanceDetailResponseFromJSON(json['data']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -81,9 +81,9 @@ export function SingleGameInstanceResponseToJSONTyped(value?: SingleGameInstance
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': GameInstanceDetailResponseToJSON(value['data']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

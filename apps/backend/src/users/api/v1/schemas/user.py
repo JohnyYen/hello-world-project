@@ -1,5 +1,6 @@
 import re
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 from src.shared.api.schemas.base import ResponseSchema, DateTimeSchema
@@ -116,8 +117,15 @@ class UserChangePassword(BaseModel):
 class UserRoleResponse(BaseModel):
     """Esquema para respuesta de rol"""
 
-    id: int
+    id: str | UUID
     name: str = Field(..., alias="role_name")
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
     class Config:
         populate_by_name = True
@@ -127,11 +135,18 @@ class UserRoleResponse(BaseModel):
 class UserResponse(UserBase, DateTimeSchema):
     """Esquema para respuesta de usuario"""
 
-    id: int
+    id: str | UUID
     name: str
     lastname: Optional[str] = None
     is_active: bool = True
     role: Optional[UserRoleResponse] = None
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
     class Config:
         from_attributes = True

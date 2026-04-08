@@ -21,16 +21,10 @@ import { mapValues } from '../runtime';
 export interface GameDetailResponse {
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof GameDetailResponse
      */
-    title: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GameDetailResponse
-     */
-    description?: string | null;
+    created_at: Date;
     /**
      * 
      * @type {string}
@@ -42,13 +36,7 @@ export interface GameDetailResponse {
      * @type {string}
      * @memberof GameDetailResponse
      */
-    subject?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof GameDetailResponse
-     */
-    publicationStatus?: string | null;
+    description?: string | null;
     /**
      * 
      * @type {number}
@@ -57,37 +45,49 @@ export interface GameDetailResponse {
     id: number;
     /**
      * 
-     * @type {Date}
-     * @memberof GameDetailResponse
-     */
-    createdAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof GameDetailResponse
-     */
-    updatedAt?: Date | null;
-    /**
-     * 
      * @type {boolean}
      * @memberof GameDetailResponse
      */
-    isDeleted?: boolean;
+    is_deleted?: boolean;
     /**
      * Cantidad de niveles del juego
      * @type {number}
      * @memberof GameDetailResponse
      */
-    levelsCount?: number;
+    levels_count?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameDetailResponse
+     */
+    publication_status?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameDetailResponse
+     */
+    subject?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameDetailResponse
+     */
+    title: string;
+    /**
+     * 
+     * @type {Date}
+     * @memberof GameDetailResponse
+     */
+    updated_at?: Date | null;
 }
 
 /**
  * Check if a given object implements the GameDetailResponse interface.
  */
 export function instanceOfGameDetailResponse(value: object): value is GameDetailResponse {
-    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -101,16 +101,16 @@ export function GameDetailResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'title': json['title'],
-        'description': json['description'] == null ? undefined : json['description'],
+        'created_at': (new Date(json['created_at'])),
         'creator': json['creator'] == null ? undefined : json['creator'],
-        'subject': json['subject'] == null ? undefined : json['subject'],
-        'publicationStatus': json['publication_status'] == null ? undefined : json['publication_status'],
+        'description': json['description'] == null ? undefined : json['description'],
         'id': json['id'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
-        'isDeleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
-        'levelsCount': json['levels_count'] == null ? undefined : json['levels_count'],
+        'is_deleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'levels_count': json['levels_count'] == null ? undefined : json['levels_count'],
+        'publication_status': json['publication_status'] == null ? undefined : json['publication_status'],
+        'subject': json['subject'] == null ? undefined : json['subject'],
+        'title': json['title'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
     };
 }
 
@@ -125,16 +125,16 @@ export function GameDetailResponseToJSONTyped(value?: GameDetailResponse | null,
 
     return {
         
-        'title': value['title'],
-        'description': value['description'],
+        'created_at': value['created_at'].toISOString(),
         'creator': value['creator'],
-        'subject': value['subject'],
-        'publication_status': value['publicationStatus'],
+        'description': value['description'],
         'id': value['id'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
-        'is_deleted': value['isDeleted'],
-        'levels_count': value['levelsCount'],
+        'is_deleted': value['is_deleted'],
+        'levels_count': value['levels_count'],
+        'publication_status': value['publication_status'],
+        'subject': value['subject'],
+        'title': value['title'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
     };
 }
 

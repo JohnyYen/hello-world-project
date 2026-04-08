@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
 
@@ -11,8 +12,9 @@ class Level(Base):
     goal = Column(String(255), nullable=True)
     title = Column(String(255), nullable=False)
 
-    game_id = Column(Integer, ForeignKey("games.id"), nullable=False)
+    game_id = Column(UUID(as_uuid=True), ForeignKey("games.id"), nullable=False)
 
     # Relationships
     game = relationship("Game", back_populates="levels")
     segments = relationship("SegmentLevel", back_populates="level")
+    feedbacks = relationship("Feedback", back_populates="level")

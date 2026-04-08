@@ -29,7 +29,11 @@ import type { DeleteUserLmsCredentialsApiV1UsersLmsCredentialsUserUserIdDeleteRe
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new LMSCredentialsApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new LMSCredentialsApi(config);
 
   const body = {
     // number
@@ -61,7 +65,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -97,7 +101,11 @@ import type { GetUserLmsCredentialsApiV1UsersLmsCredentialsUserUserIdGetRequest 
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new LMSCredentialsApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new LMSCredentialsApi(config);
 
   const body = {
     // number
@@ -129,7 +137,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -165,7 +173,11 @@ import type { RegisterLmsCredentialsApiV1UsersLmsCredentialsPostRequest } from '
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new LMSCredentialsApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new LMSCredentialsApi(config);
 
   const body = {
     // LMSCredentialCreate
@@ -197,7 +209,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 

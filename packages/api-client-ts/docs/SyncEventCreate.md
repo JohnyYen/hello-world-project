@@ -6,9 +6,9 @@
 
 Name | Type
 ------------ | -------------
-`syncSessionId` | number
-`eventType` | string
+`event_type` | string
 `payload` | object
+`sync_session_id` | number
 
 ## Example
 
@@ -17,9 +17,9 @@ import type { SyncEventCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "syncSessionId": null,
-  "eventType": null,
+  "event_type": null,
   "payload": null,
+  "sync_session_id": null,
 } satisfies SyncEventCreate
 
 console.log(example)

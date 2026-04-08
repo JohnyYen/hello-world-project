@@ -6,11 +6,11 @@
 
 Name | Type
 ------------ | -------------
-`instanceId` | number
-`isActive` | boolean
+`end_time` | Date
 `id` | number
-`startedAt` | Date
-`endedAt` | Date
+`instance_id` | number
+`is_active` | boolean
+`start_time` | Date
 
 ## Example
 
@@ -19,11 +19,11 @@ import type { SyncSessionSchema } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "instanceId": null,
-  "isActive": null,
+  "end_time": null,
   "id": null,
-  "startedAt": null,
-  "endedAt": null,
+  "instance_id": null,
+  "is_active": null,
+  "start_time": null,
 } satisfies SyncSessionSchema
 
 console.log(example)

@@ -1,10 +1,13 @@
-import { redirect } from "next/navigation";
-import { getTeacherProfile } from "@/services/users";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Calendar, BookOpen, TrendingUp } from "lucide-react";
+import { User, Calendar, BookOpen, TrendingUp, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { ChangePasswordForm } from "@/components/auth";
 import { AvatarUploadButton, ProfileForm } from "@/components/account";
@@ -16,37 +19,57 @@ export interface TeacherProfileData {
   username: string;
   avatarUrl: string | null;
   department: string;
+  contactPhone: string | null;
   createdAt: string;
 }
 
-async function fetchTeacherProfile(): Promise<TeacherProfileData | null> {
-  try {
-    const profile = await getTeacherProfile();
-    return {
-      id: String(profile.id),
-      fullName: `${profile.name} ${profile.lastname}`.trim(),
-      email: profile.email,
-      username: profile.username,
-      avatarUrl: profile.avatarUrl ?? null,
-      department: profile.department,
-      createdAt: profile.createdAt
-        ? new Date(profile.createdAt).toLocaleDateString("es-ES", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })
-        : "",
-    };
-  } catch {
-    return null;
-  }
+function buildProfile(user: NonNullable<ReturnType<typeof useAuth>["user"]>): TeacherProfileData {
+  const name = "name" in user ? (user.name as string) : "";
+  const lastname = "lastname" in user ? (user.lastname as string | null) : null;
+  const email = user.email || "";
+  const username = "username" in user ? (user.username as string) : "";
+  const department = "department" in user ? (user.department as string) : "";
+  const contactPhone = "contact_phone" in user ? (user.contact_phone as string | null) : null;
+  const avatarUrl = "avatar_url" in user ? (user.avatar_url as string | null) : null;
+  const createdAt = "created_at" in user && user.created_at
+    ? new Date(user.created_at as string).toLocaleDateString("es-ES", { year: "numeric", month: "short", day: "numeric" })
+    : "";
+
+  return {
+    id: user.id?.toString() || "",
+    fullName: `${name} ${lastname || ""}`.trim() || username,
+    email,
+    username,
+    avatarUrl,
+    department,
+    contactPhone,
+    createdAt,
+  };
 }
 
-export default async function AccountPage() {
-  const profile = await fetchTeacherProfile();
+export default function AccountPage() {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const [profile, setProfile] = useState<TeacherProfileData | null>(null);
 
-  if (!profile) {
-    redirect("/login");
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+    }
+    if (user) {
+      setProfile(buildProfile(user));
+    }
+  }, [user, isAuthenticated, isLoading, router]);
+
+  if (isLoading || !profile) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Cargando perfil...</p>
+        </div>
+      </div>
+    );
   }
 
   const initials = profile.fullName
@@ -162,7 +185,6 @@ export default async function AccountPage() {
 
           <div className="lg:col-span-2 space-y-6">
             <ProfileForm profile={profile} />
-
             <ChangePasswordForm />
 
             <Card className="border-border/50 shadow-lg shadow-primary/5">
@@ -198,7 +220,6 @@ export default async function AccountPage() {
                     </div>
                     <span className="text-muted-foreground group-hover:translate-x-1 transition-transform">→</span>
                   </Link>
-
                   <Link
                     href="/dashboard/notifications"
                     className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/30 hover:border-primary/30 hover:bg-primary/5 transition-all group"

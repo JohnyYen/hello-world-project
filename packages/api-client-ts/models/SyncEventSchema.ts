@@ -20,17 +20,17 @@ import { mapValues } from '../runtime';
  */
 export interface SyncEventSchema {
     /**
-     * 
-     * @type {number}
-     * @memberof SyncEventSchema
-     */
-    syncSessionId: number;
-    /**
-     * 
+     * Type of the event
      * @type {string}
      * @memberof SyncEventSchema
      */
-    eventType: string;
+    event_type: string;
+    /**
+     * Event ID
+     * @type {number}
+     * @memberof SyncEventSchema
+     */
+    id: number;
     /**
      * 
      * @type {object}
@@ -39,31 +39,31 @@ export interface SyncEventSchema {
     payload?: object | null;
     /**
      * 
-     * @type {number}
-     * @memberof SyncEventSchema
-     */
-    id: number;
-    /**
-     * 
-     * @type {Date}
-     * @memberof SyncEventSchema
-     */
-    timestamp: Date;
-    /**
-     * 
      * @type {string}
      * @memberof SyncEventSchema
      */
     status?: string | null;
+    /**
+     * ID of the sync session
+     * @type {number}
+     * @memberof SyncEventSchema
+     */
+    sync_session_id: number;
+    /**
+     * Event timestamp
+     * @type {Date}
+     * @memberof SyncEventSchema
+     */
+    timestamp: Date;
 }
 
 /**
  * Check if a given object implements the SyncEventSchema interface.
  */
 export function instanceOfSyncEventSchema(value: object): value is SyncEventSchema {
-    if (!('syncSessionId' in value) || value['syncSessionId'] === undefined) return false;
-    if (!('eventType' in value) || value['eventType'] === undefined) return false;
+    if (!('event_type' in value) || value['event_type'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('sync_session_id' in value) || value['sync_session_id'] === undefined) return false;
     if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
     return true;
 }
@@ -78,12 +78,12 @@ export function SyncEventSchemaFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'syncSessionId': json['sync_session_id'],
-        'eventType': json['event_type'],
-        'payload': json['payload'] == null ? undefined : json['payload'],
+        'event_type': json['event_type'],
         'id': json['id'],
-        'timestamp': (new Date(json['timestamp'])),
+        'payload': json['payload'] == null ? undefined : json['payload'],
         'status': json['status'] == null ? undefined : json['status'],
+        'sync_session_id': json['sync_session_id'],
+        'timestamp': (new Date(json['timestamp'])),
     };
 }
 
@@ -98,12 +98,12 @@ export function SyncEventSchemaToJSONTyped(value?: SyncEventSchema | null, ignor
 
     return {
         
-        'sync_session_id': value['syncSessionId'],
-        'event_type': value['eventType'],
-        'payload': value['payload'],
+        'event_type': value['event_type'],
         'id': value['id'],
-        'timestamp': value['timestamp'].toISOString(),
+        'payload': value['payload'],
         'status': value['status'],
+        'sync_session_id': value['sync_session_id'],
+        'timestamp': value['timestamp'].toISOString(),
     };
 }
 

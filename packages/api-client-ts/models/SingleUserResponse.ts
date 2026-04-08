@@ -29,10 +29,16 @@ import {
 export interface SingleUserResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {UserResponse}
      * @memberof SingleUserResponse
      */
-    success?: boolean;
+    data?: UserResponse | null;
+    /**
+     * 
+     * @type {}
+     * @memberof SingleUserResponse
+     */
+    error?:  | null;
     /**
      * 
      * @type {string}
@@ -41,16 +47,10 @@ export interface SingleUserResponse {
     message?: string;
     /**
      * 
-     * @type {UserResponse}
+     * @type {boolean}
      * @memberof SingleUserResponse
      */
-    data?: UserResponse | null;
-    /**
-     * 
-     * @type {any}
-     * @memberof SingleUserResponse
-     */
-    error?: any | null;
+    success?: boolean;
 }
 
 /**
@@ -70,10 +70,10 @@ export function SingleUserResponseFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : UserResponseFromJSON(json['data']),
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -88,10 +88,10 @@ export function SingleUserResponseToJSONTyped(value?: SingleUserResponse | null,
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': UserResponseToJSON(value['data']),
-        'error': value['error'],
+        'error': ToJSON(value['error']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

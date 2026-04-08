@@ -55,9 +55,9 @@ class GetStudentProgressUseCase:
                 detail="No tiene permisos para ver el progreso de este estudiante",
             )
 
-        # Buscar usuario
+        # Buscar usuario con role cargado (evita MissingGreenlet)
         user_repo = UserRepository(self.db)
-        student = await user_repo.get_by_id(student_id)
+        student = await user_repo.get_by_id_with_role(student_id)
 
         if not student:
             raise HTTPException(

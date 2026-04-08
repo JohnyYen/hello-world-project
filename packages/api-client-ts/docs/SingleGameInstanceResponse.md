@@ -7,9 +7,9 @@ Esquema para respuesta de una sola instancia
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [GameInstanceDetailResponse](GameInstanceDetailResponse.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { SingleGameInstanceResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
+  "message": null,
+  "success": null,
 } satisfies SingleGameInstanceResponse
 
 console.log(example)

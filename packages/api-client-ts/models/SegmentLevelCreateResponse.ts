@@ -29,10 +29,10 @@ import {
 export interface SegmentLevelCreateResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {SegmentLevelResponse}
      * @memberof SegmentLevelCreateResponse
      */
-    success?: boolean;
+    data: SegmentLevelResponse;
     /**
      * 
      * @type {string}
@@ -41,10 +41,10 @@ export interface SegmentLevelCreateResponse {
     message?: string;
     /**
      * 
-     * @type {SegmentLevelResponse}
+     * @type {boolean}
      * @memberof SegmentLevelCreateResponse
      */
-    data: SegmentLevelResponse;
+    success?: boolean;
 }
 
 /**
@@ -65,9 +65,9 @@ export function SegmentLevelCreateResponseFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': SegmentLevelResponseFromJSON(json['data']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -82,9 +82,9 @@ export function SegmentLevelCreateResponseToJSONTyped(value?: SegmentLevelCreate
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': SegmentLevelResponseToJSON(value['data']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

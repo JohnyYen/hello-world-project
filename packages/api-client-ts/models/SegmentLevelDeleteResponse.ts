@@ -21,16 +21,16 @@ import { mapValues } from '../runtime';
 export interface SegmentLevelDeleteResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof SegmentLevelDeleteResponse
-     */
-    success?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof SegmentLevelDeleteResponse
      */
     message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SegmentLevelDeleteResponse
+     */
+    success?: boolean;
 }
 
 /**
@@ -50,8 +50,8 @@ export function SegmentLevelDeleteResponseFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -66,8 +66,8 @@ export function SegmentLevelDeleteResponseToJSONTyped(value?: SegmentLevelDelete
 
     return {
         
-        'success': value['success'],
         'message': value['message'],
+        'success': value['success'],
     };
 }
 

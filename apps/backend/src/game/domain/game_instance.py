@@ -1,16 +1,20 @@
 from sqlalchemy import Column, String, DateTime, Integer, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from sqlalchemy import Enum as SAEnum
 from src.shared.infrastructure.base import Base
+from src.shared.domain.enums import GameStatus
 
 
 class GameInstance(Base):
     __tablename__ = "game_instances"
 
-    start_instance = Column(DateTime, nullable=False)
-    status = Column(String(255), nullable=True)
+    started_at = Column(DateTime(timezone=True), nullable=False)
+    ended_at = Column(DateTime(timezone=True), nullable=True)
+    status = Column(SAEnum(GameStatus), nullable=True)
 
-    student_id = Column(Integer, ForeignKey("students.id"), nullable=False)
-    game_id = Column(Integer, ForeignKey("games.id"), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=False)
+    game_id = Column(UUID(as_uuid=True), ForeignKey("games.id"), nullable=False)
 
     # Relationships
     student = relationship("Student", back_populates="game_instances")

@@ -47,6 +47,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -80,7 +82,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -116,7 +118,11 @@ import type { CreateUserApiV1UsersPostRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new UsersApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new UsersApi(config);
 
   const body = {
     // UserCreate
@@ -148,7 +154,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -187,6 +193,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -220,7 +228,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -256,7 +264,11 @@ import type { DeleteUserLmsCredentialsApiV1UsersLmsCredentialsUserUserIdDeleteRe
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new UsersApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new UsersApi(config);
 
   const body = {
     // number
@@ -288,7 +300,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -324,7 +336,11 @@ import type { GetAllUsersApiV1UsersGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new UsersApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new UsersApi(config);
 
   const body = {
     // number (optional)
@@ -362,7 +378,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -401,6 +417,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -434,7 +452,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -473,6 +491,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -506,7 +526,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -542,7 +562,11 @@ import type { GetStudentReportsApiV1UsersStudentsIdReportsGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new UsersApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new UsersApi(config);
 
   const body = {
     // number
@@ -574,7 +598,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -613,6 +637,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -638,7 +664,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -676,6 +702,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -701,7 +729,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -736,7 +764,11 @@ import type { GetUserApiV1UsersUserIdGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new UsersApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new UsersApi(config);
 
   const body = {
     // number
@@ -768,7 +800,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -804,7 +836,11 @@ import type { GetUserLmsCredentialsApiV1UsersLmsCredentialsUserUserIdGetRequest 
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new UsersApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new UsersApi(config);
 
   const body = {
     // number
@@ -836,7 +872,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -875,6 +911,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -914,7 +952,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -950,7 +988,11 @@ import type { RegisterLmsCredentialsApiV1UsersLmsCredentialsPostRequest } from '
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new UsersApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new UsersApi(config);
 
   const body = {
     // LMSCredentialCreate
@@ -982,7 +1024,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -1018,7 +1060,11 @@ import type { SyncLmsDataApiV1UsersLmsSyncUserIdPostRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new UsersApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new UsersApi(config);
 
   const body = {
     // number
@@ -1050,7 +1096,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -1089,6 +1135,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -1125,7 +1173,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -1164,6 +1212,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -1197,7 +1247,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -1236,6 +1286,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new UsersApi(config);
 
@@ -1269,7 +1321,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 

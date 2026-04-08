@@ -57,23 +57,35 @@ import {
  */
 export interface XAPIStatementCreate {
     /**
-     * 
-     * @type {string}
-     * @memberof XAPIStatementCreate
-     */
-    id?: string | null;
-    /**
      * Who performed the action
      * @type {XAPIActor}
      * @memberof XAPIStatementCreate
      */
     actor: XAPIActor;
     /**
-     * The action performed
-     * @type {XAPIVerb}
+     * 
+     * @type {Array<object>}
      * @memberof XAPIStatementCreate
      */
-    verb: XAPIVerb;
+    attachments?: Array<object> | null;
+    /**
+     * 
+     * @type {XAPIActor}
+     * @memberof XAPIStatementCreate
+     */
+    authority?: XAPIActor | null;
+    /**
+     * 
+     * @type {XAPIContextInput}
+     * @memberof XAPIStatementCreate
+     */
+    context?: XAPIContextInput | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof XAPIStatementCreate
+     */
+    id?: string | null;
     /**
      * The object of the action
      * @type {XAPIActivity}
@@ -88,10 +100,10 @@ export interface XAPIStatementCreate {
     result?: XAPIResult | null;
     /**
      * 
-     * @type {XAPIContextInput}
+     * @type {Date}
      * @memberof XAPIStatementCreate
      */
-    context?: XAPIContextInput | null;
+    stored?: Date | null;
     /**
      * 
      * @type {Date}
@@ -99,29 +111,17 @@ export interface XAPIStatementCreate {
      */
     timestamp?: Date | null;
     /**
-     * 
-     * @type {Date}
+     * The action performed
+     * @type {XAPIVerb}
      * @memberof XAPIStatementCreate
      */
-    stored?: Date | null;
-    /**
-     * 
-     * @type {XAPIActor}
-     * @memberof XAPIStatementCreate
-     */
-    authority?: XAPIActor | null;
+    verb: XAPIVerb;
     /**
      * 
      * @type {string}
      * @memberof XAPIStatementCreate
      */
     version?: string | null;
-    /**
-     * 
-     * @type {Array<object>}
-     * @memberof XAPIStatementCreate
-     */
-    attachments?: Array<object> | null;
 }
 
 /**
@@ -129,8 +129,8 @@ export interface XAPIStatementCreate {
  */
 export function instanceOfXAPIStatementCreate(value: object): value is XAPIStatementCreate {
     if (!('actor' in value) || value['actor'] === undefined) return false;
-    if (!('verb' in value) || value['verb'] === undefined) return false;
     if (!('object' in value) || value['object'] === undefined) return false;
+    if (!('verb' in value) || value['verb'] === undefined) return false;
     return true;
 }
 
@@ -144,17 +144,17 @@ export function XAPIStatementCreateFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
         'actor': XAPIActorFromJSON(json['actor']),
-        'verb': XAPIVerbFromJSON(json['verb']),
+        'attachments': json['attachments'] == null ? undefined : json['attachments'],
+        'authority': json['authority'] == null ? undefined : XAPIActorFromJSON(json['authority']),
+        'context': json['context'] == null ? undefined : XAPIContextInputFromJSON(json['context']),
+        'id': json['id'] == null ? undefined : json['id'],
         'object': XAPIActivityFromJSON(json['object']),
         'result': json['result'] == null ? undefined : XAPIResultFromJSON(json['result']),
-        'context': json['context'] == null ? undefined : XAPIContextInputFromJSON(json['context']),
-        'timestamp': json['timestamp'] == null ? undefined : (new Date(json['timestamp'])),
         'stored': json['stored'] == null ? undefined : (new Date(json['stored'])),
-        'authority': json['authority'] == null ? undefined : XAPIActorFromJSON(json['authority']),
+        'timestamp': json['timestamp'] == null ? undefined : (new Date(json['timestamp'])),
+        'verb': XAPIVerbFromJSON(json['verb']),
         'version': json['version'] == null ? undefined : json['version'],
-        'attachments': json['attachments'] == null ? undefined : json['attachments'],
     };
 }
 
@@ -169,17 +169,17 @@ export function XAPIStatementCreateToJSONTyped(value?: XAPIStatementCreate | nul
 
     return {
         
-        'id': value['id'],
         'actor': XAPIActorToJSON(value['actor']),
-        'verb': XAPIVerbToJSON(value['verb']),
+        'attachments': value['attachments'],
+        'authority': XAPIActorToJSON(value['authority']),
+        'context': XAPIContextInputToJSON(value['context']),
+        'id': value['id'],
         'object': XAPIActivityToJSON(value['object']),
         'result': XAPIResultToJSON(value['result']),
-        'context': XAPIContextInputToJSON(value['context']),
-        'timestamp': value['timestamp'] == null ? value['timestamp'] : value['timestamp'].toISOString(),
         'stored': value['stored'] == null ? value['stored'] : value['stored'].toISOString(),
-        'authority': XAPIActorToJSON(value['authority']),
+        'timestamp': value['timestamp'] == null ? value['timestamp'] : value['timestamp'].toISOString(),
+        'verb': XAPIVerbToJSON(value['verb']),
         'version': value['version'],
-        'attachments': value['attachments'],
     };
 }
 

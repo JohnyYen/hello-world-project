@@ -21,16 +21,10 @@ import { mapValues } from '../runtime';
 export interface GameResponse {
     /**
      * 
-     * @type {string}
+     * @type {Date}
      * @memberof GameResponse
      */
-    title: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GameResponse
-     */
-    description?: string | null;
+    created_at: Date;
     /**
      * 
      * @type {string}
@@ -42,13 +36,7 @@ export interface GameResponse {
      * @type {string}
      * @memberof GameResponse
      */
-    subject?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof GameResponse
-     */
-    publicationStatus?: string | null;
+    description?: string | null;
     /**
      * 
      * @type {number}
@@ -57,31 +45,43 @@ export interface GameResponse {
     id: number;
     /**
      * 
-     * @type {Date}
-     * @memberof GameResponse
-     */
-    createdAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof GameResponse
-     */
-    updatedAt?: Date | null;
-    /**
-     * 
      * @type {boolean}
      * @memberof GameResponse
      */
-    isDeleted?: boolean;
+    is_deleted?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameResponse
+     */
+    publication_status?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameResponse
+     */
+    subject?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameResponse
+     */
+    title: string;
+    /**
+     * 
+     * @type {Date}
+     * @memberof GameResponse
+     */
+    updated_at?: Date | null;
 }
 
 /**
  * Check if a given object implements the GameResponse interface.
  */
 export function instanceOfGameResponse(value: object): value is GameResponse {
-    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -95,15 +95,15 @@ export function GameResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'title': json['title'],
-        'description': json['description'] == null ? undefined : json['description'],
+        'created_at': (new Date(json['created_at'])),
         'creator': json['creator'] == null ? undefined : json['creator'],
-        'subject': json['subject'] == null ? undefined : json['subject'],
-        'publicationStatus': json['publication_status'] == null ? undefined : json['publication_status'],
+        'description': json['description'] == null ? undefined : json['description'],
         'id': json['id'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
-        'isDeleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'is_deleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'publication_status': json['publication_status'] == null ? undefined : json['publication_status'],
+        'subject': json['subject'] == null ? undefined : json['subject'],
+        'title': json['title'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
     };
 }
 
@@ -118,15 +118,15 @@ export function GameResponseToJSONTyped(value?: GameResponse | null, ignoreDiscr
 
     return {
         
-        'title': value['title'],
-        'description': value['description'],
+        'created_at': value['created_at'].toISOString(),
         'creator': value['creator'],
-        'subject': value['subject'],
-        'publication_status': value['publicationStatus'],
+        'description': value['description'],
         'id': value['id'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
-        'is_deleted': value['isDeleted'],
+        'is_deleted': value['is_deleted'],
+        'publication_status': value['publication_status'],
+        'subject': value['subject'],
+        'title': value['title'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
     };
 }
 

@@ -7,10 +7,10 @@ Respuesta para las configuraciones de profesor
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [TeacherSettingsResponse](TeacherSettingsResponse.md)
 `error` | [](.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -19,10 +19,10 @@ import type { TeacherSettingsResponseSchema } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
   "error": null,
+  "message": null,
+  "success": null,
 } satisfies TeacherSettingsResponseSchema
 
 console.log(example)

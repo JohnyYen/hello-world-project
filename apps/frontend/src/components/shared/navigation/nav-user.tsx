@@ -35,6 +35,7 @@ interface NavUserProps {
     role?: string;
     status?: "online" | "away" | "busy" | "offline";
   };
+  onLogout?: () => void;
 }
 
 const statusColors = {
@@ -51,7 +52,7 @@ const statusLabels = {
   offline: "Desconectado",
 };
 
-export function NavUser({ user }: NavUserProps) {
+export function NavUser({ user, onLogout }: NavUserProps) {
   const { isMobile } = useSidebar();
   const status = user.status || "online";
   const role = user.role || "Usuario";
@@ -199,7 +200,10 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuSeparator className="my-2" />
 
             {/* Logout */}
-            <DropdownMenuItem className="rounded-lg cursor-pointer text-destructive/80 hover:bg-destructive/10 hover:text-destructive group/logout">
+            <DropdownMenuItem 
+              className="rounded-lg cursor-pointer text-destructive/80 hover:bg-destructive/10 hover:text-destructive group/logout"
+              onClick={onLogout}
+            >
               <IconLogout className="mr-2 h-4 w-4 transition-transform duration-200 group-hover/logout:translate-x-1" />
               <span className="font-medium">Cerrar Sesión</span>
             </DropdownMenuItem>

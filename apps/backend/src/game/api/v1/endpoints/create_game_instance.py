@@ -48,7 +48,7 @@ async def create_game_instance(
         # Preparar datos de la instancia
         instance_dict = instance_data.model_dump(exclude={"game_id"})
         instance_dict["game_id"] = game_id
-        instance_dict["start_instance"] = datetime.utcnow()
+        instance_dict["started_at"] = datetime.utcnow()
 
         # Crear instancia
         new_instance = await instance_repo.create(instance_dict)

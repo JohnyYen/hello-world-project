@@ -27,19 +27,7 @@ export interface UserCreate {
      * @type {string}
      * @memberof UserCreate
      */
-    username: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserCreate
-     */
     email: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserCreate
-     */
-    name: string;
     /**
      * 
      * @type {string}
@@ -51,17 +39,29 @@ export interface UserCreate {
      * @type {string}
      * @memberof UserCreate
      */
+    name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserCreate
+     */
     password: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserCreate
+     */
+    username: string;
 }
 
 /**
  * Check if a given object implements the UserCreate interface.
  */
 export function instanceOfUserCreate(value: object): value is UserCreate {
-    if (!('username' in value) || value['username'] === undefined) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('password' in value) || value['password'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -75,11 +75,11 @@ export function UserCreateFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'username': json['username'],
         'email': json['email'],
-        'name': json['name'],
         'lastname': json['lastname'] == null ? undefined : json['lastname'],
+        'name': json['name'],
         'password': json['password'],
+        'username': json['username'],
     };
 }
 
@@ -94,11 +94,11 @@ export function UserCreateToJSONTyped(value?: UserCreate | null, ignoreDiscrimin
 
     return {
         
-        'username': value['username'],
         'email': value['email'],
-        'name': value['name'],
         'lastname': value['lastname'],
+        'name': value['name'],
         'password': value['password'],
+        'username': value['username'],
     };
 }
 

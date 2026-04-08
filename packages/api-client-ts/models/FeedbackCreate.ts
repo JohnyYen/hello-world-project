@@ -21,12 +21,6 @@ import { mapValues } from '../runtime';
 export interface FeedbackCreate {
     /**
      * 
-     * @type {number}
-     * @memberof FeedbackCreate
-     */
-    studentId: number;
-    /**
-     * 
      * @type {string}
      * @memberof FeedbackCreate
      */
@@ -37,14 +31,20 @@ export interface FeedbackCreate {
      * @memberof FeedbackCreate
      */
     rating?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof FeedbackCreate
+     */
+    student_id: number;
 }
 
 /**
  * Check if a given object implements the FeedbackCreate interface.
  */
 export function instanceOfFeedbackCreate(value: object): value is FeedbackCreate {
-    if (!('studentId' in value) || value['studentId'] === undefined) return false;
     if (!('comments' in value) || value['comments'] === undefined) return false;
+    if (!('student_id' in value) || value['student_id'] === undefined) return false;
     return true;
 }
 
@@ -58,9 +58,9 @@ export function FeedbackCreateFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'studentId': json['student_id'],
         'comments': json['comments'],
         'rating': json['rating'] == null ? undefined : json['rating'],
+        'student_id': json['student_id'],
     };
 }
 
@@ -75,9 +75,9 @@ export function FeedbackCreateToJSONTyped(value?: FeedbackCreate | null, ignoreD
 
     return {
         
-        'student_id': value['studentId'],
         'comments': value['comments'],
         'rating': value['rating'],
+        'student_id': value['student_id'],
     };
 }
 

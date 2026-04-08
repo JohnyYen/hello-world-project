@@ -1,68 +1,88 @@
 "use client";
 
 import { createContext, use, useState, useEffect, type ReactNode } from "react";
-import { UserResponse } from "@workspace/api-client-ts";
+import type { TeacherProfileResponse, UserResponse } from "@/api/types";
 import { authService, type LoginParams, type RegisterParams } from "@/services/auth";
 
+// Union type to support SimpleUser (from server), TeacherProfileResponse, and UserResponse (from API login)
+type User = TeacherProfileResponse | UserResponse | null;
+
 interface AuthContextValue {
-  user: UserResponse | null;
-  token: string | null;
+  user: User;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (params: LoginParams) => Promise<void>;
   register: (params: RegisterParams) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-const TOKEN_KEY = "auth_token";
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<UserResponse | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  // Token is managed via HTTP-only cookies, no client-side storage needed
+  const [user, setUser] = useState<User>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch user profile on mount and when auth state changes
   useEffect(() => {
-    const storedToken = localStorage.getItem(TOKEN_KEY);
-    if (storedToken) {
-      setToken(storedToken);
-    }
-    setIsLoading(false);
+    let cancelled = false;
+
+    const fetchUser = async () => {
+      try {
+        const userData = await authService.getMeFromCookie();
+        if (!cancelled) {
+          setUser(userData);
+          setIsAuthenticated(!!userData);
+        }
+      } catch {
+        // No valid session or profile fetch failed
+        if (!cancelled) {
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchUser();
+
+    return () => { cancelled = true };
   }, []);
 
-  const login = async (_params: LoginParams) => {
-    const response = await authService.login(_params);
-    const { accessToken, user: userData } = response;
-
-    localStorage.setItem(TOKEN_KEY, accessToken);
-    setToken(accessToken);
+  const login = async (params: LoginParams) => {
+    await authService.login(params);
+    // After login, cookie is set by server, fetch user profile
+    const userData = await authService.getMeFromCookie();
     setUser(userData);
+    setIsAuthenticated(true);
   };
 
-  const register = async (_params: RegisterParams) => {
-    const response = await authService.register(_params);
-    const { accessToken, user: userData } = response;
-
-    localStorage.setItem(TOKEN_KEY, accessToken);
-    setToken(accessToken);
+  const register = async (params: RegisterParams) => {
+    await authService.register(params);
+    // After register, cookie is set by server, fetch user profile
+    const userData = await authService.getMeFromCookie();
     setUser(userData);
+    setIsAuthenticated(true);
   };
 
-  const logout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    setToken(null);
+  const logout = async () => {
+    // Call Next.js API route to clear cookie server-side
+    await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
+    setIsAuthenticated(false);
   };
 
   const value: AuthContextValue = {
     user,
-    token,
-    isAuthenticated: !!token && !!user,
+    isAuthenticated,
     isLoading,
     login,
     register,

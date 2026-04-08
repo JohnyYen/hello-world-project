@@ -7,11 +7,11 @@ Esquema para creación de nivel
 
 Name | Type
 ------------ | -------------
-`levelNumber` | number
-`title` | string
 `description` | string
+`game_id` | number
 `goal` | string
-`gameId` | number
+`level_number` | number
+`title` | string
 
 ## Example
 
@@ -20,11 +20,11 @@ import type { LevelCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "levelNumber": null,
-  "title": null,
   "description": null,
+  "game_id": null,
   "goal": null,
-  "gameId": null,
+  "level_number": null,
+  "title": null,
 } satisfies LevelCreate
 
 console.log(example)

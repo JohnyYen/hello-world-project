@@ -6,9 +6,9 @@
 
 Name | Type
 ------------ | -------------
-`studentId` | number
 `comments` | string
 `rating` | number
+`student_id` | number
 
 ## Example
 
@@ -17,9 +17,9 @@ import type { FeedbackCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "studentId": null,
   "comments": null,
   "rating": null,
+  "student_id": null,
 } satisfies FeedbackCreate
 
 console.log(example)

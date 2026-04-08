@@ -7,10 +7,10 @@ xAPI Activity definition with type, name, description.
 
 Name | Type
 ------------ | -------------
-`type` | string
-`name` | { [key: string]: string; }
 `description` | { [key: string]: string; }
 `extensions` | object
+`name` | { [key: string]: string; }
+`type` | string
 
 ## Example
 
@@ -19,10 +19,10 @@ import type { XAPIActivityDefinition } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "type": null,
-  "name": null,
   "description": null,
   "extensions": null,
+  "name": null,
+  "type": null,
 } satisfies XAPIActivityDefinition
 
 console.log(example)

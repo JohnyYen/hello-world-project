@@ -249,7 +249,7 @@ def mock_instance(sample_instance_data):
     instance.game_id = sample_instance_data["game_id"]
     instance.student_id = sample_instance_data["student_id"]
     instance.status = sample_instance_data["status"]
-    instance.start_instance = datetime.now(timezone.utc)
+    instance.started_at = datetime.now(timezone.utc)
     instance.created_at = datetime.now(timezone.utc)
     instance.updated_at = None
     instance.deleted_at = None
@@ -265,7 +265,7 @@ def mock_instance_with_relations(sample_instance_data, mock_game, mock_level):
     instance.game_id = sample_instance_data["game_id"]
     instance.student_id = sample_instance_data["student_id"]
     instance.status = sample_instance_data["status"]
-    instance.start_instance = datetime.now(timezone.utc)
+    instance.started_at = datetime.now(timezone.utc)
     instance.created_at = datetime.now(timezone.utc)
     instance.updated_at = None
     instance.deleted_at = None

@@ -24,13 +24,19 @@ export interface StudentUpdate {
      * @type {string}
      * @memberof StudentUpdate
      */
-    username?: string | null;
+    email?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StudentUpdate
+     */
+    is_active?: boolean | null;
     /**
      * 
      * @type {string}
      * @memberof StudentUpdate
      */
-    email?: string | null;
+    lastname?: string | null;
     /**
      * 
      * @type {string}
@@ -42,13 +48,7 @@ export interface StudentUpdate {
      * @type {string}
      * @memberof StudentUpdate
      */
-    lastname?: string | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof StudentUpdate
-     */
-    isActive?: boolean | null;
+    username?: string | null;
 }
 
 /**
@@ -68,11 +68,11 @@ export function StudentUpdateFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'username': json['username'] == null ? undefined : json['username'],
         'email': json['email'] == null ? undefined : json['email'],
-        'name': json['name'] == null ? undefined : json['name'],
+        'is_active': json['is_active'] == null ? undefined : json['is_active'],
         'lastname': json['lastname'] == null ? undefined : json['lastname'],
-        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'username': json['username'] == null ? undefined : json['username'],
     };
 }
 
@@ -87,11 +87,11 @@ export function StudentUpdateToJSONTyped(value?: StudentUpdate | null, ignoreDis
 
     return {
         
-        'username': value['username'],
         'email': value['email'],
-        'name': value['name'],
+        'is_active': value['is_active'],
         'lastname': value['lastname'],
-        'is_active': value['isActive'],
+        'name': value['name'],
+        'username': value['username'],
     };
 }
 

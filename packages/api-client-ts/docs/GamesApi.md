@@ -44,7 +44,11 @@ import type { CreateGameApiV1GamesPostRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // GameCreate
@@ -76,7 +80,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -112,7 +116,11 @@ import type { CreateGameInstanceApiV1GameInstancesGameIdInstancesPostRequest } f
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -147,7 +155,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -183,7 +191,11 @@ import type { CreateGameLevelApiV1GamesGameIdLevelsPostRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -218,7 +230,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -254,7 +266,11 @@ import type { CreateLevelSegmentApiV1SegmentsLevelIdSegmentsPostRequest } from '
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -289,7 +305,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -325,7 +341,11 @@ import type { DeleteGameApiV1GamesGameIdDeleteRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -357,7 +377,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -393,7 +413,11 @@ import type { DeleteLevelApiV1LevelsLevelIdDeleteRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -425,7 +449,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -461,7 +485,11 @@ import type { DeleteSegmentApiV1SegmentsSegmentIdDeleteRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -493,7 +521,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -529,7 +557,11 @@ import type { EndInstanceApiV1GameInstancesInstanceIdEndPutRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -564,7 +596,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -600,7 +632,11 @@ import type { GetGameApiV1GamesGameIdGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -632,7 +668,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -668,7 +704,11 @@ import type { GetGameLevelsApiV1GamesGameIdLevelsGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -706,7 +746,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -742,7 +782,11 @@ import type { GetGamesApiV1GamesGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number | Número de registros a saltar (optional)
@@ -777,7 +821,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -813,7 +857,11 @@ import type { GetInstanceApiV1GameInstancesInstanceIdGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -845,7 +893,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -881,7 +929,11 @@ import type { GetLevelApiV1LevelsLevelIdGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -913,7 +965,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -949,7 +1001,11 @@ import type { GetLevelSegmentsApiV1SegmentsLevelIdSegmentsGetRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -987,7 +1043,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -1023,7 +1079,11 @@ import type { ListGameInstancesApiV1GameInstancesGameIdInstancesGetRequest } fro
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -1064,7 +1124,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -1100,7 +1160,11 @@ import type { UpdateGameApiV1GamesGameIdPutRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -1135,7 +1199,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -1171,7 +1235,11 @@ import type { UpdateLevelApiV1LevelsLevelIdPutRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -1206,7 +1274,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -1242,7 +1310,11 @@ import type { UpdateSegmentApiV1SegmentsSegmentIdPutRequest } from '';
 
 async function example() {
   console.log("🚀 Testing  SDK...");
-  const api = new GamesApi();
+  const config = new Configuration({ 
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
+  });
+  const api = new GamesApi(config);
 
   const body = {
     // number
@@ -1277,7 +1349,7 @@ example().catch(console.error);
 
 ### Authorization
 
-No authorization required
+[HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 

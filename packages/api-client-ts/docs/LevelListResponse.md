@@ -7,9 +7,9 @@ Esquema para listado de niveles
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [Array&lt;LevelResponse&gt;](LevelResponse.md)
+`message` | string
+`success` | boolean
 `total` | number
 
 ## Example
@@ -19,9 +19,9 @@ import type { LevelListResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
+  "message": null,
+  "success": null,
   "total": null,
 } satisfies LevelListResponse
 

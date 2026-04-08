@@ -1,5 +1,5 @@
 import * as React from "react"
-import { IconTrendingDown, IconTrendingUp, IconUsers, IconCurrencyDollar, IconActivity, IconChartBar } from "@tabler/icons-react"
+import { IconTrendingDown, IconTrendingUp, IconUsers, IconCurrencyDollar, IconActivity, IconChartBar, IconSchool, IconClock, IconTarget } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -10,6 +10,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+
+export interface KPIsData {
+  totalStudents: number
+  activeStudentsThisWeek: number
+  activeStudentsThisMonth: number
+  totalLevelsCompleted: number
+  totalPlayTimeMinutes: number
+  averageScore: number
+}
+
+export interface TrendsData {
+  studentsChangePercent: number
+  activityChangePercent: number
+  scoreChangePercent: number
+}
+
+export interface SectionCardsProps {
+  kpis?: KPIsData | null
+  trends?: TrendsData | null
+  isLoading?: boolean
+}
 
 interface CardData {
   title: string
@@ -21,46 +43,143 @@ interface CardData {
   gradient: string
 }
 
-const cardsData: CardData[] = [
+// Fallback data for when no props provided (educational platform context)
+const fallbackCardsData: CardData[] = [
   {
-    title: "Ingresos Totales",
-    value: "$1,250.00",
-    change: 12.5,
+    title: "Estudiantes Totales",
+    value: "0",
+    change: 0,
     trend: "up",
-    description: "Tendencia al alza este mes",
-    icon: <IconCurrencyDollar className="w-4 h-4" />,
+    description: "Total de estudiantes registrados",
+    icon: <IconSchool className="w-4 h-4" />,
     gradient: "from-emerald-500 to-teal-600",
   },
   {
-    title: "Nuevos Clientes",
-    value: "1,234",
-    change: -20,
-    trend: "down",
-    description: "La adquisición necesita atención",
+    title: "Estudiantes Activos",
+    value: "0",
+    change: 0,
+    trend: "up",
+    description: "Activos en los últimos 30 días",
     icon: <IconUsers className="w-4 h-4" />,
     gradient: "from-rose-500 to-orange-500",
   },
   {
-    title: "Cuentas Activas",
-    value: "45,678",
-    change: 12.5,
+    title: "Niveles Completados",
+    value: "0",
+    change: 0,
     trend: "up",
-    description: "Fuerte retención de usuarios",
-    icon: <IconActivity className="w-4 h-4" />,
+    description: "Total de niveles completados",
+    icon: <IconTarget className="w-4 h-4" />,
     gradient: "from-indigo-500 to-violet-600",
   },
   {
-    title: "Tasa de Crecimiento",
-    value: "4.5%",
-    change: 4.5,
+    title: "Tiempo de Juego",
+    value: "0m",
+    change: 0,
     trend: "up",
-    description: "Aumento constante del rendimiento",
-    icon: <IconChartBar className="w-4 h-4" />,
+    description: "Tiempo total de juego",
+    icon: <IconClock className="w-4 h-4" />,
     gradient: "from-amber-500 to-yellow-500",
   },
 ]
 
-export function SectionCards() {
+// Transform API data to card data format
+function transformKPIsToCards(kpis: KPIsData, trends: TrendsData): CardData[] {
+  const formatNumber = (num: number): string => {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M"
+    if (num >= 1000) return (num / 1000).toFixed(1) + "K"
+    return num.toString()
+  }
+
+  const formatTime = (minutes: number): string => {
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60)
+      const mins = minutes % 60
+      return `${hours}h ${mins}m`
+    }
+    return `${minutes}m`
+  }
+
+  return [
+    {
+      title: "Estudiantes Totales",
+      value: formatNumber(kpis.totalStudents),
+      change: trends.studentsChangePercent,
+      trend: trends.studentsChangePercent >= 0 ? "up" : "down",
+      description: trends.studentsChangePercent >= 0 ? "Crecimiento positivo" : "Necesita atención",
+      icon: <IconSchool className="w-4 h-4" />,
+      gradient: "from-emerald-500 to-teal-600",
+    },
+    {
+      title: "Estudiantes Activos",
+      value: formatNumber(kpis.activeStudentsThisMonth),
+      change: trends.activityChangePercent,
+      trend: trends.activityChangePercent >= 0 ? "up" : "down",
+      description: "En los últimos 30 días",
+      icon: <IconUsers className="w-4 h-4" />,
+      gradient: "from-rose-500 to-orange-500",
+    },
+    {
+    title: "Niveles Completados",
+      value: formatNumber(kpis.totalLevelsCompleted),
+      change: trends.activityChangePercent,
+      trend: trends.activityChangePercent >= 0 ? "up" : "down",
+      description: "Total de niveles",
+      icon: <IconTarget className="w-4 h-4" />,
+      gradient: "from-indigo-500 to-violet-600",
+    },
+    {
+      title: "Tiempo de Juego",
+      value: formatTime(kpis.totalPlayTimeMinutes),
+      change: trends.scoreChangePercent,
+      trend: trends.scoreChangePercent >= 0 ? "up" : "down",
+      description: `Promedio: ${kpis.averageScore.toFixed(0)}%`,
+      icon: <IconClock className="w-4 h-4" />,
+      gradient: "from-amber-500 to-yellow-500",
+    },
+  ]
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+      {[...Array(4)].map((_, i) => (
+        <Card 
+          key={i}
+          className="@container/card group relative overflow-hidden border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm"
+        >
+          <CardHeader className="relative pb-2">
+            <CardDescription className="flex items-center gap-2">
+              <Skeleton className="h-5 w-5 rounded-lg" />
+              <Skeleton className="h-4 w-24" />
+            </CardDescription>
+            <CardTitle className="text-2xl">
+              <Skeleton className="h-8 w-20" />
+            </CardTitle>
+            <CardAction>
+              <Skeleton className="h-6 w-16 rounded-full" />
+            </CardAction>
+          </CardHeader>
+          <CardFooter className="flex-col items-start gap-1.5 text-sm pt-0">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-3 w-24" />
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  )
+}
+
+export function SectionCards({ kpis, trends, isLoading }: SectionCardsProps) {
+  // Use API data if available, otherwise fallback
+  const cardsData = kpis && trends 
+    ? transformKPIsToCards(kpis, trends)
+    : fallbackCardsData
+
+  if (isLoading) {
+    return <LoadingSkeleton />
+  }
+
   return (
     <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       {cardsData.map((card, index) => (
@@ -111,7 +230,7 @@ export function SectionCards() {
               )}
             </div>
             <div className="text-muted-foreground text-xs">
-              Visitantes en los últimos 6 meses
+              {kpis ? "Datos del período seleccionado" : "Datos de ejemplo"}
             </div>
           </CardFooter>
         </Card>

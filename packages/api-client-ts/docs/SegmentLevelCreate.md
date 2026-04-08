@@ -7,8 +7,8 @@ Esquema para crear un nuevo segmento de nivel
 
 Name | Type
 ------------ | -------------
-`levelId` | number
 `_configuration` | object
+`level_id` | number
 
 ## Example
 
@@ -17,8 +17,8 @@ import type { SegmentLevelCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "levelId": null,
   "_configuration": null,
+  "level_id": null,
 } satisfies SegmentLevelCreate
 
 console.log(example)

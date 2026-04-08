@@ -57,6 +57,9 @@ class UpdateUserUseCase:
                 message="Usuario actualizado con éxito", data=user_with_role
             )
         except NotFoundException as e:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Usuario no encontrado: {str(e)}",
+            )
         except DuplicateEntryException as e:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))

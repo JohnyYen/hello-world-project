@@ -21,22 +21,22 @@ import { mapValues } from '../runtime';
 export interface LevelResponse {
     /**
      * 
-     * @type {number}
+     * @type {Date}
      * @memberof LevelResponse
      */
-    levelNumber: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof LevelResponse
-     */
-    title: string;
+    created_at: Date;
     /**
      * 
      * @type {string}
      * @memberof LevelResponse
      */
     description?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof LevelResponse
+     */
+    game_id: number;
     /**
      * 
      * @type {string}
@@ -51,39 +51,39 @@ export interface LevelResponse {
     id: number;
     /**
      * 
-     * @type {number}
-     * @memberof LevelResponse
-     */
-    gameId: number;
-    /**
-     * 
-     * @type {Date}
-     * @memberof LevelResponse
-     */
-    createdAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof LevelResponse
-     */
-    updatedAt?: Date | null;
-    /**
-     * 
      * @type {boolean}
      * @memberof LevelResponse
      */
-    isDeleted?: boolean;
+    is_deleted?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof LevelResponse
+     */
+    level_number: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LevelResponse
+     */
+    title: string;
+    /**
+     * 
+     * @type {Date}
+     * @memberof LevelResponse
+     */
+    updated_at?: Date | null;
 }
 
 /**
  * Check if a given object implements the LevelResponse interface.
  */
 export function instanceOfLevelResponse(value: object): value is LevelResponse {
-    if (!('levelNumber' in value) || value['levelNumber'] === undefined) return false;
-    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
+    if (!('game_id' in value) || value['game_id'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('gameId' in value) || value['gameId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('level_number' in value) || value['level_number'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -97,15 +97,15 @@ export function LevelResponseFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'levelNumber': json['level_number'],
-        'title': json['title'],
+        'created_at': (new Date(json['created_at'])),
         'description': json['description'] == null ? undefined : json['description'],
+        'game_id': json['game_id'],
         'goal': json['goal'] == null ? undefined : json['goal'],
         'id': json['id'],
-        'gameId': json['game_id'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
-        'isDeleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'is_deleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'level_number': json['level_number'],
+        'title': json['title'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
     };
 }
 
@@ -120,15 +120,15 @@ export function LevelResponseToJSONTyped(value?: LevelResponse | null, ignoreDis
 
     return {
         
-        'level_number': value['levelNumber'],
-        'title': value['title'],
+        'created_at': value['created_at'].toISOString(),
         'description': value['description'],
+        'game_id': value['game_id'],
         'goal': value['goal'],
         'id': value['id'],
-        'game_id': value['gameId'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
-        'is_deleted': value['isDeleted'],
+        'is_deleted': value['is_deleted'],
+        'level_number': value['level_number'],
+        'title': value['title'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
     };
 }
 

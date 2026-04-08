@@ -21,16 +21,16 @@ import { mapValues } from '../runtime';
 export interface LevelDeleteResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof LevelDeleteResponse
-     */
-    success?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof LevelDeleteResponse
      */
     message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LevelDeleteResponse
+     */
+    success?: boolean;
 }
 
 /**
@@ -50,8 +50,8 @@ export function LevelDeleteResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
         'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -66,8 +66,8 @@ export function LevelDeleteResponseToJSONTyped(value?: LevelDeleteResponse | nul
 
     return {
         
-        'success': value['success'],
         'message': value['message'],
+        'success': value['success'],
     };
 }
 

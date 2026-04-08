@@ -21,22 +21,16 @@ import { mapValues } from '../runtime';
 export interface LevelCreate {
     /**
      * 
-     * @type {number}
-     * @memberof LevelCreate
-     */
-    levelNumber: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof LevelCreate
-     */
-    title: string;
-    /**
-     * 
      * @type {string}
      * @memberof LevelCreate
      */
     description?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof LevelCreate
+     */
+    game_id?: number | null;
     /**
      * 
      * @type {string}
@@ -48,14 +42,20 @@ export interface LevelCreate {
      * @type {number}
      * @memberof LevelCreate
      */
-    gameId?: number | null;
+    level_number: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LevelCreate
+     */
+    title: string;
 }
 
 /**
  * Check if a given object implements the LevelCreate interface.
  */
 export function instanceOfLevelCreate(value: object): value is LevelCreate {
-    if (!('levelNumber' in value) || value['levelNumber'] === undefined) return false;
+    if (!('level_number' in value) || value['level_number'] === undefined) return false;
     if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
@@ -70,11 +70,11 @@ export function LevelCreateFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'levelNumber': json['level_number'],
-        'title': json['title'],
         'description': json['description'] == null ? undefined : json['description'],
+        'game_id': json['game_id'] == null ? undefined : json['game_id'],
         'goal': json['goal'] == null ? undefined : json['goal'],
-        'gameId': json['game_id'] == null ? undefined : json['game_id'],
+        'level_number': json['level_number'],
+        'title': json['title'],
     };
 }
 
@@ -89,11 +89,11 @@ export function LevelCreateToJSONTyped(value?: LevelCreate | null, ignoreDiscrim
 
     return {
         
-        'level_number': value['levelNumber'],
-        'title': value['title'],
         'description': value['description'],
+        'game_id': value['game_id'],
         'goal': value['goal'],
-        'game_id': value['gameId'],
+        'level_number': value['level_number'],
+        'title': value['title'],
     };
 }
 

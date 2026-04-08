@@ -7,11 +7,11 @@ xAPI Actor - Who performed the action.
 
 Name | Type
 ------------ | -------------
-`mbox` | string
-`mboxSha1sum` | string
 `account` | { [key: string]: string; }
+`mbox` | string
+`mbox_sha1sum` | string
 `name` | string
-`objectType` | [XAPIActorType](XAPIActorType.md)
+`object_type` | [XAPIActorType](XAPIActorType.md)
 
 ## Example
 
@@ -20,11 +20,11 @@ import type { XAPIActor } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "mbox": null,
-  "mboxSha1sum": null,
   "account": null,
+  "mbox": null,
+  "mbox_sha1sum": null,
   "name": null,
-  "objectType": null,
+  "object_type": null,
 } satisfies XAPIActor
 
 console.log(example)

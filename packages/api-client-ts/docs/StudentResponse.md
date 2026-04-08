@@ -7,14 +7,14 @@ Esquema para la respuesta individual del estudiante
 
 Name | Type
 ------------ | -------------
-`id` | number
-`username` | string
+`created_at` | Date
 `email` | string
-`name` | string
+`id` | number
+`is_active` | boolean
 `lastname` | string
-`isActive` | boolean
-`createdAt` | Date
-`updatedAt` | Date
+`name` | string
+`updated_at` | Date
+`username` | string
 
 ## Example
 
@@ -23,14 +23,14 @@ import type { StudentResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
-  "username": null,
+  "created_at": null,
   "email": null,
-  "name": null,
+  "id": null,
+  "is_active": null,
   "lastname": null,
-  "isActive": null,
-  "createdAt": null,
-  "updatedAt": null,
+  "name": null,
+  "updated_at": null,
+  "username": null,
 } satisfies StudentResponse
 
 console.log(example)

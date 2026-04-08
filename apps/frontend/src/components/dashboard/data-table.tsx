@@ -53,19 +53,12 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { toast } from "sonner"
 import { z } from "zod"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Drawer,
@@ -103,54 +96,50 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Skeleton } from "@/components/ui/skeleton"
+import { LevelPerformanceItem } from "@/types/api"
 
+// Schema for level performance data from API
 export const schema = z.object({
-  id: z.number(),
-  header: z.string(),
-  type: z.string(),
-  status: z.string(),
-  target: z.string(),
-  limit: z.string(),
-  reviewer: z.string(),
+  levelName: z.string(),
+  completionRate: z.number(),
+  averageAttempts: z.number(),
+  averageTimeMinutes: z.number(),
 })
 
 // Status configuration for styling
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-  "Done": { 
-    label: "Completado", 
+  "published": { 
+    label: "Publicado", 
     color: "text-emerald-600 dark:text-emerald-400", 
     bg: "bg-emerald-500/10 border-emerald-500/20",
     icon: <IconCircleCheckFilled className="w-3 h-3 fill-current" />
   },
-  "In Process": { 
-    label: "En Proceso", 
+  "draft": { 
+    label: "Borrador", 
     color: "text-amber-600 dark:text-amber-400", 
     bg: "bg-amber-500/10 border-amber-500/20",
     icon: <IconLoader className="w-3 h-3 animate-spin" />
   },
-  "Not Started": { 
-    label: "Sin Iniciar", 
+  "archived": { 
+    label: "Archivado", 
     color: "text-slate-500 dark:text-slate-400", 
     bg: "bg-slate-500/10 border-slate-500/20",
     icon: <IconCircleX className="w-3 h-3" />
   },
 }
 
-// Type configuration
-const typeColors: Record<string, string> = {
-  "Narrative": "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20",
-  "Technical content": "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  "Research": "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-  "Legal": "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
-  "Planning": "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
-  "Financial": "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
-  "Visual": "bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/20",
-  "Cover page": "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20",
-  "Table of contents": "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
+// Category configuration
+const categoryColors: Record<string, string> = {
+  "algorithm": "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20",
+  "logic": "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+  "syntax": "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+  "debugging": "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20",
+  "game": "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
 }
 
 // Create a separate component for the drag handle
-function DragHandle({ id }: { id: number }) {
+function DragHandle({ id }: { id: string }) {
   const { attributes, listeners } = useSortable({
     id,
   })
@@ -173,7 +162,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
+    cell: ({ row }) => <DragHandle id={row.original.levelName} />,
     size: 40,
   },
   {
@@ -204,93 +193,54 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     size: 40,
   },
   {
-    accessorKey: "header",
-    header: "Sección",
+    accessorKey: "levelName",
+    header: "Nivel",
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />
     },
     enableHiding: false,
   },
   {
-    accessorKey: "type",
-    header: "Tipo",
+    accessorKey: "completionRate",
+    header: "Tasa de Completado",
     cell: ({ row }) => {
-      const typeColor = typeColors[row.original.type] || "bg-slate-500/10 text-slate-600 border-slate-500/20"
+      const rate = row.original.completionRate
+      const rateColor = rate >= 80 ? "text-emerald-600 dark:text-emerald-400" : rate >= 50 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
       return (
-        <div className="w-36">
-          <Badge variant="outline" className={`${typeColor} px-2.5 py-0.5 text-xs font-medium border`}>
-            {row.original.type}
-          </Badge>
+        <div className="flex items-center gap-2">
+          <div className="w-16 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div 
+              className={`h-full ${rate >= 80 ? 'bg-emerald-500' : rate >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}
+              style={{ width: `${Math.min(rate, 100)}%` }}
+            />
+          </div>
+          <span className={`font-semibold ${rateColor}`}>{rate.toFixed(0)}%</span>
         </div>
       )
     },
     filterFn: "includesString",
   },
   {
-    accessorKey: "status",
-    header: "Estado",
-    cell: ({ row }) => {
-      const status = statusConfig[row.original.status] || statusConfig["Not Started"]
-      return (
-        <Badge variant="outline" className={`${status.bg} ${status.color} px-2.5 py-0.5 text-xs font-medium border flex items-center gap-1.5 w-fit`}>
-          {status.icon}
-          {status.label}
-        </Badge>
-      )
-    },
-    filterFn: "equals",
-  },
-  {
-    accessorKey: "target",
-    header: () => <div className="w-full text-right">Objetivo</div>,
+    accessorKey: "averageAttempts",
+    header: "Intentos Promedio",
     cell: ({ row }) => (
-      <div className="text-right font-mono text-sm">
-        <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{row.original.target}</span>
-        <span className="text-muted-foreground/50 mx-1">/</span>
-        <span className="text-muted-foreground">{row.original.limit}</span>
+      <div className="text-center font-mono text-sm">
+        <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{row.original.averageAttempts.toFixed(1)}</span>
       </div>
     ),
   },
   {
-    accessorKey: "reviewer",
-    header: "Revisor",
+    accessorKey: "averageTimeMinutes",
+    header: "Tiempo Promedio",
     cell: ({ row }) => {
-      const isAssigned = row.original.reviewer !== "Assign reviewer"
-
-      if (isAssigned) {
-        return (
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white text-xs font-medium">
-              {row.original.reviewer.split(" ").map(n => n[0]).join("").slice(0, 2)}
-            </div>
-            <span className="text-sm">{row.original.reviewer}</span>
-          </div>
-        )
-      }
-
+      const time = row.original.averageTimeMinutes
+      const formattedTime = time >= 60 
+        ? `${Math.floor(time / 60)}h ${Math.round(time % 60)}m`
+        : `${Math.round(time)}m`
       return (
-        <>
-          <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
-            Revisor
-          </Label>
-          <Select>
-            <SelectTrigger
-              className="w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-              size="sm"
-              id={`${row.original.id}-reviewer`}
-            >
-              <SelectValue placeholder="Asignar revisor" />
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-              <SelectItem value="Jamik Tashpulatov">
-                Jamik Tashpulatov
-              </SelectItem>
-              <SelectItem value="Maya Johnson">Maya Johnson</SelectItem>
-              <SelectItem value="Carlos Rodriguez">Carlos Rodriguez</SelectItem>
-            </SelectContent>
-          </Select>
-        </>
+        <div className="font-mono text-sm">
+          <span className="text-slate-700 dark:text-slate-300">{formattedTime}</span>
+        </div>
       )
     },
   },
@@ -309,11 +259,10 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40 rounded-xl border-slate-200/60 dark:border-slate-800/60">
-          <DropdownMenuItem className="rounded-lg">Editar</DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg">Duplicar</DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg">Favorito</DropdownMenuItem>
+          <DropdownMenuItem className="rounded-lg">Ver Detalles</DropdownMenuItem>
+          <DropdownMenuItem className="rounded-lg">Ver Estudiantes</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" className="rounded-lg">Eliminar</DropdownMenuItem>
+          <DropdownMenuItem variant="destructive" className="rounded-lg">Archivar</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -323,10 +272,8 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
+    id: row.original.levelName,
   })
-
-  const status = statusConfig[row.original.status]
 
   return (
     <TableRow
@@ -349,11 +296,14 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 }
 
 export function DataTable({
-  data: initialData,
+  data,
+  isLoading = false,
+  error = null,
 }: {
-  data: z.infer<typeof schema>[]
+  data: LevelPerformanceItem[]
+  isLoading?: boolean
+  error?: string | null
 }) {
-  const [data, setData] = React.useState(() => initialData)
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
@@ -373,10 +323,10 @@ export function DataTable({
     useSensor(KeyboardSensor, {})
   )
 
-  const dataIds = data?.map(({ id }) => id) as (string | number)[] || []
+  const dataIds = data?.map(({ levelName }) => levelName) || []
 
   const table = useReactTable({
-    data,
+    data: data || [],
     columns,
     state: {
       sorting,
@@ -386,7 +336,7 @@ export function DataTable({
       pagination,
       globalFilter,
     },
-    getRowId: (row) => row.id.toString(),
+    getRowId: (row) => row.levelName,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -403,26 +353,58 @@ export function DataTable({
   })
 
   function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
-    if (active && over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
-    }
+    // Drag disabled for API data - read-only
   }
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="w-full flex flex-col gap-6 p-4 lg:p-6">
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
+            Rendimiento por Nivel
+          </h2>
+        </div>
+        <div className="space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex items-center gap-4 p-4 rounded-lg border border-slate-200/60 dark:border-slate-800/60">
+              <Skeleton className="h-8 w-8 rounded" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-48" />
+                <Skeleton className="h-2 w-full" />
+              </div>
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // Error state - show empty table with error banner
+  const showError = !!error
 
   return (
     <div className="w-full flex flex-col gap-6 p-4 lg:p-6">
+      {/* Error Banner */}
+      {showError && (
+        <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3">
+          <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+            <IconCircleX className="size-4" />
+            Error al cargar los datos: {error}
+          </p>
+        </div>
+      )}
+
       {/* Header Section with Search and Filters */}
       <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
         <div className="flex items-center gap-3">
           <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-            Secciones del Proyecto
+            Rendimiento por Nivel
           </h2>
           <Badge variant="secondary" className="rounded-full px-3">
-            {table.getFilteredRowModel().rows.length} total
+            {table.getFilteredRowModel().rows.length} niveles
           </Badge>
         </div>
         
@@ -431,7 +413,7 @@ export function DataTable({
           <div className="relative flex-1 lg:flex-initial">
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Buscar secciones..."
+              placeholder="Buscar niveles..."
               value={globalFilter ?? ""}
               onChange={(event) => setGlobalFilter(event.target.value)}
               className="pl-9 w-full lg:w-64 rounded-lg border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50"
@@ -448,22 +430,22 @@ export function DataTable({
             )}
           </div>
 
-          {/* Status Filter */}
+          {/* Completion Rate Filter */}
           <Select
-            value={(table.getColumn("status")?.getFilterValue() as string) ?? "all"}
+            value={(table.getColumn("completionRate")?.getFilterValue() as string) ?? "all"}
             onValueChange={(value) => {
-              table.getColumn("status")?.setFilterValue(value === "all" ? undefined : value)
+              table.getColumn("completionRate")?.setFilterValue(value === "all" ? undefined : value)
             }}
           >
-            <SelectTrigger className="w-40 rounded-lg border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50">
+            <SelectTrigger className="w-48 rounded-lg border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50">
               <IconFilter className="w-4 h-4 mr-2" />
-              <SelectValue placeholder="Filtrar estado" />
+              <SelectValue placeholder="Filtrar por tasa" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="Done">Completado</SelectItem>
-              <SelectItem value="In Process">En Proceso</SelectItem>
-              <SelectItem value="Not Started">Sin Iniciar</SelectItem>
+              <SelectItem value="all">Todas las tasas</SelectItem>
+              <SelectItem value="high">Alta (&gt;80%)</SelectItem>
+              <SelectItem value="medium">Media (50-80%)</SelectItem>
+              <SelectItem value="low">Baja (&lt;50%)</SelectItem>
             </SelectContent>
           </Select>
 
@@ -648,26 +630,6 @@ export function DataTable({
   )
 }
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
-
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--primary)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--primary)",
-  },
-} satisfies ChartConfig
-
 function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
 
@@ -675,69 +637,29 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.header}
+          {item.levelName}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.header}</DrawerTitle>
+          <DrawerTitle>{item.levelName}</DrawerTitle>
           <DrawerDescription>
-            Showing total visitors for the last 6 months
+            Rendimiento del nivel
           </DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
           {!isMobile && (
             <>
-              <ChartContainer config={chartConfig}>
-                <AreaChart
-                  accessibilityLayer
-                  data={chartData}
-                  margin={{
-                    left: 0,
-                    right: 10,
-                  }}
-                >
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="month"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                    tickFormatter={(value) => value.slice(0, 3)}
-                    hide
-                  />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent indicator="dot" />}
-                  />
-                  <Area
-                    dataKey="mobile"
-                    type="natural"
-                    fill="var(--color-mobile)"
-                    fillOpacity={0.6}
-                    stroke="var(--color-mobile)"
-                    stackId="a"
-                  />
-                  <Area
-                    dataKey="desktop"
-                    type="natural"
-                    fill="var(--color-desktop)"
-                    fillOpacity={0.4}
-                    stroke="var(--color-desktop)"
-                    stackId="a"
-                  />
-                </AreaChart>
-              </ChartContainer>
               <Separator />
               <div className="grid gap-2">
                 <div className="flex gap-2 leading-none font-medium">
-                  Trending up by 5.2% this month{" "}
+                  Estadísticas del nivel
                   <IconTrendingUp className="size-4" />
                 </div>
                 <div className="text-muted-foreground">
-                  Showing total visitors for the last 6 months. This is just
-                  some random text to test the layout. It spans multiple lines
-                  and should wrap around.
+                  Este nivel ha sido completado por el {item.completionRate.toFixed(0)}% de los estudiantes. 
+                  El tiempo promedio de finalización es de {item.averageTimeMinutes.toFixed(0)} minutos 
+                  con un promedio de {item.averageAttempts.toFixed(1)} intentos.
                 </div>
               </div>
               <Separator />
@@ -745,81 +667,29 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
           )}
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
-              <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.header} />
+              <Label htmlFor="levelName">Nombre del Nivel</Label>
+              <Input id="levelName" defaultValue={item.levelName} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
-                <Label htmlFor="type">Type</Label>
-                <Select defaultValue={item.type}>
-                  <SelectTrigger id="type" className="w-full">
-                    <SelectValue placeholder="Select a type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Table of Contents">
-                      Table of Contents
-                    </SelectItem>
-                    <SelectItem value="Executive Summary">
-                      Executive Summary
-                    </SelectItem>
-                    <SelectItem value="Technical Approach">
-                      Technical Approach
-                    </SelectItem>
-                    <SelectItem value="Design">Design</SelectItem>
-                    <SelectItem value="Capabilities">Capabilities</SelectItem>
-                    <SelectItem value="Focus Documents">
-                      Focus Documents
-                    </SelectItem>
-                    <SelectItem value="Narrative">Narrative</SelectItem>
-                    <SelectItem value="Cover Page">Cover Page</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="completionRate">Tasa de Completado (%)</Label>
+                <Input id="completionRate" type="number" defaultValue={item.completionRate} />
               </div>
               <div className="flex flex-col gap-3">
-                <Label htmlFor="status">Status</Label>
-                <Select defaultValue={item.status}>
-                  <SelectTrigger id="status" className="w-full">
-                    <SelectValue placeholder="Select a status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Done">Done</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Not Started">Not Started</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item.target} />
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item.limit} />
+                <Label htmlFor="averageAttempts">Intentos Promedio</Label>
+                <Input id="averageAttempts" type="number" step="0.1" defaultValue={item.averageAttempts} />
               </div>
             </div>
             <div className="flex flex-col gap-3">
-              <Label htmlFor="reviewer">Reviewer</Label>
-              <Select defaultValue={item.reviewer}>
-                <SelectTrigger id="reviewer" className="w-full">
-                  <SelectValue placeholder="Select a reviewer" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-                  <SelectItem value="Jamik Tashpulatov">
-                    Jamik Tashpulatov
-                  </SelectItem>
-                  <SelectItem value="Emily Whalen">Emily Whalen</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="averageTimeMinutes">Tiempo Promedio (minutos)</Label>
+              <Input id="averageTimeMinutes" type="number" step="0.1" defaultValue={item.averageTimeMinutes} />
             </div>
           </form>
         </div>
         <DrawerFooter>
-          <Button>Submit</Button>
+          <Button>Guardar Cambios</Button>
           <DrawerClose asChild>
-            <Button variant="outline">Done</Button>
+            <Button variant="outline">Cerrar</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

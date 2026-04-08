@@ -21,22 +21,22 @@ import { mapValues } from '../runtime';
 export interface LevelDetailResponse {
     /**
      * 
-     * @type {number}
+     * @type {Date}
      * @memberof LevelDetailResponse
      */
-    levelNumber: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof LevelDetailResponse
-     */
-    title: string;
+    created_at: Date;
     /**
      * 
      * @type {string}
      * @memberof LevelDetailResponse
      */
     description?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof LevelDetailResponse
+     */
+    game_id: number;
     /**
      * 
      * @type {string}
@@ -51,45 +51,45 @@ export interface LevelDetailResponse {
     id: number;
     /**
      * 
-     * @type {number}
-     * @memberof LevelDetailResponse
-     */
-    gameId: number;
-    /**
-     * 
-     * @type {Date}
-     * @memberof LevelDetailResponse
-     */
-    createdAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof LevelDetailResponse
-     */
-    updatedAt?: Date | null;
-    /**
-     * 
      * @type {boolean}
      * @memberof LevelDetailResponse
      */
-    isDeleted?: boolean;
+    is_deleted?: boolean;
     /**
      * 
      * @type {number}
      * @memberof LevelDetailResponse
      */
-    segmentsCount?: number;
+    level_number: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LevelDetailResponse
+     */
+    segments_count?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LevelDetailResponse
+     */
+    title: string;
+    /**
+     * 
+     * @type {Date}
+     * @memberof LevelDetailResponse
+     */
+    updated_at?: Date | null;
 }
 
 /**
  * Check if a given object implements the LevelDetailResponse interface.
  */
 export function instanceOfLevelDetailResponse(value: object): value is LevelDetailResponse {
-    if (!('levelNumber' in value) || value['levelNumber'] === undefined) return false;
-    if (!('title' in value) || value['title'] === undefined) return false;
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
+    if (!('game_id' in value) || value['game_id'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('gameId' in value) || value['gameId'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('level_number' in value) || value['level_number'] === undefined) return false;
+    if (!('title' in value) || value['title'] === undefined) return false;
     return true;
 }
 
@@ -103,16 +103,16 @@ export function LevelDetailResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'levelNumber': json['level_number'],
-        'title': json['title'],
+        'created_at': (new Date(json['created_at'])),
         'description': json['description'] == null ? undefined : json['description'],
+        'game_id': json['game_id'],
         'goal': json['goal'] == null ? undefined : json['goal'],
         'id': json['id'],
-        'gameId': json['game_id'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
-        'isDeleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
-        'segmentsCount': json['segments_count'] == null ? undefined : json['segments_count'],
+        'is_deleted': json['is_deleted'] == null ? undefined : json['is_deleted'],
+        'level_number': json['level_number'],
+        'segments_count': json['segments_count'] == null ? undefined : json['segments_count'],
+        'title': json['title'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
     };
 }
 
@@ -127,16 +127,16 @@ export function LevelDetailResponseToJSONTyped(value?: LevelDetailResponse | nul
 
     return {
         
-        'level_number': value['levelNumber'],
-        'title': value['title'],
+        'created_at': value['created_at'].toISOString(),
         'description': value['description'],
+        'game_id': value['game_id'],
         'goal': value['goal'],
         'id': value['id'],
-        'game_id': value['gameId'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
-        'is_deleted': value['isDeleted'],
-        'segments_count': value['segmentsCount'],
+        'is_deleted': value['is_deleted'],
+        'level_number': value['level_number'],
+        'segments_count': value['segments_count'],
+        'title': value['title'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
     };
 }
 

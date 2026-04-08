@@ -1,0 +1,85 @@
+- generic [ref=e3]:
+  - generic [ref=e6]:
+    - list [ref=e8]:
+      - listitem [ref=e9]:
+        - link "Mi Plataforma" [ref=e10] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e11]
+          - generic [ref=e14]: Mi Plataforma
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e17]: Estadísticas
+        - generic [ref=e18]:
+          - list [ref=e19]:
+            - listitem [ref=e20]:
+              - button "Quick Create" [ref=e21]:
+                - img [ref=e22]
+                - generic [ref=e24]: Quick Create
+              - button "Inbox" [ref=e25]:
+                - img
+                - generic [ref=e26]: Inbox
+          - list [ref=e27]:
+            - listitem [ref=e28]:
+              - button "Dashboard" [ref=e29]:
+                - img [ref=e30]
+                - link "Dashboard" [ref=e34] [cursor=pointer]:
+                  - /url: /dashboard
+            - listitem [ref=e35]:
+              - button "Estudiantes" [ref=e36]:
+                - img [ref=e37]
+                - link "Estudiantes" [ref=e40] [cursor=pointer]:
+                  - /url: /dashboard/students
+            - listitem [ref=e41]:
+              - button "Métricas" [ref=e42]:
+                - img [ref=e43]
+                - link "Métricas" [ref=e47] [cursor=pointer]:
+                  - /url: /dashboard/metrics
+            - listitem [ref=e48]:
+              - button "Reportes" [ref=e49]:
+                - img [ref=e50]
+                - link "Reportes" [ref=e52] [cursor=pointer]:
+                  - /url: /dashboard/reports
+      - generic [ref=e53]:
+        - generic [ref=e54]: Gestión de Juegos y Niveles
+        - list [ref=e55]:
+          - listitem [ref=e56]:
+            - link "Niveles" [ref=e57] [cursor=pointer]:
+              - /url: /dashboard/levels
+              - img [ref=e58]
+              - generic [ref=e61]: Niveles
+          - listitem [ref=e62]:
+            - link "Crear Nivel" [ref=e63] [cursor=pointer]:
+              - /url: /dashboard/levels/create
+              - img [ref=e64]
+              - generic [ref=e65]: Crear Nivel
+      - list [ref=e68]:
+        - listitem [ref=e69]:
+          - link "Settings" [ref=e70] [cursor=pointer]:
+            - /url: /dashboard/settings
+            - img [ref=e71]
+            - generic [ref=e74]: Settings
+        - listitem [ref=e75]:
+          - link "Ayuda" [ref=e76] [cursor=pointer]:
+            - /url: /dashboard/help
+            - img [ref=e77]
+            - generic [ref=e80]: Ayuda
+  - main [ref=e81]:
+    - generic [ref=e83]:
+      - button "Toggle Sidebar" [ref=e84]:
+        - img
+        - generic [ref=e85]: Toggle Sidebar
+      - generic [ref=e86]:
+        - button "🇪🇸 ES" [ref=e87]:
+          - generic [ref=e88]: 🇪🇸
+          - generic [ref=e89]: ES
+        - button "Toggle theme" [ref=e90]:
+          - img
+          - generic [ref=e91]: Toggle theme
+        - list [ref=e92]:
+          - listitem [ref=e93]:
+            - button "TU Test User García Usuario" [ref=e94]:
+              - generic [ref=e97]:
+                - generic [ref=e100]: TU
+                - generic [ref=e102]:
+                  - generic [ref=e103]: Test User García
+                  - generic [ref=e104]: Usuario

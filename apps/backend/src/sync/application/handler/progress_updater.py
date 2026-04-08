@@ -54,7 +54,23 @@ class ProgressUpdater:
             logger.info(
                 f"Creating new progress record for student {student_id}, segment_level {segment_level_id}"
             )
-            progress = await self._create_progress(student_id, segment_level_id)
+            # Try to create, handle duplicate exception
+            try:
+                progress = await self._create_progress(student_id, segment_level_id)
+            except Exception as e:
+                # If creation fails due to duplicate, try to get existing one
+                logger.warning(
+                    f"Failed to create progress, trying to get existing: {str(e)}"
+                )
+                progress = await self.repository.get_by_student_and_segment(
+                    student_id=student_id,
+                    segment_level_id=segment_level_id,
+                )
+                if not progress:
+                    logger.error(
+                        f"Could not find or create progress for student {student_id}, segment_level {segment_level_id}"
+                    )
+                    return
 
         update_data = self._build_update_data(event)
         if update_data:

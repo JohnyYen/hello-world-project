@@ -29,10 +29,10 @@ import {
 export interface LevelListResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {Array<LevelResponse>}
      * @memberof LevelListResponse
      */
-    success?: boolean;
+    data?: Array<LevelResponse>;
     /**
      * 
      * @type {string}
@@ -41,10 +41,10 @@ export interface LevelListResponse {
     message?: string;
     /**
      * 
-     * @type {Array<LevelResponse>}
+     * @type {boolean}
      * @memberof LevelListResponse
      */
-    data?: Array<LevelResponse>;
+    success?: boolean;
     /**
      * 
      * @type {number}
@@ -70,9 +70,9 @@ export function LevelListResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : ((json['data'] as Array<any>).map(LevelResponseFromJSON)),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
         'total': json['total'] == null ? undefined : json['total'],
     };
 }
@@ -88,9 +88,9 @@ export function LevelListResponseToJSONTyped(value?: LevelListResponse | null, i
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': value['data'] == null ? undefined : ((value['data'] as Array<any>).map(LevelResponseToJSON)),
+        'message': value['message'],
+        'success': value['success'],
         'total': value['total'],
     };
 }

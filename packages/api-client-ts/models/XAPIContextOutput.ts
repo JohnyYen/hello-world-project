@@ -29,10 +29,28 @@ import {
 export interface XAPIContextOutput {
     /**
      * 
+     * @type {object}
+     * @memberof XAPIContextOutput
+     */
+    context_activities?: object | null;
+    /**
+     * 
+     * @type {object}
+     * @memberof XAPIContextOutput
+     */
+    extensions?: object | null;
+    /**
+     * 
+     * @type {XAPIActor}
+     * @memberof XAPIContextOutput
+     */
+    instructor?: XAPIActor | null;
+    /**
+     * 
      * @type {string}
      * @memberof XAPIContextOutput
      */
-    registration?: string | null;
+    language?: string | null;
     /**
      * 
      * @type {string}
@@ -44,31 +62,13 @@ export interface XAPIContextOutput {
      * @type {string}
      * @memberof XAPIContextOutput
      */
-    language?: string | null;
-    /**
-     * 
-     * @type {XAPIActor}
-     * @memberof XAPIContextOutput
-     */
-    instructor?: XAPIActor | null;
+    registration?: string | null;
     /**
      * 
      * @type {XAPIActor}
      * @memberof XAPIContextOutput
      */
     team?: XAPIActor | null;
-    /**
-     * 
-     * @type {object}
-     * @memberof XAPIContextOutput
-     */
-    contextActivities?: object | null;
-    /**
-     * 
-     * @type {object}
-     * @memberof XAPIContextOutput
-     */
-    extensions?: object | null;
 }
 
 /**
@@ -88,13 +88,13 @@ export function XAPIContextOutputFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'registration': json['registration'] == null ? undefined : json['registration'],
-        'platform': json['platform'] == null ? undefined : json['platform'],
-        'language': json['language'] == null ? undefined : json['language'],
-        'instructor': json['instructor'] == null ? undefined : XAPIActorFromJSON(json['instructor']),
-        'team': json['team'] == null ? undefined : XAPIActorFromJSON(json['team']),
-        'contextActivities': json['context_activities'] == null ? undefined : json['context_activities'],
+        'context_activities': json['context_activities'] == null ? undefined : json['context_activities'],
         'extensions': json['extensions'] == null ? undefined : json['extensions'],
+        'instructor': json['instructor'] == null ? undefined : XAPIActorFromJSON(json['instructor']),
+        'language': json['language'] == null ? undefined : json['language'],
+        'platform': json['platform'] == null ? undefined : json['platform'],
+        'registration': json['registration'] == null ? undefined : json['registration'],
+        'team': json['team'] == null ? undefined : XAPIActorFromJSON(json['team']),
     };
 }
 
@@ -109,13 +109,13 @@ export function XAPIContextOutputToJSONTyped(value?: XAPIContextOutput | null, i
 
     return {
         
-        'registration': value['registration'],
-        'platform': value['platform'],
-        'language': value['language'],
-        'instructor': XAPIActorToJSON(value['instructor']),
-        'team': XAPIActorToJSON(value['team']),
-        'context_activities': value['contextActivities'],
+        'context_activities': value['context_activities'],
         'extensions': value['extensions'],
+        'instructor': XAPIActorToJSON(value['instructor']),
+        'language': value['language'],
+        'platform': value['platform'],
+        'registration': value['registration'],
+        'team': XAPIActorToJSON(value['team']),
     };
 }
 

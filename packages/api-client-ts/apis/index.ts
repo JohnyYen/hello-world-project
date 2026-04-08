@@ -3,9 +3,10 @@
 export * from './AuthenticationApi';
 export * from './DefaultApi';
 export * from './GamesApi';
-export { LMSCredentialsApi } from './LMSCredentialsApi';
-export { LMSIntegrationApi } from './LMSIntegrationApi';
-export { StatisticsApi } from './StatisticsApi';
+export * from './LMSCredentialsApi';
+export * from './LMSIntegrationApi';
+export * from './MetricTypesApi';
+export * from './StatisticsApi';
 export * from './SyncApi';
-export { UsersApi } from './UsersApi';
-export { XAPIApi } from './XAPIApi';
+export * from './UsersApi';
+export * from './XAPIApi';

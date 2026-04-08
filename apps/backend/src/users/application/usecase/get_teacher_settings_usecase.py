@@ -12,6 +12,9 @@ from src.users.api.v1.schemas.teacher import (
     TeacherSettingsResponseSchema,
     TeacherSettingsResponse,
 )
+from src.shared.application.providers.users_providers import (
+    get_teacher_settings_service,
+)
 
 
 class GetTeacherSettingsUseCase:
@@ -29,10 +32,13 @@ class GetTeacherSettingsUseCase:
         self,
         db: AsyncSession = Depends(get_db),
         current_user: User = Depends(get_current_user),
+        settings_service: TeacherSettingsService = Depends(
+            get_teacher_settings_service
+        ),
     ):
         self.db = db
         self.current_user = current_user
-        self.settings_service = TeacherSettingsService(db)
+        self.settings_service = settings_service
 
     async def execute(self) -> TeacherSettingsResponseSchema:
         """
@@ -64,12 +70,29 @@ class GetTeacherSettingsUseCase:
                 detail="No existen configuraciones de profesor para este usuario",
             )
 
-        # Construir respuesta
+        # Construir respuesta con todos los campos
+        # Normalizar "instant" legacy a "realtime"
+        freq = settings.notification_frequency
+        if freq == "instant":
+            freq = "realtime"
+
         settings_data = TeacherSettingsResponse(
             theme=settings.theme,
             notifications_enabled=settings.notifications_enabled,
-            notification_frequency=settings.notification_frequency,
+            notification_frequency=freq,
             interface_language=settings.interface_language,
+            # Session settings
+            auto_logout=settings.auto_logout,
+            session_duration_minutes=settings.session_duration_minutes,
+            remember_login=settings.remember_login,
+            # Appearance settings
+            color_theme=settings.color_theme,
+            animations_enabled=settings.animations_enabled,
+            # Notification settings (extended)
+            email_notifications=settings.email_notifications,
+            # Language settings (extended)
+            date_format=settings.date_format,
+            timezone=settings.timezone,
         )
 
         return TeacherSettingsResponseSchema(

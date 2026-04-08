@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from datetime import datetime
+from uuid import UUID
 from src.shared.api.schemas.base import ResponseSchema
 
 
@@ -28,7 +29,7 @@ class StudentUpdate(BaseModel):
 class StudentResponse(BaseModel):
     """Esquema para la respuesta individual del estudiante"""
 
-    id: int
+    id: UUID
     username: str
     email: EmailStr
     name: str

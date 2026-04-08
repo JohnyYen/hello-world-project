@@ -209,6 +209,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/games`;
 
@@ -265,6 +273,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/game-instances/{game_id}/instances`;
         urlPath = urlPath.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters['gameId'])));
@@ -322,6 +338,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/games/{game_id}/levels`;
         urlPath = urlPath.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters['gameId'])));
@@ -379,6 +403,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/segments/{level_id}/segments`;
         urlPath = urlPath.replace(`{${"level_id"}}`, encodeURIComponent(String(requestParameters['levelId'])));
@@ -427,6 +459,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/games/{game_id}`;
         urlPath = urlPath.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters['gameId'])));
@@ -474,6 +514,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/levels/{level_id}`;
         urlPath = urlPath.replace(`{${"level_id"}}`, encodeURIComponent(String(requestParameters['levelId'])));
@@ -521,6 +569,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/segments/{segment_id}`;
         urlPath = urlPath.replace(`{${"segment_id"}}`, encodeURIComponent(String(requestParameters['segmentId'])));
@@ -570,6 +626,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/game-instances/{instance_id}/end`;
         urlPath = urlPath.replace(`{${"instance_id"}}`, encodeURIComponent(String(requestParameters['instanceId'])));
@@ -618,6 +682,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/games/{game_id}`;
         urlPath = urlPath.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters['gameId'])));
@@ -673,6 +745,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/games/{game_id}/levels`;
         urlPath = urlPath.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters['gameId'])));
@@ -721,6 +801,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/games`;
 
@@ -767,6 +855,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/game-instances/{instance_id}`;
         urlPath = urlPath.replace(`{${"instance_id"}}`, encodeURIComponent(String(requestParameters['instanceId'])));
@@ -814,6 +910,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/levels/{level_id}`;
         urlPath = urlPath.replace(`{${"level_id"}}`, encodeURIComponent(String(requestParameters['levelId'])));
@@ -869,6 +973,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/segments/{level_id}/segments`;
         urlPath = urlPath.replace(`{${"level_id"}}`, encodeURIComponent(String(requestParameters['levelId'])));
@@ -928,6 +1040,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/game-instances/{game_id}/instances`;
         urlPath = urlPath.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters['gameId'])));
@@ -984,6 +1104,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/games/{game_id}`;
         urlPath = urlPath.replace(`{${"game_id"}}`, encodeURIComponent(String(requestParameters['gameId'])));
@@ -1041,6 +1169,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/levels/{level_id}`;
         urlPath = urlPath.replace(`{${"level_id"}}`, encodeURIComponent(String(requestParameters['levelId'])));
@@ -1098,6 +1234,14 @@ export class GamesApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/segments/{segment_id}`;
         urlPath = urlPath.replace(`{${"segment_id"}}`, encodeURIComponent(String(requestParameters['segmentId'])));

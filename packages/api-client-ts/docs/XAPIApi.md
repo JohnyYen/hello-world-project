@@ -32,6 +32,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new XAPIApi(config);
 
@@ -65,7 +67,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -104,6 +106,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new XAPIApi(config);
 
@@ -152,7 +156,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 
@@ -191,6 +195,8 @@ async function example() {
   const config = new Configuration({ 
     // To configure OAuth2 access token for authorization: OAuth2PasswordBearer password
     accessToken: "YOUR ACCESS TOKEN",
+    // Configure HTTP bearer authorization: HTTPBearer
+    accessToken: "YOUR BEARER TOKEN",
   });
   const api = new XAPIApi(config);
 
@@ -224,7 +230,7 @@ example().catch(console.error);
 
 ### Authorization
 
-[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password)
+[OAuth2PasswordBearer password](../README.md#OAuth2PasswordBearer-password), [HTTPBearer](../README.md#HTTPBearer)
 
 ### HTTP request headers
 

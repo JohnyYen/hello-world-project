@@ -29,28 +29,10 @@ import {
 export interface XAPIResult {
     /**
      * 
-     * @type {XAPIScore}
-     * @memberof XAPIResult
-     */
-    score?: XAPIScore | null;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof XAPIResult
-     */
-    success?: boolean | null;
-    /**
-     * 
      * @type {boolean}
      * @memberof XAPIResult
      */
     completion?: boolean | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof XAPIResult
-     */
-    response?: string | null;
     /**
      * 
      * @type {string}
@@ -63,6 +45,24 @@ export interface XAPIResult {
      * @memberof XAPIResult
      */
     extensions?: object | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof XAPIResult
+     */
+    response?: string | null;
+    /**
+     * 
+     * @type {XAPIScore}
+     * @memberof XAPIResult
+     */
+    score?: XAPIScore | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof XAPIResult
+     */
+    success?: boolean | null;
 }
 
 /**
@@ -82,12 +82,12 @@ export function XAPIResultFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'score': json['score'] == null ? undefined : XAPIScoreFromJSON(json['score']),
-        'success': json['success'] == null ? undefined : json['success'],
         'completion': json['completion'] == null ? undefined : json['completion'],
-        'response': json['response'] == null ? undefined : json['response'],
         'duration': json['duration'] == null ? undefined : json['duration'],
         'extensions': json['extensions'] == null ? undefined : json['extensions'],
+        'response': json['response'] == null ? undefined : json['response'],
+        'score': json['score'] == null ? undefined : XAPIScoreFromJSON(json['score']),
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -102,12 +102,12 @@ export function XAPIResultToJSONTyped(value?: XAPIResult | null, ignoreDiscrimin
 
     return {
         
-        'score': XAPIScoreToJSON(value['score']),
-        'success': value['success'],
         'completion': value['completion'],
-        'response': value['response'],
         'duration': value['duration'],
         'extensions': value['extensions'],
+        'response': value['response'],
+        'score': XAPIScoreToJSON(value['score']),
+        'success': value['success'],
     };
 }
 

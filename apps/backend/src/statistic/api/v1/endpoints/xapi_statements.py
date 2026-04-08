@@ -13,6 +13,9 @@ from src.statistic.application.service.xapi_statement_service import (
     XAPIStatementService,
 )
 from src.shared.infrastructure.session import get_db
+from src.shared.application.providers.statistic_providers import (
+    get_xapi_statement_service,
+)
 from src.shared.deps import get_current_user
 from src.users.domain.user import User
 
@@ -28,7 +31,7 @@ router = APIRouter(prefix="/xapi", tags=["xAPI"])
 async def send_statements(
     batch_data: XAPIStatementBatchCreate,
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
+    service: XAPIStatementService = Depends(get_xapi_statement_service),
 ):
     """
     Receive and store xAPI statements.
@@ -44,7 +47,6 @@ async def send_statements(
     - context = qualitative data (platform, language, extensions)
     - context.extensions = game-specific data (game_id, level_id, segment_id)
     """
-    service = XAPIStatementService(db=db)
 
     try:
         statements = await service.save_batch(batch_data.statements)
@@ -86,14 +88,13 @@ async def get_statements(
     game_id: Optional[int] = Query(None, description="Filter by game ID"),
     level_id: Optional[int] = Query(None, description="Filter by level ID"),
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
+    service: XAPIStatementService = Depends(get_xapi_statement_service),
 ):
     """
     Get xAPI statements with optional filters.
 
     Returns statements with pagination. Use filters to narrow results.
     """
-    service = XAPIStatementService(db=db)
 
     # Apply filters
     if student_id:
@@ -136,12 +137,11 @@ async def get_statements(
 async def get_statement(
     statement_id: str,
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_db),
+    service: XAPIStatementService = Depends(get_xapi_statement_service),
 ):
     """
     Get a specific xAPI statement by ID.
     """
-    service = XAPIStatementService(db=db)
 
     statement = await service.get_statement(statement_id)
     if not statement:

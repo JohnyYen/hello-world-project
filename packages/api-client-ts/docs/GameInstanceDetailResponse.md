@@ -7,16 +7,16 @@ Esquema para respuesta detallada de instancia con relaciones
 
 Name | Type
 ------------ | -------------
+`created_at` | Date
+`game_id` | number
+`game_title` | string
 `id` | number
-`gameId` | number
-`studentId` | number
+`is_deleted` | boolean
+`start_instance` | Date
 `status` | string
-`startInstance` | Date
-`createdAt` | Date
-`updatedAt` | Date
-`isDeleted` | boolean
-`gameTitle` | string
-`studentUsername` | string
+`student_id` | number
+`student_username` | string
+`updated_at` | Date
 
 ## Example
 
@@ -25,16 +25,16 @@ import type { GameInstanceDetailResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
+  "created_at": null,
+  "game_id": null,
+  "game_title": null,
   "id": null,
-  "gameId": null,
-  "studentId": null,
+  "is_deleted": null,
+  "start_instance": null,
   "status": null,
-  "startInstance": null,
-  "createdAt": null,
-  "updatedAt": null,
-  "isDeleted": null,
-  "gameTitle": null,
-  "studentUsername": null,
+  "student_id": null,
+  "student_username": null,
+  "updated_at": null,
 } satisfies GameInstanceDetailResponse
 
 console.log(example)

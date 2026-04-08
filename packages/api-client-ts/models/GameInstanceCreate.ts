@@ -24,26 +24,26 @@ export interface GameInstanceCreate {
      * @type {number}
      * @memberof GameInstanceCreate
      */
-    gameId?: number | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof GameInstanceCreate
-     */
-    studentId: number;
+    game_id?: number | null;
     /**
      * 
      * @type {string}
      * @memberof GameInstanceCreate
      */
     status?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof GameInstanceCreate
+     */
+    student_id: number;
 }
 
 /**
  * Check if a given object implements the GameInstanceCreate interface.
  */
 export function instanceOfGameInstanceCreate(value: object): value is GameInstanceCreate {
-    if (!('studentId' in value) || value['studentId'] === undefined) return false;
+    if (!('student_id' in value) || value['student_id'] === undefined) return false;
     return true;
 }
 
@@ -57,9 +57,9 @@ export function GameInstanceCreateFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'gameId': json['game_id'] == null ? undefined : json['game_id'],
-        'studentId': json['student_id'],
+        'game_id': json['game_id'] == null ? undefined : json['game_id'],
         'status': json['status'] == null ? undefined : json['status'],
+        'student_id': json['student_id'],
     };
 }
 
@@ -74,9 +74,9 @@ export function GameInstanceCreateToJSONTyped(value?: GameInstanceCreate | null,
 
     return {
         
-        'game_id': value['gameId'],
-        'student_id': value['studentId'],
+        'game_id': value['game_id'],
         'status': value['status'],
+        'student_id': value['student_id'],
     };
 }
 

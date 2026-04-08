@@ -4,6 +4,7 @@ apis/DefaultApi.ts
 apis/GamesApi.ts
 apis/LMSCredentialsApi.ts
 apis/LMSIntegrationApi.ts
+apis/MetricTypesApi.ts
 apis/StatisticsApi.ts
 apis/SyncApi.ts
 apis/UsersApi.ts
@@ -43,6 +44,10 @@ docs/LevelResponse.md
 docs/LevelUpdate.md
 docs/LevelUpdateResponse.md
 docs/LocationInner.md
+docs/MetricTypeCreate.md
+docs/MetricTypeSchema.md
+docs/MetricTypeUpdate.md
+docs/MetricTypesApi.md
 docs/SegmentLevelCreate.md
 docs/SegmentLevelCreateResponse.md
 docs/SegmentLevelDeleteResponse.md
@@ -127,6 +132,9 @@ models/LevelResponse.ts
 models/LevelUpdate.ts
 models/LevelUpdateResponse.ts
 models/LocationInner.ts
+models/MetricTypeCreate.ts
+models/MetricTypeSchema.ts
+models/MetricTypeUpdate.ts
 models/SegmentLevelCreate.ts
 models/SegmentLevelCreateResponse.ts
 models/SegmentLevelDeleteResponse.ts

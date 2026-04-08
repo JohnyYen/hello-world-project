@@ -1,11 +1,12 @@
 "use server";
 
 import { z } from "zod";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { Configuration, UsersApi } from "@workspace/api-client-ts";
+import { ApiError } from "@/api/client";
 import { login as authLogin, register as authRegister, getMe as authGetMe, changePassword as authChangePassword } from "@/services/auth";
+import { usersApi } from "@/api/client";
 
 // 📝 Type para las acciones
 export type ActionState = {
@@ -14,17 +15,10 @@ export type ActionState = {
   success?: boolean;
 };
 
-// 🔐 Helper para obtener instancia de Users API configurada
-async function getUsersApi(): Promise<UsersApi> {
+// 🔐 Helper para obtener token de auth
+async function getAuthToken(): Promise<string | undefined> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
-  
-  const config = new Configuration({
-    basePath: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
-    accessToken: token,
-  });
-  
-  return new UsersApi(config);
+  return cookieStore.get("auth_token")?.value;
 }
 
 // 🔐 Schema de validación para login
@@ -92,8 +86,18 @@ export async function changePasswordAction(
       };
     }
 
-    const user = await authGetMe(token);
-    await authChangePassword(user.id, currentPassword, newPassword, token);
+    // Obtener usuario desde el servidor
+    const { getServerUser } = await import("@/lib/auth-server");
+    const { user } = await getServerUser();
+    
+    if (!user || !user.id) {
+      return {
+        success: false,
+        message: "No se pudo obtener la información del usuario",
+      };
+    }
+
+    await authChangePassword(String(user.id), currentPassword, newPassword, token);
 
     return {
       success: true,
@@ -133,29 +137,66 @@ export async function loginAction(
     const { email, password } = validatedFields.data;
     
     const result = await authLogin({
-      username: email,
+      email: email,
       password: password,
     });
 
-    if (result.accessToken) {
+    if (result.access_token) {
       const cookieStore = await cookies();
-      cookieStore.set("auth_token", result.accessToken, {
+      cookieStore.set("auth_token", result.access_token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
       });
+      // Invalidate student-related caches after login
+      revalidateTag('students-list');
+      revalidateTag('all-students');
+      revalidateTag('student-detail');
     }
     
   } catch (error: unknown) {
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
-    const detail = (error as { detail?: string }).detail;
+
+    // Enhanced error handling - extract backend error message properly
+    let errorMessage = "Error al iniciar sesión";
+    let errorFormMessage = "Credenciales inválidas";
+
+    // Check if it's a ResponseError from the API client
+    if (error && typeof error === 'object' && 'response' in error) {
+      const responseError = error as { response?: Response; message?: string };
+      
+      if (responseError.response) {
+        try {
+          const response = responseError.response;
+          const body = await response.json().catch(() => ({}));
+          
+          if (body && typeof body === 'object') {
+            const detail = (body as { detail?: string }).detail;
+            
+            if (detail) {
+              errorMessage = detail;
+              errorFormMessage = detail;
+            }
+          }
+        } catch {
+          // Failed to parse response body, use default
+        }
+      } else if (responseError.message) {
+        errorMessage = responseError.message;
+        errorFormMessage = responseError.message;
+      }
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+      errorFormMessage = error.message;
+    }
+
     return {
       success: false,
-      message: detail || "Error al iniciar sesión",
-      errors: { _form: [detail || "Credenciales inválidas"] },
+      message: errorMessage,
+      errors: { _form: [errorFormMessage] },
     };
   }
   
@@ -199,11 +240,56 @@ export async function signupAction(
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
-    const detail = (error as { detail?: string }).detail;
+
+    // Enhanced error handling - extract backend error message properly
+    let errorMessage = "Error al crear cuenta";
+    let errorFormMessage = "Email o usuario ya existe";
+
+    // Check if it's a ResponseError from the API client
+    if (error && typeof error === 'object' && 'response' in error) {
+      const responseError = error as { response?: Response; message?: string };
+      
+      if (responseError.response) {
+        try {
+          const response = responseError.response;
+          const body = await response.json().catch(() => ({}));
+          
+          // Backend returns { detail: string } for validation errors
+          // or { detail: string, error: string } for AppException
+          if (body && typeof body === 'object') {
+            const detail = (body as { detail?: string }).detail;
+            
+            if (detail) {
+              errorMessage = detail;
+              
+              // Map specific backend errors to user-friendly messages
+              if (detail.toLowerCase().includes('email')) {
+                errorFormMessage = "El email ya está registrado";
+              } else if (detail.toLowerCase().includes('username')) {
+                errorFormMessage = "El nombre de usuario ya está en uso";
+              } else {
+                errorFormMessage = detail;
+              }
+            }
+          }
+        } catch {
+          // Failed to parse response body, use default
+        }
+      } else if (responseError.message) {
+        // Fallback: use message property if available
+        errorMessage = responseError.message;
+        errorFormMessage = responseError.message;
+      }
+    } else if (error instanceof Error) {
+      // Generic error handling
+      errorMessage = error.message;
+      errorFormMessage = error.message;
+    }
+
     return {
       success: false,
-      message: detail || "Error al crear cuenta",
-      errors: { _form: [detail || "Email o usuario ya existe"] },
+      message: errorMessage,
+      errors: { _form: [errorFormMessage] },
     };
   }
 
@@ -241,30 +327,116 @@ export async function createStudentAction(
       };
     }
 
-    const usersApi = await getUsersApi();
-    await usersApi.createStudentApiV1UsersStudentsPost({
-      studentCreate: {
-        ...validatedFields.data,
-        isActive: true,
-      }
-    });
-    
+    const token = await getAuthToken();
+    if (!token) {
+      return { success: false, message: "No autenticado" };
+    }
+
+    await usersApi.createStudent(
+      { ...validatedFields.data, is_active: true },
+      token
+    );
+
     // Revalidar caché
     revalidatePath("/dashboard/students");
-    
-    return { 
+
+    return {
       success: true,
-      message: "Estudiante creado exitosamente" 
+      message: "Estudiante creado exitosamente"
     };
-    
+
   } catch (error: unknown) {
     console.error("Error creating student:", error);
-    const detail = (error as { detail?: string }).detail;
-    const message = error instanceof Error ? error.message : "Error al crear estudiante";
+
+    let errorDetail = "Error al guardar en base de datos";
+
+    if (error instanceof ApiError) {
+      errorDetail = error.detail;
+      console.error(`Backend response: ${error.status} ${error.message}`);
+    } else if (error instanceof Error) {
+      errorDetail = error.message;
+    }
+
+    return {
+      success: false,
+      message: errorDetail,
+      errors: { _form: [errorDetail] },
+    };
+  }
+}
+
+// 👤 Schema de validación para actualización de perfil
+const profileUpdateSchema = z.object({
+  name: z.string().min(2, "El nombre debe tener al menos 2 caracteres").max(100, "El nombre no puede exceder 100 caracteres").optional(),
+  lastname: z.string().max(100, "El apellido no puede exceder 100 caracteres").optional(),
+  email: z.string().email("Email inválido").optional().or(z.literal("")),
+  department: z.string().max(100, "El departamento no puede exceder 100 caracteres").optional().or(z.literal("")),
+  contactPhone: z.string().max(20, "El teléfono no puede exceder 20 caracteres").regex(/^[\d\s\-\+\(\)]*$/, "Formato de teléfono inválido").optional().or(z.literal("")),
+});
+
+// 👤 Server action para actualizar perfil
+export async function updateProfileAction(
+  prevState: ActionState | null,
+  formData: FormData
+): Promise<ActionState> {
+  try {
+    const validatedFields = profileUpdateSchema.safeParse({
+      name: formData.get("name"),
+      lastname: formData.get("lastname"),
+      email: formData.get("email"),
+      department: formData.get("department"),
+      contactPhone: formData.get("contactPhone"),
+    });
+
+    if (!validatedFields.success) {
+      return {
+        success: false,
+        message: "Errores de validación",
+        errors: validatedFields.error.flatten().fieldErrors,
+      };
+    }
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth_token")?.value;
+    if (!token) {
+      return { success: false, message: "No autenticado" };
+    }
+
+    const { getServerUser } = await import("@/lib/auth-server");
+    const { user } = await getServerUser();
+    if (!user || !user.id) {
+      return { success: false, message: "No se pudo obtener la información del usuario" };
+    }
+
+    const { name, lastname, email, department, contactPhone } = validatedFields.data;
+
+    await usersApi.updateTeacherProfile(token, {
+      name: name || undefined,
+      lastname: lastname || undefined,
+      email: email || undefined,
+      department: department || undefined,
+      contact_phone: contactPhone || undefined,
+    });
+
+    revalidatePath("/dashboard/account");
+
+    return { success: true, message: "Perfil actualizado exitosamente" };
+
+  } catch (error: unknown) {
+    console.error("Error updating profile:", error);
+    const message = error instanceof Error ? error.message : "Error al actualizar el perfil";
+
     return {
       success: false,
       message,
-      errors: { _form: [detail || "Error al guardar en base de datos"] },
+      errors: { _form: [message] },
     };
   }
+}
+
+// 🔓 Logout Action - clears auth cookie
+export async function logoutAction(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete("auth_token");
+  revalidatePath("/");
 }

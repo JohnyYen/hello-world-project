@@ -29,10 +29,10 @@ import {
 export interface SegmentLevelListResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {Array<SegmentLevelResponse>}
      * @memberof SegmentLevelListResponse
      */
-    success?: boolean;
+    data?: Array<SegmentLevelResponse>;
     /**
      * 
      * @type {string}
@@ -41,10 +41,10 @@ export interface SegmentLevelListResponse {
     message?: string;
     /**
      * 
-     * @type {Array<SegmentLevelResponse>}
+     * @type {boolean}
      * @memberof SegmentLevelListResponse
      */
-    data?: Array<SegmentLevelResponse>;
+    success?: boolean;
     /**
      * 
      * @type {number}
@@ -70,9 +70,9 @@ export function SegmentLevelListResponseFromJSONTyped(json: any, ignoreDiscrimin
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : ((json['data'] as Array<any>).map(SegmentLevelResponseFromJSON)),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
         'total': json['total'] == null ? undefined : json['total'],
     };
 }
@@ -88,9 +88,9 @@ export function SegmentLevelListResponseToJSONTyped(value?: SegmentLevelListResp
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': value['data'] == null ? undefined : ((value['data'] as Array<any>).map(SegmentLevelResponseToJSON)),
+        'message': value['message'],
+        'success': value['success'],
         'total': value['total'],
     };
 }

@@ -7,10 +7,18 @@ Esquema para actualización de configuraciones de profesor
 
 Name | Type
 ------------ | -------------
+`animations_enabled` | boolean
+`auto_logout` | boolean
+`color_theme` | string
+`date_format` | string
+`email_notifications` | boolean
+`interface_language` | string
+`notification_frequency` | string
+`notifications_enabled` | boolean
+`remember_login` | boolean
+`session_duration_minutes` | number
 `theme` | string
-`notificationsEnabled` | boolean
-`notificationFrequency` | string
-`interfaceLanguage` | string
+`timezone` | string
 
 ## Example
 
@@ -19,10 +27,18 @@ import type { TeacherSettingsUpdate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
+  "animations_enabled": null,
+  "auto_logout": null,
+  "color_theme": null,
+  "date_format": null,
+  "email_notifications": null,
+  "interface_language": null,
+  "notification_frequency": null,
+  "notifications_enabled": null,
+  "remember_login": null,
+  "session_duration_minutes": null,
   "theme": null,
-  "notificationsEnabled": null,
-  "notificationFrequency": null,
-  "interfaceLanguage": null,
+  "timezone": null,
 } satisfies TeacherSettingsUpdate
 
 console.log(example)

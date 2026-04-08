@@ -21,18 +21,6 @@ import { mapValues } from '../runtime';
 export interface StudentProgressResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof StudentProgressResponse
-     */
-    success?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof StudentProgressResponse
-     */
-    message?: string;
-    /**
-     * 
      * @type {object}
      * @memberof StudentProgressResponse
      */
@@ -42,7 +30,19 @@ export interface StudentProgressResponse {
      * @type {}
      * @memberof StudentProgressResponse
      */
-    error?: any | null;
+    error?:  | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof StudentProgressResponse
+     */
+    message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StudentProgressResponse
+     */
+    success?: boolean;
 }
 
 /**
@@ -63,10 +63,10 @@ export function StudentProgressResponseFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'],
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -81,10 +81,10 @@ export function StudentProgressResponseToJSONTyped(value?: StudentProgressRespon
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': value['data'],
-        'error': value['error'],
+        'error': ToJSON(value['error']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

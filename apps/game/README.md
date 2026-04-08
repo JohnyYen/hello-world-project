@@ -54,10 +54,12 @@ apps/game/
 ├── config/                 # Configuraciones del juego
 │   └── game_config.gd     # Constantes globales
 ├── data/                   # Base de datos SQLite
-├── dialogue/               # Archivos de diálogo (YAML/JSON)
+├── dialogue/               # Archivos de diálogo (.dialogue)
 │   ├── C00/               # Capítulo 0
 │   ├── C01/               # Capítulo 1
-│   └── Tutorial/          # Diálogos de tutorial
+│   ├── Tutorial/          # Diálogos de tutorial
+│   ├── Testing.dialogue   # Diálogos de testing
+│   └── dialogue.dialogue  # Diálogos principales
 ├── docs/                   # Documentación técnica
 │   ├── engine.md          # Motor de ejecución
 │   ├── nivel_1_design.md  # Diseño del nivel 1
@@ -71,11 +73,12 @@ apps/game/
 ├── scripts/                # Código GDScript
 │   ├── agent/             # Agente adaptativo
 │   ├── blocks/            # Bloques de programación
-│   ├── controllers/        # Controladores de lógica
+│   ├── controllers/       # Controladores de lógica
 │   ├── database/          # Repositorios SQLite
 │   ├── engine/            # Motor de ejecución
-│   ├── eventBus.gd        # Sistema de eventos globales
+│   ├── http/              # Clientes HTTP
 │   ├── globals/           # Variables globales
+│   ├── eventBus.gd        # Sistema de eventos globales
 │   └── util.gd            # Utilidades
 ├── test/                   # Pruebas GUT
 ├── project.godot           # Configuración del proyecto
@@ -118,11 +121,13 @@ El proyecto incluye varios **autoloads** (singletons) que se cargan al iniciar:
 | `Env` | Variables de entorno y configuración |
 | `DialogueManager` | Sistema de diálogos |
 | `EventBus` | Comunicación entre nodos |
-| `_GameConfig` | Configuración global |
+| `_GameConfig` | Configuración global del juego |
 | `_GameState` | Estado del juego |
 | `_GameController` | Controlador principal |
 | `_FeedbackController` | Sistema de feedback |
 | `_SaveController` | Persistencia de datos |
+| `_DialogueUiController` | Controlador de UI de diálogos |
+| `_Util` | Utilidades globales |
 
 ---
 
@@ -137,6 +142,7 @@ El proyecto incluye varios **autoloads** (singletons) que se cargan al iniciar:
 ├─────────────────────────────────────┤
 │         CONTROLADORES               │  scripts/controllers/
 │  GameController, FeedbackController │
+│  SaveController, DialogueUIController │
 ├─────────────────────────────────────┤
 │        MOTOR DE EJECUCIÓN          │  scripts/engine/
 │    ExecutionEngine, ProblemContext  │
@@ -149,6 +155,12 @@ El proyecto incluye varios **autoloads** (singletons) que se cargan al iniciar:
 ├─────────────────────────────────────┤
 │         REPOSITORIOS                │  scripts/database/
 │     LevelRepository, ProgressRepo   │
+├─────────────────────────────────────┤
+│          CLIENTE HTTP               │  scripts/http/
+│     Comunicación con Backend        │
+├─────────────────────────────────────┤
+│        VARIABLES GLOBALES           │  scripts/globals/
+│     GameConfig, GameState           │
 ├─────────────────────────────────────┤
 │          BASE DE DATOS              │  data/*.db
 │              SQLite                 │
@@ -217,8 +229,9 @@ El juego se comunica con el backend FastAPI para:
 |----------|--------|-------------|
 | `/api/v1/auth/login` | POST | Autenticar estudiante |
 | `/api/v1/game-instances` | POST | Crear instancia de juego |
-| `/api/v1/sync/sessions` | POST | Iniciar sesión de sync |
-| `/api/v1/sync/events` | POST | Registrar evento |
+| `/api/v1/sync/sessions` | POST | Crear sesión de sincronización |
+| `/api/v1/sync/events` | POST | Registrar evento de sincronización |
+| `/api/v1/sync/sessions/{id}/events` | GET | Obtener eventos de una sesión |
 | `/api/v1/statements/xapi` | POST | Enviar statement xAPI |
 
 ---

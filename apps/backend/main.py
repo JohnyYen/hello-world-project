@@ -1,10 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from src.api.router import router
 from src.shared.infrastructure.config import settings
 from src.shared.seed.run_seed import run_all_seeds
+from src.shared.domain.exceptions import AppException
 from alembic import command
 from alembic.config import Config as AlembicConfig
 import os
+import traceback
 
 
 def run_migrations():
@@ -13,8 +17,6 @@ def run_migrations():
     # Ensure we're in the correct directory
     alembic_cfg.set_main_option("script_location", "migrations")
     command.upgrade(alembic_cfg, "head")
-
-
 
 
 app = FastAPI(
@@ -26,8 +28,54 @@ app = FastAPI(
         "url": "http://tuwebsite.com",
         "email": "jhonnyantonio892@gmail.com",
     },
+    openapi_extra={
+        "components": {
+            "securitySchemes": {
+                "BearerAuth": {
+                    "type": "http",
+                    "scheme": "bearer",
+                    "bearerFormat": "JWT",
+                }
+            }
+        }
+    },
 )
 
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.exception_handler(AppException)
+async def app_exception_handler(request: Request, exc: AppException):
+    """Manejador global para excepciones de aplicación - mejora debugging"""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": exc.__class__.__name__,
+            "detail": exc.detail,
+            "path": str(request.url.path),
+        },
+    )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Manejador global para excepciones no manejadas - para debugging en desarrollo"""
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": exc.__class__.__name__,
+            "detail": str(exc),
+            "path": str(request.url.path),
+            "traceback": traceback.format_exc() if settings.DEBUG else None,
+        },
+    )
 
 
 @app.on_event("startup")
@@ -43,6 +91,11 @@ app.include_router(router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to FastAPI!"}
+
+
+@app.get("/health")
+def verify_health():
+    return {"message": "Health!!!"}
 
 
 @app.get("/openapi")

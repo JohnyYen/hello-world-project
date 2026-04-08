@@ -21,18 +21,6 @@ import { mapValues } from '../runtime';
 export interface XAPIActivityDefinition {
     /**
      * 
-     * @type {string}
-     * @memberof XAPIActivityDefinition
-     */
-    type?: string | null;
-    /**
-     * 
-     * @type {{ [key: string]: string; }}
-     * @memberof XAPIActivityDefinition
-     */
-    name?: { [key: string]: string; } | null;
-    /**
-     * 
      * @type {{ [key: string]: string; }}
      * @memberof XAPIActivityDefinition
      */
@@ -43,6 +31,18 @@ export interface XAPIActivityDefinition {
      * @memberof XAPIActivityDefinition
      */
     extensions?: object | null;
+    /**
+     * 
+     * @type {{ [key: string]: string; }}
+     * @memberof XAPIActivityDefinition
+     */
+    name?: { [key: string]: string; } | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof XAPIActivityDefinition
+     */
+    type?: string | null;
 }
 
 /**
@@ -62,10 +62,10 @@ export function XAPIActivityDefinitionFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'type': json['type'] == null ? undefined : json['type'],
-        'name': json['name'] == null ? undefined : json['name'],
         'description': json['description'] == null ? undefined : json['description'],
         'extensions': json['extensions'] == null ? undefined : json['extensions'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'type': json['type'] == null ? undefined : json['type'],
     };
 }
 
@@ -80,10 +80,10 @@ export function XAPIActivityDefinitionToJSONTyped(value?: XAPIActivityDefinition
 
     return {
         
-        'type': value['type'],
-        'name': value['name'],
         'description': value['description'],
         'extensions': value['extensions'],
+        'name': value['name'],
+        'type': value['type'],
     };
 }
 
