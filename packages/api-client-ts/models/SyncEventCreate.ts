@@ -20,31 +20,31 @@ import { mapValues } from '../runtime';
  */
 export interface SyncEventCreate {
     /**
-     * 
-     * @type {number}
-     * @memberof SyncEventCreate
-     */
-    syncSessionId: number;
-    /**
-     * 
+     * Type of the event
      * @type {string}
      * @memberof SyncEventCreate
      */
-    eventType: string;
+    event_type: string;
     /**
      * 
      * @type {object}
      * @memberof SyncEventCreate
      */
     payload?: object | null;
+    /**
+     * ID of the sync session
+     * @type {number}
+     * @memberof SyncEventCreate
+     */
+    sync_session_id: number;
 }
 
 /**
  * Check if a given object implements the SyncEventCreate interface.
  */
 export function instanceOfSyncEventCreate(value: object): value is SyncEventCreate {
-    if (!('syncSessionId' in value) || value['syncSessionId'] === undefined) return false;
-    if (!('eventType' in value) || value['eventType'] === undefined) return false;
+    if (!('event_type' in value) || value['event_type'] === undefined) return false;
+    if (!('sync_session_id' in value) || value['sync_session_id'] === undefined) return false;
     return true;
 }
 
@@ -58,9 +58,9 @@ export function SyncEventCreateFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'syncSessionId': json['sync_session_id'],
-        'eventType': json['event_type'],
+        'event_type': json['event_type'],
         'payload': json['payload'] == null ? undefined : json['payload'],
+        'sync_session_id': json['sync_session_id'],
     };
 }
 
@@ -75,9 +75,9 @@ export function SyncEventCreateToJSONTyped(value?: SyncEventCreate | null, ignor
 
     return {
         
-        'sync_session_id': value['syncSessionId'],
-        'event_type': value['eventType'],
+        'event_type': value['event_type'],
         'payload': value['payload'],
+        'sync_session_id': value['sync_session_id'],
     };
 }
 

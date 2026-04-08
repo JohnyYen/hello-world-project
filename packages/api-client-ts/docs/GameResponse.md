@@ -7,15 +7,15 @@ Esquema para respuesta de juego
 
 Name | Type
 ------------ | -------------
-`title` | string
-`description` | string
+`created_at` | Date
 `creator` | string
-`subject` | string
-`publicationStatus` | string
+`description` | string
 `id` | number
-`createdAt` | Date
-`updatedAt` | Date
-`isDeleted` | boolean
+`is_deleted` | boolean
+`publication_status` | string
+`subject` | string
+`title` | string
+`updated_at` | Date
 
 ## Example
 
@@ -24,15 +24,15 @@ import type { GameResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "title": Juego de Matemáticas,
-  "description": null,
+  "created_at": null,
   "creator": null,
-  "subject": null,
-  "publicationStatus": null,
+  "description": null,
   "id": null,
-  "createdAt": null,
-  "updatedAt": null,
-  "isDeleted": null,
+  "is_deleted": null,
+  "publication_status": null,
+  "subject": null,
+  "title": Juego de Matemáticas,
+  "updated_at": null,
 } satisfies GameResponse
 
 console.log(example)

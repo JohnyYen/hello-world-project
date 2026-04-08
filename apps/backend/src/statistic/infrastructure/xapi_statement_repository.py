@@ -119,14 +119,20 @@ class XAPIStatementRepository(BaseRepository[XAPIStatement]):
         Returns:
             List of XAPIStatement instances
         """
-        filters = {"student_id": student_id}
-        return await self.get_by_filters(
-            filters,
-            skip=skip,
-            limit=limit,
-            order_by="timestamp",
-            descending=True,
+        query = (
+            select(XAPIStatement)
+            .where(
+                and_(
+                    XAPIStatement.student_id == student_id,
+                    XAPIStatement.deleted_at.is_(None),
+                )
+            )
+            .order_by(XAPIStatement.timestamp.desc())
+            .offset(skip)
+            .limit(limit)
         )
+        result = await self.db.execute(query)
+        return list(result.scalars().all())
 
     async def get_by_verb(
         self,
@@ -145,14 +151,20 @@ class XAPIStatementRepository(BaseRepository[XAPIStatement]):
         Returns:
             List of XAPIStatement instances
         """
-        filters = {"verb_id": verb_id}
-        return await self.get_by_filters(
-            filters,
-            skip=skip,
-            limit=limit,
-            order_by="timestamp",
-            descending=True,
+        query = (
+            select(XAPIStatement)
+            .where(
+                and_(
+                    XAPIStatement.verb_id == verb_id,
+                    XAPIStatement.deleted_at.is_(None),
+                )
+            )
+            .order_by(XAPIStatement.timestamp.desc())
+            .offset(skip)
+            .limit(limit)
         )
+        result = await self.db.execute(query)
+        return list(result.scalars().all())
 
     async def get_by_object(
         self,
@@ -171,14 +183,20 @@ class XAPIStatementRepository(BaseRepository[XAPIStatement]):
         Returns:
             List of XAPIStatement instances
         """
-        filters = {"object_id": object_id}
-        return await self.get_by_filters(
-            filters,
-            skip=skip,
-            limit=limit,
-            order_by="timestamp",
-            descending=True,
+        query = (
+            select(XAPIStatement)
+            .where(
+                and_(
+                    XAPIStatement.object_id == object_id,
+                    XAPIStatement.deleted_at.is_(None),
+                )
+            )
+            .order_by(XAPIStatement.timestamp.desc())
+            .offset(skip)
+            .limit(limit)
         )
+        result = await self.db.execute(query)
+        return list(result.scalars().all())
 
     async def get_by_game_id(
         self,
@@ -197,14 +215,20 @@ class XAPIStatementRepository(BaseRepository[XAPIStatement]):
         Returns:
             List of XAPIStatement instances
         """
-        filters = {"game_id": game_id}
-        return await self.get_by_filters(
-            filters,
-            skip=skip,
-            limit=limit,
-            order_by="timestamp",
-            descending=True,
+        query = (
+            select(XAPIStatement)
+            .where(
+                and_(
+                    XAPIStatement.game_id == game_id,
+                    XAPIStatement.deleted_at.is_(None),
+                )
+            )
+            .order_by(XAPIStatement.timestamp.desc())
+            .offset(skip)
+            .limit(limit)
         )
+        result = await self.db.execute(query)
+        return list(result.scalars().all())
 
     async def get_by_level_id(
         self,
@@ -223,14 +247,20 @@ class XAPIStatementRepository(BaseRepository[XAPIStatement]):
         Returns:
             List of XAPIStatement instances
         """
-        filters = {"level_id": level_id}
-        return await self.get_by_filters(
-            filters,
-            skip=skip,
-            limit=limit,
-            order_by="timestamp",
-            descending=True,
+        query = (
+            select(XAPIStatement)
+            .where(
+                and_(
+                    XAPIStatement.level_id == level_id,
+                    XAPIStatement.deleted_at.is_(None),
+                )
+            )
+            .order_by(XAPIStatement.timestamp.desc())
+            .offset(skip)
+            .limit(limit)
         )
+        result = await self.db.execute(query)
+        return list(result.scalars().all())
 
     async def get_by_date_range(
         self,

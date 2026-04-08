@@ -1,6 +1,5 @@
-import {
+import type {
   ApiResponse,
-  ApiError,
   Student,
   CreateStudentRequest,
   UpdateStudentRequest,
@@ -14,7 +13,7 @@ import {
   SignupResponse,
   LoginRequest,
   LoginResponse,
-  AuthUser
+  AuthUser,
 } from '@/types/api';
 import type {
   Course,
@@ -23,6 +22,13 @@ import type {
   StudentActivitySummary,
   CourseReportKPIs,
 } from '@/types/course-report.interface';
+
+// Legacy ApiError compatible type
+interface LegacyApiError {
+  success: boolean;
+  message: string;
+  code?: string;
+}
 
 /**
  * 🚀 API Client Type-Safe para Next.js 15
@@ -158,11 +164,16 @@ export class APIClient {
   /**
    * 🚨 Handle API errors with type safety
    */
-  private async handleError(response: Response): Promise<ApiError> {
-    let errorData: ApiError;
-    
+  private async handleError(response: Response): Promise<LegacyApiError> {
+    let errorData: LegacyApiError;
+
     try {
-      errorData = await response.json();
+      const body = await response.json();
+      errorData = {
+        success: false,
+        message: body?.detail || body?.message || `HTTP ${response.status}: ${response.statusText}`,
+        code: response.status.toString(),
+      };
     } catch {
       errorData = {
         success: false,

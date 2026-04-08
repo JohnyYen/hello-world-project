@@ -1,6 +1,9 @@
-import { redirect } from "next/navigation";
-import { getTeacherSettings } from "@/services/users";
-import { Settings } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
+import { Settings, Loader2 } from "lucide-react";
 import { SettingsContent } from "@/components/settings";
 
 export interface TeacherSettingsData {
@@ -8,27 +11,84 @@ export interface TeacherSettingsData {
   notificationsEnabled: boolean;
   notificationFrequency: string;
   interfaceLanguage: string;
+  autoLogout: boolean;
+  sessionDurationMinutes: number;
+  rememberLogin: boolean;
+  colorTheme: string;
+  animationsEnabled: boolean;
+  emailNotifications: boolean;
+  dateFormat: string;
+  timezone: string;
 }
 
-async function fetchTeacherSettings(): Promise<TeacherSettingsData | null> {
-  try {
-    const settings = await getTeacherSettings();
-    return {
-      theme: settings.theme ?? "light",
-      notificationsEnabled: settings.notificationsEnabled ?? true,
-      notificationFrequency: settings.notificationFrequency ?? "daily",
-      interfaceLanguage: settings.interfaceLanguage ?? "es",
-    };
-  } catch {
-    return null;
-  }
-}
+const DEFAULT_SETTINGS: TeacherSettingsData = {
+  theme: "light",
+  notificationsEnabled: true,
+  notificationFrequency: "realtime",
+  interfaceLanguage: "es",
+  autoLogout: false,
+  sessionDurationMinutes: 60,
+  rememberLogin: true,
+  colorTheme: "Indigo",
+  animationsEnabled: true,
+  emailNotifications: false,
+  dateFormat: "ddmmyyyy",
+  timezone: "gmt-5",
+};
 
-export default async function SettingsPage() {
-  const settings = await fetchTeacherSettings();
+export default function SettingsPage() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const [settings, setSettings] = useState<TeacherSettingsData>(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
 
-  if (!settings) {
-    redirect("/login");
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
+    if (isAuthenticated) {
+      // Try to fetch settings from API via Next.js proxy route
+      fetch("/api/users/professors/settings")
+        .then((res) => {
+          if (!res.ok) return;
+          return res.json();
+        })
+        .then((s) => {
+          if (s) {
+            setSettings({
+              theme: s.theme ?? "light",
+              notificationsEnabled: s.notifications_enabled ?? true,
+              notificationFrequency: s.notification_frequency ?? "realtime",
+              interfaceLanguage: s.interface_language ?? "es",
+              autoLogout: s.auto_logout ?? false,
+              sessionDurationMinutes: s.session_duration_minutes ?? 60,
+              rememberLogin: s.remember_login ?? true,
+              colorTheme: s.color_theme ?? "Indigo",
+              animationsEnabled: s.animations_enabled ?? true,
+              emailNotifications: s.email_notifications ?? false,
+              dateFormat: s.date_format ?? "ddmmyyyy",
+              timezone: s.timezone ?? "gmt-5",
+            });
+          }
+        })
+        .catch(() => {
+          // Use defaults if API fails
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  if (isLoading || loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Cargando configuración...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

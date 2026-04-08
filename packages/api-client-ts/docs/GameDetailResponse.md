@@ -7,16 +7,16 @@ Esquema para respuesta detallada de juego con relaciones
 
 Name | Type
 ------------ | -------------
-`title` | string
-`description` | string
+`created_at` | Date
 `creator` | string
-`subject` | string
-`publicationStatus` | string
+`description` | string
 `id` | number
-`createdAt` | Date
-`updatedAt` | Date
-`isDeleted` | boolean
-`levelsCount` | number
+`is_deleted` | boolean
+`levels_count` | number
+`publication_status` | string
+`subject` | string
+`title` | string
+`updated_at` | Date
 
 ## Example
 
@@ -25,16 +25,16 @@ import type { GameDetailResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "title": Juego de Matemáticas,
-  "description": null,
+  "created_at": null,
   "creator": null,
-  "subject": null,
-  "publicationStatus": null,
+  "description": null,
   "id": null,
-  "createdAt": null,
-  "updatedAt": null,
-  "isDeleted": null,
-  "levelsCount": null,
+  "is_deleted": null,
+  "levels_count": null,
+  "publication_status": null,
+  "subject": null,
+  "title": Juego de Matemáticas,
+  "updated_at": null,
 } satisfies GameDetailResponse
 
 console.log(example)

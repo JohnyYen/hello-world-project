@@ -29,18 +29,6 @@ import {
 export interface TeacherSettingsResponseSchema {
     /**
      * 
-     * @type {boolean}
-     * @memberof TeacherSettingsResponseSchema
-     */
-    success?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof TeacherSettingsResponseSchema
-     */
-    message?: string;
-    /**
-     * 
      * @type {TeacherSettingsResponse}
      * @memberof TeacherSettingsResponseSchema
      */
@@ -50,7 +38,19 @@ export interface TeacherSettingsResponseSchema {
      * @type {}
      * @memberof TeacherSettingsResponseSchema
      */
-    error?: any | null;
+    error?:  | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherSettingsResponseSchema
+     */
+    message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TeacherSettingsResponseSchema
+     */
+    success?: boolean;
 }
 
 /**
@@ -71,10 +71,10 @@ export function TeacherSettingsResponseSchemaFromJSONTyped(json: any, ignoreDisc
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': TeacherSettingsResponseFromJSON(json['data']),
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -89,10 +89,10 @@ export function TeacherSettingsResponseSchemaToJSONTyped(value?: TeacherSettings
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': TeacherSettingsResponseToJSON(value['data']),
-        'error': value['error'],
+        'error': ToJSON(value['error']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

@@ -7,9 +7,9 @@ Esquema para respuesta de creación de instancia
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [GameInstanceResponse](GameInstanceResponse.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { GameInstanceCreateResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
+  "message": null,
+  "success": null,
 } satisfies GameInstanceCreateResponse
 
 console.log(example)

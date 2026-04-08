@@ -24,7 +24,7 @@ export interface XAPIScore {
      * @type {number}
      * @memberof XAPIScore
      */
-    raw?: number | null;
+    max?: number | null;
     /**
      * 
      * @type {number}
@@ -36,7 +36,7 @@ export interface XAPIScore {
      * @type {number}
      * @memberof XAPIScore
      */
-    max?: number | null;
+    raw?: number | null;
     /**
      * 
      * @type {number}
@@ -62,9 +62,9 @@ export function XAPIScoreFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'raw': json['raw'] == null ? undefined : json['raw'],
-        'min': json['min'] == null ? undefined : json['min'],
         'max': json['max'] == null ? undefined : json['max'],
+        'min': json['min'] == null ? undefined : json['min'],
+        'raw': json['raw'] == null ? undefined : json['raw'],
         'scaled': json['scaled'] == null ? undefined : json['scaled'],
     };
 }
@@ -80,9 +80,9 @@ export function XAPIScoreToJSONTyped(value?: XAPIScore | null, ignoreDiscriminat
 
     return {
         
-        'raw': value['raw'],
-        'min': value['min'],
         'max': value['max'],
+        'min': value['min'],
+        'raw': value['raw'],
         'scaled': value['scaled'],
     };
 }

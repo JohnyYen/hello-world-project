@@ -32,19 +32,19 @@ export interface UserLoginResponse {
      * @type {string}
      * @memberof UserLoginResponse
      */
-    accessToken: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserLoginResponse
-     */
-    tokenType?: string;
+    access_token: string;
     /**
      * 
      * @type {number}
      * @memberof UserLoginResponse
      */
-    expiresIn: number;
+    expires_in: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserLoginResponse
+     */
+    token_type?: string;
     /**
      * 
      * @type {UserResponse}
@@ -57,8 +57,8 @@ export interface UserLoginResponse {
  * Check if a given object implements the UserLoginResponse interface.
  */
 export function instanceOfUserLoginResponse(value: object): value is UserLoginResponse {
-    if (!('accessToken' in value) || value['accessToken'] === undefined) return false;
-    if (!('expiresIn' in value) || value['expiresIn'] === undefined) return false;
+    if (!('access_token' in value) || value['access_token'] === undefined) return false;
+    if (!('expires_in' in value) || value['expires_in'] === undefined) return false;
     if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
@@ -73,9 +73,9 @@ export function UserLoginResponseFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'accessToken': json['access_token'],
-        'tokenType': json['token_type'] == null ? undefined : json['token_type'],
-        'expiresIn': json['expires_in'],
+        'access_token': json['access_token'],
+        'expires_in': json['expires_in'],
+        'token_type': json['token_type'] == null ? undefined : json['token_type'],
         'user': UserResponseFromJSON(json['user']),
     };
 }
@@ -91,9 +91,9 @@ export function UserLoginResponseToJSONTyped(value?: UserLoginResponse | null, i
 
     return {
         
-        'access_token': value['accessToken'],
-        'token_type': value['tokenType'],
-        'expires_in': value['expiresIn'],
+        'access_token': value['access_token'],
+        'expires_in': value['expires_in'],
+        'token_type': value['token_type'],
         'user': UserResponseToJSON(value['user']),
     };
 }

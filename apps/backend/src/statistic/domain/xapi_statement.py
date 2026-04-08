@@ -1,6 +1,5 @@
 from sqlalchemy import (
     Column,
-    Integer,
     String,
     DateTime,
     Boolean,
@@ -9,6 +8,7 @@ from sqlalchemy import (
     Index,
     ForeignKey,
 )
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
 
@@ -22,6 +22,9 @@ class XAPIStatement(Base):
     """
 
     __tablename__ = "xapi_statements"
+
+    # Primary key - UUID string as per xAPI specification
+    id = Column(String(36), primary_key=True)
 
     # Parsed fields for efficient queries
     actor_mbox = Column(String(255), nullable=True, index=True)
@@ -61,10 +64,12 @@ class XAPIStatement(Base):
     statement = Column(JSON, nullable=False)
 
     # Game-specific parsed fields (for easy querying)
-    student_id = Column(Integer, ForeignKey("students.id"), nullable=True, index=True)
-    game_id = Column(Integer, nullable=True, index=True)
-    level_id = Column(Integer, nullable=True, index=True)
-    segment_id = Column(Integer, nullable=True, index=True)
+    student_id = Column(
+        UUID(as_uuid=True), ForeignKey("students.id"), nullable=True, index=True
+    )
+    game_id = Column(UUID(as_uuid=True), nullable=True, index=True)
+    level_id = Column(UUID(as_uuid=True), nullable=True, index=True)
+    segment_id = Column(UUID(as_uuid=True), nullable=True, index=True)
 
     # Relationships
     student = relationship("Student", back_populates="xapi_statements")

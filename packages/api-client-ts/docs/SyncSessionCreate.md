@@ -6,8 +6,8 @@
 
 Name | Type
 ------------ | -------------
-`instanceId` | number
-`isActive` | boolean
+`instance_id` | number
+`is_active` | boolean
 
 ## Example
 
@@ -16,8 +16,8 @@ import type { SyncSessionCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "instanceId": null,
-  "isActive": null,
+  "instance_id": null,
+  "is_active": null,
 } satisfies SyncSessionCreate
 
 console.log(example)

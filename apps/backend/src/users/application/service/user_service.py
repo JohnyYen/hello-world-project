@@ -38,7 +38,7 @@ class UserService(BaseService):
         super().__init__(repository, model)
 
     async def create_user(
-        self, user_data: UserCreate, role_id: Optional[int] = None
+        self, user_data: UserCreate, role_id: Optional[int | str] = None
     ) -> User:
         """
         Crea un nuevo usuario con hash de contraseña.

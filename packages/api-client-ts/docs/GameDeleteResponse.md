@@ -7,8 +7,8 @@ Esquema para respuesta de eliminación de juego
 
 Name | Type
 ------------ | -------------
-`success` | boolean
 `message` | string
+`success` | boolean
 
 ## Example
 
@@ -17,8 +17,8 @@ import type { GameDeleteResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
   "message": null,
+  "success": null,
 } satisfies GameDeleteResponse
 
 console.log(example)

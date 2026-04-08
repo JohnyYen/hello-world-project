@@ -7,11 +7,11 @@ Response schema for LMS sync operation.
 
 Name | Type
 ------------ | -------------
-`status` | string
 `message` | string
-`recordsSynced` | { [key: string]: number; }
-`syncTime` | Date
-`nextSyncScheduled` | Date
+`next_sync_scheduled` | Date
+`records_synced` | { [key: string]: number; }
+`status` | string
+`sync_time` | Date
 
 ## Example
 
@@ -20,11 +20,11 @@ import type { SyncResultResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "status": null,
   "message": null,
-  "recordsSynced": null,
-  "syncTime": null,
-  "nextSyncScheduled": null,
+  "next_sync_scheduled": null,
+  "records_synced": null,
+  "status": null,
+  "sync_time": null,
 } satisfies SyncResultResponse
 
 console.log(example)

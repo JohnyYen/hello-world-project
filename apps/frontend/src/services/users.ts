@@ -1,171 +1,112 @@
-import {
-  Configuration,
-  UsersApi,
+import { usersApi } from "@/api/client";
+import type {
   UserListResponse,
   SingleUserResponse,
-  UserCreate,
   StudentListResponse,
   StudentResponse,
   StudentCreate,
   StudentUpdate,
   StudentProgressResponse,
   StudentReportsResponse,
-  TeacherProfileResponseSchema,
+  TeacherProfileResponse,
   TeacherProfileUpdate,
-  TeacherUpdateResponseSchema,
-  TeacherSettingsResponseSchema,
+  TeacherSettingsResponse,
   TeacherSettingsUpdate,
-} from "@workspace/api-client-ts";
+} from "@/api/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export async function getUsers(token: string, skip = 0, limit = 100): Promise<UserListResponse> {
+  return usersApi.getUsers(token, skip, limit);
+}
 
-async function getAuthToken(): Promise<string> {
-  if (typeof window !== "undefined") {
-    // Cliente: obtener token de localStorage (guardado por auth-context)
-    const token = localStorage.getItem("auth_token");
-    return token || "";
-  } else {
-    // Servidor: importar cookies dinámicamente
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const token = cookieStore.get("auth_token");
-    return token?.value || "";
+export async function getUser(userId: string, token: string): Promise<SingleUserResponse> {
+  return usersApi.getUser(userId, token);
+}
+
+export async function createUser(
+  body: { username: string; email: string; name: string; lastname?: string; password: string },
+  token: string
+): Promise<SingleUserResponse> {
+  return usersApi.createUser(body, token);
+}
+
+export async function getStudents(
+  token: string,
+  skip = 0,
+  limit = 100
+): Promise<StudentListResponse> {
+  return usersApi.getStudents(token, skip, limit);
+}
+
+export async function getStudent(
+  studentId: string,
+  token: string
+): Promise<import("@/api/types").ApiResponse<StudentResponse>> {
+  return usersApi.getStudent(studentId, token);
+}
+
+export async function createStudent(
+  body: StudentCreate,
+  token: string
+): Promise<import("@/api/types").ApiResponse<StudentResponse>> {
+  return usersApi.createStudent(body, token);
+}
+
+export async function updateStudent(
+  studentId: string,
+  body: StudentUpdate,
+  token: string
+): Promise<import("@/api/types").ApiResponse<StudentResponse>> {
+  return usersApi.updateStudent(studentId, body, token);
+}
+
+export async function getStudentProgress(
+  studentId: string,
+  token: string
+): Promise<StudentProgressResponse> {
+  return usersApi.getStudentProgress(studentId, token);
+}
+
+export async function getStudentReports(
+  studentId: string,
+  token: string
+): Promise<StudentReportsResponse> {
+  return usersApi.getStudentReports(studentId, token);
+}
+
+export async function getTeacherProfile(token: string): Promise<TeacherProfileResponse> {
+  const response = await usersApi.getTeacherProfile(token);
+  if (!response.data) {
+    throw new Error("No data in response");
   }
-}
-
-function createUsersApiConfiguration(token?: string): Configuration {
-  return new Configuration({
-    basePath: API_BASE_URL,
-    accessToken: token,
-  });
-}
-
-async function getUsersApi(): Promise<UsersApi> {
-  const token = await getAuthToken();
-  return new UsersApi(createUsersApiConfiguration(token));
-}
-
-interface GetUsersParams {
-  skip?: number;
-  limit?: number;
-  includeDeleted?: boolean;
-}
-
-export async function getUsers(params: GetUsersParams = {}): Promise<UserListResponse> {
-  const api = await getUsersApi();
-  const response = await api.getAllUsersApiV1UsersGet({
-    skip: params.skip,
-    limit: params.limit,
-    includeDeleted: params.includeDeleted,
-  });
-  return response;
-}
-
-export async function getUser(userId: number): Promise<SingleUserResponse> {
-  const api = await getUsersApi();
-  const response = await api.getUserApiV1UsersUserIdGet({ userId });
-  return response;
-}
-
-export async function createUser(userCreate: UserCreate): Promise<SingleUserResponse> {
-  const api = await getUsersApi();
-  const response = await api.createUserApiV1UsersPost({ userCreate });
-  return response;
-}
-
-interface GetStudentsParams {
-  skip?: number;
-  limit?: number;
-  search?: string;
-}
-
-export async function getStudents(params: GetStudentsParams = {}): Promise<StudentListResponse> {
-  const api = await getUsersApi();
-  const response = await api.listStudentsApiV1UsersStudentsGet({
-    skip: params.skip,
-    limit: params.limit,
-    search: params.search,
-  });
-  return response;
-}
-
-export async function getStudent(id: number): Promise<StudentResponse> {
-  const api = await getUsersApi();
-  const response = await api.getStudentApiV1UsersStudentsIdGet({ id });
-  return response;
-}
-
-export async function createStudent(studentCreate: StudentCreate): Promise<StudentResponse> {
-  const api = await getUsersApi();
-  const response = await api.createStudentApiV1UsersStudentsPost({ studentCreate });
-  return response;
-}
-
-export async function updateStudent(id: number, studentUpdate: StudentUpdate): Promise<StudentResponse> {
-  const api = await getUsersApi();
-  const response = await api.updateStudentApiV1UsersStudentsIdPut({ id, studentUpdate });
-  return response;
-}
-
-export async function deleteStudent(id: number): Promise<void> {
-  const api = await getUsersApi();
-  await api.deleteStudentApiV1UsersStudentsIdDelete({ id });
-}
-
-export async function getStudentProgress(id: number): Promise<StudentProgressResponse> {
-  const api = await getUsersApi();
-  const response = await api.getStudentProgressApiV1UsersStudentsIdProgressGet({ id });
-  return response;
-}
-
-export async function getStudentReports(id: number): Promise<StudentReportsResponse> {
-  const api = await getUsersApi();
-  const response = await api.getStudentReportsApiV1UsersStudentsIdReportsGet({ id });
-  return response;
-}
-
-export async function getTeacherProfile(): Promise<TeacherProfileResponseSchema["data"]> {
-  const api = await getUsersApi();
-  const response = await api.getTeacherProfileApiV1UsersProfessorsMeGet();
   return response.data;
 }
 
-export async function updateTeacherProfile(profile: TeacherProfileUpdate): Promise<TeacherUpdateResponseSchema> {
-  const api = await getUsersApi();
-  const response = await api.updateTeacherProfileApiV1UsersProfessorsMePut({ teacherProfileUpdate: profile });
-  return response;
-}
-
-export async function getTeacherSettings(): Promise<TeacherSettingsResponseSchema["data"]> {
-  const api = await getUsersApi();
-  const response = await api.getTeacherSettingsApiV1UsersProfessorsSettingsGet();
+export async function updateTeacherProfile(
+  token: string,
+  body: TeacherProfileUpdate
+): Promise<TeacherProfileResponse> {
+  const response = await usersApi.updateTeacherProfile(token, body);
+  if (!response.data) {
+    throw new Error("No data in response");
+  }
   return response.data;
 }
 
-export async function updateTeacherSettings(settings: TeacherSettingsUpdate): Promise<TeacherSettingsResponseSchema> {
-  const api = await getUsersApi();
-  const response = await api.updateTeacherSettingsApiV1UsersProfessorsSettingsPut({ teacherSettingsUpdate: settings });
-  return response;
+export async function getTeacherSettings(token: string): Promise<TeacherSettingsResponse> {
+  const response = await usersApi.getTeacherSettings(token);
+  if (!response.data) {
+    throw new Error("No data in response");
+  }
+  return response.data;
 }
 
-export const usersService = {
-  getUsers,
-  getUser,
-  createUser,
-  getStudents,
-  getStudent,
-  createStudent,
-  updateStudent,
-  deleteStudent,
-  getStudentProgress,
-  getStudentReports,
-  getTeacherProfile,
-  updateTeacherProfile,
-  getTeacherSettings,
-  updateTeacherSettings,
-};
-
-export type {
-  GetUsersParams,
-  GetStudentsParams,
-};
+export async function updateTeacherSettings(
+  token: string,
+  body: TeacherSettingsUpdate
+): Promise<TeacherSettingsResponse> {
+  const response = await usersApi.updateTeacherSettings(token, body);
+  if (!response.data) {
+    throw new Error("No data in response");
+  }
+  return response.data;
+}

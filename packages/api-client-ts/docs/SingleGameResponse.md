@@ -7,9 +7,9 @@ Esquema para respuesta de un solo juego
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [GameDetailResponse](GameDetailResponse.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { SingleGameResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
+  "message": null,
+  "success": null,
 } satisfies SingleGameResponse
 
 console.log(example)

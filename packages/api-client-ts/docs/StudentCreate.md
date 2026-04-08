@@ -7,12 +7,12 @@ Esquema para crear un nuevo estudiante
 
 Name | Type
 ------------ | -------------
-`username` | string
 `email` | string
-`name` | string
+`is_active` | boolean
 `lastname` | string
+`name` | string
 `password` | string
-`isActive` | boolean
+`username` | string
 
 ## Example
 
@@ -21,12 +21,12 @@ import type { StudentCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "username": null,
   "email": null,
-  "name": null,
+  "is_active": null,
   "lastname": null,
+  "name": null,
   "password": null,
-  "isActive": null,
+  "username": null,
 } satisfies StudentCreate
 
 console.log(example)

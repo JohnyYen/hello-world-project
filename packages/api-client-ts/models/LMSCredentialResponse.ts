@@ -21,69 +21,69 @@ import { mapValues } from '../runtime';
 export interface LMSCredentialResponse {
     /**
      * 
+     * @type {string}
+     * @memberof LMSCredentialResponse
+     */
+    access_token?: string | null;
+    /**
+     * 
+     * @type {Date}
+     * @memberof LMSCredentialResponse
+     */
+    created_at: Date;
+    /**
+     * 
+     * @type {Date}
+     * @memberof LMSCredentialResponse
+     */
+    expire_at?: Date | null;
+    /**
+     * 
      * @type {number}
      * @memberof LMSCredentialResponse
      */
     id: number;
     /**
      * 
+     * @type {string}
+     * @memberof LMSCredentialResponse
+     */
+    lms_email: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LMSCredentialResponse
+     */
+    lms_provider: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LMSCredentialResponse
+     */
+    lms_url?: string | null;
+    /**
+     * 
+     * @type {Date}
+     * @memberof LMSCredentialResponse
+     */
+    updated_at?: Date | null;
+    /**
+     * 
      * @type {number}
      * @memberof LMSCredentialResponse
      */
-    userId: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof LMSCredentialResponse
-     */
-    lmsUrl?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof LMSCredentialResponse
-     */
-    lmsEmail: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LMSCredentialResponse
-     */
-    lmsProvider: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LMSCredentialResponse
-     */
-    accessToken?: string | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof LMSCredentialResponse
-     */
-    expireAt?: Date | null;
-    /**
-     * 
-     * @type {Date}
-     * @memberof LMSCredentialResponse
-     */
-    createdAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof LMSCredentialResponse
-     */
-    updatedAt?: Date | null;
+    user_id: number;
 }
 
 /**
  * Check if a given object implements the LMSCredentialResponse interface.
  */
 export function instanceOfLMSCredentialResponse(value: object): value is LMSCredentialResponse {
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('lmsEmail' in value) || value['lmsEmail'] === undefined) return false;
-    if (!('lmsProvider' in value) || value['lmsProvider'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('lms_email' in value) || value['lms_email'] === undefined) return false;
+    if (!('lms_provider' in value) || value['lms_provider'] === undefined) return false;
+    if (!('user_id' in value) || value['user_id'] === undefined) return false;
     return true;
 }
 
@@ -97,15 +97,15 @@ export function LMSCredentialResponseFromJSONTyped(json: any, ignoreDiscriminato
     }
     return {
         
+        'access_token': json['access_token'] == null ? undefined : json['access_token'],
+        'created_at': (new Date(json['created_at'])),
+        'expire_at': json['expire_at'] == null ? undefined : (new Date(json['expire_at'])),
         'id': json['id'],
-        'userId': json['user_id'],
-        'lmsUrl': json['lms_url'] == null ? undefined : json['lms_url'],
-        'lmsEmail': json['lms_email'],
-        'lmsProvider': json['lms_provider'],
-        'accessToken': json['access_token'] == null ? undefined : json['access_token'],
-        'expireAt': json['expire_at'] == null ? undefined : (new Date(json['expire_at'])),
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
+        'lms_email': json['lms_email'],
+        'lms_provider': json['lms_provider'],
+        'lms_url': json['lms_url'] == null ? undefined : json['lms_url'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
+        'user_id': json['user_id'],
     };
 }
 
@@ -120,15 +120,15 @@ export function LMSCredentialResponseToJSONTyped(value?: LMSCredentialResponse |
 
     return {
         
+        'access_token': value['access_token'],
+        'created_at': value['created_at'].toISOString(),
+        'expire_at': value['expire_at'] == null ? value['expire_at'] : value['expire_at'].toISOString(),
         'id': value['id'],
-        'user_id': value['userId'],
-        'lms_url': value['lmsUrl'],
-        'lms_email': value['lmsEmail'],
-        'lms_provider': value['lmsProvider'],
-        'access_token': value['accessToken'],
-        'expire_at': value['expireAt'] == null ? value['expireAt'] : value['expireAt'].toISOString(),
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
+        'lms_email': value['lms_email'],
+        'lms_provider': value['lms_provider'],
+        'lms_url': value['lms_url'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
+        'user_id': value['user_id'],
     };
 }
 

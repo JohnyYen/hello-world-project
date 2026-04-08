@@ -28,4 +28,7 @@ async def end_sync_session(
             end_time=session.end_time,
         )
     except NotFoundException as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Sesión de sincronización no encontrada: {str(e)}",
+        )

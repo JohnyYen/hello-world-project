@@ -21,28 +21,76 @@ import { mapValues } from '../runtime';
 export interface TeacherSettingsResponse {
     /**
      * 
+     * @type {boolean}
+     * @memberof TeacherSettingsResponse
+     */
+    animations_enabled?: boolean | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TeacherSettingsResponse
+     */
+    auto_logout?: boolean | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherSettingsResponse
+     */
+    color_theme?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherSettingsResponse
+     */
+    date_format?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TeacherSettingsResponse
+     */
+    email_notifications?: boolean | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherSettingsResponse
+     */
+    interface_language?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherSettingsResponse
+     */
+    notification_frequency?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TeacherSettingsResponse
+     */
+    notifications_enabled?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TeacherSettingsResponse
+     */
+    remember_login?: boolean | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof TeacherSettingsResponse
+     */
+    session_duration_minutes?: number | null;
+    /**
+     * 
      * @type {string}
      * @memberof TeacherSettingsResponse
      */
     theme?: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof TeacherSettingsResponse
-     */
-    notificationsEnabled?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof TeacherSettingsResponse
      */
-    notificationFrequency?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TeacherSettingsResponse
-     */
-    interfaceLanguage?: string;
+    timezone?: string | null;
 }
 
 /**
@@ -62,10 +110,18 @@ export function TeacherSettingsResponseFromJSONTyped(json: any, ignoreDiscrimina
     }
     return {
         
+        'animations_enabled': json['animations_enabled'] == null ? undefined : json['animations_enabled'],
+        'auto_logout': json['auto_logout'] == null ? undefined : json['auto_logout'],
+        'color_theme': json['color_theme'] == null ? undefined : json['color_theme'],
+        'date_format': json['date_format'] == null ? undefined : json['date_format'],
+        'email_notifications': json['email_notifications'] == null ? undefined : json['email_notifications'],
+        'interface_language': json['interface_language'] == null ? undefined : json['interface_language'],
+        'notification_frequency': json['notification_frequency'] == null ? undefined : json['notification_frequency'],
+        'notifications_enabled': json['notifications_enabled'] == null ? undefined : json['notifications_enabled'],
+        'remember_login': json['remember_login'] == null ? undefined : json['remember_login'],
+        'session_duration_minutes': json['session_duration_minutes'] == null ? undefined : json['session_duration_minutes'],
         'theme': json['theme'] == null ? undefined : json['theme'],
-        'notificationsEnabled': json['notifications_enabled'] == null ? undefined : json['notifications_enabled'],
-        'notificationFrequency': json['notification_frequency'] == null ? undefined : json['notification_frequency'],
-        'interfaceLanguage': json['interface_language'] == null ? undefined : json['interface_language'],
+        'timezone': json['timezone'] == null ? undefined : json['timezone'],
     };
 }
 
@@ -80,10 +136,18 @@ export function TeacherSettingsResponseToJSONTyped(value?: TeacherSettingsRespon
 
     return {
         
+        'animations_enabled': value['animations_enabled'],
+        'auto_logout': value['auto_logout'],
+        'color_theme': value['color_theme'],
+        'date_format': value['date_format'],
+        'email_notifications': value['email_notifications'],
+        'interface_language': value['interface_language'],
+        'notification_frequency': value['notification_frequency'],
+        'notifications_enabled': value['notifications_enabled'],
+        'remember_login': value['remember_login'],
+        'session_duration_minutes': value['session_duration_minutes'],
         'theme': value['theme'],
-        'notifications_enabled': value['notificationsEnabled'],
-        'notification_frequency': value['notificationFrequency'],
-        'interface_language': value['interfaceLanguage'],
+        'timezone': value['timezone'],
     };
 }
 

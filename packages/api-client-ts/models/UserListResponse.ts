@@ -29,18 +29,6 @@ import {
 export interface UserListResponse {
     /**
      * 
-     * @type {boolean}
-     * @memberof UserListResponse
-     */
-    success?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserListResponse
-     */
-    message?: string;
-    /**
-     * 
      * @type {Array<UserResponse>}
      * @memberof UserListResponse
      */
@@ -50,7 +38,19 @@ export interface UserListResponse {
      * @type {}
      * @memberof UserListResponse
      */
-    error?: any | null;
+    error?:  | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserListResponse
+     */
+    message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserListResponse
+     */
+    success?: boolean;
 }
 
 /**
@@ -70,10 +70,10 @@ export function UserListResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': json['data'] == null ? undefined : ((json['data'] as Array<any>).map(UserResponseFromJSON)),
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -88,10 +88,10 @@ export function UserListResponseToJSONTyped(value?: UserListResponse | null, ign
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': value['data'] == null ? undefined : ((value['data'] as Array<any>).map(UserResponseToJSON)),
-        'error': value['error'],
+        'error': ToJSON(value['error']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { toast } from "sonner";
 import {
   Bell,
   Globe,
@@ -16,8 +17,10 @@ import {
   Palette,
   Database,
   Save,
+  Loader2,
 } from "lucide-react";
 import type { TeacherSettingsData } from "@/app/dashboard/settings/page";
+import { saveTeacherSettings, type TeacherSettingsFormData } from "@/app/actions/settings";
 
 interface SettingsSection {
   id: string;
@@ -36,11 +39,49 @@ const sections: SettingsSection[] = [
 ];
 
 interface SettingsContentProps {
-  initialSettings: TeacherSettingsData | null;
+  initialSettings: TeacherSettingsData;
 }
 
 export function SettingsContent({ initialSettings }: SettingsContentProps) {
   const [activeSection, setActiveSection] = useState("session");
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Local state for all settings
+  const [settings, setSettings] = useState<TeacherSettingsFormData>({
+    theme: initialSettings.theme as "light" | "dark",
+    notificationsEnabled: initialSettings.notificationsEnabled,
+    notificationFrequency: initialSettings.notificationFrequency as "realtime" | "daily" | "weekly" | "disabled",
+    interfaceLanguage: initialSettings.interfaceLanguage as "es" | "en",
+    autoLogout: initialSettings.autoLogout,
+    sessionDurationMinutes: initialSettings.sessionDurationMinutes,
+    rememberLogin: initialSettings.rememberLogin,
+    colorTheme: initialSettings.colorTheme as "Indigo" | "Violeta" | "Esmeralda" | "Azul" | "Rosa" | "Naranja",
+    animationsEnabled: initialSettings.animationsEnabled,
+    emailNotifications: initialSettings.emailNotifications,
+    dateFormat: initialSettings.dateFormat as "ddmmyyyy" | "mmddyyyy" | "yyyymmdd",
+    timezone: initialSettings.timezone as "gmt-5" | "gmt-6" | "gmt-3" | "gmt0" | "gmt1",
+  });
+
+  const updateSetting = <K extends keyof TeacherSettingsFormData>(
+    key: K,
+    value: TeacherSettingsFormData[K]
+  ) => {
+    setSettings((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+
+    const result = await saveTeacherSettings(settings);
+
+    setIsSaving(false);
+
+    if (result.success) {
+      toast.success("Configuración guardada exitosamente");
+    } else {
+      toast.error(result.message || "Error al guardar la configuración");
+    }
+  };
 
   const themeColors = ["Indigo", "Violeta", "Esmeralda", "Azul", "Rosa", "Naranja"];
 
@@ -80,12 +121,18 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                     <Label className="text-base font-medium">Cierre Automático</Label>
                     <p className="text-sm text-muted-foreground">Cerrar sesión automáticamente después de inactividad</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch
+                    checked={settings.autoLogout}
+                    onCheckedChange={(checked) => updateSetting("autoLogout", checked)}
+                  />
                 </div>
                 <Separator />
                 <div className="space-y-3">
                   <Label className="text-base font-medium">Duración de la Sesión</Label>
-                  <Select defaultValue="60">
+                  <Select
+                    value={String(settings.sessionDurationMinutes)}
+                    onValueChange={(value) => updateSetting("sessionDurationMinutes", parseInt(value))}
+                  >
                     <SelectTrigger className="w-[200px] bg-muted/30">
                       <SelectValue placeholder="Seleccionar duración" />
                     </SelectTrigger>
@@ -104,7 +151,10 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                     <Label className="text-base font-medium">Recordar Inicio de Sesión</Label>
                     <p className="text-sm text-muted-foreground">Mantener sesión iniciada en este dispositivo</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch
+                    checked={settings.rememberLogin}
+                    onCheckedChange={(checked) => updateSetting("rememberLogin", checked)}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -130,7 +180,7 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                     <Label className="text-base font-medium">Modo Oscuro</Label>
                     <p className="text-sm text-muted-foreground">Cambiar entre tema claro y oscuro</p>
                   </div>
-                  <ThemeToggle />
+                  <ThemeToggle initialTheme={settings.theme} />
                 </div>
                 <Separator />
                 <div className="space-y-3">
@@ -139,8 +189,9 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                     {themeColors.map((color) => (
                       <button
                         key={color}
+                        onClick={() => updateSetting("colorTheme", color as "Indigo" | "Violeta" | "Esmeralda" | "Azul" | "Rosa" | "Naranja")}
                         className={`p-4 rounded-xl border-2 transition-all ${
-                          color === "Indigo"
+                          color === settings.colorTheme
                             ? "border-primary bg-primary/10"
                             : "border-border hover:border-primary/50"
                         }`}
@@ -157,7 +208,10 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                     <Label className="text-base font-medium">Animaciones</Label>
                     <p className="text-sm text-muted-foreground">Habilitar animaciones y transiciones</p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch
+                    checked={settings.animationsEnabled}
+                    onCheckedChange={(checked) => updateSetting("animationsEnabled", checked)}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -182,7 +236,10 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                   <Label className="text-base font-medium">Notificaciones Push</Label>
                   <p className="text-sm text-muted-foreground">Recibir notificaciones en el navegador</p>
                 </div>
-                <Switch defaultChecked={initialSettings?.notificationsEnabled} />
+                <Switch
+                  checked={settings.notificationsEnabled}
+                  onCheckedChange={(checked) => updateSetting("notificationsEnabled", checked)}
+                />
               </div>
               <Separator />
               <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30 border border-border/30">
@@ -190,12 +247,18 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                   <Label className="text-base font-medium">Correo Electrónico</Label>
                   <p className="text-sm text-muted-foreground">Resumen diario por email</p>
                 </div>
-                <Switch defaultChecked />
+                <Switch
+                  checked={settings.emailNotifications}
+                  onCheckedChange={(checked) => updateSetting("emailNotifications", checked)}
+                />
               </div>
               <Separator />
               <div className="space-y-3">
                 <Label className="text-base font-medium">Frecuencia de Resumen</Label>
-                <Select defaultValue={initialSettings?.notificationFrequency ?? "daily"}>
+                <Select
+                  value={settings.notificationFrequency}
+                  onValueChange={(value) => updateSetting("notificationFrequency", value as "realtime" | "daily" | "weekly" | "disabled")}
+                >
                   <SelectTrigger className="w-[200px] bg-muted/30">
                     <SelectValue placeholder="Seleccionar frecuencia" />
                   </SelectTrigger>
@@ -233,8 +296,9 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
                   ].map((lang) => (
                     <button
                       key={lang.code}
+                      onClick={() => updateSetting("interfaceLanguage", lang.code as "es" | "en")}
                       className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                        lang.code === (initialSettings?.interfaceLanguage ?? "es")
+                        lang.code === settings.interfaceLanguage
                           ? "border-primary bg-primary/10"
                           : "border-border hover:border-primary/50"
                       }`}
@@ -248,7 +312,10 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
               <Separator />
               <div className="space-y-3">
                 <Label className="text-base font-medium">Formato de Fecha</Label>
-                <Select defaultValue="ddmmyyyy">
+                <Select
+                  value={settings.dateFormat}
+                  onValueChange={(value) => updateSetting("dateFormat", value as "ddmmyyyy" | "mmddyyyy" | "yyyymmdd")}
+                >
                   <SelectTrigger className="w-[200px] bg-muted/30">
                     <SelectValue placeholder="Seleccionar formato" />
                   </SelectTrigger>
@@ -262,7 +329,10 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
               <Separator />
               <div className="space-y-3">
                 <Label className="text-base font-medium">Zona Horaria</Label>
-                <Select defaultValue="gmt-5">
+                <Select
+                  value={settings.timezone}
+                  onValueChange={(value) => updateSetting("timezone", value as "gmt-5" | "gmt-6" | "gmt-3" | "gmt0" | "gmt1")}
+                >
                   <SelectTrigger className="w-[300px] bg-muted/30">
                     <SelectValue placeholder="Seleccionar zona horaria" />
                   </SelectTrigger>
@@ -397,9 +467,17 @@ export function SettingsContent({ initialSettings }: SettingsContentProps) {
         </div>
 
         <div className="flex justify-end mt-6">
-          <Button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25">
-            <Save className="h-4 w-4" />
-            Guardar Cambios
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25"
+          >
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            {isSaving ? "Guardando..." : "Guardar Cambios"}
           </Button>
         </div>
       </div>

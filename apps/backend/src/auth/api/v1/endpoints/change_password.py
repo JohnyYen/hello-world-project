@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from uuid import UUID
 
 from src.auth.application.usecase.change_password_usecase import (
     ChangePasswordUseCase,
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/change-password")
 @router.post("", response_model=SingleUserResponse)
 async def change_password(
     password_data: UserChangePassword,
-    user_id: int,
+    user_id: UUID = Query(..., description="ID del usuario"),
     change_password_uc: ChangePasswordUseCase = Depends(),
 ):
     """

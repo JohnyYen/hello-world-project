@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from fastapi.security import HTTPBearer
 
 from src.users.api.v1.endpoints.create_user import router as create_user_router
 from src.users.api.v1.endpoints.get_users import router as get_users_router
@@ -32,7 +33,9 @@ from src.users.api.v1.endpoints.lms_sync import router as lms_sync_router
 from src.users.api.v1.endpoints.get_user import router as get_user_router
 
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(
+    prefix="/users", tags=["Users"], dependencies=[Depends(HTTPBearer())]
+)
 
 # Incluir todos los routers de endpoints
 # ORDEN IMPORTANTE: routers más específicos primero

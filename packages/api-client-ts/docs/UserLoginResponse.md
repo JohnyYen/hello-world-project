@@ -7,9 +7,9 @@ Respuesta de autenticación exitosa
 
 Name | Type
 ------------ | -------------
-`accessToken` | string
-`tokenType` | string
-`expiresIn` | number
+`access_token` | string
+`expires_in` | number
+`token_type` | string
 `user` | [UserResponse](UserResponse.md)
 
 ## Example
@@ -19,9 +19,9 @@ import type { UserLoginResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "accessToken": null,
-  "tokenType": null,
-  "expiresIn": null,
+  "access_token": null,
+  "expires_in": null,
+  "token_type": null,
   "user": null,
 } satisfies UserLoginResponse
 

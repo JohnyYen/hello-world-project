@@ -7,9 +7,9 @@ Esquema para respuesta de actualización de nivel
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [LevelResponse](LevelResponse.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { LevelUpdateResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
+  "message": null,
+  "success": null,
 } satisfies LevelUpdateResponse
 
 console.log(example)

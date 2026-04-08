@@ -66,7 +66,7 @@ class RegisterUserUseCase:
         """
         # 1. Obtener el rol de professor
         professor_role = await self.role_repository.get_professor_role()
-        professor_role_id = int(professor_role.id)  # type: ignore[arg-type]
+        professor_role_id = professor_role.id  # type: ignore[attr-defined]
 
         # 2. Crear usuario con el rol de professor asignado automáticamente
         user = await self.user_service.create_user(

@@ -29,6 +29,12 @@ import {
 export interface XAPIActor {
     /**
      * 
+     * @type {{ [key: string]: string; }}
+     * @memberof XAPIActor
+     */
+    account?: { [key: string]: string; } | null;
+    /**
+     * 
      * @type {string}
      * @memberof XAPIActor
      */
@@ -38,13 +44,7 @@ export interface XAPIActor {
      * @type {string}
      * @memberof XAPIActor
      */
-    mboxSha1sum?: string | null;
-    /**
-     * 
-     * @type {{ [key: string]: string; }}
-     * @memberof XAPIActor
-     */
-    account?: { [key: string]: string; } | null;
+    mbox_sha1sum?: string | null;
     /**
      * 
      * @type {string}
@@ -56,7 +56,7 @@ export interface XAPIActor {
      * @type {XAPIActorType}
      * @memberof XAPIActor
      */
-    objectType?: XAPIActorType | null;
+    object_type?: XAPIActorType | null;
 }
 
 
@@ -78,11 +78,11 @@ export function XAPIActorFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'mbox': json['mbox'] == null ? undefined : json['mbox'],
-        'mboxSha1sum': json['mbox_sha1sum'] == null ? undefined : json['mbox_sha1sum'],
         'account': json['account'] == null ? undefined : json['account'],
+        'mbox': json['mbox'] == null ? undefined : json['mbox'],
+        'mbox_sha1sum': json['mbox_sha1sum'] == null ? undefined : json['mbox_sha1sum'],
         'name': json['name'] == null ? undefined : json['name'],
-        'objectType': json['object_type'] == null ? undefined : XAPIActorTypeFromJSON(json['object_type']),
+        'object_type': json['object_type'] == null ? undefined : XAPIActorTypeFromJSON(json['object_type']),
     };
 }
 
@@ -97,11 +97,11 @@ export function XAPIActorToJSONTyped(value?: XAPIActor | null, ignoreDiscriminat
 
     return {
         
-        'mbox': value['mbox'],
-        'mbox_sha1sum': value['mboxSha1sum'],
         'account': value['account'],
+        'mbox': value['mbox'],
+        'mbox_sha1sum': value['mbox_sha1sum'],
         'name': value['name'],
-        'object_type': XAPIActorTypeToJSON(value['objectType']),
+        'object_type': XAPIActorTypeToJSON(value['object_type']),
     };
 }
 

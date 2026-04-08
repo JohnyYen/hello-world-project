@@ -18,6 +18,9 @@ import type {
   FeedbackCreate,
   FeedbackSchema,
   HTTPValidationError,
+  MetricTypeCreate,
+  MetricTypeSchema,
+  MetricTypeUpdate,
   XAPIStatementBatchCreate,
   XAPIStatementListResponse,
   XAPIStatementResponse,
@@ -29,6 +32,12 @@ import {
     FeedbackSchemaToJSON,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
+    MetricTypeCreateFromJSON,
+    MetricTypeCreateToJSON,
+    MetricTypeSchemaFromJSON,
+    MetricTypeSchemaToJSON,
+    MetricTypeUpdateFromJSON,
+    MetricTypeUpdateToJSON,
     XAPIStatementBatchCreateFromJSON,
     XAPIStatementBatchCreateToJSON,
     XAPIStatementListResponseFromJSON,
@@ -36,6 +45,18 @@ import {
     XAPIStatementResponseFromJSON,
     XAPIStatementResponseToJSON,
 } from '../models/index';
+
+export interface CreateMetricTypeApiV1StatisticMetricTypesPostRequest {
+    metricTypeCreate: MetricTypeCreate;
+}
+
+export interface DeleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDeleteRequest {
+    metricTypeId: number;
+}
+
+export interface GetMetricTypeApiV1StatisticMetricTypesMetricTypeIdGetRequest {
+    metricTypeId: number;
+}
 
 export interface GetStatementApiV1StatisticXapiStatementsStatementIdGetRequest {
     statementId: string;
@@ -56,6 +77,11 @@ export interface GetStudentFeedbackHistoryApiV1StatisticFeedbackStudentIdGetRequ
     limit?: number;
 }
 
+export interface ListMetricTypesApiV1StatisticMetricTypesGetRequest {
+    skip?: number;
+    limit?: number;
+}
+
 export interface SendStatementsApiV1StatisticXapiStatementsPostRequest {
     xAPIStatementBatchCreate: XAPIStatementBatchCreate;
 }
@@ -64,10 +90,181 @@ export interface SubmitFeedbackApiV1StatisticFeedbackPostRequest {
     feedbackCreate: FeedbackCreate;
 }
 
+export interface UpdateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatchRequest {
+    metricTypeId: number;
+    metricTypeUpdate: MetricTypeUpdate;
+}
+
 /**
  * 
  */
 export class StatisticsApi extends runtime.BaseAPI {
+
+    /**
+     * Creates request options for createMetricTypeApiV1StatisticMetricTypesPost without sending the request
+     */
+    async createMetricTypeApiV1StatisticMetricTypesPostRequestOpts(requestParameters: CreateMetricTypeApiV1StatisticMetricTypesPostRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['metricTypeCreate'] == null) {
+            throw new runtime.RequiredError(
+                'metricTypeCreate',
+                'Required parameter "metricTypeCreate" was null or undefined when calling createMetricTypeApiV1StatisticMetricTypesPost().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/v1/statistic/metric-types`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MetricTypeCreateToJSON(requestParameters['metricTypeCreate']),
+        };
+    }
+
+    /**
+     * Crea un nuevo tipo de métrica.
+     * Create Metric Type
+     */
+    async createMetricTypeApiV1StatisticMetricTypesPostRaw(requestParameters: CreateMetricTypeApiV1StatisticMetricTypesPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MetricTypeSchema>> {
+        const requestOptions = await this.createMetricTypeApiV1StatisticMetricTypesPostRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MetricTypeSchemaFromJSON(jsonValue));
+    }
+
+    /**
+     * Crea un nuevo tipo de métrica.
+     * Create Metric Type
+     */
+    async createMetricTypeApiV1StatisticMetricTypesPost(requestParameters: CreateMetricTypeApiV1StatisticMetricTypesPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MetricTypeSchema> {
+        const response = await this.createMetricTypeApiV1StatisticMetricTypesPostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for deleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDelete without sending the request
+     */
+    async deleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDeleteRequestOpts(requestParameters: DeleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDeleteRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['metricTypeId'] == null) {
+            throw new runtime.RequiredError(
+                'metricTypeId',
+                'Required parameter "metricTypeId" was null or undefined when calling deleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/v1/statistic/metric-types/{metric_type_id}`;
+        urlPath = urlPath.replace(`{${"metric_type_id"}}`, encodeURIComponent(String(requestParameters['metricTypeId'])));
+
+        return {
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Elimina un tipo de métrica (soft delete).
+     * Delete Metric Type
+     */
+    async deleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDeleteRaw(requestParameters: DeleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.deleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDeleteRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Elimina un tipo de métrica (soft delete).
+     * Delete Metric Type
+     */
+    async deleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDelete(requestParameters: DeleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.deleteMetricTypeApiV1StatisticMetricTypesMetricTypeIdDeleteRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for getMetricTypeApiV1StatisticMetricTypesMetricTypeIdGet without sending the request
+     */
+    async getMetricTypeApiV1StatisticMetricTypesMetricTypeIdGetRequestOpts(requestParameters: GetMetricTypeApiV1StatisticMetricTypesMetricTypeIdGetRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['metricTypeId'] == null) {
+            throw new runtime.RequiredError(
+                'metricTypeId',
+                'Required parameter "metricTypeId" was null or undefined when calling getMetricTypeApiV1StatisticMetricTypesMetricTypeIdGet().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/v1/statistic/metric-types/{metric_type_id}`;
+        urlPath = urlPath.replace(`{${"metric_type_id"}}`, encodeURIComponent(String(requestParameters['metricTypeId'])));
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Obtiene un tipo de métrica por su ID.
+     * Get Metric Type
+     */
+    async getMetricTypeApiV1StatisticMetricTypesMetricTypeIdGetRaw(requestParameters: GetMetricTypeApiV1StatisticMetricTypesMetricTypeIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MetricTypeSchema>> {
+        const requestOptions = await this.getMetricTypeApiV1StatisticMetricTypesMetricTypeIdGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MetricTypeSchemaFromJSON(jsonValue));
+    }
+
+    /**
+     * Obtiene un tipo de métrica por su ID.
+     * Get Metric Type
+     */
+    async getMetricTypeApiV1StatisticMetricTypesMetricTypeIdGet(requestParameters: GetMetricTypeApiV1StatisticMetricTypesMetricTypeIdGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MetricTypeSchema> {
+        const response = await this.getMetricTypeApiV1StatisticMetricTypesMetricTypeIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Creates request options for getStatementApiV1StatisticXapiStatementsStatementIdGet without sending the request
@@ -89,6 +286,14 @@ export class StatisticsApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
         }
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/statistic/xapi/statements/{statement_id}`;
         urlPath = urlPath.replace(`{${"statement_id"}}`, encodeURIComponent(String(requestParameters['statementId'])));
@@ -158,6 +363,14 @@ export class StatisticsApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
         }
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/statistic/xapi/statements`;
 
@@ -212,6 +425,14 @@ export class StatisticsApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/statistic/feedback/{student_id}`;
         urlPath = urlPath.replace(`{${"student_id"}}`, encodeURIComponent(String(requestParameters['studentId'])));
@@ -245,6 +466,61 @@ export class StatisticsApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for listMetricTypesApiV1StatisticMetricTypesGet without sending the request
+     */
+    async listMetricTypesApiV1StatisticMetricTypesGetRequestOpts(requestParameters: ListMetricTypesApiV1StatisticMetricTypesGetRequest): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters['skip'] != null) {
+            queryParameters['skip'] = requestParameters['skip'];
+        }
+
+        if (requestParameters['limit'] != null) {
+            queryParameters['limit'] = requestParameters['limit'];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/v1/statistic/metric-types`;
+
+        return {
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Lista todos los tipos de métricas disponibles.
+     * List Metric Types
+     */
+    async listMetricTypesApiV1StatisticMetricTypesGetRaw(requestParameters: ListMetricTypesApiV1StatisticMetricTypesGetRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<MetricTypeSchema>>> {
+        const requestOptions = await this.listMetricTypesApiV1StatisticMetricTypesGetRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(MetricTypeSchemaFromJSON));
+    }
+
+    /**
+     * Lista todos los tipos de métricas disponibles.
+     * List Metric Types
+     */
+    async listMetricTypesApiV1StatisticMetricTypesGet(requestParameters: ListMetricTypesApiV1StatisticMetricTypesGetRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<MetricTypeSchema>> {
+        const response = await this.listMetricTypesApiV1StatisticMetricTypesGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for sendStatementsApiV1StatisticXapiStatementsPost without sending the request
      */
     async sendStatementsApiV1StatisticXapiStatementsPostRequestOpts(requestParameters: SendStatementsApiV1StatisticXapiStatementsPostRequest): Promise<runtime.RequestOpts> {
@@ -266,6 +542,14 @@ export class StatisticsApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2PasswordBearer", []);
         }
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/statistic/xapi/statements`;
 
@@ -315,6 +599,14 @@ export class StatisticsApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
 
         let urlPath = `/api/v1/statistic/feedback`;
 
@@ -344,6 +636,71 @@ export class StatisticsApi extends runtime.BaseAPI {
      */
     async submitFeedbackApiV1StatisticFeedbackPost(requestParameters: SubmitFeedbackApiV1StatisticFeedbackPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FeedbackSchema> {
         const response = await this.submitFeedbackApiV1StatisticFeedbackPostRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for updateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatch without sending the request
+     */
+    async updateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatchRequestOpts(requestParameters: UpdateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatchRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['metricTypeId'] == null) {
+            throw new runtime.RequiredError(
+                'metricTypeId',
+                'Required parameter "metricTypeId" was null or undefined when calling updateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatch().'
+            );
+        }
+
+        if (requestParameters['metricTypeUpdate'] == null) {
+            throw new runtime.RequiredError(
+                'metricTypeUpdate',
+                'Required parameter "metricTypeUpdate" was null or undefined when calling updateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatch().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("HTTPBearer", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/v1/statistic/metric-types/{metric_type_id}`;
+        urlPath = urlPath.replace(`{${"metric_type_id"}}`, encodeURIComponent(String(requestParameters['metricTypeId'])));
+
+        return {
+            path: urlPath,
+            method: 'PATCH',
+            headers: headerParameters,
+            query: queryParameters,
+            body: MetricTypeUpdateToJSON(requestParameters['metricTypeUpdate']),
+        };
+    }
+
+    /**
+     * Actualiza un tipo de métrica existente.
+     * Update Metric Type
+     */
+    async updateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatchRaw(requestParameters: UpdateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<MetricTypeSchema>> {
+        const requestOptions = await this.updateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatchRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => MetricTypeSchemaFromJSON(jsonValue));
+    }
+
+    /**
+     * Actualiza un tipo de métrica existente.
+     * Update Metric Type
+     */
+    async updateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatch(requestParameters: UpdateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<MetricTypeSchema> {
+        const response = await this.updateMetricTypeApiV1StatisticMetricTypesMetricTypeIdPatchRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

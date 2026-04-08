@@ -24,12 +24,6 @@ export interface UserLogin {
      * @type {string}
      * @memberof UserLogin
      */
-    username?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserLogin
-     */
     email?: string | null;
     /**
      * 
@@ -37,6 +31,12 @@ export interface UserLogin {
      * @memberof UserLogin
      */
     password: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserLogin
+     */
+    username?: string | null;
 }
 
 /**
@@ -57,9 +57,9 @@ export function UserLoginFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         
-        'username': json['username'] == null ? undefined : json['username'],
         'email': json['email'] == null ? undefined : json['email'],
         'password': json['password'],
+        'username': json['username'] == null ? undefined : json['username'],
     };
 }
 
@@ -74,9 +74,9 @@ export function UserLoginToJSONTyped(value?: UserLogin | null, ignoreDiscriminat
 
     return {
         
-        'username': value['username'],
         'email': value['email'],
         'password': value['password'],
+        'username': value['username'],
     };
 }
 

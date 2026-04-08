@@ -1,15 +1,12 @@
-import { Configuration, AuthenticationApi, UsersApi, UserLogin, UserCreate, UserLoginResponse, TeacherProfileResponse, UserChangePassword, SingleUserResponse } from "@workspace/api-client-ts";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-const createConfig = (token?: string) =>
-  new Configuration({
-    basePath: API_BASE_URL,
-    accessToken: token,
-  });
-
-const authenticationApi = new AuthenticationApi(createConfig());
-const usersApi = new UsersApi(createConfig());
+import { authApi } from "@/api/client";
+import type {
+  UserLoginResponse,
+  TeacherProfileResponse,
+  UserResponse,
+  UserLoginRequest,
+  UserCreateRequest,
+  UserChangePasswordRequest,
+} from "@/api/types";
 
 export interface LoginParams {
   username?: string;
@@ -25,75 +22,94 @@ export interface RegisterParams {
   password: string;
 }
 
-export type UserProfileResponse = TeacherProfileResponse;
+export type UserProfileResponse = TeacherProfileResponse | UserResponse;
 
 async function login(params: LoginParams): Promise<UserLoginResponse> {
-  const userLogin: UserLogin = {
+  return authApi.login({
     username: params.username,
     email: params.email,
     password: params.password,
-  };
-
-  const response = await authenticationApi.loginForAccessTokenApiV1AuthLoginPost({
-    userLogin,
   });
-
-  return response;
 }
 
 async function register(params: RegisterParams): Promise<UserLoginResponse> {
-  const userCreate: UserCreate = {
+  return authApi.register({
     username: params.username,
     email: params.email,
     name: params.name,
     lastname: params.lastname,
     password: params.password,
-  };
-
-  const response = await authenticationApi.registerUserApiV1AuthRegisterPost({
-    userCreate,
   });
-
-  return response;
 }
 
-async function getMe(token?: string): Promise<TeacherProfileResponse> {
-  const api = token ? new UsersApi(createConfig(token)) : usersApi;
-  const response = await api.getTeacherProfileApiV1UsersProfessorsMeGet();
+async function getMe(token?: string): Promise<UserProfileResponse> {
+  if (!token) {
+    throw new Error("No token provided");
+  }
+  const response = await import("@/api/client").then((m) =>
+    m.usersApi.getTeacherProfile(token)
+  );
+  if (!response.data) {
+    throw new Error("No data in response");
+  }
   return response.data;
 }
 
 async function changePassword(
-  userId: number,
+  userId: string,
   currentPassword: string,
   newPassword: string,
   token: string
-): Promise<SingleUserResponse> {
-  const api = new AuthenticationApi(createConfig(token));
-  const userChangePassword: UserChangePassword = {
-    currentPassword,
-    newPassword,
-  };
-
-  return api.changePasswordApiV1AuthChangePasswordPost({
+): Promise<UserProfileResponse> {
+  const response = await authApi.changePassword(
     userId,
-    userChangePassword,
-  });
+    { currentPassword, newPassword },
+    token
+  );
+  if (!response.data) {
+    throw new Error("No data in response");
+  }
+  return response.data;
 }
 
 async function logout(): Promise<void> {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("auth_token");
-    document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  // Cookie is cleared server-side via logoutAction
+  // This function is kept for API consistency
+}
+
+/**
+ * Fetches user profile using cookie-based authentication.
+ * Used by AuthProvider to check session on mount (client-side).
+ * Calls Next.js API route which reads the HTTP-only cookie server-side.
+ */
+async function getMeFromCookie(): Promise<UserProfileResponse | null> {
+  if (typeof window === "undefined") {
+    // Server-side: use getServerUser
+    const { getServerUser } = await import("@/lib/auth-server");
+    const { user } = await getServerUser();
+    return user as UserProfileResponse | null;
   }
+
+  // Client-side: call Next.js API route (same-origin, cookies sent automatically)
+  const response = await fetch("/api/auth/me", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  return data.user || null;
 }
 
 export const authService = {
   login,
   register,
   getMe,
+  getMeFromCookie,
   changePassword,
   logout,
 };
 
-export { login, register, getMe, changePassword, logout };
+export { login, register, getMe, getMeFromCookie, changePassword, logout };

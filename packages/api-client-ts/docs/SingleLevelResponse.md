@@ -7,9 +7,9 @@ Esquema para respuesta de un solo nivel
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [LevelDetailResponse](LevelDetailResponse.md)
+`message` | string
+`success` | boolean
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { SingleLevelResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
+  "message": null,
+  "success": null,
 } satisfies SingleLevelResponse
 
 console.log(example)

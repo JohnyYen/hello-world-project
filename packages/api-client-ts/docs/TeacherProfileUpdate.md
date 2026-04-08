@@ -7,12 +7,12 @@ Esquema para actualización del perfil de profesor
 
 Name | Type
 ------------ | -------------
-`name` | string
-`lastname` | string
-`email` | string
+`avatar_url` | string
+`contact_phone` | string
 `department` | string
-`contactPhone` | string
-`avatarUrl` | string
+`email` | string
+`lastname` | string
+`name` | string
 
 ## Example
 
@@ -21,12 +21,12 @@ import type { TeacherProfileUpdate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "name": null,
-  "lastname": null,
-  "email": null,
+  "avatar_url": null,
+  "contact_phone": null,
   "department": null,
-  "contactPhone": null,
-  "avatarUrl": null,
+  "email": null,
+  "lastname": null,
+  "name": null,
 } satisfies TeacherProfileUpdate
 
 console.log(example)

@@ -1,207 +1,87 @@
-import {
-  Configuration,
-  GamesApi,
-  GameListResponse,
-  SingleGameResponse,
+import { gamesApi } from "@/api/client";
+import type {
+  GameResponse,
   GameCreate,
-  GameCreateResponse,
   GameUpdate,
-  GameUpdateResponse,
-  GameDeleteResponse,
-  LevelListResponse,
-  SingleLevelResponse,
+  LevelResponse,
   LevelCreate,
-  LevelCreateResponse,
   LevelUpdate,
-  LevelUpdateResponse,
-  LevelDeleteResponse,
-  SegmentLevelListResponse,
-  SegmentLevelCreate,
-  SegmentLevelCreateResponse,
-  SegmentLevelUpdate,
-  SegmentLevelUpdateResponse,
-  SegmentLevelDeleteResponse,
-  GameInstanceListResponse,
   GameInstanceCreate,
-  GameInstanceCreateResponse,
   GameInstanceEnd,
-  GameInstanceEndResponse,
-  SingleGameInstanceResponse,
-} from "@workspace/api-client-ts";
+  SegmentLevelCreate,
+  SegmentLevelUpdate,
+} from "@/api/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-async function getAuthToken(): Promise<string> {
-  if (typeof window !== "undefined") {
-    // Cliente: obtener token de localStorage (guardado por auth-context)
-    const token = localStorage.getItem("auth_token");
-    return token || "";
-  } else {
-    // Servidor: importar cookies dinámicamente
-    const { cookies } = await import("next/headers");
-    const cookieStore = await cookies();
-    const token = cookieStore.get("auth_token");
-    return token?.value || "";
-  }
+// Games
+export async function getGames(token: string) {
+  return gamesApi.getGames(token);
 }
 
-function createGamesApiConfiguration(): Configuration {
-  return new Configuration({
-    basePath: API_BASE_URL,
-    accessToken: async () => {
-      const token = await getAuthToken();
-      return token;
-    },
-  });
+export async function getGame(gameId: string, token: string) {
+  return gamesApi.getGame(gameId, token);
 }
 
-function getGamesApi(): GamesApi {
-  return new GamesApi(createGamesApiConfiguration());
+export async function createGame(gameCreate: GameCreate, token: string) {
+  return gamesApi.createGame(gameCreate, token);
 }
 
-interface GetGamesParams {
-  skip?: number;
-  limit?: number;
+export async function updateGame(gameId: string, gameUpdate: GameUpdate, token: string) {
+  return gamesApi.updateGame(gameId, gameUpdate, token);
 }
 
-async function getGames(params: GetGamesParams = {}): Promise<GameListResponse> {
-  const api = getGamesApi();
-  const response = await api.getGamesApiV1GamesGet({
-    skip: params.skip,
-    limit: params.limit,
-  });
-  return response;
+export async function deleteGame(gameId: string, token: string) {
+  return gamesApi.deleteGame(gameId, token);
 }
 
-async function getGame(gameId: number): Promise<SingleGameResponse> {
-  const api = getGamesApi();
-  const response = await api.getGameApiV1GamesGameIdGet({ gameId });
-  return response;
+// Levels
+export async function getLevels(token: string) {
+  return gamesApi.getLevels(token);
 }
 
-async function createGame(gameCreate: GameCreate): Promise<GameCreateResponse> {
-  const api = getGamesApi();
-  const response = await api.createGameApiV1GamesPost({ gameCreate });
-  return response;
+export async function getLevel(levelId: string, token: string) {
+  return gamesApi.getLevel(levelId, token);
 }
 
-async function updateGame(gameId: number, gameUpdate: GameUpdate): Promise<GameUpdateResponse> {
-  const api = getGamesApi();
-  const response = await api.updateGameApiV1GamesGameIdPut({ gameId, gameUpdate });
-  return response;
+export async function createLevel(levelCreate: LevelCreate, token: string) {
+  return gamesApi.createLevel(levelCreate, token);
 }
 
-async function deleteGame(gameId: number): Promise<GameDeleteResponse> {
-  const api = getGamesApi();
-  const response = await api.deleteGameApiV1GamesGameIdDelete({ gameId });
-  return response;
+export async function updateLevel(levelId: string, levelUpdate: LevelUpdate, token: string) {
+  return gamesApi.updateLevel(levelId, levelUpdate, token);
 }
 
-interface GetLevelsParams {
-  skip?: number;
-  limit?: number;
+export async function deleteLevel(levelId: string, token: string) {
+  return gamesApi.deleteLevel(levelId, token);
 }
 
-async function getLevels(gameId: number, params: GetLevelsParams = {}): Promise<LevelListResponse> {
-  const api = getGamesApi();
-  const response = await api.getGameLevelsApiV1GamesGameIdLevelsGet({
-    gameId,
-    skip: params.skip,
-    limit: params.limit,
-  });
-  return response;
+// Game Instances
+export async function getGameInstances(token: string) {
+  return gamesApi.getGameInstances(token);
 }
 
-async function getLevel(levelId: number): Promise<SingleLevelResponse> {
-  const api = getGamesApi();
-  const response = await api.getLevelApiV1LevelsLevelIdGet({ levelId });
-  return response;
+export async function createGameInstance(body: GameInstanceCreate, token: string) {
+  return gamesApi.createGameInstance(body, token);
 }
 
-async function createLevel(gameId: number, levelCreate: LevelCreate): Promise<LevelCreateResponse> {
-  const api = getGamesApi();
-  const response = await api.createGameLevelApiV1GamesGameIdLevelsPost({ gameId, levelCreate });
-  return response;
+export async function endGameInstance(instanceId: string, endData: GameInstanceEnd, token: string) {
+  return gamesApi.endGameInstance(instanceId, endData, token);
 }
 
-async function updateLevel(levelId: number, levelUpdate: LevelUpdate): Promise<LevelUpdateResponse> {
-  const api = getGamesApi();
-  const response = await api.updateLevelApiV1LevelsLevelIdPut({ levelId, levelUpdate });
-  return response;
+// Segment Levels
+export async function getSegmentLevels(token: string) {
+  return gamesApi.getSegmentLevels(token);
 }
 
-async function deleteLevel(levelId: number): Promise<LevelDeleteResponse> {
-  const api = getGamesApi();
-  const response = await api.deleteLevelApiV1LevelsLevelIdDelete({ levelId });
-  return response;
+export async function createSegmentLevel(body: SegmentLevelCreate, token: string) {
+  return gamesApi.createSegmentLevel(body, token);
 }
 
-interface GetSegmentsParams {
-  skip?: number;
-  limit?: number;
+export async function updateSegmentLevel(segmentLevelId: string, body: SegmentLevelUpdate, token: string) {
+  return gamesApi.updateSegmentLevel(segmentLevelId, body, token);
 }
 
-async function getSegments(levelId: number, params: GetSegmentsParams = {}): Promise<SegmentLevelListResponse> {
-  const api = getGamesApi();
-  const response = await api.getLevelSegmentsApiV1SegmentsLevelIdSegmentsGet({
-    levelId,
-    skip: params.skip,
-    limit: params.limit,
-  });
-  return response;
-}
-
-async function createSegment(levelId: number, segmentCreate: SegmentLevelCreate): Promise<SegmentLevelCreateResponse> {
-  const api = getGamesApi();
-  const response = await api.createLevelSegmentApiV1SegmentsLevelIdSegmentsPost({ levelId, segmentLevelCreate: segmentCreate });
-  return response;
-}
-
-async function updateSegment(segmentId: number, segmentUpdate: SegmentLevelUpdate): Promise<SegmentLevelUpdateResponse> {
-  const api = getGamesApi();
-  const response = await api.updateSegmentApiV1SegmentsSegmentIdPut({ segmentId, segmentLevelUpdate: segmentUpdate });
-  return response;
-}
-
-async function deleteSegment(segmentId: number): Promise<SegmentLevelDeleteResponse> {
-  const api = getGamesApi();
-  const response = await api.deleteSegmentApiV1SegmentsSegmentIdDelete({ segmentId });
-  return response;
-}
-
-interface GetGameInstancesParams {
-  skip?: number;
-  limit?: number;
-  statusFilter?: string;
-}
-
-async function getGameInstances(gameId: number, params: GetGameInstancesParams = {}): Promise<GameInstanceListResponse> {
-  const api = getGamesApi();
-  const response = await api.listGameInstancesApiV1GameInstancesGameIdInstancesGet({
-    gameId,
-    skip: params.skip,
-    limit: params.limit,
-    statusFilter: params.statusFilter,
-  });
-  return response;
-}
-
-async function getGameInstance(instanceId: number): Promise<SingleGameInstanceResponse> {
-  const api = getGamesApi();
-  const response = await api.getInstanceApiV1GameInstancesInstanceIdGet({ instanceId });
-  return response;
-}
-
-async function startGameInstance(gameId: number, instanceCreate: GameInstanceCreate): Promise<GameInstanceCreateResponse> {
-  const api = getGamesApi();
-  const response = await api.createGameInstanceApiV1GameInstancesGameIdInstancesPost({ gameId, gameInstanceCreate: instanceCreate });
-  return response;
-}
-
-async function endGameInstance(instanceId: number, endData?: GameInstanceEnd): Promise<GameInstanceEndResponse> {
-  const api = getGamesApi();
-  const response = await api.endInstanceApiV1GameInstancesInstanceIdEndPut({ instanceId, gameInstanceEnd: endData });
-  return response;
+export async function deleteSegmentLevel(segmentLevelId: string, token: string) {
+  return gamesApi.deleteSegmentLevel(segmentLevelId, token);
 }
 
 export const gamesService = {
@@ -215,19 +95,11 @@ export const gamesService = {
   createLevel,
   updateLevel,
   deleteLevel,
-  getSegments,
-  createSegment,
-  updateSegment,
-  deleteSegment,
   getGameInstances,
-  getGameInstance,
-  startGameInstance,
+  createGameInstance,
   endGameInstance,
-};
-
-export type {
-  GetGamesParams,
-  GetLevelsParams,
-  GetSegmentsParams,
-  GetGameInstancesParams,
+  getSegmentLevels,
+  createSegmentLevel,
+  updateSegmentLevel,
+  deleteSegmentLevel,
 };

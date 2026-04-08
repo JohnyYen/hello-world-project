@@ -29,18 +29,6 @@ import {
 export interface TeacherProfileResponseSchema {
     /**
      * 
-     * @type {boolean}
-     * @memberof TeacherProfileResponseSchema
-     */
-    success?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof TeacherProfileResponseSchema
-     */
-    message?: string;
-    /**
-     * 
      * @type {TeacherProfileResponse}
      * @memberof TeacherProfileResponseSchema
      */
@@ -50,7 +38,19 @@ export interface TeacherProfileResponseSchema {
      * @type {}
      * @memberof TeacherProfileResponseSchema
      */
-    error?: any | null;
+    error?:  | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TeacherProfileResponseSchema
+     */
+    message?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TeacherProfileResponseSchema
+     */
+    success?: boolean;
 }
 
 /**
@@ -71,10 +71,10 @@ export function TeacherProfileResponseSchemaFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': TeacherProfileResponseFromJSON(json['data']),
-        'error': json['error'] == null ? undefined : json['error'],
+        'error': json['error'] == null ? undefined : FromJSON(json['error']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -89,10 +89,10 @@ export function TeacherProfileResponseSchemaToJSONTyped(value?: TeacherProfileRe
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': TeacherProfileResponseToJSON(value['data']),
-        'error': value['error'],
+        'error': ToJSON(value['error']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 

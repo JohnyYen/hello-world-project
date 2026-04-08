@@ -7,15 +7,15 @@ Esquema para respuesta de usuario
 
 Name | Type
 ------------ | -------------
-`createdAt` | Date
-`updatedAt` | Date
-`username` | string
+`created_at` | Date
 `email` | string
 `id` | number
-`name` | string
+`is_active` | boolean
 `lastname` | string
-`isActive` | boolean
+`name` | string
 `role` | [UserRoleResponse](UserRoleResponse.md)
+`updated_at` | Date
+`username` | string
 
 ## Example
 
@@ -24,15 +24,15 @@ import type { UserResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "createdAt": null,
-  "updatedAt": null,
-  "username": usuario,
+  "created_at": null,
   "email": usuario@example.com,
   "id": null,
-  "name": null,
+  "is_active": null,
   "lastname": null,
-  "isActive": null,
+  "name": null,
   "role": null,
+  "updated_at": null,
+  "username": usuario,
 } satisfies UserResponse
 
 console.log(example)

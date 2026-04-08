@@ -41,7 +41,7 @@ class TeacherSettingsService(BaseService):
 
     async def create_for_user(self, user_id: int) -> TeacherSettings:
         """
-        Crea nuevas configuraciones para un usuario.
+        Crea nuevas configuraciones para un usuario con valores por defecto.
 
         Args:
             user_id: ID del usuario
@@ -49,5 +49,19 @@ class TeacherSettingsService(BaseService):
         Returns:
             TeacherSettings: Instancia de TeacherSettings creada
         """
-        data = {"user_id": user_id}
+        data = {
+            "user_id": user_id,
+            # Session defaults
+            "auto_logout": False,
+            "session_duration_minutes": 60,
+            "remember_login": True,
+            # Appearance defaults
+            "color_theme": "Indigo",
+            "animations_enabled": True,
+            # Notification defaults (extended)
+            "email_notifications": False,
+            # Language defaults (extended)
+            "date_format": "ddmmyyyy",
+            "timezone": "gmt-5",
+        }
         return await self.create(data)

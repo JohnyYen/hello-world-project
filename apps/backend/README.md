@@ -93,10 +93,21 @@ hello-world-backend/
 │   │       ├── feedback.py
 │   │       └── metric_type.py
 │   │
+│   ├── sync/                    # Módulo de sincronización
+│   │   ├── api/v1/
+│   │   │   ├── endpoints/       # Endpoints de sincronización
+│   │   │   └── schemas/
+│   │   ├── application/
+│   │   │   └── service/
+│   │   ├── infrastructure/
+│   │   └── domain/
+│   │
 │   ├── shared/                  # Código compartido
-│   │   ├── api/schemas/
-│   │   │   ├── base.py          # ResponseSchema, DateTimeSchema
-│   │   │   └── pagination.py    # Paginación
+│   │   ├── api/
+│   │   │   ├── schemas/
+│   │   │   │   ├── base.py      # ResponseSchema, DateTimeSchema
+│   │   │   │   └── pagination.py # Paginación
+│   │   │   └── routes.py        # Configuración de rutas API
 │   │   ├── application/
 │   │   │   └── usecase/
 │   │   │       └── base_service.py
@@ -116,14 +127,15 @@ hello-world-backend/
 │   │
 │   └── main.py                  # Punto de entrada
 │
+├── migrations/                  # Migraciones de base de datos (Alembic)
 ├── tests/                       # Pruebas unitarias y de integración
-├── alembic/                     # Migraciones de base de datos
+├── docs/                        # Documentación del proyecto
 ├── .env.example                 # Variables de entorno ejemplo
 ├── .gitignore
-├── Dockerfile
-├── docker-compose.yml
+├── Dockerfile.dev               # Dockerfile para desarrollo
+├── pyproject.toml               # Configuración de dependencias
+├── alembic.ini                  # Configuración de Alembic
 ├── AGENTS.md                    # Guía para agentes IA
-├── PROJECT_SPEC.md              # Especificaciones del proyecto
 └── README.md
 ```
 
@@ -293,10 +305,12 @@ uv run python -m src.shared.seed.run_seed
 | `SegmentLevel` | Configuración de segmento |
 | `GameInstance` | Instancia de juego activa |
 | `SyncSession` | Sesión de sincronización |
-| `SyncEvent` | Evento de juego |
+| `SyncEvent` | Evento de sincronización |
 | `Progress` | Métricas de progreso |
 | `Feedback` | Feedback de estudiantes |
 | `LMSCredential` | Credenciales LMS |
+| `XAPIStatement` | Statements xAPI para tracking de aprendizaje |
+| `MetricType` | Tipos de métricas de aprendizaje |
 
 ### Migraciones
 
@@ -354,6 +368,14 @@ uv run pytest tests/test_user.py::test_create_user
 | PUT | `/api/v1/games/{id}` | Actualizar | Sí |
 | DELETE | `/api/v1/games/{id}` | Eliminar | Sí |
 
+### Sincronización
+| Método | Endpoint | Descripción | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/v1/sync/sessions` | Crear sesión de sincronización | Sí |
+| POST | `/api/v1/sync/events` | Registrar evento de sincronización | Sí |
+| GET | `/api/v1/sync/sessions/{id}/events` | Obtener eventos de una sesión | Sí |
+| POST | `/api/v1/statements/xapi` | Enviar statement xAPI | Sí |
+
 ---
 
 ## 📄 Licencia
@@ -374,7 +396,7 @@ Consulta el documento de diseño conceptual de base de datos para más detalles:
 |---------|--------|-------------|
 | **Users** | users, roles, students, professors, teacher_settings, lms_credentials | Gestión de usuarios y autenticación |
 | **Game** | games, levels, segment_levels, game_instances | Catálogo de videojuegos y sesiones |
-| **Statistic** | feedbacks, progresses, metric_types, xapi_statement | Métricas y tracking de progreso |
+| **Statistic** | feedbacks, progresses, metric_types, xapi_statements | Métricas y tracking de progreso |
 | **Sync** | sync_sessions, sync_events | Sincronización offline/online |
 
 ---

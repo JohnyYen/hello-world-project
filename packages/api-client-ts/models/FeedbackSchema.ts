@@ -21,16 +21,22 @@ import { mapValues } from '../runtime';
 export interface FeedbackSchema {
     /**
      * 
-     * @type {number}
-     * @memberof FeedbackSchema
-     */
-    studentId: number;
-    /**
-     * 
      * @type {string}
      * @memberof FeedbackSchema
      */
     comments: string;
+    /**
+     * 
+     * @type {Date}
+     * @memberof FeedbackSchema
+     */
+    created_at: Date;
+    /**
+     * 
+     * @type {number}
+     * @memberof FeedbackSchema
+     */
+    id: number;
     /**
      * 
      * @type {number}
@@ -42,29 +48,23 @@ export interface FeedbackSchema {
      * @type {number}
      * @memberof FeedbackSchema
      */
-    id: number;
+    student_id: number;
     /**
      * 
      * @type {Date}
      * @memberof FeedbackSchema
      */
-    createdAt: Date;
-    /**
-     * 
-     * @type {Date}
-     * @memberof FeedbackSchema
-     */
-    updatedAt?: Date | null;
+    updated_at?: Date | null;
 }
 
 /**
  * Check if a given object implements the FeedbackSchema interface.
  */
 export function instanceOfFeedbackSchema(value: object): value is FeedbackSchema {
-    if (!('studentId' in value) || value['studentId'] === undefined) return false;
     if (!('comments' in value) || value['comments'] === undefined) return false;
+    if (!('created_at' in value) || value['created_at'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('student_id' in value) || value['student_id'] === undefined) return false;
     return true;
 }
 
@@ -78,12 +78,12 @@ export function FeedbackSchemaFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'studentId': json['student_id'],
         'comments': json['comments'],
-        'rating': json['rating'] == null ? undefined : json['rating'],
+        'created_at': (new Date(json['created_at'])),
         'id': json['id'],
-        'createdAt': (new Date(json['created_at'])),
-        'updatedAt': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
+        'rating': json['rating'] == null ? undefined : json['rating'],
+        'student_id': json['student_id'],
+        'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
     };
 }
 
@@ -98,12 +98,12 @@ export function FeedbackSchemaToJSONTyped(value?: FeedbackSchema | null, ignoreD
 
     return {
         
-        'student_id': value['studentId'],
         'comments': value['comments'],
-        'rating': value['rating'],
+        'created_at': value['created_at'].toISOString(),
         'id': value['id'],
-        'created_at': value['createdAt'].toISOString(),
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : value['updatedAt'].toISOString(),
+        'rating': value['rating'],
+        'student_id': value['student_id'],
+        'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),
     };
 }
 

@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, DateTime, Integer, ForeignKey
+from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
 
@@ -10,7 +11,9 @@ class SyncSession(Base):
     end_time = Column(DateTime, nullable=True)
     status = Column(String(255), nullable=True)
 
-    instance_id = Column(Integer, ForeignKey("game_instances.id"), nullable=False)
+    instance_id = Column(
+        UUID(as_uuid=True), ForeignKey("game_instances.id"), nullable=False
+    )
 
     # Relationships using string references to avoid circular imports
     game_instance = relationship(

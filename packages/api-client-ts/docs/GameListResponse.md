@@ -7,12 +7,12 @@ Esquema para listado de juegos
 
 Name | Type
 ------------ | -------------
-`success` | boolean
-`message` | string
 `data` | [Array&lt;GameResponse&gt;](GameResponse.md)
-`total` | number
-`skip` | number
 `limit` | number
+`message` | string
+`skip` | number
+`success` | boolean
+`total` | number
 
 ## Example
 
@@ -21,12 +21,12 @@ import type { GameListResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "success": null,
-  "message": null,
   "data": null,
-  "total": null,
-  "skip": null,
   "limit": null,
+  "message": null,
+  "skip": null,
+  "success": null,
+  "total": null,
 } satisfies GameListResponse
 
 console.log(example)

@@ -7,12 +7,12 @@ xAPI Result - The result of the action (quantitative and qualitative).
 
 Name | Type
 ------------ | -------------
-`score` | [XAPIScore](XAPIScore.md)
-`success` | boolean
 `completion` | boolean
-`response` | string
 `duration` | string
 `extensions` | object
+`response` | string
+`score` | [XAPIScore](XAPIScore.md)
+`success` | boolean
 
 ## Example
 
@@ -21,12 +21,12 @@ import type { XAPIResult } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "score": null,
-  "success": null,
   "completion": null,
-  "response": null,
   "duration": null,
   "extensions": null,
+  "response": null,
+  "score": null,
+  "success": null,
 } satisfies XAPIResult
 
 console.log(example)

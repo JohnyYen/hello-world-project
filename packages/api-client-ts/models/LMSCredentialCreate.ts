@@ -20,46 +20,46 @@ import { mapValues } from '../runtime';
  */
 export interface LMSCredentialCreate {
     /**
-     * 
-     * @type {number}
-     * @memberof LMSCredentialCreate
-     */
-    userId: number;
-    /**
-     * URL del LMS (ej: https://moodle.university.edu)
-     * @type {string}
-     * @memberof LMSCredentialCreate
-     */
-    lmsUrl: string;
-    /**
      * Email de la cuenta en el LMS
      * @type {string}
      * @memberof LMSCredentialCreate
      */
-    lmsEmail: string;
+    lms_email: string;
     /**
      * Contraseña de la cuenta LMS
      * @type {string}
      * @memberof LMSCredentialCreate
      */
-    lmsPassword: string;
+    lms_password: string;
     /**
      * Proveedor LMS (moodle, canvas, etc.)
      * @type {string}
      * @memberof LMSCredentialCreate
      */
-    lmsProvider: string;
+    lms_provider: string;
+    /**
+     * URL del LMS (ej: https://moodle.university.edu)
+     * @type {string}
+     * @memberof LMSCredentialCreate
+     */
+    lms_url: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof LMSCredentialCreate
+     */
+    user_id: number;
 }
 
 /**
  * Check if a given object implements the LMSCredentialCreate interface.
  */
 export function instanceOfLMSCredentialCreate(value: object): value is LMSCredentialCreate {
-    if (!('userId' in value) || value['userId'] === undefined) return false;
-    if (!('lmsUrl' in value) || value['lmsUrl'] === undefined) return false;
-    if (!('lmsEmail' in value) || value['lmsEmail'] === undefined) return false;
-    if (!('lmsPassword' in value) || value['lmsPassword'] === undefined) return false;
-    if (!('lmsProvider' in value) || value['lmsProvider'] === undefined) return false;
+    if (!('lms_email' in value) || value['lms_email'] === undefined) return false;
+    if (!('lms_password' in value) || value['lms_password'] === undefined) return false;
+    if (!('lms_provider' in value) || value['lms_provider'] === undefined) return false;
+    if (!('lms_url' in value) || value['lms_url'] === undefined) return false;
+    if (!('user_id' in value) || value['user_id'] === undefined) return false;
     return true;
 }
 
@@ -73,11 +73,11 @@ export function LMSCredentialCreateFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'userId': json['user_id'],
-        'lmsUrl': json['lms_url'],
-        'lmsEmail': json['lms_email'],
-        'lmsPassword': json['lms_password'],
-        'lmsProvider': json['lms_provider'],
+        'lms_email': json['lms_email'],
+        'lms_password': json['lms_password'],
+        'lms_provider': json['lms_provider'],
+        'lms_url': json['lms_url'],
+        'user_id': json['user_id'],
     };
 }
 
@@ -92,11 +92,11 @@ export function LMSCredentialCreateToJSONTyped(value?: LMSCredentialCreate | nul
 
     return {
         
-        'user_id': value['userId'],
-        'lms_url': value['lmsUrl'],
-        'lms_email': value['lmsEmail'],
-        'lms_password': value['lmsPassword'],
-        'lms_provider': value['lmsProvider'],
+        'lms_email': value['lms_email'],
+        'lms_password': value['lms_password'],
+        'lms_provider': value['lms_provider'],
+        'lms_url': value['lms_url'],
+        'user_id': value['user_id'],
     };
 }
 

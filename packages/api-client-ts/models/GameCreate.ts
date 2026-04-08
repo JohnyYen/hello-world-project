@@ -24,7 +24,7 @@ export interface GameCreate {
      * @type {string}
      * @memberof GameCreate
      */
-    title: string;
+    creator?: string | null;
     /**
      * 
      * @type {string}
@@ -36,7 +36,7 @@ export interface GameCreate {
      * @type {string}
      * @memberof GameCreate
      */
-    creator?: string | null;
+    publication_status?: string | null;
     /**
      * 
      * @type {string}
@@ -48,7 +48,7 @@ export interface GameCreate {
      * @type {string}
      * @memberof GameCreate
      */
-    publicationStatus?: string | null;
+    title: string;
 }
 
 /**
@@ -69,11 +69,11 @@ export function GameCreateFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'title': json['title'],
-        'description': json['description'] == null ? undefined : json['description'],
         'creator': json['creator'] == null ? undefined : json['creator'],
+        'description': json['description'] == null ? undefined : json['description'],
+        'publication_status': json['publication_status'] == null ? undefined : json['publication_status'],
         'subject': json['subject'] == null ? undefined : json['subject'],
-        'publicationStatus': json['publication_status'] == null ? undefined : json['publication_status'],
+        'title': json['title'],
     };
 }
 
@@ -88,11 +88,11 @@ export function GameCreateToJSONTyped(value?: GameCreate | null, ignoreDiscrimin
 
     return {
         
-        'title': value['title'],
-        'description': value['description'],
         'creator': value['creator'],
+        'description': value['description'],
+        'publication_status': value['publication_status'],
         'subject': value['subject'],
-        'publication_status': value['publicationStatus'],
+        'title': value['title'],
     };
 }
 

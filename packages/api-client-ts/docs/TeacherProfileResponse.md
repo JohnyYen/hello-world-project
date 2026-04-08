@@ -7,17 +7,17 @@ Esquema para respuesta del perfil de profesor
 
 Name | Type
 ------------ | -------------
-`id` | number
-`username` | string
-`name` | string
-`lastname` | string
-`email` | string
+`avatar_url` | string
+`contact_phone` | string
+`created_at` | Date
 `department` | string
-`contactPhone` | string
-`avatarUrl` | string
-`isActive` | boolean
-`createdAt` | Date
-`updatedAt` | Date
+`email` | string
+`id` | number
+`is_active` | boolean
+`lastname` | string
+`name` | string
+`updated_at` | Date
+`username` | string
 
 ## Example
 
@@ -26,17 +26,17 @@ import type { TeacherProfileResponse } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
-  "username": null,
-  "name": null,
-  "lastname": null,
-  "email": null,
+  "avatar_url": null,
+  "contact_phone": null,
+  "created_at": null,
   "department": null,
-  "contactPhone": null,
-  "avatarUrl": null,
-  "isActive": null,
-  "createdAt": null,
-  "updatedAt": null,
+  "email": null,
+  "id": null,
+  "is_active": null,
+  "lastname": null,
+  "name": null,
+  "updated_at": null,
+  "username": null,
 } satisfies TeacherProfileResponse
 
 console.log(example)

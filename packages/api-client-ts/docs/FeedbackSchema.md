@@ -6,12 +6,12 @@
 
 Name | Type
 ------------ | -------------
-`studentId` | number
 `comments` | string
-`rating` | number
+`created_at` | Date
 `id` | number
-`createdAt` | Date
-`updatedAt` | Date
+`rating` | number
+`student_id` | number
+`updated_at` | Date
 
 ## Example
 
@@ -20,12 +20,12 @@ import type { FeedbackSchema } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "studentId": null,
   "comments": null,
-  "rating": null,
+  "created_at": null,
   "id": null,
-  "createdAt": null,
-  "updatedAt": null,
+  "rating": null,
+  "student_id": null,
+  "updated_at": null,
 } satisfies FeedbackSchema
 
 console.log(example)

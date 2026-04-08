@@ -15,3 +15,4 @@ class Game(Base):
     # Relationships
     levels = relationship("Level", back_populates="game")
     instances = relationship("GameInstance", back_populates="game")
+    feedbacks = relationship("Feedback", back_populates="game")

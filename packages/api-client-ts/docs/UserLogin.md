@@ -7,9 +7,9 @@ Esquema para inicio de sesión
 
 Name | Type
 ------------ | -------------
-`username` | string
 `email` | string
 `password` | string
+`username` | string
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { UserLogin } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "username": null,
   "email": null,
   "password": Password123!,
+  "username": null,
 } satisfies UserLogin
 
 console.log(example)

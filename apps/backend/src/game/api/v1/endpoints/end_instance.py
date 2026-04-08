@@ -43,7 +43,7 @@ async def end_instance(
     # Actualizar instancia
     update_data = {
         "status": final_status,
-        "start_instance": datetime.utcnow(),  # En un caso real, esto no se actualizaría
+        "ended_at": datetime.utcnow(),
     }
 
     updated_instance = await instance_repo.update(instance_id, update_data)

@@ -1,21 +1,20 @@
 'use client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, UserX } from "lucide-react";
 import Link from "next/link";
 
-type StudentNotFoundProps = {
-  studentId: string;
-};
-
-export default function StudentNotFound({ studentId }: StudentNotFoundProps) {
+export default function StudentNotFound() {
   return (
     <div className="container mx-auto py-10">
       <Card>
         <CardHeader>
-          <CardTitle>Estudiante no encontrado</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <UserX className="h-5 w-5" />
+            Estudiante no encontrado
+          </CardTitle>
           <CardDescription>
-            El estudiante con ID {studentId} no existe en la base de datos.
+            El estudiante que buscas no existe o ha sido removido de la base de datos.
           </CardDescription>
         </CardHeader>
         <CardContent>

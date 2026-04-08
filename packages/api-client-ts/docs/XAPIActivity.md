@@ -7,9 +7,9 @@ xAPI Activity - The object of the action.
 
 Name | Type
 ------------ | -------------
-`id` | string
-`objectType` | string
 `definition` | [XAPIActivityDefinition](XAPIActivityDefinition.md)
+`id` | string
+`object_type` | string
 
 ## Example
 
@@ -18,9 +18,9 @@ import type { XAPIActivity } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "id": null,
-  "objectType": null,
   "definition": null,
+  "id": null,
+  "object_type": null,
 } satisfies XAPIActivity
 
 console.log(example)

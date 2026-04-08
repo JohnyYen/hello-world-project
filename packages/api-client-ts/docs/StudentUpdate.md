@@ -7,11 +7,11 @@ Esquema para actualizar la información del estudiante
 
 Name | Type
 ------------ | -------------
-`username` | string
 `email` | string
-`name` | string
+`is_active` | boolean
 `lastname` | string
-`isActive` | boolean
+`name` | string
+`username` | string
 
 ## Example
 
@@ -20,11 +20,11 @@ import type { StudentUpdate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "username": null,
   "email": null,
-  "name": null,
+  "is_active": null,
   "lastname": null,
-  "isActive": null,
+  "name": null,
+  "username": null,
 } satisfies StudentUpdate
 
 console.log(example)

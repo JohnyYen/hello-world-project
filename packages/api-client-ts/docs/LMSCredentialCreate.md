@@ -7,11 +7,11 @@ Schema for creating LMS credentials.
 
 Name | Type
 ------------ | -------------
-`userId` | number
-`lmsUrl` | string
-`lmsEmail` | string
-`lmsPassword` | string
-`lmsProvider` | string
+`lms_email` | string
+`lms_password` | string
+`lms_provider` | string
+`lms_url` | string
+`user_id` | number
 
 ## Example
 
@@ -20,11 +20,11 @@ import type { LMSCredentialCreate } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "userId": null,
-  "lmsUrl": null,
-  "lmsEmail": null,
-  "lmsPassword": null,
-  "lmsProvider": null,
+  "lms_email": null,
+  "lms_password": null,
+  "lms_provider": null,
+  "lms_url": null,
+  "user_id": null,
 } satisfies LMSCredentialCreate
 
 console.log(example)

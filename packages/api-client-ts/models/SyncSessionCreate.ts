@@ -20,24 +20,24 @@ import { mapValues } from '../runtime';
  */
 export interface SyncSessionCreate {
     /**
-     * 
+     * ID of the game instance
      * @type {number}
      * @memberof SyncSessionCreate
      */
-    instanceId: number;
+    instance_id: number;
     /**
-     * 
+     * Whether the session is active
      * @type {boolean}
      * @memberof SyncSessionCreate
      */
-    isActive?: boolean;
+    is_active?: boolean;
 }
 
 /**
  * Check if a given object implements the SyncSessionCreate interface.
  */
 export function instanceOfSyncSessionCreate(value: object): value is SyncSessionCreate {
-    if (!('instanceId' in value) || value['instanceId'] === undefined) return false;
+    if (!('instance_id' in value) || value['instance_id'] === undefined) return false;
     return true;
 }
 
@@ -51,8 +51,8 @@ export function SyncSessionCreateFromJSONTyped(json: any, ignoreDiscriminator: b
     }
     return {
         
-        'instanceId': json['instance_id'],
-        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'instance_id': json['instance_id'],
+        'is_active': json['is_active'] == null ? undefined : json['is_active'],
     };
 }
 
@@ -67,8 +67,8 @@ export function SyncSessionCreateToJSONTyped(value?: SyncSessionCreate | null, i
 
     return {
         
-        'instance_id': value['instanceId'],
-        'is_active': value['isActive'],
+        'instance_id': value['instance_id'],
+        'is_active': value['is_active'],
     };
 }
 

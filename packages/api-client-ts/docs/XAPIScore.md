@@ -7,9 +7,9 @@ xAPI Score - Quantitative result.
 
 Name | Type
 ------------ | -------------
-`raw` | number
-`min` | number
 `max` | number
+`min` | number
+`raw` | number
 `scaled` | number
 
 ## Example
@@ -19,9 +19,9 @@ import type { XAPIScore } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "raw": null,
-  "min": null,
   "max": null,
+  "min": null,
+  "raw": null,
   "scaled": null,
 } satisfies XAPIScore
 

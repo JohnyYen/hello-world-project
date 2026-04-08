@@ -7,8 +7,8 @@ Esquema para cambio de contraseña
 
 Name | Type
 ------------ | -------------
-`currentPassword` | string
-`newPassword` | string
+`current_password` | string
+`new_password` | string
 
 ## Example
 
@@ -17,8 +17,8 @@ import type { UserChangePassword } from ''
 
 // TODO: Update the object below with actual values
 const example = {
-  "currentPassword": Current123!,
-  "newPassword": NewPassword123!,
+  "current_password": Current123!,
+  "new_password": NewPassword123!,
 } satisfies UserChangePassword
 
 console.log(example)

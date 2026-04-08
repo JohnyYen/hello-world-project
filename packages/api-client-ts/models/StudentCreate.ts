@@ -24,19 +24,13 @@ export interface StudentCreate {
      * @type {string}
      * @memberof StudentCreate
      */
-    username: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof StudentCreate
-     */
     email: string;
     /**
      * 
-     * @type {string}
+     * @type {boolean}
      * @memberof StudentCreate
      */
-    name: string;
+    is_active?: boolean | null;
     /**
      * 
      * @type {string}
@@ -48,24 +42,30 @@ export interface StudentCreate {
      * @type {string}
      * @memberof StudentCreate
      */
+    name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StudentCreate
+     */
     password: string;
     /**
      * 
-     * @type {boolean}
+     * @type {string}
      * @memberof StudentCreate
      */
-    isActive?: boolean | null;
+    username: string;
 }
 
 /**
  * Check if a given object implements the StudentCreate interface.
  */
 export function instanceOfStudentCreate(value: object): value is StudentCreate {
-    if (!('username' in value) || value['username'] === undefined) return false;
     if (!('email' in value) || value['email'] === undefined) return false;
-    if (!('name' in value) || value['name'] === undefined) return false;
     if (!('lastname' in value) || value['lastname'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     if (!('password' in value) || value['password'] === undefined) return false;
+    if (!('username' in value) || value['username'] === undefined) return false;
     return true;
 }
 
@@ -79,12 +79,12 @@ export function StudentCreateFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'username': json['username'],
         'email': json['email'],
-        'name': json['name'],
+        'is_active': json['is_active'] == null ? undefined : json['is_active'],
         'lastname': json['lastname'],
+        'name': json['name'],
         'password': json['password'],
-        'isActive': json['is_active'] == null ? undefined : json['is_active'],
+        'username': json['username'],
     };
 }
 
@@ -99,12 +99,12 @@ export function StudentCreateToJSONTyped(value?: StudentCreate | null, ignoreDis
 
     return {
         
-        'username': value['username'],
         'email': value['email'],
-        'name': value['name'],
+        'is_active': value['is_active'],
         'lastname': value['lastname'],
+        'name': value['name'],
         'password': value['password'],
-        'is_active': value['isActive'],
+        'username': value['username'],
     };
 }
 

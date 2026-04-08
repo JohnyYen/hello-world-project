@@ -30,7 +30,7 @@ export interface UserRoleResponse {
      * @type {string}
      * @memberof UserRoleResponse
      */
-    roleName: string;
+    role_name: string;
 }
 
 /**
@@ -38,7 +38,7 @@ export interface UserRoleResponse {
  */
 export function instanceOfUserRoleResponse(value: object): value is UserRoleResponse {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('roleName' in value) || value['roleName'] === undefined) return false;
+    if (!('role_name' in value) || value['role_name'] === undefined) return false;
     return true;
 }
 
@@ -53,7 +53,7 @@ export function UserRoleResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'id': json['id'],
-        'roleName': json['role_name'],
+        'role_name': json['role_name'],
     };
 }
 
@@ -69,7 +69,7 @@ export function UserRoleResponseToJSONTyped(value?: UserRoleResponse | null, ign
     return {
         
         'id': value['id'],
-        'role_name': value['roleName'],
+        'role_name': value['role_name'],
     };
 }
 

@@ -29,10 +29,10 @@ import {
 export interface LevelCreateResponse {
     /**
      * 
-     * @type {boolean}
+     * @type {LevelResponse}
      * @memberof LevelCreateResponse
      */
-    success?: boolean;
+    data: LevelResponse;
     /**
      * 
      * @type {string}
@@ -41,10 +41,10 @@ export interface LevelCreateResponse {
     message?: string;
     /**
      * 
-     * @type {LevelResponse}
+     * @type {boolean}
      * @memberof LevelCreateResponse
      */
-    data: LevelResponse;
+    success?: boolean;
 }
 
 /**
@@ -65,9 +65,9 @@ export function LevelCreateResponseFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'success': json['success'] == null ? undefined : json['success'],
-        'message': json['message'] == null ? undefined : json['message'],
         'data': LevelResponseFromJSON(json['data']),
+        'message': json['message'] == null ? undefined : json['message'],
+        'success': json['success'] == null ? undefined : json['success'],
     };
 }
 
@@ -82,9 +82,9 @@ export function LevelCreateResponseToJSONTyped(value?: LevelCreateResponse | nul
 
     return {
         
-        'success': value['success'],
-        'message': value['message'],
         'data': LevelResponseToJSON(value['data']),
+        'message': value['message'],
+        'success': value['success'],
     };
 }
 
