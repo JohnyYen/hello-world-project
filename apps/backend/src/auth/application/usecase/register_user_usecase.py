@@ -15,6 +15,7 @@ from src.users.application.service.teacher_settings_service import (
 )
 from src.users.infrastructure.role_repository import RoleRepository
 from src.users.infrastructure.professor_repository import ProfessorRepository
+from src.users.domain.professor import Professor
 from src.shared.domain.exceptions import DuplicateEntryException
 from src.users.api.v1.schemas.user import UserCreate, UserResponse, UserLoginResponse
 
@@ -74,19 +75,24 @@ class RegisterUserUseCase:
             role_id=professor_role_id,
         )
 
-        # 3. Crear TeacherSettings automáticamente para profesores
+        # 3. Crear Professor profile automáticamente para profesores
+        professor = Professor(user_id=user.id, department="General")
+        self.db.add(professor)
+        await self.db.flush()  # Get the professor ID without committing
+
+        # 4. Crear TeacherSettings automáticamente para profesores
         await self.teacher_settings_service.create_for_user(user.id)
 
-        # 4. Obtener el usuario creado con la relación role cargada de forma eager
+        # 5. Obtener el usuario creado con la relación role cargada de forma eager
         user_with_role = await self.user_service.get_user_by_id_with_role(user.id)
 
-        # 5. Generar token JWT para el nuevo usuario
+        # 6. Generar token JWT para el nuevo usuario
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         access_token = create_access_token(
             data={"sub": user.username}, expires_delta=access_token_expires
         )
 
-        # 6. Devolver respuesta con token y usuario
+        # 7. Devolver respuesta con token y usuario
         return UserLoginResponse(
             access_token=access_token,
             token_type="bearer",
