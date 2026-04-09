@@ -26,10 +26,23 @@ import uuid
 BACKEND_DIR = Path(__file__).parent.parent / "apps" / "backend" / "src"
 sys.path.insert(0, str(BACKEND_DIR))
 
+# Add the backend root directory to enable src.* imports
+BACKEND_ROOT = Path(__file__).parent.parent / "apps" / "backend"
+sys.path.insert(0, str(BACKEND_ROOT))
+
 # Import domain models and database session
-from shared.infrastructure.session import SessionLocal, engine
-from shared.infrastructure.base import Base
-from shared.domain.enums import GameStatus
+from src.shared.infrastructure.session import SessionLocal, engine
+from src.shared.infrastructure.base import Base
+from src.shared.domain.enums import GameStatus
+from sqlalchemy import select, text
+
+# Import all domain models to register them with Base.metadata
+from src.users.domain import User, Professor, Student, TeacherSettings, Role, LMSCredential
+from src.game.domain import Game, GameInstance, SegmentLevel, Level
+from src.statistic.domain import Feedback, MetricType, Progress, XAPIStatement
+from src.sync.domain import SyncSession, SyncEvent
+from src.course.domain import Course, CourseEnrollment, CourseProfessor
+from src.notification.domain import Notification
 
 
 class DatabaseSeeder:
@@ -112,7 +125,19 @@ class DatabaseSeeder:
         print("All existing data will be destroyed!")
         
         async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
+            # Use CASCADE to handle foreign key dependencies
+            # Execute each DROP TABLE separately (asyncpg doesn't allow multiple commands)
+            tables = [
+                "notifications", "sync_events", "sync_sessions",
+                "course_enrollments", "course_professors", "xapi_statements",
+                "progresses", "feedbacks", "game_instances", "teacher_settings",
+                "students", "professors", "segment_levels", "levels", "games",
+                "lms_credentials", "users", "roles", "metric_types", "courses"
+            ]
+            
+            for table in tables:
+                await conn.execute(text(f"DROP TABLE IF EXISTS {table} CASCADE"))
+            
             await conn.run_sync(Base.metadata.create_all)
         
         print("✓ Database reset completed")
@@ -123,7 +148,7 @@ class DatabaseSeeder:
 
     async def _seed_roles(self):
         """Seed roles: admin, professor, student."""
-        from users.domain.role import Role
+        from src.users.domain.role import Role
         from sqlalchemy import select
 
         roles_data = [
@@ -146,8 +171,8 @@ class DatabaseSeeder:
 
     async def _seed_admin(self):
         """Seed the admin user."""
-        from users.domain.user import User
-        from users.domain.role import Role
+        from src.users.domain.user import User
+        from src.users.domain.role import Role
         from sqlalchemy import select
 
         query = select(User).where(User.username == "superadmin")
@@ -189,10 +214,10 @@ class DatabaseSeeder:
 
     async def _seed_professors(self):
         """Seed professor users with their profiles."""
-        from users.domain.user import User
-        from users.domain.professor import Professor
-        from users.domain.teacher_settings import TeacherSettings
-        from users.domain.role import Role
+        from src.users.domain.user import User
+        from src.users.domain.professor import Professor
+        from src.users.domain.teacher_settings import TeacherSettings
+        from src.users.domain.role import Role
         from sqlalchemy import select
 
         role_query = select(Role).where(Role.role_name == "professor")
@@ -301,9 +326,9 @@ class DatabaseSeeder:
 
     async def _seed_students(self):
         """Seed student users with their profiles."""
-        from users.domain.user import User
-        from users.domain.student import Student
-        from users.domain.role import Role
+        from src.users.domain.user import User
+        from src.users.domain.student import Student
+        from src.users.domain.role import Role
         from sqlalchemy import select
 
         role_query = select(Role).where(Role.role_name == "student")
@@ -379,7 +404,7 @@ class DatabaseSeeder:
 
     async def _seed_lms_credentials(self, professors, students):
         """Seed LMS credentials for professors and some students."""
-        from users.domain.lms_credential import LMSCredential
+        from src.users.domain.lms_credential import LMSCredential
         from sqlalchemy import select
 
         if not professors:
@@ -432,9 +457,9 @@ class DatabaseSeeder:
 
     async def _seed_games(self):
         """Seed games with levels and segments."""
-        from game.domain.game import Game
-        from game.domain.level import Level
-        from game.domain.segment_level import SegmentLevel
+        from src.game.domain.game import Game
+        from src.game.domain.level import Level
+        from src.game.domain.segment_level import SegmentLevel
         from sqlalchemy import select
 
         games_data = [
@@ -659,8 +684,8 @@ class DatabaseSeeder:
 
     async def _seed_game_instances(self, students, games):
         """Seed game instances for students."""
-        from game.domain.game_instance import GameInstance
-        from users.domain.student import Student
+        from src.game.domain.game_instance import GameInstance
+        from src.users.domain.student import Student
         from sqlalchemy import select
 
         if not students or not games:
@@ -700,9 +725,9 @@ class DatabaseSeeder:
 
     async def _seed_courses(self, professors):
         """Seed courses with professors."""
-        from course.domain.course import Course
-        from course.domain.course_professor import CourseProfessor
-        from users.domain.professor import Professor
+        from src.course.domain.course import Course
+        from src.course.domain.course_professor import CourseProfessor
+        from src.users.domain.professor import Professor
         from sqlalchemy import select
 
         professors_query = select(Professor).limit(5)
@@ -845,9 +870,9 @@ class DatabaseSeeder:
 
     async def _seed_enrollments(self, students, courses):
         """Seed course enrollments for students."""
-        from course.domain.course_enrollment import CourseEnrollment
-        from users.domain.student import Student
-        from course.domain.course import Course
+        from src.course.domain.course_enrollment import CourseEnrollment
+        from src.users.domain.student import Student
+        from src.course.domain.course import Course
         from sqlalchemy import select
 
         students_query = select(Student).limit(20)
@@ -890,7 +915,7 @@ class DatabaseSeeder:
 
     async def _seed_metric_types(self):
         """Seed metric types."""
-        from statistic.domain.metric_type import MetricType
+        from src.statistic.domain.metric_type import MetricType
         from sqlalchemy import select
 
         metric_types_data = [
@@ -917,10 +942,10 @@ class DatabaseSeeder:
 
     async def _seed_feedbacks(self, students, professors, games):
         """Seed feedbacks from students to professors."""
-        from statistic.domain.feedback import Feedback
-        from game.domain.level import Level
-        from users.domain.student import Student
-        from users.domain.professor import Professor
+        from src.statistic.domain.feedback import Feedback
+        from src.game.domain.level import Level
+        from src.users.domain.student import Student
+        from src.users.domain.professor import Professor
         from sqlalchemy import select
 
         students_query = select(Student).limit(10)
@@ -975,9 +1000,9 @@ class DatabaseSeeder:
 
     async def _seed_progress(self, students):
         """Seed progress records for students in segments."""
-        from statistic.domain.progress import Progress
-        from game.domain.segment_level import SegmentLevel
-        from users.domain.student import Student
+        from src.statistic.domain.progress import Progress
+        from src.game.domain.segment_level import SegmentLevel
+        from src.users.domain.student import Student
         from sqlalchemy import select
 
         students_query = select(Student).limit(15)
@@ -1013,10 +1038,10 @@ class DatabaseSeeder:
 
     async def _seed_xapi_statements(self, students, games):
         """Seed xAPI statements from game client."""
-        from statistic.domain.xapi_statement import XAPIStatement
-        from game.domain.level import Level
-        from game.domain.segment_level import SegmentLevel
-        from users.domain.student import Student
+        from src.statistic.domain.xapi_statement import XAPIStatement
+        from src.game.domain.level import Level
+        from src.game.domain.segment_level import SegmentLevel
+        from src.users.domain.student import Student
         from sqlalchemy import select
 
         students_query = select(Student).limit(10)
@@ -1100,8 +1125,8 @@ class DatabaseSeeder:
 
     async def _seed_notifications(self):
         """Seed notifications for users."""
-        from notification.domain.notification import Notification
-        from users.domain.user import User
+        from src.notification.domain.notification import Notification
+        from src.users.domain.user import User
         from sqlalchemy import select
 
         users_query = select(User).limit(30)
