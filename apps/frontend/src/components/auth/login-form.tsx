@@ -1,70 +1,32 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { useActionState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { loginAction, type ActionState } from "@/lib/actions";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSubmit(formData: FormData) {
-    setError(null);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    startTransition(async () => {
-      try {
-        // Use internal API that sets the cookie server-side
-        const response = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.message || "Credenciales incorrectas");
-        }
-
-        // Token is stored in HTTP-only cookie server-side, no client-side storage needed
-
-        // Redirect to dashboard
-        router.push("/dashboard");
-        router.refresh();
-      } catch (err: unknown) {
-        const message = err instanceof Error
-          ? err.message
-          : "Credenciales incorrectas";
-        // Extract detail from ApiError if available
-        if (err && typeof err === "object" && "detail" in err) {
-          setError((err as { detail?: string }).detail ?? "Credenciales incorrectas");
-        } else {
-          setError(message.includes("NEXT_REDIRECT") ? null : message);
-        }
-      }
-    });
-  }
+  const [state, action, isPending] = useActionState<ActionState | null, FormData>(
+    loginAction,
+    null
+  );
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -76,7 +38,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={handleSubmit}>
+          <form action={action}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -86,22 +48,23 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
-                  aria-describedby="email-error"
+                  aria-invalid={!!state?.errors?.email}
+                  aria-describedby={state?.errors?.email ? "email-error" : undefined}
                 />
-                {error && (
-                  <FieldDescription id="email-error" className="text-red-500">
-                    {error}
+                {state?.errors?.email && (
+                  <FieldDescription id="email-error" className="text-destructive">
+                    {state.errors.email[0]}
                   </FieldDescription>
                 )}
               </Field>
               <Field>
                 <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <FieldLabel htmlFor="password">Contraseña</FieldLabel>
                   <a
                     href="#"
                     className="ml-auto text-sm underline-offset-4 hover:underline"
                   >
-                    Forgot your password?
+                    ¿Olvidaste tu contraseña?
                   </a>
                 </div>
                 <Input
@@ -109,15 +72,26 @@ export function LoginForm({
                   name="password"
                   type="password"
                   required
-                  aria-describedby="password-error"
+                  aria-invalid={!!state?.errors?.password}
+                  aria-describedby={state?.errors?.password ? "password-error" : undefined}
                 />
+                {state?.errors?.password && (
+                  <FieldDescription id="password-error" className="text-destructive">
+                    {state.errors.password[0]}
+                  </FieldDescription>
+                )}
               </Field>
               <Field>
+                {state?.errors?._form && (
+                  <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md mb-2">
+                    {state.errors._form[0]}
+                  </div>
+                )}
                 <Button type="submit" disabled={isPending} variant="default" className="w-full">
                   {isPending ? "Iniciando sesión..." : "Iniciar Sesión"}
                 </Button>
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="/signup">Sign up</a>
+                  ¿No tienes cuenta? <a href="/signup" className="underline underline-offset-4">Regístrate</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -125,5 +99,6 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
+

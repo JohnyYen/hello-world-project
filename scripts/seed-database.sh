@@ -67,6 +67,27 @@ if [ -z "$DATABASE_URL" ]; then
     fi
 fi
 
+# Check if PostgreSQL is running in Docker and use correct credentials
+if docker ps --format '{{.Names}}' 2>/dev/null | grep -q "hwp-postgres"; then
+    echo -e "${YELLOW}✓ Detected PostgreSQL container (hwp-postgres)${NC}"
+    
+    # Load docker-compose credentials
+    DOCKER_ENV_FILE="$PROJECT_ROOT/infraestructure/docker/.env"
+    if [ -f "$DOCKER_ENV_FILE" ]; then
+        export $(grep -v '^#' "$DOCKER_ENV_FILE" | xargs)
+        DATABASE_URL="postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}"
+        export DATABASE_URL
+        echo -e "${GREEN}  Using Docker credentials: $DATABASE_URL${NC}"
+    fi
+elif [[ "$DATABASE_URL" == *"@postgresql_db:"* ]] || [[ "$DATABASE_URL" == *"@postgres:"* ]]; then
+    # Convert Docker network hostname to localhost (fallback)
+    echo -e "${YELLOW}⚠️  Detected Docker network hostname in DATABASE_URL${NC}"
+    echo -e "${YELLOW}   Converting to localhost for local execution...${NC}"
+    DATABASE_URL=$(echo "$DATABASE_URL" | sed 's/@postgresql_db:/@localhost:/' | sed 's/@postgres:/@localhost:/')
+    export DATABASE_URL
+    echo -e "${GREEN}   Updated DATABASE_URL: $DATABASE_URL${NC}"
+fi
+
 # Run the seeder
 echo
 echo -e "${YELLOW}Running database seeder...${NC}"
