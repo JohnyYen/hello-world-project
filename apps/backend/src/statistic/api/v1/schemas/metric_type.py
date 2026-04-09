@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class MetricTypeBase(BaseModel):
@@ -20,9 +21,8 @@ class MetricTypeUpdate(BaseModel):
 
 
 class MetricTypeSchema(MetricTypeBase):
-    id: int
+    id: UUID
     created_at: datetime
     updated_at: Optional[datetime] = None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}

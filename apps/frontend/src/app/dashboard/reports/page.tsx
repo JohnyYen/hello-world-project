@@ -21,12 +21,7 @@ import { MetricCard, LineChart as LineChartComponent, BarChart, DonutChart } fro
 import { ExportButton } from '@/components/export/ExportButton';
 import { CourseMultiSelector } from '@/components/reports/course-multi-selector';
 import { cn } from '@/lib/utils';
-import { 
-  getCourses, 
-  getSelectedCourseMetrics, 
-  getCourseProgressOverTime,
-  getReportKPIs 
-} from '@/components/reports/course-report-data';
+import { courseReportsService, apiClient } from '@/lib/api-client';
 import type { Course, CourseMetrics, CourseReportKPIs, CourseProgressOverTime } from '@/types/course-report.interface';
 
 // Utility functions
@@ -131,20 +126,23 @@ export default function ReportsPage() {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const [coursesData, kpisData] = await Promise.all([
-          getCourses(),
-          getReportKPIs()
+        const [coursesResponse, kpisResponse] = await Promise.all([
+          courseReportsService.getCourses(),
+          courseReportsService.getReportKPIs()
         ]);
-        
+
+        const coursesData = coursesResponse.data || [];
+        const kpisData = kpisResponse.data || null;
+
         setCourses(coursesData);
         setKpis(kpisData);
-        
+
         // Select latest year by default
         if (coursesData.length > 0) {
           const sorted = [...coursesData].sort((a, b) => b.schoolYear.localeCompare(a.schoolYear));
           const latestSchoolYear = sorted[0].schoolYear;
           const latestYearCourses = coursesData.filter(c => c.schoolYear === latestSchoolYear);
-          setSelectedCourses(latestYearCourses.map(c => c.id));
+          setSelectedCourses(latestYearCourses.map(c => String(c.id)));
         }
       } catch (error) {
         console.error('Error loading reports data:', error);
@@ -157,40 +155,63 @@ export default function ReportsPage() {
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
+    let cancelled = false;
+
     const loadSelectedMetrics = async () => {
       if (selectedCourses.length === 0) {
-        setSelectedMetrics([]);
+        if (!cancelled) {
+          setSelectedMetrics([]);
+          setProgressData({});
+        }
         return;
       }
 
       try {
-        const metrics = await getSelectedCourseMetrics(selectedCourses);
+        const metricsResponse = await courseReportsService.getCourseMetrics(
+          selectedCourses,
+          { signal: controller.signal }
+        );
+        if (cancelled) return;
+
+        const metrics = metricsResponse.data || [];
         const sortedMetrics = [...metrics].sort((a, b) => {
           if (a.schoolYear === b.schoolYear) {
             return a.period.localeCompare(b.period);
           }
           return a.schoolYear.localeCompare(b.schoolYear);
         });
-        
+
         setSelectedMetrics(sortedMetrics);
 
         const progressPromises = selectedCourses.map(async (courseId) => {
-          const data = await getCourseProgressOverTime(courseId);
-          return { courseId, data };
+          const response = await courseReportsService.getProgressOverTime(courseId, {
+            signal: controller.signal,
+          });
+          return { courseId, data: response.data || [] };
         });
 
         const progressResults = await Promise.all(progressPromises);
+        if (cancelled) return;
+
         const progressMap: Record<string, CourseProgressOverTime[]> = {};
         progressResults.forEach(({ courseId, data }) => {
           progressMap[courseId] = data;
         });
         setProgressData(progressMap);
       } catch (error) {
-        console.error('Error loading selected metrics:', error);
+        if (!cancelled && !(error instanceof DOMException && error.name === 'AbortError')) {
+          console.error('Error loading selected metrics:', error);
+        }
       }
     };
 
     loadSelectedMetrics();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
   }, [selectedCourses]);
 
   const toggleCourse = (courseId: string) => {

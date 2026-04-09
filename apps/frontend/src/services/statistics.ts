@@ -56,7 +56,7 @@ async function fetchApi<T>(
 // =====================
 
 interface MetricType {
-  id: number;
+  id: string;
   name: string;
   code: string;
   description: string | null;
@@ -94,7 +94,7 @@ async function getMetricTypes(params: GetMetricTypesParams = {}): Promise<Array<
   return fetchApi<Array<MetricType>>(`/api/v1/statistic/metric-types${query ? `?${query}` : ""}`);
 }
 
-async function getMetricType(metricTypeId: number): Promise<MetricType> {
+async function getMetricType(metricTypeId: string): Promise<MetricType> {
   return fetchApi<MetricType>(`/api/v1/statistic/metric-types/${metricTypeId}`);
 }
 
@@ -105,14 +105,14 @@ async function createMetricType(metricType: MetricTypeCreate): Promise<MetricTyp
   });
 }
 
-async function updateMetricType(metricTypeId: number, metricType: MetricTypeUpdate): Promise<MetricType> {
+async function updateMetricType(metricTypeId: string, metricType: MetricTypeUpdate): Promise<MetricType> {
   return fetchApi<MetricType>(`/api/v1/statistic/metric-types/${metricTypeId}`, {
     method: "PATCH",
     body: JSON.stringify(metricType),
   });
 }
 
-async function deleteMetricType(metricTypeId: number): Promise<void> {
+async function deleteMetricType(metricTypeId: string): Promise<void> {
   return fetchApi<void>(`/api/v1/statistic/metric-types/${metricTypeId}`, {
     method: "DELETE",
   });

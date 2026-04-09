@@ -15,4 +15,7 @@ class CourseEnrollment(Base):
     )
 
     course = relationship("Course", back_populates="enrollments")
-    student = relationship("Student", back_populates="enrollments")
+    student = relationship("Student", back_populates="course_enrollments")
+
+    def __repr__(self) -> str:
+        return f"<CourseEnrollment(course_id={self.course_id}, student_id={self.student_id})>"

@@ -11,10 +11,4 @@ from src.statistic.domain import Feedback, MetricType, Progress, XAPIStatement
 from src.sync.domain import SyncSession, SyncEvent
 
 # Course Domain Models
-from src.course.domain import Course, CourseProfessor, CourseEnrollment
-
-# Notification Domain Models
-from src.notification.domain import Notification
-
-# Enums
-from src.shared.domain.enums import GameStatus, SyncStatus, FeedbackRating
+from src.course.domain import Course, CourseEnrollment

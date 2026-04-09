@@ -19,7 +19,7 @@ export async function createMetricType(data: {
   return result;
 }
 
-export async function deleteMetricType(id: number): Promise<void> {
+export async function deleteMetricType(id: string): Promise<void> {
   await statisticsService.deleteMetricType(id);
 
   revalidatePath("/dashboard/metrics");
