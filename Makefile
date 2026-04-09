@@ -19,6 +19,16 @@ dev-frontend: ## Start frontend with hot reload
 dev-docker: ## Start all services (alias for dev)
 	docker compose -f infraestructure/docker/docker-compose.dev.yml up
 
+##@ Database Seeding
+seed-db: ## Seed database with test data (idempotent)
+	./scripts/seed-database.sh
+
+seed-db-reset: ## Reset and seed database (WARNING: destroys data)
+	./scripts/seed-database.sh --reset
+
+seed-db-help: ## Show database seeder help
+	./scripts/seed-database.sh --help
+
 ##@ Testing
 test: ## Run all tests
 	$(MAKE) test-backend && $(MAKE) test-frontend
