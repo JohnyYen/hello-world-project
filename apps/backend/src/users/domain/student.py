@@ -14,8 +14,4 @@ class Student(Base):
     feedbacks = relationship("Feedback", back_populates="student")
     progresses = relationship("Progress", back_populates="student")
     xapi_statements = relationship("XAPIStatement", back_populates="student")
-<<<<<<< HEAD
     course_enrollments = relationship("CourseEnrollment", back_populates="student")
-=======
-    enrollments = relationship("CourseEnrollment", back_populates="student")
->>>>>>> develop

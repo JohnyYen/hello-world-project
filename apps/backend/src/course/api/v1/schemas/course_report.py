@@ -1,10 +1,10 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, UUID4
 from typing import List, Optional
 from datetime import date
 
 
 class CourseResponse(BaseModel):
-    id: int
+    id: UUID4
     name: str
     period: str = Field(alias="display_period")
     schoolYear: str = Field(alias="school_year")

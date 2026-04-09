@@ -45,7 +45,7 @@ export function MetricTypeList({ initialMetricTypes }: MetricTypeListProps) {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("¿Estás seguro de que deseas eliminar esta métrica?")) {
       return;
     }

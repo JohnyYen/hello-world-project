@@ -43,12 +43,21 @@ interface LegacyApiError {
 export class APIClient {
   private baseURL: string;
   private defaultHeaders: Record<string, string>;
+  private getToken?: () => string | Promise<string>;
 
   constructor() {
     this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
     this.defaultHeaders = {
       'Content-Type': 'application/json',
     };
+  }
+
+  /**
+   * 🔧 Set a token getter function for dynamic auth
+   * Useful for client-side components that need to read tokens
+   */
+  setTokenGetter(getToken: () => string | Promise<string>): void {
+    this.getToken = getToken;
   }
 
   /**
@@ -69,12 +78,15 @@ export class APIClient {
    * 🌐 Generic GET request with type safety
    */
   async get<T>(
-    endpoint: string, 
+    endpoint: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Query params can be any serializable value
     config?: CacheConfig & { params?: Record<string, any> }
   ): Promise<ApiResponse<T>> {
-    const url = new URL(`${this.baseURL}${endpoint}`);
-    
+    // Support relative URLs for client-side proxy routes
+    const isRelativeUrl = endpoint.startsWith("/api/");
+    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    const url = new URL(isRelativeUrl ? endpoint : `${this.baseURL}${endpoint}`, origin);
+
     // Add query parameters
     if (config?.params) {
       Object.entries(config.params).forEach(([key, value]) => {
@@ -84,9 +96,23 @@ export class APIClient {
       });
     }
 
+    // Build headers with dynamic token if getter is available
+    const headers = { ...this.defaultHeaders };
+    if (this.getToken) {
+      const token = await this.getToken();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+
+    // For relative URLs, don't send Authorization header (cookie handles auth)
+    if (isRelativeUrl) {
+      delete headers['Authorization'];
+    }
+
     const response = await fetch(url.toString(), {
       method: 'GET',
-      headers: this.defaultHeaders,
+      headers,
       ...config,
     });
 
@@ -105,9 +131,24 @@ export class APIClient {
     data: T,
     config?: CacheConfig
   ): Promise<ApiResponse<R>> {
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
+    const isRelativeUrl = endpoint.startsWith("/api/");
+    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    const url = new URL(isRelativeUrl ? endpoint : `${this.baseURL}${endpoint}`, origin);
+
+    const headers = { ...this.defaultHeaders };
+    if (this.getToken) {
+      const token = await this.getToken();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+    if (isRelativeUrl) {
+      delete headers['Authorization'];
+    }
+
+    const response = await fetch(url.toString(), {
       method: 'POST',
-      headers: this.defaultHeaders,
+      headers,
       body: JSON.stringify(data),
       ...config,
     });
@@ -127,9 +168,24 @@ export class APIClient {
     data: T,
     config?: CacheConfig
   ): Promise<ApiResponse<R>> {
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
+    const isRelativeUrl = endpoint.startsWith("/api/");
+    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    const url = new URL(isRelativeUrl ? endpoint : `${this.baseURL}${endpoint}`, origin);
+
+    const headers = { ...this.defaultHeaders };
+    if (this.getToken) {
+      const token = await this.getToken();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+    if (isRelativeUrl) {
+      delete headers['Authorization'];
+    }
+
+    const response = await fetch(url.toString(), {
       method: 'PUT',
-      headers: this.defaultHeaders,
+      headers,
       body: JSON.stringify(data),
       ...config,
     });
@@ -148,9 +204,24 @@ export class APIClient {
     endpoint: string,
     config?: CacheConfig
   ): Promise<ApiResponse<void>> {
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
+    const isRelativeUrl = endpoint.startsWith("/api/");
+    const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+    const url = new URL(isRelativeUrl ? endpoint : `${this.baseURL}${endpoint}`, origin);
+
+    const headers = { ...this.defaultHeaders };
+    if (this.getToken) {
+      const token = await this.getToken();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+    if (isRelativeUrl) {
+      delete headers['Authorization'];
+    }
+
+    const response = await fetch(url.toString(), {
       method: 'DELETE',
-      headers: this.defaultHeaders,
+      headers,
       ...config,
     });
 
@@ -278,20 +349,32 @@ export class ReportsService {
 export class CourseReportsService {
   constructor(private _client: APIClient) {}
 
+  private getBaseUrl(): string {
+    // On client side, use proxy route to forward auth cookie
+    if (typeof window !== "undefined") {
+      return "/api/courses";
+    }
+    // On server side, call backend directly
+    return this._client["baseURL"] + "/api/v1/courses";
+  }
+
   async getCourses(): Promise<ApiResponse<Course[]>> {
-    return this._client.get('/courses/');
+    const baseUrl = this.getBaseUrl();
+    return this._client.get(baseUrl);
   }
 
   async getReportKPIs(): Promise<ApiResponse<CourseReportKPIs>> {
-    return this._client.get('/courses/reports/kpis');
+    const baseUrl = this.getBaseUrl();
+    return this._client.get(`${baseUrl}/reports/kpis`);
   }
 
   async getCourseMetrics(
     courseIds: string[],
     options?: { signal?: AbortSignal },
   ): Promise<ApiResponse<CourseMetrics[]>> {
-    return this._client.get('/courses/metrics', {
-      params: { course_ids: courseIds.join(',') },
+    const baseUrl = this.getBaseUrl();
+    return this._client.get(`${baseUrl}/metrics`, {
+      params: { course_ids: courseIds.join(",") },
       signal: options?.signal,
     });
   }
@@ -300,7 +383,8 @@ export class CourseReportsService {
     courseId: string,
     options?: { signal?: AbortSignal },
   ): Promise<ApiResponse<CourseProgressOverTime[]>> {
-    return this._client.get(`/courses/${courseId}/progress-over-time`, {
+    const baseUrl = this.getBaseUrl();
+    return this._client.get(`${baseUrl}/${courseId}/progress-over-time`, {
       signal: options?.signal,
     });
   }
@@ -310,7 +394,8 @@ export class CourseReportsService {
     days = 30,
     options?: { signal?: AbortSignal },
   ): Promise<ApiResponse<StudentActivitySummary[]>> {
-    return this._client.get(`/courses/${courseId}/activity-summary`, {
+    const baseUrl = this.getBaseUrl();
+    return this._client.get(`${baseUrl}/${courseId}/activity-summary`, {
       params: { days },
       signal: options?.signal,
     });
