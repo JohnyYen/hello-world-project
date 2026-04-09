@@ -158,9 +158,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^2.1.8
         version: 2.1.9(vitest@2.1.9(@types/node@20.19.34)(jsdom@25.0.1)(lightningcss@1.31.1))
-      '@workspace/api-client-ts':
-        specifier: workspace:*
-        version: link:../../packages/api-client-ts
       eslint:
         specifier: ^9
         version: 9.39.3(jiti@2.6.1)

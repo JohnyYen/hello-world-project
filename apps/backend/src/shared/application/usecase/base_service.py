@@ -1,6 +1,7 @@
 import logging
 from abc import ABC
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from uuid import UUID
 from sqlalchemy.orm import DeclarativeBase
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.shared.domain.exceptions import NotFoundException, DatabaseException
@@ -32,9 +33,9 @@ class BaseService(ABC, Generic[ModelType]):
         self.repository = repository
         self.model = model
 
-    def _validate_id(self, id: int) -> None:
+    def _validate_id(self, id: Union[int, UUID, str]) -> None:
         """
-        Valida que el ID sea un entero positivo.
+        Valida que el ID sea un entero positivo o un UUID válido.
 
         Args:
             id: ID a validar
@@ -42,9 +43,23 @@ class BaseService(ABC, Generic[ModelType]):
         Raises:
             ValueError: Si el ID no es válido
         """
-        if not isinstance(id, int) or id <= 0:
+        if isinstance(id, int):
+            if id <= 0:
+                raise ValueError(
+                    f"ID inválido: {id}. Debe ser un entero positivo mayor a 0."
+                )
+        elif isinstance(id, UUID):
+            pass  # UUID is valid by default
+        elif isinstance(id, str):
+            try:
+                UUID(id)  # Validate string can be converted to UUID
+            except ValueError:
+                raise ValueError(
+                    f"ID inválido: {id}. Debe ser un UUID válido."
+                )
+        else:
             raise ValueError(
-                f"ID inválido: {id}. Debe ser un entero positivo mayor a 0."
+                f"ID inválido: {id}. Debe ser un entero positivo o un UUID válido."
             )
 
     def _validate_pagination(self, skip: int, limit: int) -> None:
@@ -90,7 +105,7 @@ class BaseService(ABC, Generic[ModelType]):
             )
 
     async def get_by_id(
-        self, id: int, include_deleted: bool = False
+        self, id: Union[int, UUID, str], include_deleted: bool = False
     ) -> Optional[ModelType]:
         """
         Obtiene una entidad por su ID.
@@ -190,7 +205,7 @@ class BaseService(ABC, Generic[ModelType]):
             logger.error(f"Error al crear {self.model.__name__}: {str(e)}")
             raise DatabaseException(f"Error al crear {self.model.__name__}: {str(e)}")
 
-    async def update(self, id: int, data: Dict[str, Any]) -> Optional[ModelType]:
+    async def update(self, id: Union[int, UUID, str], data: Dict[str, Any]) -> Optional[ModelType]:
         """
         Actualiza una entidad existente.
 
@@ -233,7 +248,7 @@ class BaseService(ABC, Generic[ModelType]):
                 f"Error al actualizar {self.model.__name__}: {str(e)}"
             )
 
-    async def soft_delete(self, id: int) -> bool:
+    async def soft_delete(self, id: Union[int, UUID, str]) -> bool:
         """
         Realiza un soft delete de la entidad (marca como eliminada con timestamp).
 
@@ -270,7 +285,7 @@ class BaseService(ABC, Generic[ModelType]):
                 f"Error al eliminar {self.model.__name__}: {str(e)}"
             )
 
-    async def hard_delete(self, id: int) -> bool:
+    async def hard_delete(self, id: Union[int, UUID, str]) -> bool:
         """
         Elimina permanentemente la entidad de la base de datos.
 
@@ -313,7 +328,7 @@ class BaseService(ABC, Generic[ModelType]):
                 f"Error al eliminar permanentemente {self.model.__name__}: {str(e)}"
             )
 
-    async def restore(self, id: int) -> Optional[ModelType]:
+    async def restore(self, id: Union[int, UUID, str]) -> Optional[ModelType]:
         """
         Restaura una entidad previamente marcada como eliminada.
 
@@ -419,7 +434,7 @@ class BaseService(ABC, Generic[ModelType]):
             )
             raise DatabaseException(f"Error al contar {self.model.__name__}: {str(e)}")
 
-    async def exists(self, id: int, include_deleted: bool = False) -> bool:
+    async def exists(self, id: Union[int, UUID, str], include_deleted: bool = False) -> bool:
         """
         Verifica si existe una entidad con el ID especificado.
 

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from uuid import UUID
 from datetime import datetime
 
 from sqlalchemy import and_, or_, select, update, delete, func, exists
@@ -60,7 +61,7 @@ class BaseRepository(ABC, Generic[ModelType]):
             )
 
     async def get_by_id(
-        self, id: int, include_deleted: bool = False
+        self, id: Union[int, UUID, str], include_deleted: bool = False
     ) -> Optional[ModelType]:
         """
         Obtiene una entidad por su ID.
@@ -216,7 +217,7 @@ class BaseRepository(ABC, Generic[ModelType]):
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
-    async def update(self, id: int, obj_in: Dict[str, Any]) -> Optional[ModelType]:
+    async def update(self, id: Union[int, UUID, str], obj_in: Dict[str, Any]) -> Optional[ModelType]:
         """
         Actualiza una entidad existente.
 
@@ -264,7 +265,7 @@ class BaseRepository(ABC, Generic[ModelType]):
                 f"No se puede actualizar. Valores únicos duplicados para {self.model.__name__}"
             )
 
-    async def delete(self, id: int) -> bool:
+    async def delete(self, id: Union[int, UUID, str]) -> bool:
         """
         Realiza un soft delete de la entidad (marca como eliminada con timestamp).
 
@@ -282,7 +283,7 @@ class BaseRepository(ABC, Generic[ModelType]):
         await self.db.commit()
         return result.rowcount > 0
 
-    async def hard_delete(self, id: int) -> bool:
+    async def hard_delete(self, id: Union[int, UUID, str]) -> bool:
         """
         Elimina permanentemente la entidad de la base de datos.
 
@@ -296,7 +297,7 @@ class BaseRepository(ABC, Generic[ModelType]):
         await self.db.commit()
         return result.rowcount > 0
 
-    async def restore(self, id: int) -> Optional[ModelType]:
+    async def restore(self, id: Union[int, UUID, str]) -> Optional[ModelType]:
         """
         Restaura una entidad previamente marcada como eliminada.
 
@@ -358,7 +359,7 @@ class BaseRepository(ABC, Generic[ModelType]):
         result = await self.db.execute(query)
         return result.scalar()
 
-    async def exists(self, id: int, include_deleted: bool = False) -> bool:
+    async def exists(self, id: Union[int, UUID, str], include_deleted: bool = False) -> bool:
         """
         Verifica si existe una entidad con el ID especificado.
 
