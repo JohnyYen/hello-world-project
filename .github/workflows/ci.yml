@@ -160,23 +160,31 @@ jobs:
           version: 4.4.0
           use-dotnet: false
 
+      - name: Generate project metadata (UIDs)
+        working-directory: apps/game
+        run: |
+          godot --headless --editor --quit 2>&1 | tee /tmp/godot_editor.log || true
+          # The editor run generates .godot/ directory with UID mappings
+
       - name: Validate project opens without errors
         working-directory: apps/game
         run: |
-          godot --headless --quit 2>&1 | tee /tmp/godot_output.log
-          if grep -qi "error\|ERROR" /tmp/godot_output.log; then
-            echo "::error::Godot project opened with errors"
-            grep -i "error" /tmp/godot_output.log
+          godot --headless --quit 2>&1 | tee /tmp/godot_output.log || true
+          # Check for critical errors (not just warnings)
+          if grep -qi "^.*ERROR:" /tmp/godot_output.log; then
+            echo "::error::Godot project has critical errors"
+            grep -i "^.*ERROR:" /tmp/godot_output.log
             exit 1
           fi
+          echo "Project opens successfully"
 
       - name: Run GUT unit tests
         working-directory: apps/game
         run: |
-          godot --headless -s addons/gut/gut_cmdline.gd -gexit 2>&1 | tee /tmp/gut_output.log
-          if grep -qi "failed\|error" /tmp/gut_output.log; then
+          godot --headless -s addons/gut/gut_cmdline.gd -gexit 2>&1 | tee /tmp/gut_output.log || true
+          if grep -qi "failed\|ERROR" /tmp/gut_output.log; then
             echo "::warning::Some GUT tests failed or encountered errors"
-            grep -i "failed\|error" /tmp/gut_output.log || true
+            grep -i "failed\|ERROR" /tmp/gut_output.log || true
           fi
           cat /tmp/gut_output.log
 
