@@ -17,8 +17,6 @@ interface UseStudentReportsReturn {
   error: string | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 export function useStudentReports(studentId: string): UseStudentReportsReturn {
   const [kpis, setKpis] = useState<StudentReportKPIs | null>(null);
   const [progressOverTime, setProgressOverTime] = useState<ProgressOverTime[]>([]);
@@ -33,12 +31,14 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
       setError(null);
 
       try {
+        // Use local API route which proxies to backend with auth token
         const response = await fetch(
-          `${API_BASE_URL}/api/v1/statistic/students/${studentId}/progress`,
+          `/api/statistic/students/${studentId}/progress`,
           {
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include",
           }
         );
 

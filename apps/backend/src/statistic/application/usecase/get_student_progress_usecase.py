@@ -99,7 +99,10 @@ class GetStudentProgressUseCase:
     def _calculate_progress_over_time(
         self, progresses: list
     ) -> list[ProgressOverTimeItem]:
-        sorted_progress = sorted(progresses, key=lambda p: p.created_at)
+        sorted_progress = sorted(
+            [p for p in progresses if p.created_at is not None],
+            key=lambda p: p.created_at
+        )
         result = []
         for p in sorted_progress[:10]:
             result.append(
@@ -135,6 +138,9 @@ class GetStudentProgressUseCase:
         game_sessions: dict[str, int] = {}
 
         for p in progresses:
+            # Skip if segment_level_id is None
+            if p.segment_level_id is None:
+                continue
             game_key = str(p.segment_level_id)[:8]
             game_times[game_key] = game_times.get(game_key, 0) + (p.attempt_count * 5)
             game_sessions[game_key] = game_sessions.get(game_key, 0) + 1
