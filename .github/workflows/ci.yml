@@ -145,3 +145,82 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest --cov=src --cov-report=xml --cov-report=term || echo "::warning::Backend tests failed"
+
+  game-ci:
+    needs: detect-changes
+    if: >-
+      needs.detect-changes.outputs.game == 'true' ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Godot 4.4
+        uses: chickensoft-games/setup-godot@v1
+        with:
+          version: 4.4.0
+          use-dotnet: false
+
+      - name: Validate scene script references
+        run: python .github/scripts/validate_scene_refs.py apps/game/
+
+      - name: Validate GDScript syntax (no import check)
+        working-directory: apps/game
+        continue-on-error: true
+        id: godot_check
+        run: |
+          # Try to open the project - requires addons and assets to fully work
+          # This step will fail gracefully if addons aren't installed
+          godot --headless --quit 2>&1 | tee /tmp/godot_output.log || true
+
+          # Report what we found
+          SCRIPT_ERRORS=$(grep -ci "SCRIPT ERROR" /tmp/godot_output.log || echo "0")
+          echo "Script errors found: $SCRIPT_ERRORS"
+
+          # If addons were installed, check for script compilation
+          if [ -d "addons/godot-sqlite" ] && [ -d "addons/dialogue_manager" ]; then
+            if grep -qi "SCRIPT ERROR\|Compile Error" /tmp/godot_output.log; then
+              echo "::warning::Script compilation errors detected (may indicate real bugs)"
+              grep -i "SCRIPT ERROR\|Compile Error" /tmp/godot_output.log | head -20
+            fi
+          else
+            echo "::notice::Addons not installed, skipping script compilation check"
+            echo "Install addons locally to enable full validation:"
+            echo "  - addons/dialogue_manager (from nathanhoad/godot_dialogue_manager)"
+            echo "  - addons/godot-sqlite (from 2shady4u/godot-sqlite)"
+            echo "  - addons/gut (from bitwes/Gut)"
+          fi
+
+      - name: Run GUT unit tests
+        working-directory: apps/game
+        continue-on-error: true
+        run: |
+          if [ -d "addons/gut" ]; then
+            echo "Running GUT tests..."
+            godot --headless -s addons/gut/gut_cmdline.gd -gexit 2>&1 | tee /tmp/gut_output.log || true
+            cat /tmp/gut_output.log
+          else
+            echo "::notice::GUT addon not available, skipping tests"
+          fi
+
+      - name: Validate project structure
+        working-directory: apps/game
+        run: |
+          echo "=== Project Structure ==="
+          echo "Core files: $(find core/ -name '*.gd' 2>/dev/null | wc -l)"
+          echo "Content files: $(find content/ -name '*.gd' 2>/dev/null | wc -l)"
+          echo "Scene files: $(find scenes/ -name '*.tscn' 2>/dev/null | wc -l)"
+          echo "Dialogue files: $(find dialogue/ -name '*.dialogue' 2>/dev/null | wc -l)"
+          echo "Test files: $(find test/ -name '*.gd' 2>/dev/null | wc -l)"
+
+          # Verify core structure exists
+          for dir in core/models core/engine core/agent core/controllers core/database content/level_1_cafeteria; do
+            if [ -d "$dir" ]; then
+              echo "  ✓ $dir exists"
+            else
+              echo "  ✗ $dir MISSING"
+              exit 1
+            fi
+          done
+          echo "Project structure validation passed"
