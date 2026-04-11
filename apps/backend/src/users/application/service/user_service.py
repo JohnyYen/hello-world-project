@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 
 from src.users.infrastructure.user_repository import UserRepository
 from src.users.api.v1.schemas.user import UserCreate, UserUpdate
@@ -99,7 +100,7 @@ class UserService(BaseService):
     # Métodos de conveniencia para mantener compatibilidad con endpoints existentes
     # Estos delegan a los métodos genéricos de BaseService
 
-    async def get_user_by_id(self, user_id: int) -> Optional[User]:
+    async def get_user_by_id(self, user_id: UUID) -> Optional[User]:
         """
         Obtiene un usuario por su ID.
 
@@ -144,7 +145,7 @@ class UserService(BaseService):
             skip=skip, limit=limit, include_deleted=include_deleted
         )
 
-    async def get_user_by_id_with_role(self, user_id: int) -> Optional[User]:
+    async def get_user_by_id_with_role(self, user_id: UUID) -> Optional[User]:
         """
         Obtiene un usuario por ID con la relación role cargada de forma eager.
 
@@ -158,7 +159,7 @@ class UserService(BaseService):
         repo: UserRepository = self.repository  # type: ignore[assignment]
         return await repo.get_by_id_with_role(user_id)
 
-    async def update_user(self, user_id: int, user_data: UserUpdate) -> Optional[User]:
+    async def update_user(self, user_id: UUID, user_data: UserUpdate) -> Optional[User]:
         """
         Actualiza un usuario existente.
 
@@ -194,7 +195,7 @@ class UserService(BaseService):
         logger.info(f"[DEBUG] update result: {result.id if result else None}")
         return result
 
-    async def delete_user(self, user_id: int) -> bool:
+    async def delete_user(self, user_id: UUID) -> bool:
         """
         Elimina (soft delete) un usuario.
 

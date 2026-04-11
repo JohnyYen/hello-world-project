@@ -36,9 +36,14 @@ class UserLogin(BaseModel):
     password: str = Field(..., min_length=8, example="Password123!")
 
     @model_validator(mode="before")
+    @classmethod
     def validate_credentials(cls, values):
-        if not values.get("username") and not values.get("email"):
-            raise ValueError("Debe proporcionar username o email")
+        # Handle case where values might be bytes or dict
+        if isinstance(values, bytes):
+            return values  # Let Pydantic parse it normally
+        if isinstance(values, dict):
+            if not values.get("username") and not values.get("email"):
+                raise ValueError("Debe proporcionar username o email")
         return values
 
 
@@ -103,9 +108,14 @@ class UserChangePassword(BaseModel):
         return _validate_password_strength(v)
 
     @model_validator(mode="before")
+    @classmethod
     def validate_password_change(cls, values):
-        if values.get("current_password") == values.get("new_password"):
-            raise ValueError("La nueva contraseña debe ser diferente a la actual")
+        # Handle case where values might be bytes or dict
+        if isinstance(values, bytes):
+            return values  # Let Pydantic parse it normally
+        if isinstance(values, dict):
+            if values.get("current_password") == values.get("new_password"):
+                raise ValueError("La nueva contraseña debe ser diferente a la actual")
         return values
 
 

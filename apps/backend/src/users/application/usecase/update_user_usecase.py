@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 from fastapi import Depends, HTTPException, status
 
 from src.shared.application.providers.users_providers import get_user_service
@@ -26,7 +27,7 @@ class UpdateUserUseCase:
     ):
         self.user_service = user_service
 
-    async def execute(self, user_id: int, user_data: UserUpdate) -> SingleUserResponse:
+    async def execute(self, user_id: UUID, user_data: UserUpdate) -> SingleUserResponse:
         """
         Actualiza un usuario existente.
 

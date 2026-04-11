@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 from fastapi import Depends, HTTPException, status
 
 from src.shared.application.providers.users_providers import get_user_service
@@ -27,7 +28,7 @@ class GetUserUseCase:
     ):
         self.user_service = user_service
 
-    async def execute(self, user_id: int) -> SingleUserResponse:
+    async def execute(self, user_id: UUID) -> SingleUserResponse:
         """
         Obtiene un usuario por su ID.
 
