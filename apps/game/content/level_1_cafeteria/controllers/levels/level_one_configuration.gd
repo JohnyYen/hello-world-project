@@ -14,10 +14,7 @@ var description: String = ""
 ## CARGA DE DATOS DESDE LA BD
 ## ===============================================
 func load_data() -> LevelOneConfiguration:
-	var level_id = 1
-
-	var repo := LevelRepository.new()
-	var json_dict = repo.get_segment_json(level_id, self.segment_id)
+	var json_dict = _load_segment_data()
 
 	if typeof(json_dict) != TYPE_DICTIONARY:
 		push_error("Invalid JSON data for segment " + str(self.segment_id))
@@ -36,6 +33,23 @@ func load_data() -> LevelOneConfiguration:
 	return self
 
 
+## Load segment data from JSON config file (preferred) with DB fallback.
+func _load_segment_data() -> Dictionary:
+	# Try JSON file first
+	var json_config := LevelJSONConfig.new()
+	var segment := json_config.load_segment("cafeteria_level", self.segment_id)
+
+	if not segment.is_empty():
+		print("DEBUG [LevelOneConfiguration]: Loaded segment from JSON file, segment_id=", self.segment_id)
+		return segment
+
+	# Fallback to database
+	print("DEBUG [LevelOneConfiguration]: JSON not found, falling back to DB, segment_id=", self.segment_id)
+	var level_id = 1
+	var repo := LevelRepository.new()
+	return repo.get_segment_json(level_id, self.segment_id)
+
+
 ## ===============================================
 ## GETTERS ESPECÍFICOS DEL NIVEL 1
 ## ===============================================
@@ -43,8 +57,7 @@ func load_data() -> LevelOneConfiguration:
 ### Obtener la cola de estudiantes
 func get_student_queue() -> Array:
 	if json_data.has("initial_state") and typeof(json_data["initial_state"]) == TYPE_DICTIONARY:
-		print(json_data["initial_state"].student_queue)
-		return json_data["initial_state"].student_queue
+		return json_data["initial_state"].get("student_queue", [])
 	return []
 
 
@@ -62,10 +75,10 @@ func get_display_text() -> String:
 
 
 ### Obtener el resultado esperado para resolver el segmento
-func get_expected_result() -> Dictionary:
-	if json_data.has("expected_outputs") and typeof(json_data["expected_outputs"]) == TYPE_DICTIONARY:
+func get_expected_result() -> Array:
+	if json_data.has("expected_outputs") and typeof(json_data["expected_outputs"]) == TYPE_ARRAY:
 		return json_data["expected_outputs"]
-	return {}
+	return []
 
 
 ### Obtener cantidad de clientes en la cola

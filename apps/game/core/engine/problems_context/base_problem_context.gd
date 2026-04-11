@@ -1,3 +1,6 @@
+## Abstract base class for all problem contexts.
+## Manages execution state, variables, and solution validation.
+## Subclasses MUST override is_solution_correct() for domain-specific validation.
 class_name BaseProblemContext
 
 # --- Estado de la Ejecución del Programa ---
@@ -8,18 +11,22 @@ var is_running: bool = true      # Indica si el programa sigue ejecutándose
 
 # --- Datos del Problema del Nivel Actual ---
 # Estos deben ser definidos y gestionados por las subclases específicas del problema.
-# Ejemplos genéricos que pueden ser utilizados:
 var inputs: Array = []          # Datos de entrada para el nivel
 var outputs: Array = []         # Resultados producidos por el programa
 
 # --- Salida esperada para verificar la solución ---
-# Debe ser definida por la subclase.
 var expected_outputs: Array = []
+
+# --- Last solution data (for metrics and validation) ---
+var last_solution: SolutionData = null
+var last_execution_context: ExecutionContext = null
+
 
 func _init():
 	pass
 
-# --- Funciones para que los bloques interactúen con el contexto ---
+
+# --- Functions for blocks to interact with the context ---
 func advance_pc():
 	program_counter += 1
 
@@ -38,13 +45,34 @@ func push_call(start_index: int, end_index: int):
 func pop_call():
 	return call_stack.pop_back() if !call_stack.is_empty() else null
 
-# --- Función para verificar si el objetivo del nivel se ha cumplido ---
-# Esta función debe ser sobrescrita por las subclases para implementar
-# la lógica específica de verificación del nivel.
+
+# --- SolutionData integration ---
+## Store the last submitted solution for metrics collection.
+func set_solution(solution: SolutionData) -> void:
+	last_solution = solution
+
+
+## Store the last execution context for metrics and validation.
+func set_execution_context(ctx: ExecutionContext) -> void:
+	last_execution_context = ctx
+
+
+## Apply solution data to the context (for backward compatibility).
+## Converts SolutionData blocks into internal representation.
+func apply_solution(solution: SolutionData) -> void:
+	last_solution = solution
+	if solution.has("blocks"):
+		pass  # Blocks are executed by the executor, not stored here
+
+
+# --- Validation ---
+## Check if the level objective has been met.
+## MUST be overridden by subclasses for domain-specific validation.
 func is_solution_correct() -> bool:
-	# Implementación por defecto, puede ser sobrescrita.
+	# Default implementation: compare outputs to expected
 	return outputs == expected_outputs
 
-# --- Función para registrar logs de ejecución ---
+
+# --- Logging ---
 func log(message: String):
 	print("[LOG]: ", message)
