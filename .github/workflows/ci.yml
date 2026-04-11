@@ -148,7 +148,9 @@ jobs:
 
   game-ci:
     needs: detect-changes
-    if: needs.detect-changes.outputs.game == 'true'
+    if: >-
+      needs.detect-changes.outputs.game == 'true' ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
