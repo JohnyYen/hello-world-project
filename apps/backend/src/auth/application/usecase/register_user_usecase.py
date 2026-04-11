@@ -7,12 +7,14 @@ from src.shared.infrastructure.session import get_db
 from src.shared.application.providers.users_providers import (
     get_user_service,
     get_teacher_settings_service,
+    get_professor_service,
 )
 from src.auth.infrastructure.security import create_access_token
 from src.users.application.service.user_service import UserService
 from src.users.application.service.teacher_settings_service import (
     TeacherSettingsService,
 )
+from src.users.application.service.professor_service import ProfessorService
 from src.users.infrastructure.role_repository import RoleRepository
 from src.users.infrastructure.professor_repository import ProfessorRepository
 from src.users.domain.professor import Professor
@@ -28,6 +30,7 @@ class RegisterUserUseCase:
     - Validar unicidad de email y username (delegado a UserService)
     - Asignar automáticamente el rol de 'professor' al nuevo usuario
     - Crear usuario con contraseña hasheada (delegado a UserService)
+    - Crear registro de Professor automáticamente con valores por defecto
     - Generar token JWT de acceso para el usuario recién creado
     - Crear TeacherSettings automáticamente si el rol es professor
     - Devolver respuesta de login con token y usuario
@@ -44,10 +47,12 @@ class RegisterUserUseCase:
         teacher_settings_service: TeacherSettingsService = Depends(
             get_teacher_settings_service
         ),
+        professor_service: ProfessorService = Depends(get_professor_service),
     ):
         self.db = db
         self.user_service = user_service
         self.teacher_settings_service = teacher_settings_service
+        self.professor_service = professor_service
         self.role_repository = RoleRepository(db)
         self.professor_repository = ProfessorRepository(db)
 
@@ -75,10 +80,13 @@ class RegisterUserUseCase:
             role_id=professor_role_id,
         )
 
-        # 3. Crear Professor profile automáticamente para profesores
-        professor = Professor(user_id=user.id, department="General")
-        self.db.add(professor)
-        await self.db.flush()  # Get the professor ID without committing
+        # 3. Crear registro de Professor automáticamente con valores por defecto
+        professor_data = {
+            "user_id": user.id,
+            "department": "General",
+            "contact_phone": None,
+        }
+        await self.professor_service.create(professor_data)
 
         # 4. Crear TeacherSettings automáticamente para profesores
         await self.teacher_settings_service.create_for_user(user.id)
