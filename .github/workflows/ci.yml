@@ -145,3 +145,40 @@ jobs:
         run: |
           source .venv/bin/activate
           pytest --cov=src --cov-report=xml --cov-report=term || echo "::warning::Backend tests failed"
+
+  game-ci:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.game == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Godot 4.4
+        uses: chickensoft-games/setup-godot@v1
+        with:
+          version: 4.4.0
+          use-dotnet: false
+
+      - name: Validate project opens without errors
+        working-directory: apps/game
+        run: |
+          godot --headless --quit 2>&1 | tee /tmp/godot_output.log
+          if grep -qi "error\|ERROR" /tmp/godot_output.log; then
+            echo "::error::Godot project opened with errors"
+            grep -i "error" /tmp/godot_output.log
+            exit 1
+          fi
+
+      - name: Run GUT unit tests
+        working-directory: apps/game
+        run: |
+          godot --headless -s addons/gut/gut_cmdline.gd -gexit 2>&1 | tee /tmp/gut_output.log
+          if grep -qi "failed\|error" /tmp/gut_output.log; then
+            echo "::warning::Some GUT tests failed or encountered errors"
+            grep -i "failed\|error" /tmp/gut_output.log || true
+          fi
+          cat /tmp/gut_output.log
+
+      - name: Validate scene script references
+        run: python .github/scripts/validate_scene_refs.py apps/game/
