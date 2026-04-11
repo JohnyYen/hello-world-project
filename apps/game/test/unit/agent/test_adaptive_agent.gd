@@ -3,7 +3,7 @@
 
 extends "res://addons/gut/test.gd"
 
-var AdaptiveAgent = load("res://scripts/agent/adaptive_agent.gd")
+var AdaptiveAgent = load("res://core/agent/adaptive_agent.gd")
 var adaptive_agent
 
 func setup():

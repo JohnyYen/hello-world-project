@@ -2,8 +2,8 @@
 extends Node
 
 # Import the class to test
-var FeedbackController = load("res://scripts/controllers/feedback_controller.gd")
-var FeedbackConfig = load("res://config/feedback_config.gd")
+var FeedbackController = load("res://core/controllers/feedback_controller.gd")
+var FeedbackConfig = load("res://core/config/feedback_config.gd")
 
 var feedback_controller
 

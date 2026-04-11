@@ -17,16 +17,16 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Env="*res://env.gd"
+Env="*res://core/env.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
-EventBus="*res://scripts/eventBus.gd"
-_FeedbackController="*res://scripts/controllers/feedback_controller.gd"
-_GameConfig="*res://config/game_config.gd"
-_GameState="*res://scripts/globals/game_state.gd"
-_Util="*res://scripts/util.gd"
-_SaveController="*res://scripts/controllers/save_controller.gd"
-_DialogueUiController="*res://scripts/controllers/dialogue_ui_controller.gd"
-_GameController="*res://scripts/controllers/game_controller.gd"
+EventBus="*res://core/utils/eventBus.gd"
+_FeedbackController="*res://core/controllers/feedback_controller.gd"
+_GameConfig="*res://core/config/game_config.gd"
+_GameState="*res://core/globals/game_state.gd"
+_Util="*res://core/utils/util.gd"
+_SaveController="*res://core/controllers/save_controller.gd"
+_DialogueUiController="*res://core/controllers/dialogue_ui_controller.gd"
+_GameController="*res://core/controllers/game_controller.gd"
 
 [dialogue_manager]
 

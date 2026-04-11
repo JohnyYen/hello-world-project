@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://bqkbgslok33v8"]
 
 [ext_resource type="PackedScene" uid="uid://bm5lwl4uv5x07" path="res://scenes/pages/levels/template_level.tscn" id="1_dwxpr"]
-[ext_resource type="Script" uid="uid://cvtq65v6bmc6a" path="res://scenes/pages/tutorial/tutorial_gameplay.gd" id="2_hapjq"]
+[ext_resource type="Script" uid="uid://cvtq65v6bmc6a" path="res://content/level_1_cafeteria/scenes/pages/tutorial/tutorial_gameplay.gd" id="2_hapjq"]
 [ext_resource type="Shader" uid="uid://brlv6dtw2gl6d" path="res://scenes/pages/tutorial/tutorial_gameplay.gdshader" id="3_q51ym"]
 [ext_resource type="Texture2D" uid="uid://bp6jgknhdhs8q" path="res://assets/shared/ui/arrow_mark.png" id="4_3m7y3"]
 [ext_resource type="Script" uid="uid://bel7jewo77tjh" path="res://scenes/pages/tutorial/arrow.gd" id="5_016on"]

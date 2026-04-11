@@ -4,7 +4,7 @@
 
 extends "res://addons/gut/test.gd"
 
-var HttpClient = load("res://scripts/http/http_client.gd")
+var HttpClient = load("res://core/http/http_client.gd")
 var http_client : HttpClient
 
 func setup():

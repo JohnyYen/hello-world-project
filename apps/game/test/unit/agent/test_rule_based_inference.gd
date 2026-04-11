@@ -3,7 +3,7 @@
 
 extends "res://addons/gut/test.gd"
 
-var RuleBasedInference = load("res://scripts/agent/inference/rule_inference.gd")
+var RuleBasedInference = load("res://core/agent/inference/rule_inference.gd")
 var inference_engine
 
 func setup():

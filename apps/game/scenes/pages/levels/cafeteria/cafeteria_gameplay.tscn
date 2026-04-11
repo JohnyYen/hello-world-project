@@ -1,7 +1,7 @@
 [gd_scene load_steps=53 format=3 uid="uid://6gr1ei4kgnc8"]
 
 [ext_resource type="PackedScene" uid="uid://bm5lwl4uv5x07" path="res://scenes/pages/levels/template_level.tscn" id="1_lxa08"]
-[ext_resource type="Script" uid="uid://g33a1ssjrn0p" path="res://scenes/pages/levels/cafeteria/cafeteria_gameplay.gd" id="2_krp0b"]
+[ext_resource type="Script" uid="uid://g33a1ssjrn0p" path="res://content/level_1_cafeteria/scenes/pages/levels/cafeteria/cafeteria_gameplay.gd" id="2_krp0b"]
 [ext_resource type="Texture2D" uid="uid://vux5r7ln4f8m" path="res://assets/anime/sprites/level_1/floor.png" id="3_3busp"]
 [ext_resource type="Texture2D" uid="uid://cdawt8ff1b0k2" path="res://assets/anime/sprites/level_1/walls.png" id="3_cl8ni"]
 [ext_resource type="Texture2D" uid="uid://bhhbhby8seq3x" path="res://assets/anime/sprites/level_1/Cash.png" id="3_krp0b"]

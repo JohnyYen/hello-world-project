@@ -3,7 +3,7 @@
 
 extends "res://addons/gut/test.gd"
 
-var PerformanceAnalyzer = load("res://scripts/agent/analizer/performance_analizer.gd")
+var PerformanceAnalyzer = load("res://core/agent/analizer/performance_analizer.gd")
 var performance_analyzer
 
 func setup():

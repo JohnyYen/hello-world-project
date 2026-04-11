@@ -2,7 +2,7 @@
 extends Node
 
 # Import the classes to test
-var FeedbackConfig = load("res://config/feedback_config.gd")
+var FeedbackConfig = load("res://core/config/feedback_config.gd")
 var FeedbackBalloon = load("res://scenes/components/feedback/feedback_ballon.gd")
 
 var feedback_controller
@@ -18,7 +18,7 @@ func setup():
 	feedback_controller = get_node("/root/_FeedbackController")
 	if feedback_controller == null:
 		# If testing in isolation, create an instance
-		feedback_controller = load("res://scripts/controllers/feedback_controller.gd").new()
+		feedback_controller = load("res://core/controllers/feedback_controller.gd").new()
 		feedback_controller.name = "_FeedbackController"
 		# Add it to the scene tree temporarily for testing
 		get_tree().root.add_child(feedback_controller)
