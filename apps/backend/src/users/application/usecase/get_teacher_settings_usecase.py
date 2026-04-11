@@ -61,6 +61,18 @@ class GetTeacherSettingsUseCase:
                 detail="El usuario no tiene permisos de profesor",
             )
 
+        # Validar que el usuario tenga un registro de Professor
+        from src.users.infrastructure.professor_repository import ProfessorRepository
+
+        professor_repo = ProfessorRepository(self.db)
+        professor = await professor_repo.get_by_user_id(self.current_user.id)
+
+        if not professor:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No existe perfil de profesor para este usuario. Contacte al administrador.",
+            )
+
         # Buscar configuraciones de TeacherSettings
         settings = await self.settings_service.get_by_user_id(self.current_user.id)
 
