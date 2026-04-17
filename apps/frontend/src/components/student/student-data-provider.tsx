@@ -34,18 +34,18 @@ export async function getStudentById(id: string): Promise<Student | null> {
     const response = await apiGetStudent(id, token);
     
     // El backend puede devolver directamente el objeto o envuelto en ApiResponse
-    const studentData = (response as { data?: unknown })?.data || (response as unknown);
+    const studentData = (response as { data?: Record<string, unknown> })?.data || (response as Record<string, unknown>);
 
-    if (!studentData || !(studentData as { id?: unknown }).id) return null;
+    if (!studentData || !studentData.id) return null;
 
     return {
-      id: (studentData as { id: unknown }).id,
-      name: `${(studentData as { name: unknown }).name} ${(studentData as { lastname?: unknown }).lastname || ''}`.trim(),
-      email: (studentData as { email: unknown }).email,
+      id: String(studentData.id),
+      name: `${studentData.name || ''} ${studentData.lastname || ''}`.trim(),
+      email: String(studentData.email || ''),
       maxLevel: 0,
-      status: (studentData as { is_active?: unknown }).is_active ? 'active' : 'inactive',
-      registrationDate: (studentData as { created_at?: unknown }).created_at ?? '',
-      lastActivity: (studentData as { updated_at?: unknown }).updated_at ?? '',
+      status: studentData.is_active ? 'active' : 'inactive',
+      registrationDate: String(studentData.created_at || ''),
+      lastActivity: String(studentData.updated_at || ''),
       completedLessons: 0,
       totalLessons: 0,
       progress: 0,
