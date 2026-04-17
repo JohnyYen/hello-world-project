@@ -1,4 +1,5 @@
 from typing import Optional
+from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -28,12 +29,12 @@ class GetStudentDetailUseCase:
         self.db = db
         self.current_user = current_user
 
-    async def execute(self, student_id: int) -> StudentResponse:
+    async def execute(self, student_id: UUID) -> StudentResponse:
         """
         Obtiene el detalle de un estudiante.
 
         Args:
-            student_id: ID del estudiante a buscar
+            student_id: UUID del estudiante a buscar
 
         Returns:
             StudentResponse: Datos del estudiante
@@ -57,7 +58,7 @@ class GetStudentDetailUseCase:
 
         # Buscar usuario
         user_repo = UserRepository(self.db)
-        student = await user_repo.get_by_id(student_id)
+        student = await user_repo.get_by_id_with_role(student_id)
 
         if not student:
             raise HTTPException(
@@ -72,6 +73,14 @@ class GetStudentDetailUseCase:
                 detail="El usuario no es un estudiante",
             )
 
+        # Obtener el primer curso del estudiante (si existe)
+        course_name = None
+        if hasattr(student, 'student') and student.student:
+            if student.student.course_enrollments:
+                enrollment = student.student.course_enrollments[0]
+                if hasattr(enrollment, 'course') and enrollment.course:
+                    course_name = enrollment.course.name
+
         # Construir respuesta
         return StudentResponse(
             id=student.id,
@@ -80,6 +89,7 @@ class GetStudentDetailUseCase:
             name=student.name,
             lastname=student.lastname,
             is_active=student.is_active,
+            course=course_name,
             created_at=student.created_at,
             updated_at=student.updated_at,
         )

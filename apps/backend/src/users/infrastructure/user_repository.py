@@ -1,5 +1,6 @@
 # app/db/repositories/user_repository.py
 from typing import Optional, List, Dict, Any
+from uuid import UUID
 from datetime import datetime
 from sqlalchemy import select, update, and_, or_
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -249,19 +250,21 @@ class UserRepository(BaseRepository[User]):
         result = await self.db.execute(query)
         return list(result.scalars().all())
 
-    async def get_by_id_with_role(self, user_id: int) -> Optional[User]:
+    async def get_by_id_with_role(self, user_id: UUID) -> Optional[User]:
         """Obtiene un usuario por ID con todas las relaciones cargadas de forma eager.
 
         Args:
-            user_id: ID del usuario a buscar
+            user_id: UUID del usuario a buscar
 
         Returns:
             Optional[User]: Usuario con todas las relaciones ya cargadas, o None si no existe
         """
+        from uuid import UUID as UUIDType
         from src.users.domain.student import Student
         from src.users.domain.lms_credential import LMSCredential
         from src.users.domain.professor import Professor
         from src.users.domain.teacher_settings import TeacherSettings
+        from src.course.domain.course_enrollment import CourseEnrollment
 
         query = (
             select(User)
@@ -273,6 +276,9 @@ class UserRepository(BaseRepository[User]):
                 # Cargar student y sus relaciones anidadas
                 selectinload(User.student).selectinload(Student.game_instances),
                 selectinload(User.student).selectinload(Student.feedbacks),
+                selectinload(User.student).selectinload(
+                    Student.course_enrollments
+                ).selectinload(CourseEnrollment.course),
                 # Cargar professor
                 selectinload(User.professor),
                 # Cargar teacher_settings
@@ -288,6 +294,7 @@ class UserRepository(BaseRepository[User]):
         skip: int = 0,
         limit: int = 100,
         search: str = None,
+        course_id: UUID = None,
     ) -> List[User]:
         """Obtiene usuarios con rol de student con paginación y búsqueda.
 
@@ -295,12 +302,16 @@ class UserRepository(BaseRepository[User]):
             skip: Número de registros a saltar
             limit: Máximo número de registros
             search: Búsqueda por nombre, email o username
+            course_id: Filtrar por curso específico
 
         Returns:
             List[User]: Lista de usuarios con rol de student
         """
+        from uuid import UUID as UUIDType
         from src.users.domain.student import Student
+        from src.course.domain.course_enrollment import CourseEnrollment
         from src.users.infrastructure.role_repository import RoleRepository
+        from sqlalchemy.orm import selectinload
 
         # Obtener el rol de student
         role_repo = RoleRepository(self.db)
@@ -308,10 +319,27 @@ class UserRepository(BaseRepository[User]):
         # Usar UUID directamente, no convertir a int
         student_role_id = student_role.id
 
-        # Construir query base
-        query = select(User).where(
-            User.role_id == student_role_id, User.deleted_at.is_(None)
+        # Construir query base con eager loading
+        query = (
+            select(User)
+            .options(
+                selectinload(User.student).selectinload(
+                    Student.course_enrollments
+                ).selectinload(CourseEnrollment.course)
+            )
+            .where(
+                User.role_id == student_role_id, User.deleted_at.is_(None)
+            )
         )
+
+        # Filtrar por curso si se proporciona
+        if course_id:
+            enrolled_student_ids = (
+                select(Student.user_id)
+                .join(CourseEnrollment, CourseEnrollment.student_id == Student.id)
+                .where(CourseEnrollment.course_id == course_id)
+            )
+            query = query.where(User.id.in_(enrolled_student_ids))
 
         # Agregar búsqueda si se proporciona
         if search:

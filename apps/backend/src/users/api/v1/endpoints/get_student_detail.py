@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends
 
 from src.users.application.usecase.get_student_detail_usecase import (
@@ -11,7 +12,7 @@ router = APIRouter(prefix="/students")
 
 @router.get("/{id}", response_model=StudentResponse)
 async def get_student(
-    id: int,
+    id: UUID,
     get_student_uc: GetStudentDetailUseCase = Depends(),
 ):
     """
