@@ -14,7 +14,7 @@ services:
     repo: https://github.com/JohnyYen/hello-world-project
     autoDeploy: true
     buildCommand: pip install -r apps/backend/requirements.txt
-    startCommand: cd apps/backend && uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    startCommand: cd apps/backend && uvicorn main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
