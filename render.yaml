@@ -1,0 +1,52 @@
+# Render Blueprint - Hello World Project
+# Deploy frontend + backend con buildpacks (BD en Supabase)
+
+services:
+  # ==============================
+  # Backend - FastAPI
+  # ==============================
+  - type: web
+    name: hello-world-backend
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    repo: https://github.com/JohnyYen/hello-world-project
+    autoDeploy: true
+    buildCommand: pip install -r apps/backend/requirements.txt
+    startCommand: cd apps/backend && uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: ALGORITHM
+        value: "HS256"
+      - key: ENVIRONMENT
+        value: "production"
+      - key: CORS_ORIGINS
+        value: "https://hello-world-frontend.onrender.com"
+
+  # ==============================
+  # Frontend - Next.js
+  # ==============================
+  - type: web
+    name: hello-world-frontend
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    repo: https://github.com/JohnyYen/hello-world-project
+    autoDeploy: true
+    buildCommand: cd apps/frontend && npm install && npm run build
+    startCommand: cd apps/frontend && npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NEXT_PUBLIC_API_URL
+        value: "https://hello-world-backend.onrender.com"
