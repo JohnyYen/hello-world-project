@@ -52,7 +52,7 @@ export function CourseMultiSelector({
 
   // Toggle all courses in a year
   const toggleYear = (year: string) => {
-    const yearCourses = coursesByYear[year].map(c => c.id);
+    const yearCourses = coursesByYear[year].map(c => String(c.id));
     const allSelected = yearCourses.every(courseId => selectedCourses.includes(courseId));
     
     if (allSelected) {
@@ -71,7 +71,7 @@ export function CourseMultiSelector({
     
     for (const year of schoolYears) {
       const yearCourses = coursesByYear[year];
-      const yearCourseIds = yearCourses.map(c => c.id);
+      const yearCourseIds = yearCourses.map(c => String(c.id));
       const selectedInYear = yearCourseIds.filter(id => selectedCourses.includes(id));
       
       if (selectedInYear.length === yearCourseIds.length) {
@@ -80,7 +80,7 @@ export function CourseMultiSelector({
       } else if (selectedInYear.length > 0) {
         // Some courses in this year are selected
         result.push(...selectedInYear.map(courseId => {
-          const course = courses.find(c => c.id === courseId);
+          const course = courses.find(c => c.id === courseId || String(c.id) === courseId);
           return course ? `${course.period} - ${course.schoolYear}` : '';
         }).filter(name => name !== ''));
       }
@@ -91,13 +91,13 @@ export function CourseMultiSelector({
 
   // Check if a year is fully selected
   const isYearFullySelected = (year: string) => {
-    const yearCourses = coursesByYear[year].map(c => c.id);
+    const yearCourses = coursesByYear[year].map(c => String(c.id));
     return yearCourses.every(courseId => selectedCourses.includes(courseId));
   };
 
   // Check if a year has partial selection
   const isYearPartiallySelected = (year: string) => {
-    const yearCourses = coursesByYear[year].map(c => c.id);
+    const yearCourses = coursesByYear[year].map(c => String(c.id));
     const selectedInYear = yearCourses.filter(id => selectedCourses.includes(id));
     return selectedInYear.length > 0 && selectedInYear.length < yearCourses.length;
   };
@@ -232,7 +232,7 @@ export function CourseMultiSelector({
           <div className="flex flex-wrap gap-2 mt-3">
             {schoolYears.map((year) => {
               const yearCourses = coursesByYear[year];
-              const yearCourseIds = yearCourses.map(c => c.id);
+              const yearCourseIds = yearCourses.map(c => String(c.id));
               const selectedInYear = yearCourseIds.filter(id => selectedCourses.includes(id));
               
               if (selectedInYear.length === yearCourseIds.length) {

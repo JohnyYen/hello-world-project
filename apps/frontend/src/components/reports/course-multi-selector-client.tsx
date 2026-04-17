@@ -15,7 +15,7 @@ export default function CourseMultiSelectorClient() {
       const data = await getCourses();
       setCourses(data);
       if (data.length >= 2) {
-        setSelectedCourses([data[0].id, data[1].id]);
+        setSelectedCourses([String(data[0].id), String(data[1].id)]);
       }
       setLoading(false);
     }
