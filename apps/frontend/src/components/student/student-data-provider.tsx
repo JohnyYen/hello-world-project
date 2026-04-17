@@ -33,20 +33,19 @@ export async function getStudentById(id: string): Promise<Student | null> {
 
     const response = await apiGetStudent(id, token);
     
-    // El backend devuelve directamente el objeto StudentResponse, no envuelto en ApiResponse
-    // response puede ser el objeto directo o estar dentro de data
-    const studentData = response.data || response;
-    
-    if (!studentData || !studentData.id) return null;
+    // El backend puede devolver directamente el objeto o envuelto en ApiResponse
+    const studentData = (response as { data?: unknown })?.data || (response as unknown);
+
+    if (!studentData || !(studentData as { id?: unknown }).id) return null;
 
     return {
-      id: studentData.id,
-      name: `${studentData.name} ${studentData.lastname || ''}`.trim(),
-      email: studentData.email,
+      id: (studentData as { id: unknown }).id,
+      name: `${(studentData as { name: unknown }).name} ${(studentData as { lastname?: unknown }).lastname || ''}`.trim(),
+      email: (studentData as { email: unknown }).email,
       maxLevel: 0,
-      status: studentData.is_active ? 'active' : 'inactive',
-      registrationDate: studentData.created_at ?? '',
-      lastActivity: studentData.updated_at ?? '',
+      status: (studentData as { is_active?: unknown }).is_active ? 'active' : 'inactive',
+      registrationDate: (studentData as { created_at?: unknown }).created_at ?? '',
+      lastActivity: (studentData as { updated_at?: unknown }).updated_at ?? '',
       completedLessons: 0,
       totalLessons: 0,
       progress: 0,
