@@ -169,8 +169,7 @@ export default function ReportsPage() {
 
       try {
         const metricsResponse = await courseReportsService.getCourseMetrics(
-          selectedCourses,
-          { signal: controller.signal }
+          selectedCourses
         );
         if (cancelled) return;
 
@@ -185,9 +184,7 @@ export default function ReportsPage() {
         setSelectedMetrics(sortedMetrics);
 
         const progressPromises = selectedCourses.map(async (courseId) => {
-          const response = await courseReportsService.getProgressOverTime(courseId, {
-            signal: controller.signal,
-          });
+          const response = await courseReportsService.getProgressOverTime(courseId);
           return { courseId, data: response.data || [] };
         });
 
