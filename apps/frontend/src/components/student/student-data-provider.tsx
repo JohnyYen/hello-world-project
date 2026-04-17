@@ -34,7 +34,8 @@ export async function getStudentById(id: string): Promise<Student | null> {
     const response = await apiGetStudent(id, token);
     
     // El backend puede devolver directamente el objeto o envuelto en ApiResponse
-    const studentData = (response as { data?: Record<string, unknown> })?.data || (response as Record<string, unknown>);
+    // Convertir a unknown primero para evitar ошибки de tipo
+    const studentData = ((response as unknown) as { data?: Record<string, unknown> })?.data || ((response as unknown) as Record<string, unknown>);
 
     if (!studentData || !studentData.id) return null;
 
