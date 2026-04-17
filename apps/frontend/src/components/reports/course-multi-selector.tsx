@@ -191,12 +191,12 @@ export function CourseMultiSelector({
                     {isExpanded && (
                       <div className="bg-slate-900/30">
                         {yearCourses.map((course) => {
-                          const isSelected = selectedCourses.includes(course.id);
+                          const isSelected = selectedCourses.includes(String(course.id));
                           
                           return (
                             <button
                               key={course.id}
-                              onClick={() => toggleCourse(course.id)}
+                              onClick={() => toggleCourse(String(course.id))}
                               className={cn(
                                 "w-full flex items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-slate-700/50",
                                 isSelected && "bg-slate-700/70"
@@ -254,7 +254,7 @@ export function CourseMultiSelector({
               } else if (selectedInYear.length > 0) {
                 // Show individual pills for selected courses in the year
                 return selectedInYear.map(courseId => {
-                  const course = courses.find(c => c.id === courseId);
+                  const course = courses.find(c => String(c.id) === courseId);
                   if (!course) return null;
                   
                   return (
