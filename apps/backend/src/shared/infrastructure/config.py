@@ -32,6 +32,15 @@ class Settings(BaseSettings):
         super().__init__(**kwargs)
         # Convert database URL to asyncpg dialect
         self.DATABASE_URL = _convert_to_async_db_url(self.DATABASE_URL)
+        # Log the database URL (masked) for debugging
+        if self.DATABASE_URL:
+            masked_url = self.DATABASE_URL.replace(
+                self.DATABASE_URL.split("@")[0].split("://")[1]
+                if "@" in self.DATABASE_URL
+                else "",
+                "***",
+            )
+            print(f"[CONFIG] DATABASE_URL: {masked_url}")
 
 
 settings = Settings()
