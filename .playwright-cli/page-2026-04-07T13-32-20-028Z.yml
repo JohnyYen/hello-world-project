@@ -1,0 +1,30 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e356] [cursor=pointer]:
+    - img [ref=e357]
+  - alert [ref=e360]
+  - generic [ref=e362]:
+    - link "Plataforma Educativa" [ref=e363] [cursor=pointer]:
+      - /url: /
+      - img [ref=e365]
+      - text: Plataforma Educativa
+    - generic [ref=e368]:
+      - generic [ref=e369]:
+        - generic [ref=e370]: Bienvenido de vuelta
+        - generic [ref=e371]: Inicia sesión con tus credenciales
+      - generic [ref=e374]:
+        - group [ref=e375]:
+          - generic [ref=e376]: Email
+          - textbox "Email" [ref=e377]:
+            - /placeholder: m@example.com
+        - group [ref=e378]:
+          - generic [ref=e379]:
+            - generic [ref=e380]: Password
+            - link "Forgot your password?" [ref=e381] [cursor=pointer]:
+              - /url: "#"
+          - textbox "Password" [ref=e382]
+        - group [ref=e383]:
+          - button "Iniciar Sesión" [ref=e384]
+          - paragraph [ref=e385]:
+            - text: Don't have an account?
+            - link "Sign up" [ref=e386] [cursor=pointer]:
+              - /url: /signup

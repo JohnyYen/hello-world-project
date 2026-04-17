@@ -1,0 +1,203 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e8]:
+    - generic [ref=e11]:
+      - list [ref=e13]:
+        - listitem [ref=e14]:
+          - link "Mi Plataforma" [ref=e15] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e16]
+            - generic [ref=e19]: Mi Plataforma
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]: Estadísticas
+          - generic [ref=e23]:
+            - list [ref=e24]:
+              - listitem [ref=e25]:
+                - button "Quick Create" [ref=e26]:
+                  - img [ref=e27]
+                  - generic [ref=e29]: Quick Create
+                - button "Inbox" [ref=e30]:
+                  - img
+                  - generic [ref=e31]: Inbox
+            - list [ref=e32]:
+              - listitem [ref=e33]:
+                - button "Overview" [ref=e34]:
+                  - img [ref=e35]
+                  - link "Overview" [ref=e39] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e40]:
+                - button "Estudiantes" [ref=e41]:
+                  - img [ref=e42]
+                  - link "Estudiantes" [ref=e45] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e46]:
+                - button "Métricas" [ref=e47]:
+                  - img [ref=e48]
+                  - link "Métricas" [ref=e52] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e53]:
+                - button "Reportes" [ref=e54]:
+                  - img [ref=e55]
+                  - link "Reportes" [ref=e57] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e58]:
+          - generic [ref=e59]: Gestión de Juegos y Niveles
+          - list [ref=e60]:
+            - listitem [ref=e61]:
+              - link "Niveles" [ref=e62] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e63]
+                - generic [ref=e66]: Niveles
+            - listitem [ref=e67]:
+              - link "Crear Nivel" [ref=e68] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e69]
+                - generic [ref=e70]: Crear Nivel
+        - list [ref=e73]:
+          - listitem [ref=e74]:
+            - link "Settings" [ref=e75] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e76]
+              - generic [ref=e79]: Settings
+          - listitem [ref=e80]:
+            - link "Ayuda" [ref=e81] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e82]
+              - generic [ref=e85]: Ayuda
+    - main [ref=e86]:
+      - generic [ref=e88]:
+        - button "Toggle Sidebar" [ref=e89]:
+          - img
+          - generic [ref=e90]: Toggle Sidebar
+        - generic [ref=e91]:
+          - button "🇪🇸 ES" [ref=e92]:
+            - generic [ref=e93]: 🇪🇸
+            - generic [ref=e94]: ES
+          - button "Toggle theme" [ref=e95]:
+            - img
+            - generic [ref=e96]: Toggle theme
+          - list [ref=e97]:
+            - listitem [ref=e98]:
+              - button "S superadmin Usuario" [ref=e99]:
+                - generic [ref=e102]:
+                  - generic [ref=e105]: S
+                  - generic [ref=e107]:
+                    - generic [ref=e108]: superadmin
+                    - generic [ref=e109]: Usuario
+      - generic [ref=e113]:
+        - generic:
+          - img
+        - generic [ref=e114]:
+          - generic [ref=e116]:
+            - generic [ref=e117]:
+              - generic [ref=e118]:
+                - img [ref=e120]
+                - generic [ref=e122]: Matemáticas I
+              - heading "Evolución Histórica" [level=1] [ref=e123]
+              - paragraph [ref=e124]: Seguimiento del rendimiento académico a lo largo de los períodos escolares
+            - generic [ref=e125]:
+              - button "Exportar PDF" [ref=e127]:
+                - img [ref=e128]
+                - generic [ref=e132]: Exportar PDF
+              - generic [ref=e133]:
+                - generic [ref=e134]:
+                  - img [ref=e135]
+                  - generic [ref=e137]: 0 períodos
+                - generic [ref=e139]:
+                  - img [ref=e140]
+                  - generic [ref=e145]: 0 estudiantes
+          - generic [ref=e146]:
+            - generic [ref=e148]:
+              - heading "Seleccionar Períodos" [level=3] [ref=e150]
+              - generic [ref=e151]:
+                - button "Todos" [ref=e152]
+                - button "Último Año" [ref=e153]
+              - generic [ref=e154]:
+                - generic [ref=e156]:
+                  - generic [ref=e157]:
+                    - img [ref=e158]
+                    - generic [ref=e160]: Comparar Cursos
+                  - generic [ref=e161]: 0 seleccionados
+                - button "Seleccionar cursos para comparar" [ref=e164]:
+                  - generic [ref=e165]: Seleccionar cursos para comparar
+                  - img [ref=e166]
+            - generic [ref=e168]:
+              - generic [ref=e169]:
+                - button "Resumen" [ref=e170]:
+                  - img [ref=e171]
+                  - text: Resumen
+                - button "Evolución" [ref=e173]:
+                  - img [ref=e174]
+                  - text: Evolución
+                - button "Comparación" [ref=e177]:
+                  - img [ref=e178]
+                  - text: Comparación
+              - generic [ref=e181]:
+                - generic [ref=e182]:
+                  - generic [ref=e183]:
+                    - img [ref=e185]
+                    - heading "Métricas Consolidadas" [level=2] [ref=e187]
+                  - paragraph [ref=e188]: Promedio de 0 períodos
+                - generic [ref=e189]:
+                  - generic [ref=e191]:
+                    - img [ref=e193]
+                    - generic [ref=e195]:
+                      - generic [ref=e196]:
+                        - paragraph [ref=e197]: Períodos
+                        - paragraph [ref=e198]: "0"
+                        - paragraph [ref=e199]: Seleccionados
+                      - img [ref=e201]
+                  - generic [ref=e205]:
+                    - img [ref=e207]
+                    - generic [ref=e209]:
+                      - generic [ref=e210]:
+                        - paragraph [ref=e211]: Estudiantes
+                        - paragraph [ref=e212]: "0"
+                        - paragraph [ref=e213]: En seleccionados
+                      - img [ref=e215]
+                  - generic [ref=e222]:
+                    - img [ref=e224]
+                    - generic [ref=e226]:
+                      - generic [ref=e227]:
+                        - paragraph [ref=e228]: Completación
+                        - paragraph [ref=e229]: 0%
+                        - paragraph [ref=e230]: Promedio
+                      - img [ref=e232]
+                  - generic [ref=e237]:
+                    - img [ref=e239]
+                    - generic [ref=e241]:
+                      - generic [ref=e242]:
+                        - paragraph [ref=e243]: Calificación
+                        - paragraph [ref=e244]: 0%
+                        - paragraph [ref=e245]: Promedio
+                      - img [ref=e247]
+              - generic [ref=e252]:
+                - generic [ref=e254]:
+                  - img [ref=e256]
+                  - heading "Rendimiento por Período" [level=2] [ref=e259]
+                - table [ref=e262]:
+                  - rowgroup [ref=e263]:
+                    - row "Período Año Est. Prog. Calif. Tasa Tendencia" [ref=e264]:
+                      - columnheader "Período" [ref=e265]
+                      - columnheader "Año" [ref=e266]
+                      - columnheader "Est." [ref=e267]
+                      - columnheader "Prog." [ref=e268]
+                      - columnheader "Calif." [ref=e269]
+                      - columnheader "Tasa" [ref=e270]
+                      - columnheader "Tendencia" [ref=e271]
+                  - rowgroup
+          - paragraph [ref=e273]: 📊 Reporte de Matemáticas I • Hello World Platform
+  - generic [ref=e278] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e279]:
+      - img [ref=e280]
+    - generic [ref=e283]:
+      - button "Open issues overlay" [ref=e284]:
+        - generic [ref=e285]:
+          - generic [ref=e286]: "1"
+          - generic [ref=e287]: "2"
+        - generic [ref=e288]:
+          - text: Issue
+          - generic [ref=e289]: s
+      - button "Collapse issues badge" [ref=e290]:
+        - img [ref=e291]
+  - alert [ref=e7]

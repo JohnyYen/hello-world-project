@@ -1,0 +1,202 @@
+- generic:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - list:
+                - listitem:
+                  - link:
+                    - /url: /dashboard
+                    - img
+                    - generic: Mi Plataforma
+            - generic:
+              - generic:
+                - generic: Estadísticas
+                - generic:
+                  - list:
+                    - listitem:
+                      - button:
+                        - img
+                        - generic: Quick Create
+                      - button:
+                        - img
+                        - generic: Inbox
+                  - list:
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard
+                          - text: Overview
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/students
+                          - text: Estudiantes
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/metrics
+                          - text: Métricas
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/reports
+                          - text: Reportes
+              - generic:
+                - generic: Gestión de Juegos y Niveles
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /dashboard/levels
+                      - img
+                      - generic: Niveles
+                  - listitem:
+                    - link:
+                      - /url: /dashboard/levels/create
+                      - img
+                      - generic: Crear Nivel
+              - generic:
+                - generic:
+                  - list:
+                    - listitem:
+                      - link:
+                        - /url: /dashboard/settings
+                        - img
+                        - generic: Settings
+                    - listitem:
+                      - link:
+                        - /url: /dashboard/help
+                        - img
+                        - generic: Ayuda
+      - main:
+        - generic:
+          - generic:
+            - button:
+              - img
+              - generic: Toggle Sidebar
+            - generic:
+              - button:
+                - generic: 🇪🇸
+                - generic: ES
+              - button:
+                - img
+                - generic: Toggle theme
+              - list:
+                - listitem:
+                  - button:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: PD
+                      - generic:
+                        - generic: Profesor Demo
+                        - generic: Profesor
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Gestión
+                    - heading [level=1]: Estudiantes
+                    - paragraph: Vista general de todos los estudiantes registrados en la plataforma
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                        - generic: 0 estudiantes
+                    - button [expanded]: Crear Nuevo Estudiante
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - img
+                          - textbox:
+                            - /placeholder: Buscar estudiantes...
+                        - combobox:
+                          - generic:
+                            - img
+                            - generic: Todos los cursos
+                          - img
+                      - generic:
+                        - generic: "Filas:"
+                        - combobox:
+                          - generic: "5"
+                          - img
+                  - generic:
+                    - generic:
+                      - table:
+                        - rowgroup:
+                          - row:
+                            - columnheader:
+                              - checkbox
+                            - columnheader: Nombre
+                            - columnheader: Estado
+                            - columnheader: Nivel
+                            - columnheader: Curso
+                            - columnheader: Correo
+                            - columnheader: Acciones
+                        - rowgroup:
+                          - row:
+                            - cell:
+                              - generic:
+                                - img
+                                - paragraph: No se encontraron estudiantes
+  - generic [ref=e175] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e176]:
+      - img [ref=e177]
+    - generic [ref=e180]:
+      - button "Open issues overlay" [ref=e181]:
+        - generic [ref=e182]:
+          - generic [ref=e183]: "1"
+          - generic [ref=e184]: "2"
+        - generic [ref=e185]:
+          - text: Issue
+          - generic [ref=e186]: s
+      - button "Collapse issues badge" [ref=e187]:
+        - img [ref=e188]
+  - alert
+  - dialog "Crear Nuevo Estudiante" [ref=e192]:
+    - generic [ref=e193]:
+      - heading "Crear Nuevo Estudiante" [level=2] [ref=e194]
+      - paragraph [ref=e195]: Ingresa los datos del nuevo estudiante aquí. Se creará una cuenta de usuario automáticamente.
+    - generic [ref=e196]:
+      - generic [ref=e197]:
+        - generic [ref=e198]:
+          - generic [ref=e199]: Nombre
+          - textbox "Nombre" [ref=e200]:
+            - /placeholder: Juan
+            - text: Carlos
+        - generic [ref=e201]:
+          - generic [ref=e202]: Apellidos
+          - textbox "Apellidos" [active] [ref=e203]:
+            - /placeholder: Pérez
+            - text: García López
+      - generic [ref=e204]:
+        - generic [ref=e205]: Nombre de usuario
+        - textbox "Nombre de usuario" [ref=e206]:
+          - /placeholder: juanperez
+      - generic [ref=e207]:
+        - generic [ref=e208]: Correo electrónico
+        - textbox "Correo electrónico" [ref=e209]:
+          - /placeholder: juan.perez@ejemplo.com
+      - generic [ref=e210]:
+        - generic [ref=e211]: Contraseña inicial
+        - textbox "Contraseña inicial" [ref=e212]
+      - generic [ref=e213]:
+        - button "Cancelar" [ref=e214]
+        - button "Crear Estudiante" [ref=e215]
+    - button "Close" [ref=e216]:
+      - img
+      - generic [ref=e217]: Close

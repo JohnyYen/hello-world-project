@@ -1,0 +1,317 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e17]:
+    - generic [ref=e20]:
+      - list [ref=e22]:
+        - listitem [ref=e23]:
+          - link "Mi Plataforma" [ref=e24] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e25]
+            - generic [ref=e28]: Mi Plataforma
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: Estadísticas
+          - generic [ref=e32]:
+            - list [ref=e33]:
+              - listitem [ref=e34]:
+                - button "Quick Create" [ref=e35]:
+                  - img [ref=e36]
+                  - generic [ref=e38]: Quick Create
+                - button "Inbox" [ref=e39]:
+                  - img
+                  - generic [ref=e40]: Inbox
+            - list [ref=e41]:
+              - listitem [ref=e42]:
+                - button "Overview" [ref=e43]:
+                  - img [ref=e44]
+                  - link "Overview" [ref=e48] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e49]:
+                - button "Estudiantes" [ref=e50]:
+                  - img [ref=e51]
+                  - link "Estudiantes" [ref=e54] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e55]:
+                - button "Métricas" [ref=e56]:
+                  - img [ref=e57]
+                  - link "Métricas" [ref=e61] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e62]:
+                - button "Reportes" [ref=e63]:
+                  - img [ref=e64]
+                  - link "Reportes" [ref=e66] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e67]:
+          - generic [ref=e68]: Gestión de Juegos y Niveles
+          - list [ref=e69]:
+            - listitem [ref=e70]:
+              - link "Niveles" [ref=e71] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e72]
+                - generic [ref=e75]: Niveles
+            - listitem [ref=e76]:
+              - link "Crear Nivel" [ref=e77] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e78]
+                - generic [ref=e79]: Crear Nivel
+        - list [ref=e82]:
+          - listitem [ref=e83]:
+            - link "Settings" [ref=e84] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e85]
+              - generic [ref=e88]: Settings
+          - listitem [ref=e89]:
+            - link "Ayuda" [ref=e90] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e91]
+              - generic [ref=e94]: Ayuda
+    - main [ref=e95]:
+      - generic [ref=e97]:
+        - button "Toggle Sidebar" [ref=e98]:
+          - img
+          - generic [ref=e99]: Toggle Sidebar
+        - generic [ref=e100]:
+          - button "🇪🇸 ES" [ref=e101]:
+            - generic [ref=e102]: 🇪🇸
+            - generic [ref=e103]: ES
+          - button "Toggle theme" [ref=e104]:
+            - img
+            - generic [ref=e105]: Toggle theme
+          - list [ref=e106]:
+            - listitem [ref=e107]:
+              - button "P prof_juan_perez Usuario" [ref=e108]:
+                - generic [ref=e111]:
+                  - generic [ref=e114]: P
+                  - generic [ref=e116]:
+                    - generic [ref=e117]: prof_juan_perez
+                    - generic [ref=e118]: Usuario
+      - generic [ref=e122]:
+        - generic:
+          - img
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - img [ref=e129]
+              - generic [ref=e130]: Analytics
+            - button "Exportar PDF" [ref=e132]:
+              - img [ref=e133]
+              - generic [ref=e137]: Exportar PDF
+          - heading "Métricas del Sistema" [level=1] [ref=e138]
+          - paragraph [ref=e139]: Visualización y análisis del rendimiento del sistema educativo. Estadísticas en tiempo real de estudiantes y cursos.
+        - generic [ref=e140]:
+          - generic [ref=e141]:
+            - generic [ref=e142]:
+              - generic [ref=e143]:
+                - generic [ref=e144]: Total Estudiantes
+                - img [ref=e145]
+              - generic [ref=e151]: 1,250
+            - generic [ref=e152]:
+              - generic [ref=e153]:
+                - generic [ref=e154]: Estudiantes Activos
+                - img [ref=e155]
+              - generic [ref=e160]: "980"
+            - generic [ref=e161]:
+              - generic [ref=e162]:
+                - generic [ref=e163]: Tasa de Completado
+                - img [ref=e164]
+              - generic [ref=e169]: 75%
+            - generic [ref=e170]:
+              - generic [ref=e171]:
+                - generic [ref=e172]: Calificación Promedio
+                - img [ref=e173]
+              - generic [ref=e177]: 82%
+          - generic [ref=e178]:
+            - generic [ref=e179]:
+              - generic [ref=e180]:
+                - generic [ref=e181]: Progreso de Estudiantes
+                - generic [ref=e182]: Top 5 estudiantes por progreso
+              - generic [ref=e184]:
+                - generic [ref=e187]:
+                  - generic [ref=e188]: Juan Pérez
+                  - generic [ref=e189]: 85%
+                - generic [ref=e194]:
+                  - generic [ref=e195]: María González
+                  - generic [ref=e196]: 92%
+                - generic [ref=e201]:
+                  - generic [ref=e202]: Carlos Rodríguez
+                  - generic [ref=e203]: 65%
+                - generic [ref=e208]:
+                  - generic [ref=e209]: Ana López
+                  - generic [ref=e210]: 78%
+                - generic [ref=e215]:
+                  - generic [ref=e216]: Luis Fernández
+                  - generic [ref=e217]: 45%
+            - generic [ref=e220]:
+              - generic [ref=e221]:
+                - generic [ref=e222]: Completado de Cursos
+                - generic [ref=e223]: Porcentaje de estudiantes por curso
+              - generic [ref=e225]:
+                - generic [ref=e227]:
+                  - generic [ref=e228]: Introducción a la Programación
+                  - generic [ref=e229]: 102/120
+                - generic [ref=e233]:
+                  - generic [ref=e234]: Fundamentos de JavaScript
+                  - generic [ref=e235]: 74/95
+                - generic [ref=e239]:
+                  - generic [ref=e240]: Estructuras de Datos
+                  - generic [ref=e241]: 52/80
+                - generic [ref=e245]:
+                  - generic [ref=e246]: Algoritmos
+                  - generic [ref=e247]: 44/75
+                - generic [ref=e251]:
+                  - generic [ref=e252]: Programación Orientada a Objetos
+                  - generic [ref=e253]: 63/88
+          - generic [ref=e256]:
+            - generic [ref=e257]:
+              - generic [ref=e258]:
+                - generic [ref=e259]: Métricas de Engagement
+                - generic [ref=e260]: Actividad diaria de estudiantes
+              - generic [ref=e261]:
+                - generic [ref=e262]:
+                  - generic [ref=e263]:
+                    - generic [ref=e264]: "153"
+                    - generic [ref=e265]: Promedio diario
+                  - generic [ref=e266]:
+                    - generic [ref=e267]: "201"
+                    - generic [ref=e268]: Máximo
+                  - generic [ref=e269]:
+                    - generic [ref=e270]: 52min
+                    - generic [ref=e271]: Tiempo prom.
+                - generic [ref=e272]:
+                  - generic [ref=e274]: "24"
+                  - generic [ref=e276]: "25"
+                  - generic [ref=e278]: "26"
+                  - generic [ref=e280]: "27"
+                  - generic [ref=e282]: "28"
+                  - generic [ref=e284]: "29"
+                  - generic [ref=e286]: "30"
+            - generic [ref=e287]:
+              - generic [ref=e288]:
+                - generic [ref=e289]: Rendimiento por Actividad
+                - generic [ref=e290]: Calificación y completado por tema
+              - generic [ref=e292]:
+                - generic [ref=e293]:
+                  - generic [ref=e295]:
+                    - generic [ref=e296]: Variables y Tipos
+                    - generic [ref=e297]:
+                      - generic [ref=e298]: 92%
+                      - generic [ref=e299]: "|"
+                      - generic [ref=e300]: 88%
+                  - generic [ref=e306]: Fácil
+                - generic [ref=e307]:
+                  - generic [ref=e309]:
+                    - generic [ref=e310]: Condicionales
+                    - generic [ref=e311]:
+                      - generic [ref=e312]: 85%
+                      - generic [ref=e313]: "|"
+                      - generic [ref=e314]: 82%
+                  - generic [ref=e320]: Fácil
+                - generic [ref=e321]:
+                  - generic [ref=e323]:
+                    - generic [ref=e324]: Bucles
+                    - generic [ref=e325]:
+                      - generic [ref=e326]: 78%
+                      - generic [ref=e327]: "|"
+                      - generic [ref=e328]: 75%
+                  - generic [ref=e334]: Medio
+                - generic [ref=e335]:
+                  - generic [ref=e337]:
+                    - generic [ref=e338]: Funciones
+                    - generic [ref=e339]:
+                      - generic [ref=e340]: 72%
+                      - generic [ref=e341]: "|"
+                      - generic [ref=e342]: 68%
+                  - generic [ref=e348]: Difícil
+                - generic [ref=e349]:
+                  - generic [ref=e351]:
+                    - generic [ref=e352]: Arrays
+                    - generic [ref=e353]:
+                      - generic [ref=e354]: 68%
+                      - generic [ref=e355]: "|"
+                      - generic [ref=e356]: 65%
+                  - generic [ref=e362]: Medio
+          - generic [ref=e363]:
+            - generic [ref=e364]:
+              - generic [ref=e365]:
+                - generic [ref=e366]: Tipos de Métricas
+                - paragraph [ref=e367]: Catálogo de métricas disponibles en el sistema
+              - generic [ref=e368]: 8 métricas
+            - generic [ref=e370]:
+              - button "Nueva métrica" [ref=e371]:
+                - img
+                - text: Nueva métrica
+              - generic [ref=e372]:
+                - generic [ref=e375]:
+                  - generic [ref=e376]:
+                    - heading "Accuracy" [level=3] [ref=e378]
+                    - generic [ref=e379]:
+                      - img [ref=e380]
+                      - generic [ref=e383]: accuracy
+                    - paragraph [ref=e384]: Percentage of correct answers
+                  - button [ref=e385]:
+                    - img
+                - generic [ref=e388]:
+                  - generic [ref=e389]:
+                    - heading "Time Spent" [level=3] [ref=e391]
+                    - generic [ref=e392]:
+                      - img [ref=e393]
+                      - generic [ref=e396]: time_spent
+                    - paragraph [ref=e397]: Total time spent on task
+                  - button [ref=e398]:
+                    - img
+                - generic [ref=e401]:
+                  - generic [ref=e402]:
+                    - heading "Attempts" [level=3] [ref=e404]
+                    - generic [ref=e405]:
+                      - img [ref=e406]
+                      - generic [ref=e409]: attempts
+                    - paragraph [ref=e410]: Number of attempts to complete
+                  - button [ref=e411]:
+                    - img
+                - generic [ref=e414]:
+                  - generic [ref=e415]:
+                    - heading "Hints Used" [level=3] [ref=e417]
+                    - generic [ref=e418]:
+                      - img [ref=e419]
+                      - generic [ref=e422]: hints_used
+                    - paragraph [ref=e423]: Number of hints used
+                  - button [ref=e424]:
+                    - img
+                - generic [ref=e427]:
+                  - generic [ref=e428]:
+                    - heading "Error Rate" [level=3] [ref=e430]
+                    - generic [ref=e431]:
+                      - img [ref=e432]
+                      - generic [ref=e435]: error_rate
+                    - paragraph [ref=e436]: Percentage of errors made
+                  - button [ref=e437]:
+                    - img
+                - generic [ref=e440]:
+                  - generic [ref=e441]:
+                    - heading "Completion Rate" [level=3] [ref=e443]
+                    - generic [ref=e444]:
+                      - img [ref=e445]
+                      - generic [ref=e448]: completion_rate
+                    - paragraph [ref=e449]: Task completion percentage
+                  - button [ref=e450]:
+                    - img
+                - generic [ref=e453]:
+                  - generic [ref=e454]:
+                    - heading "Engagement Score" [level=3] [ref=e456]
+                    - generic [ref=e457]:
+                      - img [ref=e458]
+                      - generic [ref=e461]: engagement
+                    - paragraph [ref=e462]: Overall engagement level
+                  - button [ref=e463]:
+                    - img
+                - generic [ref=e466]:
+                  - generic [ref=e467]:
+                    - heading "Test Metric" [level=3] [ref=e469]
+                    - generic [ref=e470]:
+                      - img [ref=e471]
+                      - generic [ref=e474]: TEST_METRIC
+                    - paragraph [ref=e475]: For testing
+                  - button [ref=e476]:
+                    - img
+  - button "Open Next.js Dev Tools" [ref=e12] [cursor=pointer]:
+    - img [ref=e13]
+  - alert [ref=e16]

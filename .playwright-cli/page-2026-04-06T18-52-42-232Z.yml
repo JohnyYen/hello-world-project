@@ -1,0 +1,157 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e6]:
+      - list [ref=e8]:
+        - listitem [ref=e9]:
+          - link "Mi Plataforma" [ref=e10] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e11]
+            - generic [ref=e14]: Mi Plataforma
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: Estadísticas
+          - generic [ref=e18]:
+            - list [ref=e19]:
+              - listitem [ref=e20]:
+                - button "Quick Create" [ref=e21]:
+                  - img [ref=e22]
+                  - generic [ref=e24]: Quick Create
+                - button "Inbox" [ref=e25]:
+                  - img
+                  - generic [ref=e26]: Inbox
+            - list [ref=e27]:
+              - listitem [ref=e28]:
+                - button "Overview" [ref=e29]:
+                  - img [ref=e30]
+                  - link "Overview" [ref=e34] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e35]:
+                - button "Estudiantes" [ref=e36]:
+                  - img [ref=e37]
+                  - link "Estudiantes" [ref=e40] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e41]:
+                - button "Métricas" [ref=e42]:
+                  - img [ref=e43]
+                  - link "Métricas" [ref=e47] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e48]:
+                - button "Reportes" [ref=e49]:
+                  - img [ref=e50]
+                  - link "Reportes" [ref=e52] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e53]:
+          - generic [ref=e54]: Gestión de Juegos y Niveles
+          - list [ref=e55]:
+            - listitem [ref=e56]:
+              - link "Niveles" [ref=e57] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e58]
+                - generic [ref=e61]: Niveles
+            - listitem [ref=e62]:
+              - link "Crear Nivel" [ref=e63] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e64]
+                - generic [ref=e65]: Crear Nivel
+        - list [ref=e68]:
+          - listitem [ref=e69]:
+            - link "Settings" [ref=e70] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e71]
+              - generic [ref=e74]: Settings
+          - listitem [ref=e75]:
+            - link "Ayuda" [ref=e76] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e77]
+              - generic [ref=e80]: Ayuda
+    - main [ref=e81]:
+      - generic [ref=e83]:
+        - button "Toggle Sidebar" [ref=e84]:
+          - img
+          - generic [ref=e85]: Toggle Sidebar
+        - generic [ref=e86]:
+          - button "🇪🇸 ES" [ref=e87]:
+            - generic [ref=e88]: 🇪🇸
+            - generic [ref=e89]: ES
+          - button "Toggle theme" [ref=e90]:
+            - img
+            - generic [ref=e91]: Toggle theme
+          - list [ref=e92]:
+            - listitem [ref=e93]:
+              - button "J JosePepe Usuario" [ref=e94]:
+                - generic [ref=e97]:
+                  - generic [ref=e100]: J
+                  - generic [ref=e102]:
+                    - generic [ref=e103]: JosePepe
+                    - generic [ref=e104]: Usuario
+      - generic [ref=e108]:
+        - generic:
+          - img
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e125]:
+              - img [ref=e127]
+              - generic [ref=e130]: Configuración
+            - heading "Configuración" [level=1] [ref=e131]
+            - paragraph [ref=e132]: Personaliza tu experiencia en la plataforma
+          - generic [ref=e133]:
+            - generic [ref=e135]:
+              - button "Sesión Configuración de sesión y autenticación" [ref=e136]:
+                - img
+                - generic [ref=e137]:
+                  - generic [ref=e138]: Sesión
+                  - generic [ref=e139]: Configuración de sesión y autenticación
+              - button "Apariencia Tema, colores y visualización" [ref=e140]:
+                - img
+                - generic [ref=e141]:
+                  - generic [ref=e142]: Apariencia
+                  - generic [ref=e143]: Tema, colores y visualización
+              - button "Notificaciones Cómo recibes tus notificaciones" [ref=e144]:
+                - img
+                - generic [ref=e145]:
+                  - generic [ref=e146]: Notificaciones
+                  - generic [ref=e147]: Cómo recibes tus notificaciones
+              - button "Idioma Idioma y preferencias regionales" [ref=e148]:
+                - img
+                - generic [ref=e149]:
+                  - generic [ref=e150]: Idioma
+                  - generic [ref=e151]: Idioma y preferencias regionales
+              - button "Seguridad Protección y privacidad de tu cuenta" [ref=e152]:
+                - img
+                - generic [ref=e153]:
+                  - generic [ref=e154]: Seguridad
+                  - generic [ref=e155]: Protección y privacidad de tu cuenta
+              - button "Integraciones Conexión con servicios externos" [ref=e156]:
+                - img
+                - generic [ref=e157]:
+                  - generic [ref=e158]: Integraciones
+                  - generic [ref=e159]: Conexión con servicios externos
+            - generic [ref=e160]:
+              - generic [ref=e162]:
+                - generic [ref=e163]:
+                  - generic [ref=e164]:
+                    - img [ref=e165]
+                    - text: Configuración de Sesión
+                  - generic [ref=e167]: Gestiona las preferencias específicas de tu sesión actual
+                - generic [ref=e169]:
+                  - generic [ref=e170]:
+                    - generic [ref=e171]:
+                      - generic [ref=e172]: Cierre Automático
+                      - paragraph [ref=e173]: Cerrar sesión automáticamente después de inactividad
+                    - switch [ref=e174]
+                  - generic [ref=e175]:
+                    - generic [ref=e176]: Duración de la Sesión
+                    - combobox [ref=e177]:
+                      - generic: 1 hora
+                      - img
+                  - generic [ref=e178]:
+                    - generic [ref=e179]:
+                      - generic [ref=e180]: Recordar Inicio de Sesión
+                      - paragraph [ref=e181]: Mantener sesión iniciada en este dispositivo
+                    - switch [checked] [ref=e182]
+              - button "Guardar Cambios" [ref=e184]:
+                - img
+                - text: Guardar Cambios
+  - button "Open Next.js Dev Tools" [ref=e118] [cursor=pointer]:
+    - img [ref=e119]
+  - alert [ref=e122]

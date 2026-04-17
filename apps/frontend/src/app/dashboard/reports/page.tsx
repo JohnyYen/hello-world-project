@@ -345,7 +345,7 @@ export default function ReportsPage() {
               {/* Quick select buttons */}
               <div className="flex gap-2 mb-4">
                 <button
-                  onClick={() => setSelectedCourses(courses.map(c => c.id))}
+                  onClick={() => setSelectedCourses(courses.map(c => String(c.id)))}
                   className="flex-1 px-3 py-2 text-xs font-medium bg-slate-800/50 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors"
                 >
                   Todos
@@ -353,7 +353,7 @@ export default function ReportsPage() {
                 <button
                   onClick={() => {
                     const latestYearCourses = courses.filter(c => c.schoolYear === latestYear);
-                    setSelectedCourses(latestYearCourses.map(c => c.id));
+                    setSelectedCourses(latestYearCourses.map(c => String(c.id)));
                   }}
                   className="flex-1 px-3 py-2 text-xs font-medium bg-indigo-500/20 hover:bg-indigo-500/30 rounded-lg border border-indigo-500/30 text-indigo-400 transition-colors"
                 >

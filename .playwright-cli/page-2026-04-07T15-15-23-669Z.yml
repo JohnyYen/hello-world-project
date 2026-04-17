@@ -1,0 +1,254 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e6]:
+      - list [ref=e8]:
+        - listitem [ref=e9]:
+          - link "Mi Plataforma" [ref=e10] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e11]
+            - generic [ref=e14]: Mi Plataforma
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: Estadísticas
+          - generic [ref=e18]:
+            - list [ref=e19]:
+              - listitem [ref=e20]:
+                - button "Quick Create" [ref=e21]:
+                  - img [ref=e22]
+                  - generic [ref=e24]: Quick Create
+                - button "Inbox" [ref=e25]:
+                  - img
+                  - generic [ref=e26]: Inbox
+            - list [ref=e27]:
+              - listitem [ref=e28]:
+                - button "Overview" [ref=e29]:
+                  - img [ref=e30]
+                  - link "Overview" [ref=e34] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e35]:
+                - button "Estudiantes" [ref=e36]:
+                  - img [ref=e37]
+                  - link "Estudiantes" [ref=e40] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e41]:
+                - button "Métricas" [ref=e42]:
+                  - img [ref=e43]
+                  - link "Métricas" [ref=e47] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e48]:
+                - button "Reportes" [ref=e49]:
+                  - img [ref=e50]
+                  - link "Reportes" [ref=e52] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e53]:
+          - generic [ref=e54]: Gestión de Juegos y Niveles
+          - list [ref=e55]:
+            - listitem [ref=e56]:
+              - link "Niveles" [ref=e57] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e58]
+                - generic [ref=e61]: Niveles
+            - listitem [ref=e62]:
+              - link "Crear Nivel" [ref=e63] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e64]
+                - generic [ref=e65]: Crear Nivel
+        - list [ref=e68]:
+          - listitem [ref=e69]:
+            - link "Settings" [ref=e70] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e71]
+              - generic [ref=e74]: Settings
+          - listitem [ref=e75]:
+            - link "Ayuda" [ref=e76] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e77]
+              - generic [ref=e80]: Ayuda
+    - main [ref=e81]:
+      - generic [ref=e83]:
+        - button "Toggle Sidebar" [ref=e84]:
+          - img
+          - generic [ref=e85]: Toggle Sidebar
+        - generic [ref=e86]:
+          - button "🇪🇸 ES" [ref=e87]:
+            - generic [ref=e88]: 🇪🇸
+            - generic [ref=e89]: ES
+          - button "Toggle theme" [ref=e90]:
+            - img
+            - generic [ref=e91]: Toggle theme
+          - list [ref=e92]:
+            - listitem [ref=e93]:
+              - button "T testprofessor Usuario" [ref=e94]:
+                - generic [ref=e97]:
+                  - generic [ref=e100]: T
+                  - generic [ref=e102]:
+                    - generic [ref=e103]: testprofessor
+                    - generic [ref=e104]: Usuario
+      - generic [ref=e108]:
+        - generic:
+          - img
+        - generic [ref=e112]:
+          - generic [ref=e113]:
+            - img [ref=e114]
+            - generic [ref=e119]: Gestión
+          - heading "Estudiantes" [level=1] [ref=e120]
+          - paragraph [ref=e121]: Vista general de todos los estudiantes registrados en la plataforma
+        - generic [ref=e122]:
+          - generic [ref=e123]:
+            - generic [ref=e125]:
+              - img [ref=e126]
+              - generic [ref=e131]: 22 estudiantes
+            - button "Crear Nuevo Estudiante" [ref=e132]
+          - generic [ref=e134]:
+            - generic [ref=e135]:
+              - generic [ref=e136]:
+                - img [ref=e137]
+                - textbox "Buscar estudiantes..." [ref=e140]
+              - combobox [ref=e141]:
+                - generic [ref=e142]:
+                  - img
+                  - generic: Todos los cursos
+                - img
+            - generic [ref=e143]:
+              - generic [ref=e144]: "Filas:"
+              - combobox [ref=e145]:
+                - generic: "5"
+                - img
+          - table [ref=e148]:
+            - rowgroup [ref=e149]:
+              - row "Seleccionar todos los estudiantes de esta página Nombre Estado Nivel Curso Correo Acciones" [ref=e150]:
+                - columnheader "Seleccionar todos los estudiantes de esta página" [ref=e151]:
+                  - checkbox "Seleccionar todos los estudiantes de esta página" [ref=e152]
+                - columnheader "Nombre" [ref=e153]
+                - columnheader "Estado" [ref=e154]
+                - columnheader "Nivel" [ref=e155]
+                - columnheader "Curso" [ref=e156]
+                - columnheader "Correo" [ref=e157]
+                - columnheader "Acciones" [ref=e158]
+            - rowgroup [ref=e159]:
+              - button "Ver detalles de Pedro Álvarez" [ref=e160] [cursor=pointer]:
+                - cell "Seleccionar estudiante Pedro Álvarez" [ref=e161]:
+                  - checkbox "Seleccionar estudiante Pedro Álvarez" [ref=e162]
+                - cell "Pedro Álvarez" [ref=e163]
+                - cell "Activo" [ref=e164]:
+                  - generic [ref=e165]: Activo
+                - cell "Nivel 0" [ref=e166]:
+                  - generic [ref=e167]: Nivel 0
+                - cell [ref=e168]:
+                  - img [ref=e170]
+                - cell "pedro.alvarez@student.edu" [ref=e172]:
+                  - generic [ref=e173]:
+                    - img [ref=e174]
+                    - generic [ref=e177]: pedro.alvarez@student.edu
+                - cell "Correo Feedback" [ref=e178]:
+                  - generic [ref=e179]:
+                    - button "Correo" [ref=e180]:
+                      - img
+                      - text: Correo
+                    - button "Feedback" [ref=e181]:
+                      - img
+                      - text: Feedback
+              - button "Ver detalles de Laura Rodríguez" [ref=e182] [cursor=pointer]:
+                - cell "Seleccionar estudiante Laura Rodríguez" [ref=e183]:
+                  - checkbox "Seleccionar estudiante Laura Rodríguez" [ref=e184]
+                - cell "Laura Rodríguez" [ref=e185]
+                - cell "Activo" [ref=e186]:
+                  - generic [ref=e187]: Activo
+                - cell "Nivel 0" [ref=e188]:
+                  - generic [ref=e189]: Nivel 0
+                - cell [ref=e190]:
+                  - img [ref=e192]
+                - cell "laura.rodriguez@student.edu" [ref=e194]:
+                  - generic [ref=e195]:
+                    - img [ref=e196]
+                    - generic [ref=e199]: laura.rodriguez@student.edu
+                - cell "Correo Feedback" [ref=e200]:
+                  - generic [ref=e201]:
+                    - button "Correo" [ref=e202]:
+                      - img
+                      - text: Correo
+                    - button "Feedback" [ref=e203]:
+                      - img
+                      - text: Feedback
+              - button "Ver detalles de Miguel Hernández" [ref=e204] [cursor=pointer]:
+                - cell "Seleccionar estudiante Miguel Hernández" [ref=e205]:
+                  - checkbox "Seleccionar estudiante Miguel Hernández" [ref=e206]
+                - cell "Miguel Hernández" [ref=e207]
+                - cell "Activo" [ref=e208]:
+                  - generic [ref=e209]: Activo
+                - cell "Nivel 0" [ref=e210]:
+                  - generic [ref=e211]: Nivel 0
+                - cell [ref=e212]:
+                  - img [ref=e214]
+                - cell "miguel.hernandez@student.edu" [ref=e216]:
+                  - generic [ref=e217]:
+                    - img [ref=e218]
+                    - generic [ref=e221]: miguel.hernandez@student.edu
+                - cell "Correo Feedback" [ref=e222]:
+                  - generic [ref=e223]:
+                    - button "Correo" [ref=e224]:
+                      - img
+                      - text: Correo
+                    - button "Feedback" [ref=e225]:
+                      - img
+                      - text: Feedback
+              - button "Ver detalles de Sofia Gómez" [ref=e226] [cursor=pointer]:
+                - cell "Seleccionar estudiante Sofia Gómez" [ref=e227]:
+                  - checkbox "Seleccionar estudiante Sofia Gómez" [ref=e228]
+                - cell "Sofia Gómez" [ref=e229]
+                - cell "Activo" [ref=e230]:
+                  - generic [ref=e231]: Activo
+                - cell "Nivel 0" [ref=e232]:
+                  - generic [ref=e233]: Nivel 0
+                - cell [ref=e234]:
+                  - img [ref=e236]
+                - cell "sofia.gomez@student.edu" [ref=e238]:
+                  - generic [ref=e239]:
+                    - img [ref=e240]
+                    - generic [ref=e243]: sofia.gomez@student.edu
+                - cell "Correo Feedback" [ref=e244]:
+                  - generic [ref=e245]:
+                    - button "Correo" [ref=e246]:
+                      - img
+                      - text: Correo
+                    - button "Feedback" [ref=e247]:
+                      - img
+                      - text: Feedback
+              - button "Ver detalles de Eduardo Castillo" [ref=e248] [cursor=pointer]:
+                - cell "Seleccionar estudiante Eduardo Castillo" [ref=e249]:
+                  - checkbox "Seleccionar estudiante Eduardo Castillo" [ref=e250]
+                - cell "Eduardo Castillo" [ref=e251]
+                - cell "Activo" [ref=e252]:
+                  - generic [ref=e253]: Activo
+                - cell "Nivel 0" [ref=e254]:
+                  - generic [ref=e255]: Nivel 0
+                - cell [ref=e256]:
+                  - img [ref=e258]
+                - cell "eduardo.castillo@student.edu" [ref=e260]:
+                  - generic [ref=e261]:
+                    - img [ref=e262]
+                    - generic [ref=e265]: eduardo.castillo@student.edu
+                - cell "Correo Feedback" [ref=e266]:
+                  - generic [ref=e267]:
+                    - button "Correo" [ref=e268]:
+                      - img
+                      - text: Correo
+                    - button "Feedback" [ref=e269]:
+                      - img
+                      - text: Feedback
+          - generic [ref=e270]:
+            - generic [ref=e271]: Mostrando 1-5 de 22 estudiantes
+            - generic [ref=e272]:
+              - button [disabled]:
+                - img
+              - generic [ref=e273]:
+                - button "1" [ref=e274]
+                - button "2" [ref=e275]
+                - button "3" [ref=e276]
+                - button "4" [ref=e277]
+                - button "5" [ref=e278]
+              - button [ref=e279]:
+                - img
+  - button "Open Next.js Dev Tools" [ref=e285] [cursor=pointer]:
+    - img [ref=e286]
+  - alert [ref=e289]

@@ -1,0 +1,4 @@
+status: implemented
+commits:
+  - 09346a5: "refactor(game): separate core framework from level 1 cafeteria content"
+  - 30ef55e: "feat(game): add framework extension points and abstractions"

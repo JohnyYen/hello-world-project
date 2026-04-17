@@ -1,0 +1,53 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - link "Plataforma Educativa" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e7]
+        - text: Plataforma Educativa
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - heading "Crea tu cuenta" [level=1] [ref=e14]
+          - paragraph [ref=e15]: Completa el siguiente formulario para crear tu cuenta de profesor
+        - group [ref=e16]:
+          - generic [ref=e17]: Nombre Completo
+          - textbox "Nombre Completo" [ref=e18]:
+            - /placeholder: Juan Pérez
+        - group [ref=e19]:
+          - generic [ref=e20]: Nombre de Usuario
+          - textbox "Nombre de Usuario" [ref=e21]:
+            - /placeholder: juanperez
+        - group [ref=e22]:
+          - generic [ref=e23]: Correo Electrónico
+          - textbox "Correo Electrónico" [ref=e24]:
+            - /placeholder: m@example.com
+          - paragraph [ref=e25]: Usaremos esto para contactarte. No compartiremos tu correo con nadie.
+        - group [ref=e26]:
+          - generic [ref=e27]: Contraseña
+          - generic [ref=e28]:
+            - textbox "Contraseña" [ref=e29]
+            - button "Mostrar contraseña" [ref=e30]:
+              - img [ref=e31]
+          - paragraph [ref=e34]: Debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
+        - group [ref=e35]:
+          - generic [ref=e36]: Confirmar Contraseña
+          - generic [ref=e37]:
+            - textbox "Confirmar Contraseña" [ref=e38]
+            - button "Mostrar contraseña" [ref=e39]:
+              - img [ref=e40]
+          - paragraph [ref=e43]: Por favor, confirma tu contraseña.
+        - group [ref=e44]:
+          - button "Crear Cuenta" [ref=e45]
+        - generic [ref=e47]: O continúa con
+        - group [ref=e48]:
+          - button "Registrarse con GitHub" [ref=e49]:
+            - img
+            - text: Registrarse con GitHub
+          - paragraph [ref=e50]:
+            - text: ¿Ya tienes una cuenta?
+            - link "Inicia sesión" [ref=e51] [cursor=pointer]:
+              - /url: /login
+    - img "Educación Programación" [ref=e53]
+  - button "Open Next.js Dev Tools" [ref=e59] [cursor=pointer]:
+    - img [ref=e60]
+  - alert [ref=e63]

@@ -1,0 +1,222 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e34] [cursor=pointer]:
+    - img [ref=e35]
+  - alert [ref=e28]
+  - generic [ref=e39]:
+    - generic [ref=e42]:
+      - list [ref=e44]:
+        - listitem [ref=e45]:
+          - link "Mi Plataforma" [ref=e46] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e47]
+            - generic [ref=e50]: Mi Plataforma
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - generic [ref=e53]: Estadísticas
+          - generic [ref=e54]:
+            - list [ref=e55]:
+              - listitem [ref=e56]:
+                - button "Quick Create" [ref=e57]:
+                  - img [ref=e58]
+                  - generic [ref=e60]: Quick Create
+                - button "Inbox" [ref=e61]:
+                  - img
+                  - generic [ref=e62]: Inbox
+            - list [ref=e63]:
+              - listitem [ref=e64]:
+                - button "Overview" [ref=e65]:
+                  - img [ref=e66]
+                  - link "Overview" [ref=e70] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e71]:
+                - button "Estudiantes" [ref=e72]:
+                  - img [ref=e73]
+                  - link "Estudiantes" [ref=e76] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e77]:
+                - button "Métricas" [ref=e78]:
+                  - img [ref=e79]
+                  - link "Métricas" [ref=e83] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e84]:
+                - button "Reportes" [ref=e85]:
+                  - img [ref=e86]
+                  - link "Reportes" [ref=e88] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e89]:
+          - generic [ref=e90]: Gestión de Juegos y Niveles
+          - list [ref=e91]:
+            - listitem [ref=e92]:
+              - link "Niveles" [ref=e93] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e94]
+                - generic [ref=e97]: Niveles
+            - listitem [ref=e98]:
+              - link "Crear Nivel" [ref=e99] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e100]
+                - generic [ref=e101]: Crear Nivel
+        - list [ref=e104]:
+          - listitem [ref=e105]:
+            - link "Settings" [ref=e106] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e107]
+              - generic [ref=e110]: Settings
+          - listitem [ref=e111]:
+            - link "Ayuda" [ref=e112] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e113]
+              - generic [ref=e116]: Ayuda
+    - main [ref=e117]:
+      - generic [ref=e119]:
+        - button "Toggle Sidebar" [ref=e120]:
+          - img
+          - generic [ref=e121]: Toggle Sidebar
+        - generic [ref=e122]:
+          - button "🇪🇸 ES" [ref=e123]:
+            - generic [ref=e124]: 🇪🇸
+            - generic [ref=e125]: ES
+          - button "Toggle theme" [ref=e126]:
+            - img
+            - generic [ref=e127]: Toggle theme
+          - list [ref=e128]:
+            - listitem [ref=e129]:
+              - button "T testprofessor Usuario" [ref=e130]:
+                - generic [ref=e133]:
+                  - generic [ref=e136]: T
+                  - generic [ref=e138]:
+                    - generic [ref=e139]: testprofessor
+                    - generic [ref=e140]: Usuario
+      - generic [ref=e144]:
+        - generic:
+          - img
+        - generic [ref=e145]:
+          - generic [ref=e148]:
+            - heading "Dashboard" [level=1] [ref=e149]
+            - paragraph [ref=e150]: Resumen general del rendimiento y métricas clave de tu proyecto
+          - generic [ref=e152]:
+            - generic [ref=e153]: Failed to fetch
+            - button "Reintentar" [ref=e154]
+          - generic [ref=e155]:
+            - generic [ref=e156]:
+              - generic [ref=e159]:
+                - generic [ref=e160]:
+                  - img [ref=e162]
+                  - text: Estudiantes Totales
+                - generic [ref=e165]: "0"
+                - generic [ref=e167]:
+                  - img
+                  - text: 0%
+              - generic [ref=e168]:
+                - generic [ref=e169]:
+                  - text: Total de estudiantes registrados
+                  - img [ref=e170]
+                - generic [ref=e173]: Datos de ejemplo
+            - generic [ref=e174]:
+              - generic [ref=e177]:
+                - generic [ref=e178]:
+                  - img [ref=e180]
+                  - text: Estudiantes Activos
+                - generic [ref=e185]: "0"
+                - generic [ref=e187]:
+                  - img
+                  - text: 0%
+              - generic [ref=e188]:
+                - generic [ref=e189]:
+                  - text: Activos en los últimos 30 días
+                  - img [ref=e190]
+                - generic [ref=e193]: Datos de ejemplo
+            - generic [ref=e194]:
+              - generic [ref=e197]:
+                - generic [ref=e198]:
+                  - img [ref=e200]
+                  - text: Niveles Completados
+                - generic [ref=e204]: "0"
+                - generic [ref=e206]:
+                  - img
+                  - text: 0%
+              - generic [ref=e207]:
+                - generic [ref=e208]:
+                  - text: Total de niveles completados
+                  - img [ref=e209]
+                - generic [ref=e212]: Datos de ejemplo
+            - generic [ref=e213]:
+              - generic [ref=e216]:
+                - generic [ref=e217]:
+                  - img [ref=e219]
+                  - text: Tiempo de Juego
+                - generic [ref=e222]: 0m
+                - generic [ref=e224]:
+                  - img
+                  - text: 0%
+              - generic [ref=e225]:
+                - generic [ref=e226]:
+                  - text: Tiempo total de juego
+                  - img [ref=e227]
+                - generic [ref=e230]: Datos de ejemplo
+          - generic [ref=e233]:
+            - generic [ref=e234]:
+              - generic [ref=e235]: Actividad
+              - generic [ref=e236]: No hay datos de actividad en este período
+            - generic [ref=e238]: No hay datos disponibles
+          - generic [ref=e241]:
+            - paragraph [ref=e243]:
+              - img [ref=e244]
+              - text: "Error al cargar los datos: Failed to fetch"
+            - generic [ref=e247]:
+              - generic [ref=e248]:
+                - heading "Rendimiento por Nivel" [level=2] [ref=e249]
+                - generic [ref=e250]: 0 niveles
+              - generic [ref=e251]:
+                - generic [ref=e252]:
+                  - img [ref=e253]
+                  - textbox "Buscar niveles..." [ref=e256]
+                - combobox [ref=e257]:
+                  - img
+                  - generic: Todas las tasas
+                  - img
+                - button "Columnas" [ref=e258]:
+                  - img
+                  - generic [ref=e259]: Columnas
+                  - img
+                - button "Agregar" [ref=e260]:
+                  - img
+                  - generic [ref=e261]: Agregar
+            - generic [ref=e262]:
+              - table [ref=e264]:
+                - rowgroup [ref=e265]:
+                  - row "Seleccionar todo Nivel Tasa de Completado Intentos Promedio Tiempo Promedio" [ref=e266]:
+                    - columnheader [ref=e267]
+                    - columnheader "Seleccionar todo" [ref=e268]:
+                      - checkbox "Seleccionar todo" [ref=e270]
+                    - columnheader "Nivel" [ref=e271]
+                    - columnheader "Tasa de Completado" [ref=e272]
+                    - columnheader "Intentos Promedio" [ref=e273]
+                    - columnheader "Tiempo Promedio" [ref=e274]
+                    - columnheader [ref=e275]
+                - rowgroup [ref=e276]:
+                  - row "No se encontraron resultados." [ref=e277]:
+                    - cell "No se encontraron resultados." [ref=e278]
+              - status [ref=e279]
+            - generic [ref=e280]:
+              - generic [ref=e281]: 0 de 0 fila(s) seleccionada(s).
+              - generic [ref=e282]:
+                - generic [ref=e283]:
+                  - generic [ref=e284]: Filas por página
+                  - combobox [ref=e285]:
+                    - generic: "10"
+                    - img
+                - generic [ref=e286]: Página 1 de 0
+                - generic [ref=e287]:
+                  - button "Ir a primera página" [disabled]:
+                    - generic: Ir a primera página
+                    - img
+                  - button "Ir a página anterior" [disabled]:
+                    - generic: Ir a página anterior
+                    - img
+                  - button "Ir a siguiente página" [disabled]:
+                    - generic: Ir a siguiente página
+                    - img
+                  - button "Ir a última página" [disabled]:
+                    - generic: Ir a última página
+                    - img

@@ -1,0 +1,279 @@
+- generic:
+  - button "Open Next.js Dev Tools" [ref=e34] [cursor=pointer]:
+    - img [ref=e35]
+  - alert
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - list:
+                - listitem:
+                  - link:
+                    - /url: /dashboard
+                    - img
+                    - generic: Mi Plataforma
+            - generic:
+              - generic:
+                - generic: Estadísticas
+                - generic:
+                  - list:
+                    - listitem:
+                      - button:
+                        - img
+                        - generic: Quick Create
+                      - button:
+                        - img
+                        - generic: Inbox
+                  - list:
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard
+                          - text: Overview
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/students
+                          - text: Estudiantes
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/metrics
+                          - text: Métricas
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/reports
+                          - text: Reportes
+              - generic:
+                - generic: Gestión de Juegos y Niveles
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /dashboard/levels
+                      - img
+                      - generic: Niveles
+                  - listitem:
+                    - link:
+                      - /url: /dashboard/levels/create
+                      - img
+                      - generic: Crear Nivel
+              - generic:
+                - generic:
+                  - list:
+                    - listitem:
+                      - link:
+                        - /url: /dashboard/settings
+                        - img
+                        - generic: Settings
+                    - listitem:
+                      - link:
+                        - /url: /dashboard/help
+                        - img
+                        - generic: Ayuda
+      - main:
+        - generic:
+          - generic:
+            - button:
+              - img
+              - generic: Toggle Sidebar
+            - generic:
+              - button:
+                - generic: 🇪🇸
+                - generic: ES
+              - button:
+                - img
+                - generic: Toggle theme
+              - list:
+                - listitem:
+                  - button [expanded]:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: T
+                      - generic:
+                        - generic: testprofessor
+                        - generic: Usuario
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - heading [level=1]: Dashboard
+                      - paragraph: Resumen general del rendimiento y métricas clave de tu proyecto
+                  - generic:
+                    - generic:
+                      - generic: "Error al cargar las estadísticas: 403"
+                      - button: Reintentar
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - text: Estudiantes Totales
+                        - generic: "0"
+                        - generic:
+                          - generic:
+                            - img
+                            - text: 0%
+                      - generic:
+                        - generic:
+                          - text: Total de estudiantes registrados
+                          - img
+                        - generic: Datos de ejemplo
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - text: Estudiantes Activos
+                        - generic: "0"
+                        - generic:
+                          - generic:
+                            - img
+                            - text: 0%
+                      - generic:
+                        - generic:
+                          - text: Activos en los últimos 30 días
+                          - img
+                        - generic: Datos de ejemplo
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - text: Niveles Completados
+                        - generic: "0"
+                        - generic:
+                          - generic:
+                            - img
+                            - text: 0%
+                      - generic:
+                        - generic:
+                          - text: Total de niveles completados
+                          - img
+                        - generic: Datos de ejemplo
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - img
+                          - text: Tiempo de Juego
+                        - generic: 0m
+                        - generic:
+                          - generic:
+                            - img
+                            - text: 0%
+                      - generic:
+                        - generic:
+                          - text: Tiempo total de juego
+                          - img
+                        - generic: Datos de ejemplo
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Actividad
+                        - generic: No hay datos de actividad en este período
+                      - generic:
+                        - generic: No hay datos disponibles
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph:
+                          - img
+                          - text: "Error al cargar los datos: Error al cargar las estadísticas: 403"
+                      - generic:
+                        - generic:
+                          - heading [level=2]: Rendimiento por Nivel
+                          - generic: 0 niveles
+                        - generic:
+                          - generic:
+                            - img
+                            - textbox:
+                              - /placeholder: Buscar niveles...
+                          - combobox:
+                            - img
+                            - generic: Todas las tasas
+                            - img
+                          - button:
+                            - img
+                            - generic: Columnas
+                            - img
+                          - button:
+                            - img
+                            - generic: Agregar
+                      - generic:
+                        - generic:
+                          - table:
+                            - rowgroup:
+                              - row:
+                                - columnheader
+                                - columnheader:
+                                  - generic:
+                                    - checkbox
+                                - columnheader: Nivel
+                                - columnheader: Tasa de Completado
+                                - columnheader: Intentos Promedio
+                                - columnheader: Tiempo Promedio
+                                - columnheader
+                            - rowgroup:
+                              - row:
+                                - cell: No se encontraron resultados.
+                        - status
+                      - generic:
+                        - generic: 0 de 0 fila(s) seleccionada(s).
+                        - generic:
+                          - generic:
+                            - generic: Filas por página
+                            - combobox:
+                              - generic: "10"
+                              - img
+                          - generic: Página 1 de 0
+                          - generic:
+                            - button [disabled]:
+                              - generic: Ir a primera página
+                              - img
+                            - button [disabled]:
+                              - generic: Ir a página anterior
+                              - img
+                            - button [disabled]:
+                              - generic: Ir a siguiente página
+                              - img
+                            - button [disabled]:
+                              - generic: Ir a última página
+                              - img
+  - menu "T testprofessor Usuario" [active] [ref=e288]:
+    - generic [ref=e292]:
+      - generic [ref=e295]: T
+      - generic [ref=e297]:
+        - generic [ref=e298]: testprofessor
+        - generic [ref=e299]: En línea
+    - separator [ref=e301]
+    - group [ref=e302]:
+      - menuitem "Mi Perfil →" [ref=e303] [cursor=pointer]:
+        - img
+        - generic [ref=e304]: Mi Perfil
+        - generic [ref=e305]: →
+      - menuitem "Configuración →" [ref=e306] [cursor=pointer]:
+        - img
+        - generic [ref=e307]: Configuración
+        - generic [ref=e308]: →
+      - menuitem "Notificaciones 3" [ref=e309] [cursor=pointer]:
+        - img
+        - generic [ref=e310]: Notificaciones
+        - generic [ref=e311]: "3"
+    - separator [ref=e312]
+    - menuitem "Cerrar Sesión" [ref=e313] [cursor=pointer]:
+      - img
+      - generic [ref=e314]: Cerrar Sesión

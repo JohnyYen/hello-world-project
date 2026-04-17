@@ -1,0 +1,78 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - img [ref=e4]
+    - paragraph [ref=e6]: Verifying authentication...
+  - generic [active]:
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - navigation [ref=e12]:
+            - button "previous" [disabled] [ref=e13]:
+              - img "previous" [ref=e14]
+            - generic [ref=e16]:
+              - generic [ref=e17]: 1/
+              - text: "1"
+            - button "next" [disabled] [ref=e18]:
+              - img "next" [ref=e19]
+          - img
+        - generic [ref=e21]:
+          - link "Next.js 15.5.4 (outdated) Turbopack" [ref=e22] [cursor=pointer]:
+            - /url: https://nextjs.org/docs/messages/version-staleness
+            - img [ref=e23]
+            - generic "An outdated version detected (latest is 16.2.2), upgrade is highly recommended!" [ref=e25]: Next.js 15.5.4 (outdated)
+            - generic [ref=e26]: Turbopack
+          - img
+      - dialog "Build Error" [ref=e28]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic [ref=e33]:
+              - generic [ref=e35]: Build Error
+              - generic [ref=e36]:
+                - button "Copy Error Info" [ref=e37] [cursor=pointer]:
+                  - img [ref=e38]
+                - button "No related documentation found" [disabled] [ref=e40]:
+                  - img [ref=e41]
+                - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e43] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                  - img [ref=e44]
+            - paragraph [ref=e53]: Export SignupForm doesn't exist in target module
+          - generic [ref=e55]:
+            - generic [ref=e57]:
+              - img [ref=e59]
+              - generic [ref=e62]: ./apps/frontend/src/app/(auth)/signup/page.tsx (5:1)
+              - button "Open in editor" [ref=e63] [cursor=pointer]:
+                - img [ref=e65]
+            - generic [ref=e68]:
+              - generic [ref=e69]: Export SignupForm doesn't exist in target module
+              - generic [ref=e70]: 3 |
+              - text: import Link from "next/link";
+              - generic [ref=e71]: 4 |
+              - text: ">"
+              - generic [ref=e72]: 5 |
+              - text: import
+              - generic [ref=e73]: "{"
+              - text: SignupForm
+              - generic [ref=e74]: "}"
+              - text: from "@/components/auth"
+              - generic [ref=e75]: "|"
+              - text: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              - generic [ref=e76]: 6 |
+              - generic [ref=e77]: 7 |
+              - text: export default function SignupPage
+              - generic [ref=e78]: "() {"
+              - generic [ref=e79]: 8 |
+              - text: return
+              - generic [ref=e80]: (
+              - generic [ref=e81]: The export SignupForm was not found in module [project]/apps/frontend/src/components/auth/index.ts [app-rsc] (ecmascript). Did you mean to import AuthGuard? All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+        - generic [ref=e82]:
+          - generic [ref=e83]: "1"
+          - generic [ref=e84]: "2"
+    - generic [ref=e89] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e90]:
+        - img [ref=e91]
+      - button "Open issues overlay" [ref=e95]:
+        - generic [ref=e96]:
+          - generic [ref=e97]: "0"
+          - generic [ref=e98]: "1"
+        - generic [ref=e99]: Issue
+  - alert [ref=e100]

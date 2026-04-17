@@ -1,0 +1,36 @@
+change_name: auth-pages-refactor
+status: ready-for-implementation
+created_at: "2026-04-09"
+current_phase: sdd-tasks
+completed_phases:
+  - sdd-init
+  - sdd-explore
+  - sdd-propose
+  - sdd-spec
+  - sdd-design
+  - sdd-tasks
+pending_phases:
+  - sdd-apply
+  - sdd-verify
+  - sdd-archive
+
+context:
+  scope: "Refactorizar login y signup pages"
+  goals:
+    - "Traducir todo el texto a español"
+    - "Eliminar imagen lateral en signup"
+    - "Mejorar diseño con frontend-design skill"
+    - "Optimizar accesibilidad (ARIA, keyboard nav)"
+    - "Mejorar rendimiento (useActionState consistente)"
+    - "Unificar patrones entre login y signup"
+  affected_files:
+    - "apps/frontend/src/app/(auth)/login/page.tsx"
+    - "apps/frontend/src/app/(auth)/signup/page.tsx"
+    - "apps/frontend/src/components/auth/login-form.tsx"
+    - "apps/frontend/src/components/auth/signup-form.tsx"
+  design_system:
+    palette: "Indigo & Violet (elegant dark)"
+    primary: "#6366f1 (indigo-600)"
+    accent: "#8b5cf6 (violet-500)"
+    radius: "0.375rem"
+    components: "shadcn/ui (Card, Button, Input, Field)"

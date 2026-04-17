@@ -1,0 +1,256 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e6]:
+      - list [ref=e8]:
+        - listitem [ref=e9]:
+          - link "Mi Plataforma" [ref=e10] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e11]
+            - generic [ref=e14]: Mi Plataforma
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: Estadísticas
+          - generic [ref=e18]:
+            - list [ref=e19]:
+              - listitem [ref=e20]:
+                - button "Quick Create" [ref=e21]:
+                  - img [ref=e22]
+                  - generic [ref=e24]: Quick Create
+                - button "Inbox" [ref=e25]:
+                  - img
+                  - generic [ref=e26]: Inbox
+            - list [ref=e27]:
+              - listitem [ref=e28]:
+                - button "Overview" [ref=e29]:
+                  - img [ref=e30]
+                  - link "Overview" [ref=e34] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e35]:
+                - button "Estudiantes" [ref=e36]:
+                  - img [ref=e37]
+                  - link "Estudiantes" [ref=e40] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e41]:
+                - button "Métricas" [ref=e42]:
+                  - img [ref=e43]
+                  - link "Métricas" [ref=e47] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e48]:
+                - button "Reportes" [ref=e49]:
+                  - img [ref=e50]
+                  - link "Reportes" [ref=e52] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e53]:
+          - generic [ref=e54]: Gestión de Juegos y Niveles
+          - list [ref=e55]:
+            - listitem [ref=e56]:
+              - link "Niveles" [ref=e57] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e58]
+                - generic [ref=e61]: Niveles
+            - listitem [ref=e62]:
+              - link "Crear Nivel" [ref=e63] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e64]
+                - generic [ref=e65]: Crear Nivel
+        - list [ref=e68]:
+          - listitem [ref=e69]:
+            - link "Settings" [ref=e70] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e71]
+              - generic [ref=e74]: Settings
+          - listitem [ref=e75]:
+            - link "Ayuda" [ref=e76] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e77]
+              - generic [ref=e80]: Ayuda
+    - main [ref=e81]:
+      - generic [ref=e83]:
+        - button "Toggle Sidebar" [ref=e84]:
+          - img
+          - generic [ref=e85]: Toggle Sidebar
+        - generic [ref=e86]:
+          - button "🇪🇸 ES" [ref=e87]:
+            - generic [ref=e88]: 🇪🇸
+            - generic [ref=e89]: ES
+          - button "Toggle theme" [ref=e90]:
+            - img
+            - generic [ref=e91]: Toggle theme
+          - list [ref=e92]:
+            - listitem [ref=e93]:
+              - button "PD Profesor Demo Profesor" [ref=e94]:
+                - generic [ref=e97]:
+                  - generic [ref=e100]: PD
+                  - generic [ref=e102]:
+                    - generic [ref=e103]: Profesor Demo
+                    - generic [ref=e104]: Profesor
+      - generic [ref=e108]:
+        - generic:
+          - img
+        - generic [ref=e120]:
+          - generic [ref=e122]:
+            - generic [ref=e123]:
+              - generic [ref=e124]:
+                - img [ref=e126]
+                - generic [ref=e128]: Matemáticas I
+              - heading "Evolución Histórica" [level=1] [ref=e129]
+              - paragraph [ref=e130]: Seguimiento del rendimiento académico a lo largo de los períodos escolares
+            - generic [ref=e131]:
+              - button "Exportar PDF" [ref=e133]:
+                - img [ref=e134]
+                - generic [ref=e138]: Exportar PDF
+              - generic [ref=e139]:
+                - generic [ref=e140]:
+                  - img [ref=e141]
+                  - generic [ref=e143]: 10 períodos
+                - generic [ref=e145]:
+                  - img [ref=e146]
+                  - generic [ref=e151]: 492 estudiantes
+          - generic [ref=e152]:
+            - generic [ref=e154]:
+              - generic [ref=e155]:
+                - heading "Seleccionar Períodos" [level=3] [ref=e156]
+                - button "Limpiar" [ref=e157]:
+                  - img [ref=e158]
+                  - text: Limpiar
+              - generic [ref=e161]:
+                - button "Todos" [ref=e162]
+                - button "Último Año" [ref=e163]
+              - generic [ref=e164]:
+                - generic [ref=e166]:
+                  - generic [ref=e167]:
+                    - img [ref=e168]
+                    - generic [ref=e170]: Comparar Cursos
+                  - generic [ref=e171]: 2 seleccionados
+                - generic [ref=e172]:
+                  - button "2028-2029 (Todos)" [ref=e174]:
+                    - generic [ref=e175]: 2028-2029 (Todos)
+                    - img [ref=e176]
+                  - generic [ref=e179]:
+                    - text: 2028-2029 (Todos)
+                    - button [ref=e180]:
+                      - img [ref=e181]
+              - generic [ref=e184]:
+                - paragraph [ref=e185]: 2 períodos seleccionados
+                - paragraph [ref=e186]: Comparando 2028 - Primer Semestre → 2028 - Segundo Semestre
+            - generic [ref=e187]:
+              - generic [ref=e188]:
+                - button "Resumen" [ref=e189]:
+                  - img [ref=e190]
+                  - text: Resumen
+                - button "Evolución" [ref=e192]:
+                  - img [ref=e193]
+                  - text: Evolución
+                - button "Comparación" [ref=e196]:
+                  - img [ref=e197]
+                  - text: Comparación
+              - generic [ref=e200]:
+                - generic [ref=e201]:
+                  - generic [ref=e202]:
+                    - img [ref=e204]
+                    - heading "Métricas Consolidadas" [level=2] [ref=e206]
+                  - paragraph [ref=e207]: Promedio de 2 períodos
+                - generic [ref=e208]:
+                  - generic [ref=e210]:
+                    - img [ref=e212]
+                    - generic [ref=e214]:
+                      - generic [ref=e215]:
+                        - paragraph [ref=e216]: Períodos
+                        - paragraph [ref=e217]: "2"
+                        - paragraph [ref=e218]: Seleccionados
+                      - img [ref=e220]
+                  - generic [ref=e224]:
+                    - img [ref=e226]
+                    - generic [ref=e228]:
+                      - generic [ref=e229]:
+                        - paragraph [ref=e230]: Estudiantes
+                        - paragraph [ref=e231]: "106"
+                        - paragraph [ref=e232]: En seleccionados
+                      - img [ref=e234]
+                  - generic [ref=e241]:
+                    - img [ref=e243]
+                    - generic [ref=e245]:
+                      - generic [ref=e246]:
+                        - paragraph [ref=e247]: Completación
+                        - paragraph [ref=e248]: 80%
+                        - paragraph [ref=e249]: Promedio
+                      - img [ref=e251]
+                  - generic [ref=e256]:
+                    - img [ref=e258]
+                    - generic [ref=e260]:
+                      - generic [ref=e261]:
+                        - paragraph [ref=e262]: Calificación
+                        - paragraph [ref=e263]: 91%
+                        - paragraph [ref=e264]: Promedio
+                      - img [ref=e266]
+              - generic [ref=e271]:
+                - generic [ref=e272]:
+                  - generic [ref=e273]:
+                    - img [ref=e275]
+                    - heading "Evolución Total" [level=2] [ref=e278]
+                  - paragraph [ref=e279]: Desde 2028 - Primer Semestre hasta 2028 - Segundo Semestre
+                - generic [ref=e280]:
+                  - generic [ref=e281]:
+                    - paragraph [ref=e282]: Progreso
+                    - paragraph [ref=e283]: +2.0%
+                  - generic [ref=e284]:
+                    - paragraph [ref=e285]: Calificación
+                    - paragraph [ref=e286]: +2.0%
+                  - generic [ref=e287]:
+                    - paragraph [ref=e288]: Completación
+                    - paragraph [ref=e289]: +4.0%
+                  - generic [ref=e290]:
+                    - paragraph [ref=e291]: Tiempo
+                    - paragraph [ref=e292]: +1h
+              - generic [ref=e293]:
+                - generic [ref=e295]:
+                  - img [ref=e297]
+                  - heading "Rendimiento por Período" [level=2] [ref=e300]
+                - table [ref=e303]:
+                  - rowgroup [ref=e304]:
+                    - row "Período Año Est. Prog. Calif. Tasa Tendencia" [ref=e305]:
+                      - columnheader "Período" [ref=e306]
+                      - columnheader "Año" [ref=e307]
+                      - columnheader "Est." [ref=e308]
+                      - columnheader "Prog." [ref=e309]
+                      - columnheader "Calif." [ref=e310]
+                      - columnheader "Tasa" [ref=e311]
+                      - columnheader "Tendencia" [ref=e312]
+                  - rowgroup [ref=e313]:
+                    - row "2028 - Primer Semestre 2028-2029 52 88% 90% 3.5%" [ref=e314]:
+                      - cell "2028 - Primer Semestre" [ref=e315]
+                      - cell "2028-2029" [ref=e316]
+                      - cell "52" [ref=e317]
+                      - cell "88%" [ref=e318]
+                      - cell "90%" [ref=e319]:
+                        - generic [ref=e320]: 90%
+                      - cell [ref=e321]
+                      - cell "3.5%" [ref=e325]:
+                        - generic [ref=e326]:
+                          - img [ref=e327]
+                          - text: 3.5%
+                    - row "2028 - Segundo Semestre 2028-2029 54 90% 92% 2.3%" [ref=e330]:
+                      - cell "2028 - Segundo Semestre" [ref=e331]
+                      - cell "2028-2029" [ref=e332]
+                      - cell "54" [ref=e333]
+                      - cell "90%" [ref=e334]
+                      - cell "92%" [ref=e335]:
+                        - generic [ref=e336]: 92%
+                      - cell [ref=e337]
+                      - cell "2.3%" [ref=e341]:
+                        - generic [ref=e342]:
+                          - img [ref=e343]
+                          - text: 2.3%
+          - paragraph [ref=e347]: 📊 Reporte de Matemáticas I • Hello World Platform
+  - generic [ref=e352] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e353]:
+      - img [ref=e354]
+    - generic [ref=e357]:
+      - button "Open issues overlay" [ref=e358]:
+        - generic [ref=e359]:
+          - generic [ref=e360]: "0"
+          - generic [ref=e361]: "1"
+        - generic [ref=e362]: Issue
+      - button "Collapse issues badge" [ref=e363]:
+        - img [ref=e364]
+  - alert [ref=e366]

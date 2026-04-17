@@ -1,0 +1,176 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e17]:
+    - generic [ref=e20]:
+      - list [ref=e22]:
+        - listitem [ref=e23]:
+          - link "Mi Plataforma" [ref=e24] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e25]
+            - generic [ref=e28]: Mi Plataforma
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: Estadísticas
+          - generic [ref=e32]:
+            - list [ref=e33]:
+              - listitem [ref=e34]:
+                - button "Quick Create" [ref=e35]:
+                  - img [ref=e36]
+                  - generic [ref=e38]: Quick Create
+                - button "Inbox" [ref=e39]:
+                  - img
+                  - generic [ref=e40]: Inbox
+            - list [ref=e41]:
+              - listitem [ref=e42]:
+                - button "Overview" [ref=e43]:
+                  - img [ref=e44]
+                  - link "Overview" [ref=e48] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e49]:
+                - button "Estudiantes" [ref=e50]:
+                  - img [ref=e51]
+                  - link "Estudiantes" [ref=e54] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e55]:
+                - button "Métricas" [ref=e56]:
+                  - img [ref=e57]
+                  - link "Métricas" [ref=e61] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e62]:
+                - button "Reportes" [ref=e63]:
+                  - img [ref=e64]
+                  - link "Reportes" [ref=e66] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e67]:
+          - generic [ref=e68]: Gestión de Juegos y Niveles
+          - list [ref=e69]:
+            - listitem [ref=e70]:
+              - link "Niveles" [ref=e71] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e72]
+                - generic [ref=e75]: Niveles
+            - listitem [ref=e76]:
+              - link "Crear Nivel" [ref=e77] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e78]
+                - generic [ref=e79]: Crear Nivel
+        - list [ref=e82]:
+          - listitem [ref=e83]:
+            - link "Settings" [ref=e84] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e85]
+              - generic [ref=e88]: Settings
+          - listitem [ref=e89]:
+            - link "Ayuda" [ref=e90] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e91]
+              - generic [ref=e94]: Ayuda
+    - main [ref=e95]:
+      - generic [ref=e97]:
+        - button "Toggle Sidebar" [ref=e98]:
+          - img
+          - generic [ref=e99]: Toggle Sidebar
+        - generic [ref=e100]:
+          - button "🇪🇸 ES" [ref=e101]:
+            - generic [ref=e102]: 🇪🇸
+            - generic [ref=e103]: ES
+          - button "Toggle theme" [ref=e104]:
+            - img
+            - generic [ref=e105]: Toggle theme
+          - list [ref=e106]:
+            - listitem [ref=e107]:
+              - button "S superadmin Usuario" [ref=e108]:
+                - generic [ref=e111]:
+                  - generic [ref=e114]: S
+                  - generic [ref=e116]:
+                    - generic [ref=e117]: superadmin
+                    - generic [ref=e118]: Usuario
+      - generic [ref=e122]:
+        - generic:
+          - img
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - link "Volver a la lista de estudiantes" [ref=e125] [cursor=pointer]:
+              - /url: /dashboard/students
+              - button "Volver a la lista de estudiantes" [ref=e126]:
+                - img
+                - text: Volver a la lista de estudiantes
+            - generic [ref=e127]:
+              - generic [ref=e128]:
+                - generic [ref=e129]:
+                  - img [ref=e131]
+                  - generic [ref=e134]: Estudiante
+                - heading "Pedro Álvarez" [level=1] [ref=e135]
+                - paragraph [ref=e136]: Perfil del estudiante
+              - generic [ref=e137]:
+                - link "Ver Reportes" [ref=e138] [cursor=pointer]:
+                  - /url: /dashboard/students/10e44153-994b-482a-8ec7-657b664237e8/reports
+                  - button "Ver Reportes" [ref=e139]:
+                    - img
+                    - text: Ver Reportes
+                - button "Contactar" [ref=e140]:
+                  - img
+                  - text: Contactar
+                - button "Feedback" [ref=e141]:
+                  - img
+                  - text: Feedback
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - generic [ref=e146]: Información del Estudiante
+                  - generic [ref=e147]: Detalles del perfil del estudiante
+                - generic [ref=e148]:
+                  - generic [ref=e149]:
+                    - paragraph [ref=e150]: Nombre
+                    - paragraph [ref=e151]: Pedro Álvarez
+                  - generic [ref=e152]:
+                    - paragraph [ref=e153]: Correo Electrónico
+                    - paragraph [ref=e154]: pedro.alvarez@student.edu
+                  - generic [ref=e155]:
+                    - paragraph [ref=e156]: Estado
+                    - generic [ref=e158]: Activo
+                  - generic [ref=e159]:
+                    - paragraph [ref=e160]: Nivel Máximo
+                    - paragraph [ref=e161]:
+                      - generic [ref=e162]: Nivel 0
+                  - generic [ref=e163]:
+                    - paragraph [ref=e164]: Fecha de Registro
+                    - paragraph [ref=e165]: 6/4/2026
+                  - generic [ref=e166]:
+                    - paragraph [ref=e167]: Última Actividad
+                    - paragraph [ref=e168]: 6/4/2026
+              - generic [ref=e169]:
+                - generic [ref=e170]:
+                  - generic [ref=e171]: Progreso del Estudiante
+                  - generic [ref=e172]: Detalles de avance en el curso
+                - generic [ref=e174]:
+                  - generic [ref=e175]:
+                    - generic [ref=e176]: Lecciones Completadas
+                    - generic [ref=e177]: 0 / 0
+                  - generic [ref=e179]: 0% completado
+            - generic [ref=e180]:
+              - generic [ref=e181]:
+                - generic [ref=e182]:
+                  - generic [ref=e183]: Logros
+                  - generic [ref=e184]: Reconocimientos del estudiante
+                - paragraph [ref=e186]: No hay logros registrados
+              - generic [ref=e187]:
+                - generic [ref=e188]:
+                  - generic [ref=e189]: Estadísticas
+                  - generic [ref=e190]: Resumen de actividad
+                - generic [ref=e191]:
+                  - generic [ref=e192]:
+                    - paragraph [ref=e193]: "0"
+                    - paragraph [ref=e194]: Lecciones
+                  - generic [ref=e195]:
+                    - paragraph [ref=e196]: "0"
+                    - paragraph [ref=e197]: Nivel
+                  - generic [ref=e198]:
+                    - paragraph [ref=e199]: "0"
+                    - paragraph [ref=e200]: Logros
+                  - generic [ref=e201]:
+                    - paragraph [ref=e202]: 0%
+                    - paragraph [ref=e203]: Progreso
+  - button "Open Next.js Dev Tools" [ref=e12] [cursor=pointer]:
+    - img [ref=e13]
+  - alert [ref=e16]

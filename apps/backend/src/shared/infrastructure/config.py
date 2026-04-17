@@ -2,6 +2,14 @@ import os
 
 from pydantic_settings import BaseSettings
 
+
+def _convert_to_async_db_url(url: str) -> str:
+    """Convert postgresql:// to postgresql+asyncpg:// for async database connection."""
+    if url and "postgresql://" in url and "postgresql+asyncpg://" not in url:
+        return url.replace("postgresql://", "postgresql+asyncpg://")
+    return url
+
+
 # Always prefer environment variable over .env files
 # This ensures Docker's DATABASE_URL takes precedence
 
@@ -19,6 +27,11 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Convert database URL to asyncpg dialect
+        self.DATABASE_URL = _convert_to_async_db_url(self.DATABASE_URL)
 
 
 settings = Settings()

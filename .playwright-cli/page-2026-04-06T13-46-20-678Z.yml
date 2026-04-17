@@ -1,0 +1,183 @@
+- generic [ref=e3]:
+  - generic [ref=e6]:
+    - list [ref=e8]:
+      - listitem [ref=e9]:
+        - link "Mi Plataforma" [ref=e10] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e11]
+          - generic [ref=e14]: Mi Plataforma
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e17]: Estadísticas
+        - generic [ref=e18]:
+          - list [ref=e19]:
+            - listitem [ref=e20]:
+              - button "Quick Create" [ref=e21]:
+                - img [ref=e22]
+                - generic [ref=e24]: Quick Create
+              - button "Inbox" [ref=e25]:
+                - img
+                - generic [ref=e26]: Inbox
+          - list [ref=e27]:
+            - listitem [ref=e28]:
+              - button "Overview" [ref=e29]:
+                - img [ref=e30]
+                - link "Overview" [ref=e34] [cursor=pointer]:
+                  - /url: /dashboard
+            - listitem [ref=e35]:
+              - button "Estudiantes" [ref=e36]:
+                - img [ref=e37]
+                - link "Estudiantes" [ref=e40] [cursor=pointer]:
+                  - /url: /dashboard/students
+            - listitem [ref=e41]:
+              - button "Métricas" [ref=e42]:
+                - img [ref=e43]
+                - link "Métricas" [ref=e47] [cursor=pointer]:
+                  - /url: /dashboard/metrics
+            - listitem [ref=e48]:
+              - button "Reportes" [ref=e49]:
+                - img [ref=e50]
+                - link "Reportes" [ref=e52] [cursor=pointer]:
+                  - /url: /dashboard/reports
+      - generic [ref=e53]:
+        - generic [ref=e54]: Gestión de Juegos y Niveles
+        - list [ref=e55]:
+          - listitem [ref=e56]:
+            - link "Niveles" [ref=e57] [cursor=pointer]:
+              - /url: /dashboard/levels
+              - img [ref=e58]
+              - generic [ref=e61]: Niveles
+          - listitem [ref=e62]:
+            - link "Crear Nivel" [ref=e63] [cursor=pointer]:
+              - /url: /dashboard/levels/create
+              - img [ref=e64]
+              - generic [ref=e65]: Crear Nivel
+      - list [ref=e68]:
+        - listitem [ref=e69]:
+          - link "Settings" [ref=e70] [cursor=pointer]:
+            - /url: /dashboard/settings
+            - img [ref=e71]
+            - generic [ref=e74]: Settings
+        - listitem [ref=e75]:
+          - link "Ayuda" [ref=e76] [cursor=pointer]:
+            - /url: /dashboard/help
+            - img [ref=e77]
+            - generic [ref=e80]: Ayuda
+  - main [ref=e81]:
+    - generic [ref=e83]:
+      - button "Toggle Sidebar" [ref=e84]:
+        - img
+        - generic [ref=e85]: Toggle Sidebar
+      - generic [ref=e86]:
+        - button "🇪🇸 ES" [ref=e87]:
+          - generic [ref=e88]: 🇪🇸
+          - generic [ref=e89]: ES
+        - button "Toggle theme" [ref=e90]:
+          - img
+          - generic [ref=e91]: Toggle theme
+        - list [ref=e92]:
+          - listitem [ref=e93]:
+            - button "PD Profesor Demo Profesor" [ref=e94]:
+              - generic [ref=e97]:
+                - generic [ref=e100]: PD
+                - generic [ref=e102]:
+                  - generic [ref=e103]: Profesor Demo
+                  - generic [ref=e104]: Profesor
+    - generic [ref=e108]:
+      - generic:
+        - img
+      - generic [ref=e109]:
+        - generic [ref=e110]:
+          - generic [ref=e111]:
+            - img [ref=e113]
+            - generic [ref=e116]: Soporte
+          - heading "Centro de Ayuda" [level=1] [ref=e117]
+          - paragraph [ref=e118]: Encuentra respuestas a tus preguntas o contacta con nuestro equipo de soporte
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - generic [ref=e121]:
+              - generic [ref=e122]:
+                - heading "Búsqueda de Ayuda" [level=2] [ref=e123]
+                - paragraph [ref=e124]: Encuentra respuestas rápidamente
+              - generic [ref=e126]:
+                - textbox "Buscar en la base de conocimientos..." [ref=e127]
+                - button "Buscar" [ref=e128]
+            - generic [ref=e129]:
+              - generic [ref=e130]:
+                - heading "Preguntas Frecuentes" [level=2] [ref=e131]
+                - paragraph [ref=e132]: Respuestas a las consultas más comunes
+              - generic [ref=e134]:
+                - heading "¿Cómo cambio mi contraseña?" [level=3] [ref=e136]:
+                  - button "¿Cómo cambio mi contraseña?" [ref=e137]:
+                    - text: ¿Cómo cambio mi contraseña?
+                    - img
+                - heading "¿Cómo puedo ver mi progreso?" [level=3] [ref=e139]:
+                  - button "¿Cómo puedo ver mi progreso?" [ref=e140]:
+                    - text: ¿Cómo puedo ver mi progreso?
+                    - img
+                - heading "¿Qué niveles hay disponibles?" [level=3] [ref=e142]:
+                  - button "¿Qué niveles hay disponibles?" [ref=e143]:
+                    - text: ¿Qué niveles hay disponibles?
+                    - img
+                - heading "¿Cómo contacto con un docente?" [level=3] [ref=e145]:
+                  - button "¿Cómo contacto con un docente?" [ref=e146]:
+                    - text: ¿Cómo contacto con un docente?
+                    - img
+                - heading "¿Qué hago si encuentro un error?" [level=3] [ref=e148]:
+                  - button "¿Qué hago si encuentro un error?" [ref=e149]:
+                    - text: ¿Qué hago si encuentro un error?
+                    - img
+            - generic [ref=e150]:
+              - generic [ref=e151]:
+                - heading "Reportar un Problema" [level=2] [ref=e152]
+                - paragraph [ref=e153]: ¿Encontraste un error o tienes una sugerencia?
+              - generic [ref=e154]:
+                - generic [ref=e155]:
+                  - text: Asunto
+                  - textbox "Breve descripción del problema" [ref=e156]
+                - generic [ref=e157]:
+                  - text: Descripción
+                  - textbox "Describe el problema con detalle..." [ref=e158]
+                - button "Enviar Reporte" [ref=e160]
+          - generic [ref=e161]:
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - heading "Contacto" [level=2] [ref=e164]
+                - paragraph [ref=e165]: ¿Necesitas ayuda inmediata?
+              - generic [ref=e166]:
+                - button "Soporte por Email Respondemos en 24h" [ref=e167]:
+                  - img
+                  - text: Soporte por Email
+                  - generic [ref=e168]: Respondemos en 24h
+                - button "Chat en Vivo Disponible" [ref=e169]:
+                  - img
+                  - text: Chat en Vivo
+                  - generic [ref=e170]: Disponible
+                - button "Soporte Telefónico No disponible" [ref=e171]:
+                  - img
+                  - text: Soporte Telefónico
+                  - generic [ref=e172]: No disponible
+            - generic [ref=e173]:
+              - generic [ref=e174]:
+                - heading "Recursos Útiles" [level=2] [ref=e175]
+                - paragraph [ref=e176]: Documentación y guías
+              - generic [ref=e177]:
+                - button "Guía de Inicio Rápido" [ref=e178]
+                - button "Documentación del Estudiante" [ref=e179]
+                - button "Video Tutoriales" [ref=e180]
+                - button "Comunidad de Usuarios" [ref=e181]
+            - generic [ref=e182]:
+              - heading "Estadísticas de Soporte" [level=2] [ref=e184]
+              - generic [ref=e185]:
+                - generic [ref=e186]:
+                  - paragraph [ref=e187]: 98%
+                  - paragraph [ref=e188]: Satisfacción
+                - generic [ref=e189]:
+                  - paragraph [ref=e190]: 24h
+                  - paragraph [ref=e191]: Tiempo de respuesta
+                - generic [ref=e192]:
+                  - paragraph [ref=e193]: 500+
+                  - paragraph [ref=e194]: Preguntas FAQ
+                - generic [ref=e195]:
+                  - paragraph [ref=e196]: 24/7
+                  - paragraph [ref=e197]: Disponibilidad
