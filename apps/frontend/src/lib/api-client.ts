@@ -370,34 +370,27 @@ export class CourseReportsService {
 
   async getCourseMetrics(
     courseIds: string[],
-    options?: { signal?: AbortSignal },
   ): Promise<ApiResponse<CourseMetrics[]>> {
     const baseUrl = this.getBaseUrl();
     return this._client.get(`${baseUrl}/metrics`, {
       params: { course_ids: courseIds.join(",") },
-      signal: options?.signal,
     });
   }
 
   async getProgressOverTime(
     courseId: string,
-    options?: { signal?: AbortSignal },
   ): Promise<ApiResponse<CourseProgressOverTime[]>> {
     const baseUrl = this.getBaseUrl();
-    return this._client.get(`${baseUrl}/${courseId}/progress-over-time`, {
-      signal: options?.signal,
-    });
+    return this._client.get(`${baseUrl}/${courseId}/progress-over-time`);
   }
 
   async getActivitySummary(
     courseId: string,
     days = 30,
-    options?: { signal?: AbortSignal },
   ): Promise<ApiResponse<StudentActivitySummary[]>> {
     const baseUrl = this.getBaseUrl();
     return this._client.get(`${baseUrl}/${courseId}/activity-summary`, {
       params: { days },
-      signal: options?.signal,
     });
   }
 }
