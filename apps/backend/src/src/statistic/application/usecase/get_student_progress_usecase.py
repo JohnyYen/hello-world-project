@@ -50,10 +50,21 @@ class GetStudentProgressUseCase:
         progress_repo = ProgressRepository(self.db)
         progresses = await progress_repo.get_by_student_id(student_uuid)
 
+        # Si no hay progreso, retornar datos vacíos (no es un error)
         if not progresses:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="No se encontró progreso para este estudiante",
+            return StudentProgressResponse(
+                student_id=student_id,
+                kpis=StudentReportKPIs(
+                    total_levels_completed=0,
+                    total_games_played=0,
+                    total_play_time=0,
+                    average_score=0.0,
+                    current_streak=0,
+                    last_activity=None,
+                ),
+                progress_over_time=[],
+                level_performance=[],
+                activity_distribution=[],
             )
 
         kpis = self._calculate_kpis(progresses)
