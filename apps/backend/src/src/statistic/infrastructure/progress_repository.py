@@ -249,18 +249,20 @@ class ProgressRepository(BaseRepository[Progress]):
         Returns:
             List[dict]: Lista de rendimiento por nivel
         """
-        from src.levels.domain.segment_level import SegmentLevel
+        from src.game.domain.segment_level import SegmentLevel
+        from src.game.domain.level import Level
 
         stmt = (
             select(
-                SegmentLevel.name.label("level_name"),
+                Level.title.label("level_name"),
                 func.avg(Progress.efficiency_rating).label("average_score"),
                 func.avg(Progress.attempt_count).label("average_attempts"),
                 func.sum(Progress.objectives_completed).label("total_completed"),
                 func.count(Progress.id).label("total_attempts"),
             )
             .join(SegmentLevel, Progress.segment_level_id == SegmentLevel.id)
-            .group_by(SegmentLevel.id, SegmentLevel.name)
+            .join(Level, SegmentLevel.level_number_id == Level.id)
+            .group_by(Level.id, Level.title)
         )
 
         result = await self.db.execute(stmt)
@@ -290,10 +292,16 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         if not student_ids:
             return {
-                "average_progress": 0, "average_grade": 0, "completion_rate": 0,
-                "students_completed": 0, "average_active_time": 0,
-                "average_sessions": 0, "high_performers": 0,
-                "medium_performers": 0, "low_performers": 0, "total_students": 0,
+                "average_progress": 0,
+                "average_grade": 0,
+                "completion_rate": 0,
+                "students_completed": 0,
+                "average_active_time": 0,
+                "average_sessions": 0,
+                "high_performers": 0,
+                "medium_performers": 0,
+                "low_performers": 0,
+                "total_students": 0,
             }
 
         query = text("""
@@ -315,10 +323,16 @@ class ProgressRepository(BaseRepository[Progress]):
         total_students = len(student_ids)
         if not rows:
             return {
-                "average_progress": 0, "average_grade": 0, "completion_rate": 0,
-                "students_completed": 0, "average_active_time": 0,
-                "average_sessions": 0, "high_performers": 0,
-                "medium_performers": 0, "low_performers": 0, "total_students": total_students,
+                "average_progress": 0,
+                "average_grade": 0,
+                "completion_rate": 0,
+                "students_completed": 0,
+                "average_active_time": 0,
+                "average_sessions": 0,
+                "high_performers": 0,
+                "medium_performers": 0,
+                "low_performers": 0,
+                "total_students": total_students,
             }
 
         all_efficiencies = [float(r.avg_efficiency) for r in rows]
@@ -401,10 +415,16 @@ class ProgressRepository(BaseRepository[Progress]):
         for cid in course_ids:
             if cid not in metrics_map:
                 metrics_map[cid] = {
-                    "average_progress": 0, "average_grade": 0, "completion_rate": 0,
-                    "students_completed": 0, "average_active_time": 0,
-                    "average_sessions": 0, "high_performers": 0,
-                    "medium_performers": 0, "low_performers": 0, "total_students": 0,
+                    "average_progress": 0,
+                    "average_grade": 0,
+                    "completion_rate": 0,
+                    "students_completed": 0,
+                    "average_active_time": 0,
+                    "average_sessions": 0,
+                    "high_performers": 0,
+                    "medium_performers": 0,
+                    "low_performers": 0,
+                    "total_students": 0,
                 }
 
         return metrics_map
@@ -432,8 +452,20 @@ class ProgressRepository(BaseRepository[Progress]):
         result = await self.db.execute(query, {"student_ids": student_ids})
         rows = result.fetchall()
 
-        month_names = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-                       'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+        month_names = [
+            "Ene",
+            "Feb",
+            "Mar",
+            "Abr",
+            "May",
+            "Jun",
+            "Jul",
+            "Ago",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dic",
+        ]
 
         return [
             {
@@ -467,12 +499,16 @@ class ProgressRepository(BaseRepository[Progress]):
             GROUP BY DATE(created_at)
             ORDER BY activity_date
         """)
-        result = await self.db.execute(query, {"student_ids": student_ids, "days": days})
+        result = await self.db.execute(
+            query, {"student_ids": student_ids, "days": days}
+        )
         rows = result.fetchall()
 
         return [
             {
-                "date": r[0].strftime("%d %b") if hasattr(r[0], 'strftime') else str(r[0]),
+                "date": r[0].strftime("%d %b")
+                if hasattr(r[0], "strftime")
+                else str(r[0]),
                 "activeStudents": int(r[1]),
                 "totalTimeSpent": float(r[2]),
                 "averageSessionTime": round(float(r[3]), 1),

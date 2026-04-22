@@ -143,7 +143,7 @@ class GetOverviewStatsUseCase:
         return [
             LevelPerformanceItem(
                 level_name=item["level_name"],
-                completion_rate=round(item["completion_rate"], 2),
+                completion_rate=round(min(item["completion_rate"], 1.0), 2),
                 average_attempts=round(item["average_attempts"], 1),
                 average_time_minutes=round(item["average_time_minutes"], 1),
             )
