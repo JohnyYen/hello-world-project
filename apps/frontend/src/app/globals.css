@@ -68,6 +68,11 @@
   --theme-accent: #8b5cf6;       /* violet-500 */
   --theme-ring: #6366f1;          /* indigo-600 */
   
+  /* Animation System - Control transitions */
+  --animation-duration: 200ms;
+  --animation-speed: 200ms;
+  --animation-ease: ease-in-out;
+  
   /* 🎨 INDIGO & VIOLET - Light Mode */
 
   /* Background & Foreground - Deep grays instead of true black for light mode */

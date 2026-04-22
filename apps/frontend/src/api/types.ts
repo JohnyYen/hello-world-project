@@ -175,7 +175,7 @@ export interface GameDetailResponse extends GameResponse {
   levels_count: number;
 }
 
-export interface GameCreate extends GameBase {}
+export type GameCreate = GameBase;
 
 export interface GameUpdate {
   title?: string;
