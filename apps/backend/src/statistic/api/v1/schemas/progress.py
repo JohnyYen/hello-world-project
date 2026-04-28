@@ -1,6 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional, Any, List
+from uuid import UUID
 
 
 class ProgressBase(BaseModel):
@@ -28,9 +29,16 @@ class ProgressUpdate(BaseModel):
 
 
 class ProgressSchema(ProgressBase):
-    id: int
+    id: str | UUID
     created_at: datetime
     updated_at: Optional[datetime] = None
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
     class Config:
         from_attributes = True

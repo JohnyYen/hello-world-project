@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class SyncEventBase(BaseModel):
@@ -18,9 +19,16 @@ class SyncEventUpdate(BaseModel):
 
 
 class SyncEventSchema(SyncEventBase):
-    id: int = Field(..., description="Event ID")
+    id: str | UUID = Field(..., description="Event ID")
     timestamp: datetime = Field(..., description="Event timestamp")
     status: Optional[str] = Field(None, description="Event status")
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
     class Config:
         from_attributes = True

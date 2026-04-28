@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+from uuid import UUID
 
 
 # ------------------------
@@ -32,12 +33,19 @@ class SegmentLevelResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
-    id: int
+    id: str | UUID
     level_id: int = Field(alias="level_number_id")
     configuration: Optional[Dict[str, Any]] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
     is_deleted: bool = False
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
 
 class SegmentLevelListResponse(BaseModel):

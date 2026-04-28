@@ -1,6 +1,7 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional, Literal
 from datetime import datetime
+from uuid import UUID
 from src.shared.api.schemas.base import ResponseSchema
 
 # ------------------------
@@ -22,17 +23,24 @@ class TeacherProfileUpdate(BaseModel):
 class TeacherProfileResponse(BaseModel):
     """Esquema para respuesta del perfil de profesor"""
 
-    id: int
+    id: str | UUID
     username: str
-    name: str
-    lastname: str
+    name: Optional[str] = None
+    lastname: Optional[str] = None
     email: EmailStr
-    department: str
+    department: Optional[str] = None
     contact_phone: Optional[str] = None
     avatar_url: Optional[str] = None
     is_active: bool = True
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
     class Config:
         from_attributes = True

@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+from uuid import UUID
 
 
 # ------------------------
@@ -58,10 +59,17 @@ class GameResponse(GameBase):
 
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    id: str | UUID
     created_at: datetime
     updated_at: Optional[datetime] = None
     is_deleted: bool = False
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
 
 class GameDetailResponse(GameResponse):

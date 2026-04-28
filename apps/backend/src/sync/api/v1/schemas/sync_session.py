@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class SyncSessionBase(BaseModel):
@@ -17,9 +18,16 @@ class SyncSessionUpdate(BaseModel):
 
 
 class SyncSessionSchema(SyncSessionBase):
-    id: int = Field(..., description="Session ID")
+    id: str | UUID = Field(..., description="Session ID")
     start_time: datetime = Field(..., description="Session start timestamp")
     end_time: Optional[datetime] = Field(None, description="Session end timestamp")
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
     class Config:
         from_attributes = True

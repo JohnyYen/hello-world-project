@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class LMSCredentialBase(BaseModel):
@@ -36,7 +37,7 @@ class LMSCredentialUpdate(BaseModel):
 class LMSCredentialResponse(BaseModel):
     """Schema for LMS credential response (password masked)."""
 
-    id: int
+    id: str | UUID
     user_id: int
     lms_url: Optional[str] = None
     lms_email: str
@@ -45,6 +46,13 @@ class LMSCredentialResponse(BaseModel):
     expire_at: Optional[datetime] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
+
+    @field_validator("id", mode="before")
+    @classmethod
+    def convert_id_to_str(cls, v):
+        if isinstance(v, UUID):
+            return str(v)
+        return v
 
     class Config:
         from_attributes = True
