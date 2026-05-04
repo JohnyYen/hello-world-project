@@ -80,7 +80,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.on_event("startup")
 async def on_startup():
-    # run_migrations()
+    run_migrations()  # RUN MIGRATIONS ON STARTUP
     await run_all_seeds()
     pass
 
