@@ -98,6 +98,39 @@ def verify_health():
     return {"message": "Health!!!"}
 
 
+@app.get("/debug-db")
+async def debug_db():
+    """Debug endpoint to check database connection"""
+    from sqlalchemy import text
+    from src.shared.infrastructure.session import SessionLocal
+    
+    try:
+        async with SessionLocal() as session:
+            # Get database info
+            result = await session.execute(text("SELECT current_database() as db, current_user as user"))
+            db_info = result.fetchone()
+            
+            # Check tables
+            result = await session.execute(text("""
+                SELECT table_name FROM information_schema.tables 
+                WHERE table_schema = 'public'
+            """))
+            tables = [row[0] for row in result.fetchall()]
+            
+            # Check roles
+            result = await session.execute(text("SELECT * FROM roles LIMIT 5"))
+            roles = [dict(row._mapping) for row in result.fetchall()]
+            
+            return {
+                "database": db_info[0],
+                "user": db_info[1],
+                "tables": tables,
+                "roles": roles
+            }
+    except Exception as e:
+        return {"error": str(e)}
+
+
 @app.get("/openapi")
 def get_openapi():
     return app.openapi()
