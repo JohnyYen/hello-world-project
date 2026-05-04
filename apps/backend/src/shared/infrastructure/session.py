@@ -3,11 +3,16 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 from src.shared.infrastructure.base import Base
 
-# FORZAR LA URL DE SUPABASE PARA RENDER
-SUPABASE_URL = "postgresql+asyncpg://postgres:3wtDUvT3h69bj6@db.icpzmepwjvigyazpcldq.supabase.co:5432/postgres?sslmode=require"
+# FORZAR LA URL DE SUPABASE PARA RENDER - sin sslmode en query string
+SUPABASE_URL = "postgresql+asyncpg://postgres:3wtDUvT3h69bj6@db.icpzmepwjvigyazpcldq.supabase.co:5432/postgres"
 print(f"[DEBUG] Using hardcoded DATABASE_URL: {SUPABASE_URL.replace('postgres:3wtDUvT3h69bj6', '***')}")
 
-engine = create_async_engine(SUPABASE_URL, future=True, echo=True)
+engine = create_async_engine(
+    SUPABASE_URL, 
+    future=True, 
+    echo=True,
+    connect_args={"ssl": "require"}
+)
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
