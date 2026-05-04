@@ -17,7 +17,7 @@ def _convert_to_async_db_url(url: str) -> str:
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Hello World Backend"
     DATABASE_URL: str = (
-        "postgresql+asyncpg://value:password@localhost:5432/hello-world-db"
+        "postgresql+asyncpg://postgres:3wtDUvT3h69bj6@db.icpzmepwjvigyazpcldq.supabase.co:6543/postgres?sslmode=require"
     )
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
