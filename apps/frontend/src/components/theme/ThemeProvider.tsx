@@ -65,6 +65,10 @@ export function ThemeProvider({
         const token = getAuthToken();
         if (!token) return;
 
+        // Solo cargar tema del backend si localStorage NO tiene tema establecido
+        // Esto permite que el toggle del usuario tenga prioridad
+        const storedTheme = getStoredTheme(storageKey);
+        
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/professors/settings`,
           {
@@ -77,12 +81,15 @@ export function ThemeProvider({
         if (response.ok) {
           const data = await response.json();
           if (data.data) {
-            const theme = data.data.theme;
+            const backendTheme = data.data.theme;
             const colorTheme = data.data.color_theme as ColorThemeName | undefined;
             const animationsEnabled = data.data.animations_enabled ?? true;
             
+            // Solo usar tema del backend si no hay tema en localStorage
+            const themeToUse = storedTheme || backendTheme || undefined;
+            
             setSettings(prev => ({
-              theme: theme || prev.theme,
+              theme: themeToUse || prev.theme,
               colorTheme: colorTheme || DEFAULT_COLOR_THEME,
               animationsEnabled,
             }));
@@ -100,7 +107,7 @@ export function ThemeProvider({
     };
 
     loadSettings();
-  }, []);
+  }, [storageKey]);
 
   const applyColorTheme = (themeName: ColorThemeName) => {
     const colors = COLOR_MAP[themeName] || COLOR_MAP[DEFAULT_COLOR_THEME];
@@ -122,12 +129,13 @@ export function ThemeProvider({
     }
   };
 
-  const forcedTheme = mounted && settings.theme ? settings.theme : undefined;
+  // NO usamos forcedTheme para permitir que el toggle del usuario funcione libremente
+  // next-themes maneja localStorage automáticamente
+  // El tema del backend se sincroniza en background (debounced) via useTheme hook
 
   return (
     <NextThemesProvider
       {...props}
-      forcedTheme={forcedTheme}
       storageKey={storageKey}
       attribute="class"
       defaultTheme="system"

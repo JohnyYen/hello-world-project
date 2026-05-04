@@ -1,0 +1,51 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e356] [cursor=pointer]:
+    - img [ref=e357]
+  - alert [ref=e360]
+  - generic [ref=e362]:
+    - link "Plataforma Educativa" [ref=e363] [cursor=pointer]:
+      - /url: /
+      - img [ref=e365]
+      - text: Plataforma Educativa
+    - generic [ref=e368]:
+      - generic [ref=e369]:
+        - heading "Crea tu cuenta" [level=1] [ref=e370]
+        - paragraph [ref=e371]: Completa el siguiente formulario para crear tu cuenta de profesor
+      - group [ref=e372]:
+        - generic [ref=e373]: Nombre Completo
+        - textbox "Nombre Completo" [ref=e374]:
+          - /placeholder: Juan Pérez
+      - group [ref=e375]:
+        - generic [ref=e376]: Nombre de Usuario
+        - textbox "Nombre de Usuario" [ref=e377]:
+          - /placeholder: juanperez
+      - group [ref=e378]:
+        - generic [ref=e379]: Correo Electrónico
+        - textbox "Correo Electrónico" [ref=e380]:
+          - /placeholder: tu@email.com
+        - paragraph [ref=e381]: Usaremos esto para contactarte. No compartiremos tu correo con nadie.
+      - group [ref=e382]:
+        - generic [ref=e383]: Contraseña
+        - generic [ref=e384]:
+          - textbox "Contraseña" [ref=e385]
+          - button "Mostrar contraseña" [ref=e386]:
+            - img [ref=e387]
+        - paragraph [ref=e390]: Debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.
+      - group [ref=e391]:
+        - generic [ref=e392]: Confirmar Contraseña
+        - generic [ref=e393]:
+          - textbox "Confirmar Contraseña" [ref=e394]
+          - button "Mostrar contraseña" [ref=e395]:
+            - img [ref=e396]
+        - paragraph [ref=e399]: Por favor, confirma tu contraseña.
+      - group [ref=e400]:
+        - button "Crear Cuenta" [ref=e401]
+      - generic [ref=e403]: O continúa con
+      - group [ref=e404]:
+        - button "Registrarse con GitHub" [ref=e405]:
+          - img
+          - text: Registrarse con GitHub
+        - paragraph [ref=e406]:
+          - text: ¿Ya tienes cuenta?
+          - link "Inicia sesión" [ref=e407] [cursor=pointer]:
+            - /url: /login

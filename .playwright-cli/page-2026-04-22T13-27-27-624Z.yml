@@ -1,0 +1,96 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e8]:
+    - generic [ref=e11]:
+      - list [ref=e13]:
+        - listitem [ref=e14]:
+          - link "Mi Plataforma" [ref=e15] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e16]
+            - generic [ref=e19]: Mi Plataforma
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]: Estadísticas
+          - generic [ref=e23]:
+            - list [ref=e24]:
+              - listitem [ref=e25]:
+                - button "Quick Create" [ref=e26]:
+                  - img [ref=e27]
+                  - generic [ref=e29]: Quick Create
+                - button "Inbox" [ref=e30]:
+                  - img
+                  - generic [ref=e31]: Inbox
+            - list [ref=e32]:
+              - listitem [ref=e33]:
+                - button "Overview" [ref=e34]:
+                  - img [ref=e35]
+                  - link "Overview" [ref=e39] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e40]:
+                - button "Estudiantes" [ref=e41]:
+                  - img [ref=e42]
+                  - link "Estudiantes" [ref=e45] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e46]:
+                - button "Métricas" [ref=e47]:
+                  - img [ref=e48]
+                  - link "Métricas" [ref=e52] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e53]:
+                - button "Reportes" [ref=e54]:
+                  - img [ref=e55]
+                  - link "Reportes" [ref=e57] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e58]:
+          - generic [ref=e59]: Gestión de Juegos y Niveles
+          - list [ref=e60]:
+            - listitem [ref=e61]:
+              - link "Niveles" [ref=e62] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e63]
+                - generic [ref=e66]: Niveles
+            - listitem [ref=e67]:
+              - link "Crear Nivel" [ref=e68] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e69]
+                - generic [ref=e70]: Crear Nivel
+        - list [ref=e73]:
+          - listitem [ref=e74]:
+            - link "Settings" [ref=e75] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e76]
+              - generic [ref=e79]: Settings
+          - listitem [ref=e80]:
+            - link "Ayuda" [ref=e81] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e82]
+              - generic [ref=e85]: Ayuda
+    - main [ref=e86]:
+      - generic [ref=e88]:
+        - button "Toggle Sidebar" [ref=e89]:
+          - img
+          - generic [ref=e90]: Toggle Sidebar
+        - generic [ref=e91]:
+          - button "🇪🇸 ES" [ref=e92]:
+            - generic [ref=e93]: 🇪🇸
+            - generic [ref=e94]: ES
+          - button "Toggle theme" [ref=e95]:
+            - img
+            - generic [ref=e96]: Toggle theme
+          - list [ref=e97]:
+            - listitem [ref=e98]:
+              - button "P profesortest Usuario" [ref=e99]:
+                - generic [ref=e102]:
+                  - generic [ref=e105]: P
+                  - generic [ref=e107]:
+                    - generic [ref=e108]: profesortest
+                    - generic [ref=e109]: Usuario
+      - generic [ref=e114]:
+        - link "Volver al perfil" [ref=e116] [cursor=pointer]:
+          - /url: /dashboard/students/673fceae-167e-4f58-8de5-cf27cbc33236
+          - button "Volver al perfil" [ref=e117]:
+            - img
+            - text: Volver al perfil
+        - generic [ref=e119]: Error al cargar los datos del reporte
+  - button "Open Next.js Dev Tools" [ref=e125] [cursor=pointer]:
+    - img [ref=e126]
+  - alert [ref=e7]
