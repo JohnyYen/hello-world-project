@@ -81,27 +81,57 @@ async def global_exception_handler(request: Request, exc: Exception):
 @app.on_event("startup")
 async def on_startup():
     try:
-        # Create tables directly instead of using alembic
-        from src.shared.infrastructure.session import engine
-        from src.shared.infrastructure.base import Base
+        from src.shared.infrastructure.session import SessionLocal
+        from sqlalchemy import text
         
-        # Import all domain models to register them with Base
-        print("[STARTUP] Importing models...")
-        from src.game.domain import Game, GameInstance, SegmentLevel, Level
-        from src.users.domain import User, Professor, Student, TeacherSettings, Role
-        from src.statistic.domain import Feedback, MetricType, Progress, XAPIStatement
-        from src.sync.domain import SyncSession, SyncEvent
-        from src.course.domain import Course, CourseEnrollment
-        
-        print(f"[STARTUP] Found {len(Base.metadata.tables)} tables in metadata")
-        
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        
-        print("[STARTUP] Database tables created successfully")
+        async with SessionLocal() as session:
+            # Create roles table
+            await session.execute(text("""
+                CREATE TABLE IF NOT EXISTS roles (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    role_name VARCHAR(255) UNIQUE NOT NULL,
+                    description VARCHAR(255),
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    deleted_at TIMESTAMP WITH TIME ZONE,
+                    is_deleted BOOLEAN DEFAULT false
+                )
+            """))
+            
+            # Create users table
+            await session.execute(text("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    username VARCHAR(255) UNIQUE NOT NULL,
+                    hashed_password VARCHAR(255) NOT NULL,
+                    name VARCHAR(255) NOT NULL,
+                    lastname VARCHAR(255),
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    lms_id UUID,
+                    avatar_url VARCHAR(255),
+                    is_active BOOLEAN DEFAULT true NOT NULL,
+                    last_login TIMESTAMP WITH TIME ZONE,
+                    role_id UUID,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    deleted_at TIMESTAMP WITH TIME ZONE,
+                    is_deleted BOOLEAN DEFAULT false
+                )
+            """))
+            
+            # Insert default roles
+            await session.execute(text("""
+                INSERT INTO roles (role_name, description) VALUES 
+                    ('admin', 'System administrator'),
+                    ('professor', 'Teacher who creates content'),
+                    ('student', 'Learner who plays games')
+                ON CONFLICT (role_name) DO NOTHING
+            """))
+            
+            await session.commit()
+            print("[STARTUP] Database tables created successfully")
         
         await run_all_seeds()
-        print("[STARTUP] Seeds run successfully")
     except Exception as e:
         print(f"[STARTUP ERROR] {e}")
         import traceback
