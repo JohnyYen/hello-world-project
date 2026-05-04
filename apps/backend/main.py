@@ -13,9 +13,18 @@ import traceback
 
 def run_migrations():
     """Run Alembic migrations on startup."""
+    import os
+    
+    db_url = os.environ.get(
+        "DATABASE_URL",
+        "postgresql+asyncpg://n8n_db_02sc_user:2EjX0QpGas8rNTH9dCp0bZp1nfFU3Gch@dpg-d7roq5n7f7vs73d5gnm0-a.oregon-postgres.render.com/n8n_db_02sc"
+    )
+    # Alembic needs sync driver
+    sync_db_url = db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://")
+    
     alembic_cfg = AlembicConfig("alembic.ini")
-    # Ensure we're in the correct directory
     alembic_cfg.set_main_option("script_location", "migrations")
+    alembic_cfg.set_main_option("sqlalchemy.url", sync_db_url)
     command.upgrade(alembic_cfg, "head")
 
 
@@ -81,57 +90,12 @@ async def global_exception_handler(request: Request, exc: Exception):
 @app.on_event("startup")
 async def on_startup():
     try:
-        from src.shared.infrastructure.session import SessionLocal
-        from sqlalchemy import text
-        
-        async with SessionLocal() as session:
-            # Create roles table
-            await session.execute(text("""
-                CREATE TABLE IF NOT EXISTS roles (
-                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                    role_name VARCHAR(255) UNIQUE NOT NULL,
-                    description VARCHAR(255),
-                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                    deleted_at TIMESTAMP WITH TIME ZONE,
-                    is_deleted BOOLEAN DEFAULT false
-                )
-            """))
-            
-            # Create users table
-            await session.execute(text("""
-                CREATE TABLE IF NOT EXISTS users (
-                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                    username VARCHAR(255) UNIQUE NOT NULL,
-                    hashed_password VARCHAR(255) NOT NULL,
-                    name VARCHAR(255) NOT NULL,
-                    lastname VARCHAR(255),
-                    email VARCHAR(255) UNIQUE NOT NULL,
-                    lms_id UUID,
-                    avatar_url VARCHAR(255),
-                    is_active BOOLEAN DEFAULT true NOT NULL,
-                    last_login TIMESTAMP WITH TIME ZONE,
-                    role_id UUID,
-                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                    deleted_at TIMESTAMP WITH TIME ZONE,
-                    is_deleted BOOLEAN DEFAULT false
-                )
-            """))
-            
-            # Insert default roles
-            await session.execute(text("""
-                INSERT INTO roles (role_name, description) VALUES 
-                    ('admin', 'System administrator'),
-                    ('professor', 'Teacher who creates content'),
-                    ('student', 'Learner who plays games')
-                ON CONFLICT (role_name) DO NOTHING
-            """))
-            
-            await session.commit()
-            print("[STARTUP] Database tables created successfully")
+        print("[STARTUP] Running Alembic migrations...")
+        run_migrations()
+        print("[STARTUP] Migrations completed successfully")
         
         await run_all_seeds()
+        print("[STARTUP] Seeds completed successfully")
     except Exception as e:
         print(f"[STARTUP ERROR] {e}")
         import traceback

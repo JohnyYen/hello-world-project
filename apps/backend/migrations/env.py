@@ -1,22 +1,26 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import engine_from_config, pool, create_engine
 
 from alembic import context
 
 # Import our models and database configuration
 from src.shared.infrastructure.base import Base
 import src.shared.infrastructure.models
-from src.shared.infrastructure.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-# Set the sqlalchemy.url from our settings (convert asyncpg to psycopg2 for migrations)
-# Alembic needs a sync driver for migrations
-# Use direct URL instead of settings to avoid using default localhost
-RENDER_DB_URL = "postgresql+psycopg2://n8n_db_02sc_user:2EjX0QpGas8rNTH9dCp0bZp1nfFU3Gch@dpg-d7roq5n7f7vs73d5gnm0-a.oregon-postgres.render.com/n8n_db_02sc"
+# Set the sqlalchemy.url from environment or hardcode for Render
+# Alembic needs a sync driver (psycopg2) for migrations
+import os
+RENDER_DB_URL = os.environ.get(
+    "DATABASE_URL", 
+    "postgresql+psycopg2://n8n_db_02sc_user:2EjX0QpGas8rNTH9dCp0bZp1nfFU3Gch@dpg-d7roq5n7f7vs73d5gnm0-a.oregon-postgres.render.com/n8n_db_02sc"
+).replace("postgresql+asyncpg://", "postgresql+psycopg2://")
+
+print(f"[ALEMBIC] Using DATABASE_URL: {RENDER_DB_URL.replace(RENDER_DB_URL.split('://')[1].split(':')[1].split('@')[0], '***')}")
 config.set_main_option("sqlalchemy.url", RENDER_DB_URL)
 
 # Interpret the config file for Python logging.
