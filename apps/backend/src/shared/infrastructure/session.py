@@ -3,9 +3,9 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 from src.shared.infrastructure.base import Base
 
-# FORZAR LA URL DE SUPABASE PARA RENDER - USAR POOLER (puerto 6543)
-SUPABASE_URL = "postgresql+asyncpg://postgres:3wtDUvT3h69bj6@db.icpzmepwjvigyazpcldq.supabase.co:6543/postgres"
-print(f"[DEBUG] Using hardcoded DATABASE_URL: {SUPABASE_URL.replace('postgres:3wtDUvT3h69bj6', '***')}")
+# DATABASE_URL de Render (n8n-db)
+SUPABASE_URL = "postgresql+asyncpg://n8n_db_02sc_user:2EjX0QpGas8rNTH9dCp0bZp1nfFU3Gch@dpg-d7roq5n7f7vs73d5gnm0-a.oregon-postgres.render.com/n8n_db_02sc"
+print(f"[DEBUG] Using hardcoded DATABASE_URL: {SUPABASE_URL.replace('n8n_db_02sc_user:2EjX0QpGas8rNTH9dCp0bZp1nfFU3Gch', '***')}")
 
 engine = create_async_engine(SUPABASE_URL, future=True, echo=True)
 SessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
