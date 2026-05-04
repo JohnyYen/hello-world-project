@@ -31,7 +31,7 @@ services:
       - key: ENVIRONMENT
         value: "production"
       - key: CORS_ORIGINS
-        value: "https://hello-world-frontend.onrender.com"
+        value: "https://hello-world-frontend-5pdk.onrender.com"
 
   # ==============================
   # FRONTEND - PRODUCCIÓN (main)
@@ -50,7 +50,7 @@ services:
       - key: NODE_VERSION
         value: "20"
       - key: NEXT_PUBLIC_API_URL
-        value: "https://hello-world-backend.onrender.com"
+        value: "https://hello-world-backend-r49b.onrender.com"
 
   # ==============================
   # BACKEND - STAGING (develop)
