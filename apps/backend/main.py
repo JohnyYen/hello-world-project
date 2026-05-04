@@ -80,16 +80,32 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.on_event("startup")
 async def on_startup():
-    # Create tables directly instead of using alembic
-    from src.shared.infrastructure.session import engine
-    from src.shared.infrastructure.base import Base
-    from src.shared.infrastructure.models import *
-    
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    
-    await run_all_seeds()
-    print("[STARTUP] Database tables created and seeds run successfully")
+    try:
+        # Create tables directly instead of using alembic
+        from src.shared.infrastructure.session import engine
+        from src.shared.infrastructure.base import Base
+        
+        # Import all domain models to register them with Base
+        print("[STARTUP] Importing models...")
+        from src.game.domain import Game, GameInstance, SegmentLevel, Level
+        from src.users.domain import User, Professor, Student, TeacherSettings, Role
+        from src.statistic.domain import Feedback, MetricType, Progress, XAPIStatement
+        from src.sync.domain import SyncSession, SyncEvent
+        from src.course.domain import Course, CourseEnrollment
+        
+        print(f"[STARTUP] Found {len(Base.metadata.tables)} tables in metadata")
+        
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        
+        print("[STARTUP] Database tables created successfully")
+        
+        await run_all_seeds()
+        print("[STARTUP] Seeds run successfully")
+    except Exception as e:
+        print(f"[STARTUP ERROR] {e}")
+        import traceback
+        traceback.print_exc()
 
 
 app.include_router(router)
