@@ -80,9 +80,16 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.on_event("startup")
 async def on_startup():
-    run_migrations()  # RUN MIGRATIONS ON STARTUP
+    # Create tables directly instead of using alembic
+    from src.shared.infrastructure.session import engine
+    from src.shared.infrastructure.base import Base
+    from src.shared.infrastructure.models import *
+    
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    
     await run_all_seeds()
-    pass
+    print("[STARTUP] Database tables created and seeds run successfully")
 
 
 app.include_router(router)
