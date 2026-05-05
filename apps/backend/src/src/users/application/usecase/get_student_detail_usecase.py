@@ -75,11 +75,19 @@ class GetStudentDetailUseCase:
 
         # Obtener el primer curso del estudiante (si existe)
         course_name = None
+        last_active_at = None
+        current_streak_days = False
+        active_today = False
+
         if hasattr(student, 'student') and student.student:
             if student.student.course_enrollments:
                 enrollment = student.student.course_enrollments[0]
                 if hasattr(enrollment, 'course') and enrollment.course:
                     course_name = enrollment.course.name
+            # Get activity tracking fields
+            last_active_at = student.student.last_active_at
+            current_streak_days = student.student.current_streak_days or False
+            active_today = student.student.active_today or False
 
         # Construir respuesta
         return StudentResponse(
@@ -92,4 +100,7 @@ class GetStudentDetailUseCase:
             course=course_name,
             created_at=student.created_at,
             updated_at=student.updated_at,
+            last_active_at=last_active_at,
+            current_streak_days=current_streak_days,
+            active_today=active_today,
         )

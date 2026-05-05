@@ -27,3 +27,4 @@ class User(Base):
         "TeacherSettings", back_populates="user", uselist=False
     )
     notifications = relationship("Notification", back_populates="user")
+    activity_logs = relationship("StudentActivityLog", back_populates="student")

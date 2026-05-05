@@ -38,6 +38,10 @@ class StudentResponse(BaseModel):
     course: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    # Activity tracking fields
+    last_active_at: Optional[datetime] = None
+    current_streak_days: bool = False
+    active_today: bool = False
 
     class Config:
         from_attributes = True

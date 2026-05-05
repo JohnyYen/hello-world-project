@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, Trophy, Gamepad2, Clock, Target, Flame, TrendingUp, Activity, Zap, Award } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { MetricCard, LineChart, BarChart, DonutChart, AreaChart, HeatMap, generateHeatMapData } from "@/components/charts";
+import { MetricCard, LineChart, BarChart, DonutChart, AreaChart, HeatMap } from "@/components/charts";
 import { ExportButton } from "@/components/export/ExportButton";
 import { useStudentReports } from "@/hooks/use-student-reports";
+import { useStudentHeatmap } from "@/hooks/use-student-heatmap";
 
 function formatPlayTime(minutes: number): string {
   const hours = Math.floor(minutes / 60);
@@ -61,8 +62,8 @@ export default function StudentReportPage() {
   const { kpis, progressOverTime, levelPerformance, activityDistribution, isLoading, error } =
     useStudentReports(studentId);
 
-  // Generate heatmap data (in production, this would come from the API)
-  const heatMapData = generateHeatMapData();
+  // Get real heatmap data from API
+  const { heatmapData, isLoading: isLoadingHeatmap } = useStudentHeatmap(studentId, 30);
 
   // Calculate cumulative time for area chart
   const cumulativeProgress = progressOverTime.reduce<Array<{ date: string; cumulativeScore: number; cumulativeTime: number }>>((acc, item, index) => {
@@ -326,11 +327,11 @@ export default function StudentReportPage() {
             </div>
             <div className="p-6">
               <HeatMap
-                data={heatMapData}
+                data={heatmapData?.data || []}
                 title=""
                 subtitle=""
                 height={320}
-                tooltipFormatter={(value, day, hour) => `${value} minutos`}
+                tooltipFormatter={(value, day, hour) => `${value} actividades`}
               />
             </div>
           </div>
