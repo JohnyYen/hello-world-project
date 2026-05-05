@@ -389,65 +389,7 @@ export default function StudentReportPage() {
           </div>
         </section>
 
-        {/* Additional Stats */}
-        <section className="mb-12">
-          <SectionHeader 
-            title="Resumen Ejecutivo" 
-            subtitle="Información adicional del rendimiento"
-            icon={Target}
-            delay={1300}
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div style={{ animationDelay: "1400ms" }} className="animate-fade-in-up">
-              <MetricCard
-                title="Puntuación Promedio"
-                value={`${kpis?.averageScore || 0}%`}
-                icon={<Target className="h-5 w-5" />}
-                description="Promedio de puntuación en todos los niveles"
-                variant="highlight"
-              />
-            </div>
-            <div 
-              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
-              style={{ animationDelay: "1500ms" }}
-            >
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-lg font-semibold">Desglose por Actividad</h3>
-                <p className="text-sm text-muted-foreground">Detalle de tiempo y sesiones</p>
-              </div>
-              <div className="p-6 space-y-4">
-                {activityDistribution.map((activity, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-3 h-3 rounded-full" 
-                        style={{ 
-                          backgroundColor: [
-                            "#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"
-                          ][index % 5] 
-                        }} 
-                      />
-                      <span className="font-medium">{activity.gameName}</span>
-                    </div>
-                    <div className="text-sm text-muted-foreground flex items-center gap-4">
-                      <span className="flex items-center gap-1">
-                        <Activity className="w-3 h-3" />
-                        {activity.sessions}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {formatPlayTime(activity.timeSpent)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        
 
         {/* Footer decorative element */}
         <div className="text-center py-8 border-t border-slate-200 dark:border-slate-800">
