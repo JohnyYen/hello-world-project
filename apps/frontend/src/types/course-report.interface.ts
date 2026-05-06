@@ -15,9 +15,12 @@ export interface Course {
 
 export interface CourseMetrics {
   courseId: string;
-  courseName: string;
+  courseName: string;  // backend puede devolver course_name (snake_case)
+  course_name?: string;  // alternativa por compatibilidad
   period: string;
   schoolYear: string;
+  school_year?: string;  // alternativa por compatibilidad
+  totalStudents: number;  // ← AGREGADO: Total de estudiantes del curso
   
   // Progreso y Rendimiento
   averageProgress: number;

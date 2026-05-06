@@ -25,6 +25,17 @@ import { courseReportsService, apiClient } from '@/lib/api-client';
 import type { Course, CourseMetrics, CourseReportKPIs, CourseProgressOverTime } from '@/types/course-report.interface';
 
 // Utility functions
+
+// Normalize course metrics to handle both snake_case and camelCase from backend
+function normalizeMetric(metric: any): any {
+  return {
+    ...metric,
+    // Handle snake_case from backend
+    courseName: metric.courseName || metric.course_name || '',
+    schoolYear: metric.schoolYear || metric.school_year || '',
+  };
+}
+
 function formatPlayTime(minutes: number): string {
   const hours = Math.floor(minutes / 60);
   if (hours > 0) {
@@ -114,9 +125,15 @@ export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState('overview');
 
   const latestYear = useMemo(() => {
-    if (courses.length === 0) return '';
-    const sorted = [...courses].sort((a, b) => b.schoolYear.localeCompare(a.schoolYear));
-    return sorted[0].schoolYear;
+    if (!courses || courses.length === 0) return '';
+    // Find max year without sort to avoid localeCompare errors
+    let maxYear = '';
+    for (const c of courses) {
+      if (!c) continue;
+      const year = (c as any)?.schoolYear || (c as any)?.school_year || '';
+      if (year && year > maxYear) maxYear = year;
+    }
+    return maxYear;
   }, [courses]);
 
   const subjectName = useMemo(() => {
@@ -125,23 +142,34 @@ export default function ReportsPage() {
 
   useEffect(() => {
     const loadInitialData = async () => {
-      try {
-        const [coursesResponse, kpisResponse] = await Promise.all([
-          courseReportsService.getCourses(),
-          courseReportsService.getReportKPIs()
-        ]);
+        try {
+          const [coursesData, kpisData] = await Promise.all([
+            courseReportsService.getCourses(),
+            courseReportsService.getReportKPIs()
+          ]);
 
-        const coursesData = coursesResponse.data || [];
-        const kpisData = kpisResponse.data || null;
+        // Backend returns snake_case (school_year), handle both cases
+        const normalizedCourses = (coursesData || []).map((c: any) => ({
+          ...c,
+          schoolYear: c.schoolYear || c.school_year || '',
+          name: c.name || c.course_name || '',
+          display_period: c.display_period || c.displayPeriod || '',
+        }));
 
-        setCourses(coursesData);
+        setCourses(normalizedCourses);
         setKpis(kpisData);
 
-        // Select latest year by default
+        // Select latest year by default (without sort)
         if (coursesData.length > 0) {
-          const sorted = [...coursesData].sort((a, b) => b.schoolYear.localeCompare(a.schoolYear));
-          const latestSchoolYear = sorted[0].schoolYear;
-          const latestYearCourses = coursesData.filter(c => c.schoolYear === latestSchoolYear);
+          let latestSchoolYear = '';
+          for (const c of coursesData) {
+            const year = (c as any)?.schoolYear || (c as any)?.school_year || '';
+            if (year && year > latestSchoolYear) latestSchoolYear = year;
+          }
+          const latestYearCourses = coursesData.filter(c => {
+            const year = (c as any)?.schoolYear || (c as any)?.school_year || '';
+            return year === latestSchoolYear;
+          });
           setSelectedCourses(latestYearCourses.map(c => String(c.id)));
         }
       } catch (error) {
@@ -173,12 +201,19 @@ export default function ReportsPage() {
         );
         if (cancelled) return;
 
-        const metrics = metricsResponse.data || [];
-        const sortedMetrics = [...metrics].sort((a, b) => {
-          if (a.schoolYear === b.schoolYear) {
-            return a.period.localeCompare(b.period);
+        const metrics = (metricsResponse?.data || metricsResponse || []) as any[];
+        // Normalize metrics to handle snake_case from backend
+        const normalizedMetrics = metrics.map(normalizeMetric);
+        // Sort without localeCompare to avoid errors
+        const sortedMetrics = [...normalizedMetrics].sort((a: any, b: any) => {
+          const yearA = a?.schoolYear || a?.school_year || '';
+          const yearB = b?.schoolYear || b?.school_year || '';
+          if (yearA === yearB) {
+            const periodA = a?.period || a?.display_period || '';
+            const periodB = b?.period || b?.display_period || '';
+            return String(periodB).localeCompare(String(periodA));
           }
-          return a.schoolYear.localeCompare(b.schoolYear);
+          return String(yearB).localeCompare(String(yearA));
         });
 
         setSelectedMetrics(sortedMetrics);
@@ -281,7 +316,7 @@ export default function ReportsPage() {
                   <BookOpen className="w-6 h-6 text-indigo-400" />
                 </div>
                 <span className="text-sm font-medium text-indigo-400/80 uppercase tracking-wider">
-                  {subjectName}
+                  Reporte
                 </span>
               </div>
               <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
@@ -519,7 +554,7 @@ export default function ReportsPage() {
                             >
                               <td className="p-3 font-medium text-sm">{metric.period}</td>
                               <td className="p-3 text-center text-xs text-muted-foreground">{metric.schoolYear}</td>
-                              <td className="p-3 text-center">{courses.find(c => c.id === metric.courseId)?.totalStudents || 0}</td>
+                              <td className="p-3 text-center">{metric.totalStudents || 0}</td>
                               <td className="p-3 text-center font-semibold">{metric.averageProgress}%</td>
                               <td className="p-3 text-center">
                                 <span className={cn("font-bold", metric.averageGrade >= 80 ? "text-indigo-400" : metric.averageGrade >= 60 ? "text-amber-400" : "text-red-400")}>

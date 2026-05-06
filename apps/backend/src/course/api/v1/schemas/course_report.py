@@ -20,6 +20,7 @@ class CourseMetricsResponse(BaseModel):
     courseName: str = Field(alias="course_name")
     period: str
     schoolYear: str = Field(alias="school_year")
+    totalStudents: int = 0  # ← AGREGADO: Total de estudiantes
     averageProgress: float
     averageGrade: float
     completionRate: float
