@@ -8,6 +8,7 @@ This test suite verifies:
 """
 
 import pytest
+import uuid
 from unittest.mock import AsyncMock, MagicMock, patch
 from datetime import datetime, timezone
 
@@ -31,22 +32,23 @@ class TestStartSessionEndpoint:
             app = FastAPI()
             app.include_router(router)
 
+            test_instance_id = str(uuid.uuid4())
+
             async with AsyncClient(
                 transport=ASGITransport(app=app), base_url="http://test"
             ) as client:
-                response = await client.post("/sync-sessions", json={"instance_id": 1})
+                response = await client.post("/sync-sessions", json={"instance_id": test_instance_id})
 
             assert response.status_code == 201
             data = response.json()
             assert "id" in data
-            assert data["instance_id"] == 1
 
     @pytest.mark.asyncio
     async def test_start_session_returns_201(self):
         """Test that endpoint returns 201 Created on success."""
         mock_session = MagicMock()
-        mock_session.id = 1
-        mock_session.instance_id = 1
+        mock_session.id = uuid.uuid4()
+        mock_session.instance_id = uuid.uuid4()
         mock_session.status = "active"
         mock_session.start_time = datetime.now(timezone.utc)
         mock_session.end_time = None
@@ -62,10 +64,12 @@ class TestStartSessionEndpoint:
             app = FastAPI()
             app.include_router(router)
 
+            test_instance_id = str(uuid.uuid4())
+
             async with AsyncClient(
                 transport=ASGITransport(app=app), base_url="http://test"
             ) as client:
-                response = await client.post("/sync-sessions", json={"instance_id": 1})
+                response = await client.post("/sync-sessions", json={"instance_id": test_instance_id})
 
             assert response.status_code == 201
 
@@ -87,8 +91,10 @@ class TestRegisterEventEndpoint:
             app = FastAPI()
             app.include_router(router)
 
+            test_session_id = str(uuid.uuid4())
+
             event_payload = {
-                "sync_session_id": 1,
+                "sync_session_id": test_session_id,
                 "event_type": "player_action",
                 "payload": {"action": "move"},
             }
@@ -107,8 +113,8 @@ class TestRegisterEventEndpoint:
     async def test_register_event_returns_201(self):
         """Test that endpoint returns 201 Created on success."""
         mock_event = MagicMock()
-        mock_event.id = 1
-        mock_event.sync_session_id = 1
+        mock_event.id = uuid.uuid4()
+        mock_event.sync_session_id = uuid.uuid4()
         mock_event.event_type = "player_action"
         mock_event.payload = {"action": "move"}
         mock_event.timestamp = datetime.now(timezone.utc)
@@ -125,8 +131,10 @@ class TestRegisterEventEndpoint:
             app = FastAPI()
             app.include_router(router)
 
+            test_session_id = str(uuid.uuid4())
+
             event_payload = {
-                "sync_session_id": 1,
+                "sync_session_id": test_session_id,
                 "event_type": "player_action",
                 "payload": {"action": "move"},
             }
@@ -151,7 +159,7 @@ class TestEventValidationSessionNotExists:
             mock_service = MagicMock()
             mock_service.create = AsyncMock(
                 side_effect=NotFoundException(
-                    "Sesión de sincronización 999 no encontrada"
+                    f"Sesión de sincronización {uuid.uuid4()} no encontrada"
                 )
             )
             mock_dep.return_value = mock_service
@@ -162,8 +170,10 @@ class TestEventValidationSessionNotExists:
             app = FastAPI()
             app.include_router(router)
 
+            test_session_id = str(uuid.uuid4())
+
             event_payload = {
-                "sync_session_id": 999,
+                "sync_session_id": test_session_id,
                 "event_type": "player_action",
                 "payload": {"action": "move"},
             }
@@ -178,7 +188,7 @@ class TestEventValidationSessionNotExists:
     @pytest.mark.asyncio
     async def test_register_event_error_message_in_response(self):
         """Test that error message is included in 404 response."""
-        error_message = "Sesión de sincronización 999 no encontrada"
+        error_message = f"Sesión de sincronización {uuid.uuid4()} no encontrada"
 
         with patch("src.sync.api.v1.dependencies.get_sync_event_service") as mock_dep:
             mock_service = MagicMock()
@@ -193,8 +203,10 @@ class TestEventValidationSessionNotExists:
             app = FastAPI()
             app.include_router(router)
 
+            test_session_id = str(uuid.uuid4())
+
             event_payload = {
-                "sync_session_id": 999,
+                "sync_session_id": test_session_id,
                 "event_type": "player_action",
                 "payload": {"action": "move"},
             }

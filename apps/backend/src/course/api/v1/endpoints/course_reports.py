@@ -46,26 +46,35 @@ async def get_report_kpis(
 
 @router.get("/metrics", response_model=List[schemas.CourseMetricsResponse])
 async def get_course_metrics(
-    course_ids: str = Query(..., description="Comma-separated course IDs"),
+    course_ids: str = Query(..., description="Comma-separated course UUIDs"),
     usecase: GetCourseReportUseCase = Depends(get_course_report_usecase),
 ):
     """
     Obtiene métricas para múltiples cursos.
     """
-    ids = [int(x.strip()) for x in course_ids.split(",")]
+    from uuid import UUID
+    try:
+        ids = [UUID(x.strip()) for x in course_ids.split(",")]
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid UUID format in course_ids")
     metrics = await usecase.execute_metrics(ids)
     return [schemas.CourseMetricsResponse.model_validate(m) for m in metrics]
 
 
 @router.get("/{course_id}/metrics", response_model=schemas.CourseMetricsResponse)
 async def get_course_metrics_single(
-    course_id: int,
+    course_id: str,
     usecase: GetCourseReportUseCase = Depends(get_course_report_usecase),
 ):
     """
     Obtiene métricas para un curso específico.
     """
-    metrics_list = await usecase.execute_metrics([course_id])
+    from uuid import UUID
+    try:
+        course_uuid = UUID(course_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid course_id UUID")
+    metrics_list = await usecase.execute_metrics([course_uuid])
     if not metrics_list:
         raise HTTPException(status_code=404, detail="Course not found or has no metrics")
     return schemas.CourseMetricsResponse.model_validate(metrics_list[0])
@@ -76,13 +85,18 @@ async def get_course_metrics_single(
     response_model=List[schemas.CourseProgressOverTimeResponse],
 )
 async def get_progress_over_time(
-    course_id: int,
+    course_id: str,
     usecase: GetCourseReportUseCase = Depends(get_course_report_usecase),
 ):
     """
     Obtiene el progreso a lo largo del tiempo para un curso.
     """
-    return await usecase.execute_progress_over_time(course_id)
+    from uuid import UUID
+    try:
+        course_uuid = UUID(course_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid course_id UUID")
+    return await usecase.execute_progress_over_time(course_uuid)
 
 
 @router.get(
@@ -90,11 +104,16 @@ async def get_progress_over_time(
     response_model=List[schemas.StudentActivitySummaryResponse],
 )
 async def get_activity_summary(
-    course_id: int,
+    course_id: str,
     days: int = Query(30, ge=1, le=90),
     usecase: GetCourseReportUseCase = Depends(get_course_report_usecase),
 ):
     """
     Obtiene resumen de actividad diario para un curso (últimos N días).
     """
-    return await usecase.execute_activity_summary(course_id, days)
+    from uuid import UUID
+    try:
+        course_uuid = UUID(course_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid course_id UUID")
+    return await usecase.execute_activity_summary(course_uuid, days)

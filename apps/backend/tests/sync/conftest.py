@@ -1,6 +1,7 @@
 # Sync-specific test fixtures and configuration
 import pytest
 import asyncio
+import uuid
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, AsyncMock
 
@@ -57,7 +58,7 @@ async def sync_test_session(sync_test_db: AsyncSession):
 def sample_session_data():
     """Provide valid test sync session data."""
     return {
-        "instance_id": 1,
+        "instance_id": uuid.uuid4(),
         "start_time": datetime.now(timezone.utc),
         "end_time": None,
         "status": "active",
@@ -68,7 +69,7 @@ def sample_session_data():
 def mock_sync_session(sample_session_data):
     """Create a mock SyncSession object."""
     session = MagicMock(spec=SyncSession)
-    session.id = 1
+    session.id = uuid.uuid4()
     session.instance_id = sample_session_data["instance_id"]
     session.start_time = sample_session_data["start_time"]
     session.end_time = sample_session_data["end_time"]
@@ -82,7 +83,7 @@ def mock_sync_session(sample_session_data):
 def mock_ended_sync_session(sample_session_data):
     """Create a mock ended SyncSession object."""
     session = MagicMock(spec=SyncSession)
-    session.id = 1
+    session.id = uuid.uuid4()
     session.instance_id = sample_session_data["instance_id"]
     session.start_time = sample_session_data["start_time"]
     session.end_time = datetime.now(timezone.utc)
@@ -99,7 +100,7 @@ def mock_ended_sync_session(sample_session_data):
 def sample_event_data():
     """Provide valid test sync event data."""
     return {
-        "sync_session_id": 1,
+        "sync_session_id": uuid.uuid4(),
         "event_type": "player_action",
         "payload": {"action": "move", "position": {"x": 10, "y": 20}},
     }
@@ -109,7 +110,7 @@ def sample_event_data():
 def mock_sync_event(sample_event_data):
     """Create a mock SyncEvent object."""
     event = MagicMock(spec=SyncEvent)
-    event.id = 1
+    event.id = uuid.uuid4()
     event.sync_session_id = sample_event_data["sync_session_id"]
     event.event_type = sample_event_data["event_type"]
     event.payload = sample_event_data["payload"]

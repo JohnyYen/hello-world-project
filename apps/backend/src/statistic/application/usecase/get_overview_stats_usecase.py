@@ -168,30 +168,42 @@ class GetOverviewStatsUseCase:
         # KPIs del período anterior
         prev_kpis = await self.progress_repo.aggregate_kpis(prev_start, prev_end)
 
-        # Calcular porcentajes de cambio
-        students_curr = await self.progress_repo.count_students()
-        students_prev = max(students_curr - 1, 1)  # Estimación simple
+        # Estudiantes: usar activos del período vs período anterior
+        students_curr = await self.progress_repo.get_active_students(days_diff)
+        # Obtener estudiantes activos en el período anterior (antes del período actual)
+        prev_students = 0
+        if prev_start and prev_end:
+            # Agregar lógica para contar estudiantes del período anterior
+            # Por ahora, usamos una aproximación si hay datos previos
+            prev_activity = prev_kpis["total_levels_completed"]
+            if prev_activity > 0:
+                prev_students = max(students_curr - 1, 1)  # Estimación basada en actividad previa
+            else:
+                prev_students = 0
 
+        # Métricas del período actual y anterior
         activity_curr = current_kpis["total_levels_completed"]
-        activity_prev = max(prev_kpis["total_levels_completed"], 1)
+        activity_prev = prev_kpis["total_levels_completed"]
 
         score_curr = current_kpis["average_score"]
         score_prev = prev_kpis["average_score"]
 
-        # Evitar división por cero
-        students_change = (
-            ((students_curr - students_prev) / students_prev * 100)
-            if students_prev > 0
-            else 0.0
-        )
-        activity_change = (
-            ((activity_curr - activity_prev) / activity_prev * 100)
-            if activity_prev > 0
-            else 0.0
-        )
-        score_change = (
-            ((score_curr - score_prev) / score_prev * 100) if score_prev > 0 else 0.0
-        )
+        # Solo calculamos cambio si hay datos previos reales
+        # De lo contrario, retornamos 0% (no hay forma de comparar)
+        if prev_students > 0:
+            students_change = ((students_curr - prev_students) / prev_students * 100)
+        else:
+            students_change = 0.0
+
+        if activity_prev > 0:
+            activity_change = ((activity_curr - activity_prev) / activity_prev * 100)
+        else:
+            activity_change = 0.0
+
+        if score_prev > 0:
+            score_change = ((score_curr - score_prev) / score_prev * 100)
+        else:
+            score_change = 0.0
 
         return OverviewTrends(
             students_change_percent=round(students_change, 1),

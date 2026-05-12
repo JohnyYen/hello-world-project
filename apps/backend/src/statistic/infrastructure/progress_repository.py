@@ -401,7 +401,7 @@ class ProgressRepository(BaseRepository[Progress]):
         for row in rows:
             metrics_map[row.course_id] = {
                 "average_progress": round(float(row.average_progress), 1),
-                "average_grade": round(float(row.average_progress), 1),
+                "average_grade": round(float(row.average_progress), 1),  # Note: same source as progress since system only tracks efficiency_rating
                 "completion_rate": round(float(row.completion_rate), 1),
                 "students_completed": int(row.students_completed),
                 "average_active_time": round(float(row.total_attempts) * 5, 1),

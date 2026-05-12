@@ -53,18 +53,22 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
         }
 
         const data = await response.json();
-
+        
+        // Backend returns { kpis, progress_over_time, level_performance, activity_distribution }
+        const responseData = data.kpis ? data : { kpis: data };
+        
         setKpis({
-          totalLevelsCompleted: data.kpis.total_levels_completed,
-          totalGamesPlayed: data.kpis.total_games_played,
-          totalPlayTime: data.kpis.total_play_time,
-          averageScore: data.kpis.average_score,
-          currentStreak: data.kpis.current_streak,
-          lastActivity: data.kpis.last_activity,
+          totalLevelsCompleted: responseData.kpis?.total_levels_completed || data.total_levels_completed || 0,
+          totalGamesPlayed: responseData.kpis?.total_games_played || data.total_games_played || 0,
+          totalPlayTime: responseData.kpis?.total_play_time || data.total_play_time || 0,
+          averageScore: responseData.kpis?.average_score || data.average_score || 0,
+          currentStreak: responseData.kpis?.current_streak || data.current_streak || 0,
+          lastActivity: responseData.kpis?.last_activity || data.last_activity || '',
         });
 
+        const progressData = data.progress_over_time || data.progressOverTime || [];
         setProgressOverTime(
-          data.progress_over_time.map((item: { date: string; level: number; score: number; time_spent: number }) => ({
+          progressData.map((item: { date: string; level: number; score: number; time_spent: number }) => ({
             date: item.date,
             level: item.level,
             score: item.score,
@@ -72,8 +76,9 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
           }))
         );
 
+        const levelData = data.level_performance || data.levelPerformance || [];
         setLevelPerformance(
-          data.level_performance.map((item: { level_name: string; score: number; attempts: number; time_spent: number; completed: boolean }) => ({
+          levelData.map((item: { level_name: string; score: number; attempts: number; time_spent: number; completed: boolean }) => ({
             levelName: item.level_name,
             score: item.score,
             attempts: item.attempts,
@@ -82,8 +87,9 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
           }))
         );
 
+        const activityData = data.activity_distribution || data.activityDistribution || [];
         setActivityDistribution(
-          data.activity_distribution.map((item: { game_name: string; time_spent: number; sessions: number }) => ({
+          activityData.map((item: { game_name: string; time_spent: number; sessions: number }) => ({
             gameName: item.game_name,
             timeSpent: item.time_spent,
             sessions: item.sessions,
