@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Union
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.sync.infrastructure.repositories.sync_event_repository import (
@@ -86,7 +87,7 @@ class SyncEventService:
         return created_events
 
     async def get_by_id(
-        self, event_id: int, include_deleted: bool = False
+        self, event_id: Union[int, str, UUID], include_deleted: bool = False
     ) -> Optional[SyncEvent]:
         """
         Obtiene un evento por su ID.
@@ -102,7 +103,7 @@ class SyncEventService:
 
     async def get_by_session(
         self,
-        session_id: int,
+        session_id: Union[int, str, UUID],
         include_deleted: bool = False,
     ) -> List[SyncEvent]:
         """
@@ -125,7 +126,7 @@ class SyncEventService:
 
     async def get_events_by_session(
         self,
-        session_id: int,
+        session_id: Union[int, str, UUID],
         event_type: Optional[str] = None,
         include_deleted: bool = False,
     ) -> List[SyncEvent]:
@@ -174,7 +175,7 @@ class SyncEventService:
         )
 
     async def update(
-        self, event_id: int, event_data: SyncEventUpdate
+        self, event_id: Union[int, str, UUID], event_data: SyncEventUpdate
     ) -> Optional[SyncEvent]:
         """
         Actualiza un evento existente.
@@ -196,7 +197,7 @@ class SyncEventService:
 
         return await self.repository.update(event_id, update_dict)
 
-    async def delete(self, event_id: int) -> bool:
+    async def delete(self, event_id: Union[int, str, UUID]) -> bool:
         """
         Elimina (soft delete) un evento.
 
@@ -208,7 +209,7 @@ class SyncEventService:
         """
         return await self.repository.delete(event_id)
 
-    async def _validate_session_exists(self, session_id: int) -> None:
+    async def _validate_session_exists(self, session_id: Union[int, str, UUID]) -> None:
         """
         Valida que exista una sesión de sincronización.
 

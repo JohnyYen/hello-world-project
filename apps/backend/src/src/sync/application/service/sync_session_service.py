@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Union
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.sync.infrastructure.repositories.sync_session_repository import (
@@ -7,6 +8,16 @@ from src.sync.infrastructure.repositories.sync_session_repository import (
 )
 from src.sync.domain.sync_session import SyncSession
 from src.shared.domain.exceptions import NotFoundException
+
+
+def _convert_to_uuid(value: Union[int, str, UUID]) -> UUID:
+    """Converts int, str, or UUID to UUID object."""
+    if isinstance(value, UUID):
+        return value
+    if isinstance(value, str):
+        return UUID(value)
+    # If it's an int, we can't convert to UUID - return as-is and let the DB handle it
+    raise ValueError(f"Cannot convert {type(value)} to UUID")
 
 
 class SyncSessionService:
@@ -19,7 +30,7 @@ class SyncSessionService:
 
     async def create(
         self,
-        instance_id: int,
+        instance_id: Union[int, str, UUID],
     ) -> SyncSession:
         """
         Crea una nueva sesión de sincronización.
@@ -30,6 +41,14 @@ class SyncSessionService:
         Returns:
             SyncSession: La sesión creada
         """
+        # Convert to UUID if it's a string
+        if isinstance(instance_id, str):
+            try:
+                instance_id = UUID(instance_id)
+            except ValueError:
+                # Keep as string if not a valid UUID
+                pass
+
         now = datetime.utcnow()
         session_data = {
             "instance_id": instance_id,
@@ -41,7 +60,7 @@ class SyncSessionService:
 
     async def end_session(
         self,
-        session_id: int,
+        session_id: Union[int, str, UUID],
     ) -> SyncSession:
         """
         Finaliza una sesión de sincronización.
@@ -68,7 +87,7 @@ class SyncSessionService:
 
     async def get_session(
         self,
-        session_id: int,
+        session_id: Union[int, str, UUID],
         include_deleted: bool = False,
     ) -> Optional[SyncSession]:
         """
@@ -85,7 +104,7 @@ class SyncSessionService:
 
     async def get_by_instance(
         self,
-        instance_id: int,
+        instance_id: Union[int, str, UUID],
         include_deleted: bool = False,
     ) -> List[SyncSession]:
         """
@@ -108,7 +127,7 @@ class SyncSessionService:
 
     async def get_active_session_by_instance(
         self,
-        instance_id: int,
+        instance_id: Union[int, str, UUID],
     ) -> Optional[SyncSession]:
         """
         Obtiene la sesión activa de una instancia de juego.
@@ -127,7 +146,7 @@ class SyncSessionService:
 
     async def get_latest_session_by_instance(
         self,
-        instance_id: int,
+        instance_id: Union[int, str, UUID],
     ) -> Optional[SyncSession]:
         """
         Obtiene la última sesión de una instancia de juego.
@@ -148,7 +167,7 @@ class SyncSessionService:
 
     async def delete(
         self,
-        session_id: int,
+        session_id: Union[int, str, UUID],
     ) -> bool:
         """
         Elimina (soft delete) una sesión.
