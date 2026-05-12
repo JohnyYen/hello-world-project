@@ -28,7 +28,7 @@ func build(
 	var verb_data := Verbs.get(verb_key)
 	
 	# Generar IDs únicos
-	var statement_id := _generate_uuid()
+	var statement_id := UUID.generate()
 	var timestamp := Time.get_datetime_string_from_system()
 	
 	# Construir statement
@@ -139,14 +139,5 @@ func get_pending_statements(limit: int = 50) -> Array[Dictionary]:
 	return _repository.get_unbatched(limit)
 
 ## Genera un UUID v4 simple
-func _generate_uuid() -> String:
-	var uuid := ""
-	var hex_chars := "0123456789abcdef"
-	
-	for i in range(32):
-		var random_index := randi() % 16
-		uuid += hex_chars[random_index]
-		if i == 7 or i == 11 or i == 15 or i == 19:
-			uuid += "-"
-	
-	return uuid
+static func _generate_uuid() -> String:
+	return UUID.generate()

@@ -16,7 +16,7 @@ func _init() -> void:
 
 ## Crea un nuevo batch pendiente
 func create(payload: Dictionary) -> String:
-	var batch_id := _generate_uuid()
+	var batch_id := UUID.generate()
 	var statements_json := JSON.stringify(payload.get("statements", []))
 	var payload_json := JSON.stringify(payload.get("payload", {}))
 	
@@ -111,14 +111,5 @@ func get_stats() -> Dictionary:
 	return stats
 
 ## Genera un UUID v4 simple
-func _generate_uuid() -> String:
-	var uuid := ""
-	var hex_chars := "0123456789abcdef"
-	
-	for i in range(32):
-		var random_index := randi() % 16
-		uuid += hex_chars[random_index]
-		if i == 7 or i == 11 or i == 15 or i == 19:
-			uuid += "-"
-	
-	return uuid
+static func _generate_uuid() -> String:
+	return UUID.generate()
