@@ -1,6 +1,6 @@
 # Hello World Project - Unified Development Commands
 
-.PHONY: help dev dev-backend dev-frontend dev-docker test test-backend test-frontend lint lint-backend lint-frontend build build-frontend generate-api-client docker-up docker-down docker-logs
+.PHONY: help dev dev-backend dev-frontend dev-docker test test-backend test-frontend lint lint-backend lint-frontend build build-frontend generate-api-client docker-up docker-down docker-logs clean clean-db stop
 
 ##@ Development
 help: ## Show this help message
@@ -28,6 +28,10 @@ seed-db-reset: ## Reset and seed database (WARNING: destroys data)
 
 seed-db-help: ## Show database seeder help
 	./scripts/seed-database.sh --help
+
+seed-analytics: ## Seed analytics test data (students, courses by school year, sync events)
+	docker cp apps/backend/src/src/shared/seed/seed_analytics_data.py hwp-backend:/app/src/shared/seed/seed_analytics_data.py
+	docker exec hwp-backend bash -c "cd /app && export PYTHONPATH=/app && python3 src/shared/seed/seed_analytics_data.py"
 
 ##@ Testing
 test: ## Run all tests
@@ -67,6 +71,8 @@ docker-up: ## Start all services
 docker-down: ## Stop all services
 	docker compose -f infraestructure/docker/docker-compose.dev.yml down
 
+stop: docker-down ## Stop all services (alias for docker-down)
+
 docker-logs: ## Follow logs from all services
 	docker compose -f infraestructure/docker/docker-compose.dev.yml logs -f
 
@@ -76,3 +82,9 @@ clean: ## Clean cache and temp files
 	cd apps/frontend && rm -rf .next node_modules/.cache
 	cd apps/backend && rm -rf __pycache__ .pytest_cache
 	@echo "Done!"
+
+##@ Database
+clean-db: ## Clean database (WARNING: destroys all data)
+	@echo "⚠️  Cleaning database..."
+	cd apps/backend && uv run alembic downgrade base
+	@echo "✅ Database cleaned!"
