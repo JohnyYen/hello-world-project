@@ -19,8 +19,8 @@ async def start_sync_session(
     session = await service.create(instance_id=sync_session.instance_id)
 
     return SyncSessionSchema(
-        id=session.id,
-        instance_id=session.instance_id,
+        id=str(session.id),
+        instance_id=str(session.instance_id),
         is_active=session.status == "active",
         start_time=session.start_time,
         end_time=session.end_time,

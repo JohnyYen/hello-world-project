@@ -37,6 +37,7 @@ class StudentResponse(BaseModel):
     is_active: bool
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    last_activity: Optional[datetime] = None  # Última actividad del estudiante (desde game_instances)
 
     class Config:
         from_attributes = True

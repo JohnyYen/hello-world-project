@@ -6,6 +6,7 @@ from src.shared.infrastructure.session import get_db
 from src.shared.deps import get_current_user
 from src.users.domain.user import User
 from src.users.infrastructure.user_repository import UserRepository
+from src.game.infrastructure.game_instance_repository import GameInstanceRepository
 from src.users.api.v1.schemas.student import StudentListResponse, StudentResponse
 
 
@@ -57,9 +58,26 @@ class ListStudentsUseCase:
             skip=skip, limit=limit, search=search
         )
 
+        # Obtener repositorio de game_instances para calcular last_activity
+        game_instance_repo = GameInstanceRepository(self.db)
+
         # Construir respuesta
         student_responses = []
         for student in students:
+            # Calcular last_activity desde game_instances
+            last_activity = None
+            try:
+                instances = await game_instance_repo.get_by_student_id(student.id)
+                if instances:
+                    # Obtener la fecha más reciente de activity (created_at o updated_at)
+                    last_activity = max(
+                        (i.updated_at or i.created_at for i in instances if i.updated_at or i.created_at),
+                        default=None
+                    )
+            except Exception:
+                # Si falla, продолжаем sin last_activity
+                pass
+
             student_response = StudentResponse(
                 id=student.id,
                 username=student.username,
@@ -69,6 +87,7 @@ class ListStudentsUseCase:
                 is_active=student.is_active,
                 created_at=student.created_at,
                 updated_at=student.updated_at,
+                last_activity=last_activity,
             )
             student_responses.append(student_response)
 
