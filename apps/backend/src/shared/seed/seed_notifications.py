@@ -1,4 +1,4 @@
-from src.notification.domain.notification import Notification
+from src.users.domain.notification import Notification
 from src.shared.infrastructure.session import AsyncSession
 from sqlalchemy import select
 import random
