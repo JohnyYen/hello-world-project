@@ -271,19 +271,19 @@ export default function ReportsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950/20">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
         <div className="container mx-auto py-12 px-6">
           <div className="animate-pulse space-y-8">
-            <div className="h-8 w-80 bg-slate-800 rounded" />
+            <div className="h-8 w-80 bg-slate-200 dark:bg-slate-800 rounded" />
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-1 space-y-3">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-24 bg-slate-800 rounded-xl" />
+                  <div key={i} className="h-24 bg-slate-200 dark:bg-slate-800 rounded-xl" />
                 ))}
               </div>
               <div className="lg:col-span-2 space-y-4">
-                <div className="h-36 bg-slate-800 rounded-xl" />
-                <div className="h-96 bg-slate-800 rounded-xl" />
+                <div className="h-36 bg-slate-200 dark:bg-slate-800 rounded-xl" />
+                <div className="h-96 bg-slate-200 dark:bg-slate-800 rounded-xl" />
               </div>
             </div>
           </div>
@@ -293,7 +293,7 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950/20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
       {/* Background pattern */}
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -335,17 +335,17 @@ export default function ReportsPage() {
                 size="sm"
                 label="Exportar PDF"
               />
-              <div className="flex items-center gap-4 px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 backdrop-blur-sm">
+              <div className="flex items-center gap-4 px-4 py-2 rounded-full bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 backdrop-blur-sm">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-indigo-400" />
-                  <span className="text-sm font-medium text-slate-300">
+                  <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
                     {courses.length} períodos
                   </span>
                 </div>
-                <div className="w-px h-4 bg-slate-600" />
+                <div className="w-px h-4 bg-slate-300 dark:bg-slate-600" />
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-violet-400" />
-                  <span className="text-sm font-medium text-slate-300">
+                  <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
                     {courses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes
                   </span>
                 </div>
@@ -378,7 +378,7 @@ export default function ReportsPage() {
               <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => setSelectedCourses(courses.map(c => String(c.id)))}
-                  className="flex-1 px-3 py-2 text-xs font-medium bg-slate-800/50 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors"
+                  className="flex-1 px-3 py-2 text-xs font-medium bg-slate-800/50 hover:bg-slate-700 dark:bg-slate-700/50 dark:hover:bg-slate-600 dark:border-slate-600 rounded-lg border border-slate-700 transition-colors"
                 >
                   Todos
                 </button>
@@ -401,7 +401,12 @@ export default function ReportsPage() {
               />
 
               {selectedCourses.length > 0 && (
-                <div className="mt-4 p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/30">
+                <div className={cn(
+                  "mt-4 p-3 rounded-lg border",
+                  "bg-indigo-500/10 border-indigo-500/30",
+                  "dark:bg-indigo-500/10 dark:border-indigo-500/30",
+                  "light:bg-slate-100/50 light:border-slate-200/50"
+                )}>
                   <p className="text-sm text-indigo-400 font-medium">
                     {selectedCourses.length} período{selectedCourses.length > 1 ? 's' : ''} seleccionado{selectedCourses.length > 1 ? 's' : ''}
                   </p>
@@ -418,7 +423,7 @@ export default function ReportsPage() {
           {/* Right content */}
           <div className="lg:col-span-8 xl:col-span-9">
             {/* Tab Navigation */}
-            <div className="flex gap-2 mb-8 p-1 bg-slate-900/50 rounded-xl w-fit backdrop-blur-sm">
+            <div className="flex gap-2 mb-8 p-1 bg-slate-100 dark:bg-slate-900/50 rounded-xl w-fit backdrop-blur-sm border border-slate-200 dark:border-slate-800">
               {[
                 { id: 'overview', label: 'Resumen', icon: BarChart3 },
                 { id: 'evolution', label: 'Evolución', icon: TrendingUp },
@@ -500,26 +505,26 @@ export default function ReportsPage() {
                       accentColor="violet"
                     />
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-center">
-                        <p className="text-xs text-muted-foreground mb-1">Progreso</p>
+                       <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-4 text-center">
+                         <p className="text-xs text-muted-foreground mb-1">Progreso</p>
                         <p className={cn("text-2xl font-bold", evolutionData.progressDiff >= 0 ? "text-indigo-400" : "text-red-400")}>
                           {evolutionData.progressDiff > 0 ? '+' : ''}{evolutionData.progressDiff.toFixed(1)}%
                         </p>
                       </div>
-                      <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-center">
-                        <p className="text-xs text-muted-foreground mb-1">Calificación</p>
+                       <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-4 text-center">
+                         <p className="text-xs text-muted-foreground mb-1">Calificación</p>
                         <p className={cn("text-2xl font-bold", evolutionData.gradeDiff >= 0 ? "text-indigo-400" : "text-red-400")}>
                           {evolutionData.gradeDiff > 0 ? '+' : ''}{evolutionData.gradeDiff.toFixed(1)}%
                         </p>
                       </div>
-                      <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-center">
-                        <p className="text-xs text-muted-foreground mb-1">Completación</p>
+                       <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-4 text-center">
+                         <p className="text-xs text-muted-foreground mb-1">Completación</p>
                         <p className={cn("text-2xl font-bold", evolutionData.completionDiff >= 0 ? "text-indigo-400" : "text-red-400")}>
                           {evolutionData.completionDiff > 0 ? '+' : ''}{evolutionData.completionDiff.toFixed(1)}%
                         </p>
                       </div>
-                      <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-4 text-center">
-                        <p className="text-xs text-muted-foreground mb-1">Tiempo</p>
+                       <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-4 text-center">
+                         <p className="text-xs text-muted-foreground mb-1">Tiempo</p>
                         <p className="text-2xl font-bold text-violet-400">+{formatPlayTime(evolutionData.timeDiff)}</p>
                       </div>
                     </div>
@@ -532,26 +537,26 @@ export default function ReportsPage() {
                     icon={Award}
                     delay={500}
                   />
-                  <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 overflow-hidden">
+                   <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead>
-                          <tr className="border-b border-slate-700/50">
-                            <th className="text-left p-3 text-xs font-semibold text-slate-400">Período</th>
-                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Año</th>
-                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Est.</th>
-                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Prog.</th>
-                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Calif.</th>
-                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Tasa</th>
-                            <th className="text-center p-3 text-xs font-semibold text-slate-400">Tendencia</th>
-                          </tr>
+                           <tr className="border-b border-slate-200 dark:border-slate-800">
+                             <th className="text-left p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Período</th>
+                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Año</th>
+                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Est.</th>
+                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Prog.</th>
+                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Calif.</th>
+                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Tasa</th>
+                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Tendencia</th>
+                           </tr>
                         </thead>
                         <tbody>
                           {selectedMetrics.map((metric) => (
-                            <tr 
-                              key={metric.courseId}
-                              className="border-b border-slate-700/30 hover:bg-slate-800/50"
-                            >
+                             <tr 
+                               key={metric.courseId}
+                               className="border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                             >
                               <td className="p-3 font-medium text-sm">{metric.period}</td>
                               <td className="p-3 text-center text-xs text-muted-foreground">{metric.schoolYear}</td>
                               <td className="p-3 text-center">{metric.totalStudents || 0}</td>
@@ -563,7 +568,7 @@ export default function ReportsPage() {
                               </td>
                               <td className="p-3">
                                 <div className="flex justify-center">
-                                  <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                   <div className="w-16 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-500" style={{ width: `${metric.completionRate}%` }} />
                                   </div>
                                 </div>
@@ -591,9 +596,9 @@ export default function ReportsPage() {
                   delay={0}
                   accentColor="violet"
                 />
-                
-                <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-6 mb-6">
-                  <h3 className="text-lg font-semibold mb-6">Progreso y Calificación</h3>
+                 
+                 <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
+                   <h3 className="text-lg font-semibold mb-6">Progreso y Calificación</h3>
                   <LineChartComponent
                     data={selectedMetrics.map(m => ({ date: m.period.replace(' - ', '\n'), averageProgress: m.averageProgress, averageGrade: m.averageGrade }))}
                     xAxisDataKey="date"
@@ -608,8 +613,8 @@ export default function ReportsPage() {
                   />
                 </div>
 
-                <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-6">
-                  <h3 className="text-lg font-semibold mb-6">Completación y Engagement</h3>
+                 <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
+                   <h3 className="text-lg font-semibold mb-6">Completación y Engagement</h3>
                   <LineChartComponent
                     data={selectedMetrics.map(m => ({ date: m.period.replace(' - ', '\n'), completionRate: m.completionRate, sessionsPerStudent: m.averageSessionsPerStudent * 2 }))}
                     xAxisDataKey="date"
@@ -636,9 +641,9 @@ export default function ReportsPage() {
                   delay={0}
                   accentColor="amber"
                 />
-                
-                <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-6 mb-6">
-                  <h3 className="text-lg font-semibold mb-6">Métricas Comparadas</h3>
+                 
+                 <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
+                   <h3 className="text-lg font-semibold mb-6">Métricas Comparadas</h3>
                   <BarChart
                     data={selectedMetrics.map(m => ({ name: m.period.replace(' - ', '\n'), Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
                     xAxisDataKey="name"
@@ -655,8 +660,8 @@ export default function ReportsPage() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-6">
-                    <h3 className="text-lg font-semibold mb-4">Distribución</h3>
+                   <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
+                     <h3 className="text-lg font-semibold mb-4">Distribución</h3>
                     <DonutChart
                       data={[
                         { name: 'Alto', value: selectedMetrics[selectedMetrics.length - 1]?.highPerformers || 0 },
@@ -669,11 +674,11 @@ export default function ReportsPage() {
                     />
                   </div>
 
-                  <div className="rounded-xl border border-slate-700/50 bg-slate-900/50 p-6">
-                    <h3 className="text-lg font-semibold mb-4">Tendencias</h3>
+                   <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
+                     <h3 className="text-lg font-semibold mb-4">Tendencias</h3>
                     <div className="space-y-2 max-h-64 overflow-y-auto">
                       {selectedMetrics.slice(1).map((metric) => (
-                        <div key={metric.courseId} className="p-3 rounded-lg bg-slate-800/30 border border-slate-700/30">
+                        <div key={metric.courseId} className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/30">
                           <p className="text-xs font-medium mb-1">{metric.period}</p>
                           <div className="flex gap-4 text-xs">
                             <span className="text-muted-foreground">Prog: <TrendArrow value={metric.progressTrend} /></span>
@@ -689,8 +694,8 @@ export default function ReportsPage() {
 
             {activeTab === 'comparison' && selectedMetrics.length < 2 && (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-20 h-20 rounded-full bg-slate-800/50 flex items-center justify-center mb-6">
-                  <ArrowRightLeft className="w-10 h-10 text-slate-500" />
+                <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center mb-6">
+                  <ArrowRightLeft className="w-10 h-10 text-slate-500 dark:text-slate-400" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Selecciona al menos 2 períodos</h3>
                 <p className="text-muted-foreground max-w-md">
@@ -701,7 +706,7 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <div className="text-center py-8 border-t border-slate-800 mt-8">
+        <div className="text-center py-8 border-t border-slate-200 dark:border-slate-800 mt-8">
           <p className="text-sm text-muted-foreground">
             📊 Reporte de {subjectName} • Hello World Platform
           </p>
