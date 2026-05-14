@@ -95,7 +95,6 @@ COURSES_DATA = [
         "periods": [
             {
                 "period_label": "Q1",
-                "display_period": "Enero - Junio 2025",
                 "start_date": date(2025, 1, 15),
                 "end_date": date(2025, 6, 30),
                 "courses": [
@@ -106,7 +105,6 @@ COURSES_DATA = [
             },
             {
                 "period_label": "Q2",
-                "display_period": "Julio - Diciembre 2025",
                 "start_date": date(2025, 7, 15),
                 "end_date": date(2025, 12, 20),
                 "courses": [
@@ -123,7 +121,6 @@ COURSES_DATA = [
         "periods": [
             {
                 "period_label": "Q1",
-                "display_period": "Enero - Junio 2026",
                 "start_date": date(2026, 1, 15),
                 "end_date": date(2026, 6, 30),
                 "courses": [
@@ -229,7 +226,6 @@ async def seed_courses_analytics(db: SessionLocal) -> List[Course]:
         
         for period_data in year_data["periods"]:
             period_label = period_data["period_label"]
-            display_period = period_data["display_period"]
             start_date = period_data["start_date"]
             end_date = period_data["end_date"]
             
@@ -254,7 +250,6 @@ async def seed_courses_analytics(db: SessionLocal) -> List[Course]:
                     description=f"Curso de {course_info['subject']}",
                     school_year=school_year,
                     period_label=period_label,
-                    display_period=display_period,
                     start_date=start_date,
                     end_date=end_date,
                     is_active=True,

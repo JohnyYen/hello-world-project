@@ -98,14 +98,14 @@ export function StudentFeedback({ student, onClose, onSubmit }: StudentFeedbackP
   const getStatusBadge = () => {
     const variants = {
       active: 'bg-green-100 text-green-800 border-green-200',
-      inactive: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      unregistered: 'bg-red-100 text-red-800 border-red-200',
+      inactive: 'bg-red-100 text-red-800 border-red-200',
+      unregistered: 'bg-orange-100 text-orange-800 border-orange-200',
     };
     
     const labels = {
       active: 'Activo',
       inactive: 'Inactivo',
-      unregistered: 'No Registrado',
+      unregistered: 'Pendiente',
     };
 
     return (

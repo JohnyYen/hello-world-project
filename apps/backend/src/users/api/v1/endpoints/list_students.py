@@ -22,7 +22,8 @@ async def list_students(
     skip: int = Query(0, ge=0, description="Número de registros a saltar"),
     limit: int = Query(10, ge=1, le=100, description="Número de registros a devolver"),
     search: str = Query(None, description="Búsqueda por nombre o email"),
-    course_id: UUID = Query(None, description="Filtrar estudiantes por curso"),
+    course_id: UUID = Query(None, description="Filtrar estudiantes por ID de curso"),
+    school_year: str = Query(None, description="Filtrar por curso escolar (ej: '2025 a 2026')"),
     list_students_uc: ListStudentsUseCase = Depends(),
 ):
     """
@@ -31,7 +32,7 @@ async def list_students(
     Requiere autenticación y rol de professor o admin.
     """
     return await list_students_uc.execute(
-        skip=skip, limit=limit, search=search, course_id=course_id
+        skip=skip, limit=limit, search=search, course_id=course_id, school_year=school_year
     )
 
 
@@ -41,7 +42,9 @@ async def get_student_courses(
     current_user: User = Depends(get_current_user),
 ):
     """
-    Obtener lista de cursos únicos que tienen estudiantes inscritos.
+    Obtener lista de cursos escolares (años académicos) únicos que tienen estudiantes inscritos.
+
+    Ejemplo: "2025-2026"
 
     Requiere autenticación y rol de professor o admin.
     """
@@ -52,17 +55,19 @@ async def get_student_courses(
             detail="No tiene permisos para ver cursos",
         )
 
-    # Obtener cursos únicos con estudiantes
+    # Obtener cursos escolares únicos (años académicos) con estudiantes
+    # Usamos school_year que tiene el formato "YYYY-YYYY"
     query = (
-        select(distinct(Course.name))
+        select(distinct(Course.school_year))
         .join(CourseEnrollment, CourseEnrollment.course_id == Course.id)
         .join(Student, Student.id == CourseEnrollment.student_id)
         .join(User, User.id == Student.user_id)
         .where(User.deleted_at.is_(None))
-        .order_by(Course.name)
+        .where(Course.school_year.isnot(None))
+        .order_by(Course.school_year.desc())
     )
     
     result = await db.execute(query)
-    courses = [row[0] for row in result.all()]
+    courses = [row[0] for row in result.all() if row[0]]  # Filtrar nulls
     
     return courses

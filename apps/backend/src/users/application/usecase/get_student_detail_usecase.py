@@ -8,6 +8,7 @@ from src.shared.deps import get_current_user
 from src.users.domain.user import User
 from src.users.infrastructure.user_repository import UserRepository
 from src.users.infrastructure.student_repository import StudentRepository
+from src.game.infrastructure.game_instance_repository import GameInstanceRepository
 from src.users.api.v1.schemas.student import StudentResponse
 
 
@@ -73,13 +74,19 @@ class GetStudentDetailUseCase:
                 detail="El usuario no es un estudiante",
             )
 
-        # Obtener el primer curso del estudiante (si existe)
-        course_name = None
-        if hasattr(student, 'student') and student.student:
-            if student.student.course_enrollments:
-                enrollment = student.student.course_enrollments[0]
-                if hasattr(enrollment, 'course') and enrollment.course:
-                    course_name = enrollment.course.name
+        # Calcular last_activity desde game_instances
+        last_activity = None
+        try:
+            game_instance_repo = GameInstanceRepository(self.db)
+            instances = await game_instance_repo.get_by_student_id(student.id)
+            if instances:
+                last_activity = max(
+                    (i.updated_at or i.created_at for i in instances if i.updated_at or i.created_at),
+                    default=None
+                )
+        except Exception:
+            # Si falla, continuamos sin last_activity
+            pass
 
         # Construir respuesta
         return StudentResponse(
@@ -89,7 +96,7 @@ class GetStudentDetailUseCase:
             name=student.name,
             lastname=student.lastname,
             is_active=student.is_active,
-            course=course_name,
             created_at=student.created_at,
             updated_at=student.updated_at,
+            last_activity=last_activity,
         )

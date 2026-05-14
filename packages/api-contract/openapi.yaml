@@ -1230,6 +1230,13 @@ components:
         is_active:
           title: Is Active
           type: boolean
+        last_activity:
+          anyOf:
+          - format: date-time
+            type: string
+          - type: 'null'
+          title: Last Activity
+          description: Última actividad del estudiante (desde game_instances)
         lastname:
           title: Lastname
           type: string

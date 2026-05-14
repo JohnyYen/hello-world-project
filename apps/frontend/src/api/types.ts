@@ -131,6 +131,7 @@ export interface StudentResponse {
   is_active: boolean;
   created_at: string | null;
   updated_at: string | null;
+  last_activity: string | null;  // Última actividad del estudiante
 }
 
 export interface StudentCreate {

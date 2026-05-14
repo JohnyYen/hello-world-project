@@ -11,6 +11,7 @@ Name | Type
 `email` | string
 `id` | number
 `is_active` | boolean
+`last_activity` | Date
 `lastname` | string
 `name` | string
 `updated_at` | Date
@@ -27,6 +28,7 @@ const example = {
   "email": null,
   "id": null,
   "is_active": null,
+  "last_activity": null,
   "lastname": null,
   "name": null,
   "updated_at": null,

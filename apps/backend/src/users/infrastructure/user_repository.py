@@ -295,6 +295,7 @@ class UserRepository(BaseRepository[User]):
         limit: int = 100,
         search: str = None,
         course_id: UUID = None,
+        school_year: str = None,
     ) -> List[User]:
         """Obtiene usuarios con rol de student con paginación y búsqueda.
 
@@ -302,7 +303,8 @@ class UserRepository(BaseRepository[User]):
             skip: Número de registros a saltar
             limit: Máximo número de registros
             search: Búsqueda por nombre, email o username
-            course_id: Filtrar por curso específico
+            course_id: Filtrar por curso específico (UUID)
+            school_year: Filtrar por curso escolar (ej: '2025 a 2026')
 
         Returns:
             List[User]: Lista de usuarios con rol de student
@@ -310,6 +312,7 @@ class UserRepository(BaseRepository[User]):
         from uuid import UUID as UUIDType
         from src.users.domain.student import Student
         from src.course.domain.course_enrollment import CourseEnrollment
+        from src.course.domain.course import Course
         from src.users.infrastructure.role_repository import RoleRepository
         from sqlalchemy.orm import selectinload
 
@@ -338,6 +341,16 @@ class UserRepository(BaseRepository[User]):
                 select(Student.user_id)
                 .join(CourseEnrollment, CourseEnrollment.student_id == Student.id)
                 .where(CourseEnrollment.course_id == course_id)
+            )
+            query = query.where(User.id.in_(enrolled_student_ids))
+
+        # Filtrar por curso escolar (año académico) si se proporciona
+        if school_year:
+            enrolled_student_ids = (
+                select(Student.user_id)
+                .join(CourseEnrollment, CourseEnrollment.student_id == Student.id)
+                .join(Course, Course.id == CourseEnrollment.course_id)
+                .where(Course.school_year == school_year)
             )
             query = query.where(User.id.in_(enrolled_student_ids))
 

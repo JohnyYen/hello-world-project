@@ -336,12 +336,12 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                         Activo
                       </Badge>
                     ) : student.status === "inactive" ? (
-                      <Badge className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/40">
+                      <Badge className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40">
                         Inactivo
                       </Badge>
                     ) : (
-                      <Badge className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/40">
-                        No Registrado
+                      <Badge className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800 hover:bg-orange-100 dark:hover:bg-orange-900/40">
+                        Pendiente
                       </Badge>
                     )}
                   </TableCell>

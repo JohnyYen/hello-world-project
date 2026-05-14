@@ -1,4 +1,5 @@
 from typing import List, Optional
+from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -29,7 +30,12 @@ class ListStudentsUseCase:
         self.current_user = current_user
 
     async def execute(
-        self, skip: int = 0, limit: int = 100, search: Optional[str] = None
+        self,
+        skip: int = 0,
+        limit: int = 100,
+        search: Optional[str] = None,
+        course_id: Optional[UUID] = None,
+        school_year: Optional[str] = None,
     ) -> StudentListResponse:
         """
         Lista todos los estudiantes.
@@ -38,6 +44,8 @@ class ListStudentsUseCase:
             skip: Número de registros a saltar
             limit: Máximo número de registros
             search: Búsqueda por nombre, email o username
+            course_id: Filtrar estudiantes por ID de curso (opcional)
+            school_year: Filtrar por curso escolar (ej: '2025 a 2026') (opcional)
 
         Returns:
             StudentListResponse: Lista de estudiantes
@@ -55,7 +63,7 @@ class ListStudentsUseCase:
         # Buscar usuarios con rol de student
         user_repo = UserRepository(self.db)
         students = await user_repo.get_students_with_pagination(
-            skip=skip, limit=limit, search=search
+            skip=skip, limit=limit, search=search, course_id=course_id, school_year=school_year
         )
 
         # Obtener repositorio de game_instances para calcular last_activity
