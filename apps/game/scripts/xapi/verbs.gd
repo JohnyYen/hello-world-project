@@ -61,19 +61,19 @@ const VERBS := {
     }
 }
 
-static func get(verb_key: String) -> Dictionary:
+static func get_verb(verb_key: String) -> Dictionary:
     if VERBS.has(verb_key):
         return VERBS[verb_key]
     return {}
 
 static func get_id(verb_key: String) -> String:
-    var verb := get(verb_key)
+    var verb := get_verb(verb_key)
     if verb.is_empty():
         return ""
     return verb.get("id", "")
 
 static func get_display(verb_key: String, lang: String = "es-ES") -> String:
-    var verb := get(verb_key)
+    var verb := get_verb(verb_key)
     if verb.is_empty():
         return ""
     var display := verb.get("display", {})

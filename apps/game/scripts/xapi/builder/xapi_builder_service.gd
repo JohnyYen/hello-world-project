@@ -25,7 +25,7 @@ func build(
 		push_error("XAPIBuilder: Verbo inválido '%s'" % verb_key)
 		return {}
 	
-	var verb_data := Verbs.get(verb_key)
+	var verb_data := Verbs.get_verb(verb_key)
 	
 	# Generar IDs únicos
 	var statement_id := UUID.generate()
