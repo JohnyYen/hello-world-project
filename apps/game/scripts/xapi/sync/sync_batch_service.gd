@@ -113,7 +113,7 @@ func sync_all() -> void:
 		print("DEBUG [SyncBatchService]: Sync en proceso, ignorando")
 		return
 	
-	if not _connection_detector.is_connected():
+		if not _connection_detector.is_online():
 		print("DEBUG [SyncBatchService]: Sin conexión, no se puede sincronizar")
 		return
 	
@@ -259,5 +259,5 @@ func get_stats() -> Dictionary:
 		"pending_batches": _batch_repository.get_stats(),
 		"unbatched_statements": _xapi_repository.count_unbatched(),
 		"is_syncing": _is_syncing,
-		"is_connected": _connection_detector.is_connected() if _connection_detector else false
+		"is_connected": _connection_detector.is_online() if _connection_detector else false
 	}

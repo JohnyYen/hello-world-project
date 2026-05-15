@@ -44,7 +44,7 @@ func stop() -> void:
 	_poll_timer.stop()
 
 ## Verifica si hay conexión
-func is_connected() -> bool:
+func is_online() -> bool:
 	return _is_connected
 
 ## Fuerza una verificación de conexión
@@ -67,8 +67,6 @@ func _check_connection() -> void:
 
 ## Callback del request HTTP
 func _on_request_completed(result: int, response_code: int, _headers: PackedStringArray, _body: PackedByteArray) -> void:
-	var was_connected := _is_connected
-	
 	if result == OK and response_code >= 200 and response_code < 300:
 		_update_connection_status(true)
 	else:
@@ -76,15 +74,16 @@ func _on_request_completed(result: int, response_code: int, _headers: PackedStri
 
 ## Actualiza el estado de conexión y emite señales
 func _update_connection_status(connected: bool) -> void:
+	var was_connected := _is_connected
 	if _is_connected != connected:
 		_is_connected = connected
 		connection_status_changed.emit(connected)
 		
-		if connected and not was_connected:
+		if connected:
 			print("DEBUG [ConnectionDetector]: Conexión restaurada")
 			connection_restored.emit()
-		elif not connected and was_connected:
+		else:
 			print("DEBUG [ConnectionDetector]: Conexión perdida")
 			connection_lost.emit()
-		else:
-			print("DEBUG [ConnectionDetector]: Estado de conexión: %s" % str(connected))
+	else:
+		print("DEBUG [ConnectionDetector]: Estado de conexión: %s" % str(connected))

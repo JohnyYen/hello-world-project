@@ -116,8 +116,8 @@ func get_stats() -> Dictionary:
 	return _batch_service.get_stats()
 
 ## Verifica si hay conexión
-func is_connected() -> bool:
-	return _connection_detector.is_connected()
+func is_online() -> bool:
+	return _connection_detector.is_online()
 
 ## Fuerza verificación de conexión
 func check_connection() -> void:
