@@ -55,11 +55,11 @@ export function CoursePerformanceChart({
 
   return (
     <Card className="overflow-hidden border-0 shadow-lg h-full">
-      <CardHeader className="pb-2 bg-gradient-to-r from-slate-900 to-slate-800">
-        <CardTitle className="text-white text-lg font-semibold tracking-tight">
+      <CardHeader className="pb-2 bg-gradient-to-r from-indigo-50 to-white dark:from-slate-900 dark:to-slate-800">
+        <CardTitle className="text-slate-800 dark:text-white text-lg font-semibold tracking-tight">
           Distribución de Rendimiento
         </CardTitle>
-        <CardDescription className="text-slate-300">
+        <CardDescription className="text-slate-500 dark:text-slate-300">
           {course.courseName}
         </CardDescription>
       </CardHeader>
@@ -88,9 +88,9 @@ export function CoursePerformanceChart({
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (
-                      <div className="bg-slate-900 text-white px-3 py-2 rounded-lg shadow-xl text-sm">
+                      <div className="bg-white dark:bg-slate-900 text-slate-800 dark:text-white px-3 py-2 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 text-sm">
                         <p className="font-medium">{data.name} Rendimiento</p>
-                        <p className="text-slate-300">{data.value} estudiantes ({data.percentage}%)</p>
+                        <p className="text-slate-500 dark:text-slate-300">{data.value} estudiantes ({data.percentage}%)</p>
                       </div>
                     );
                   }
