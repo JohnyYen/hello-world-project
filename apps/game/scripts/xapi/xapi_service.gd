@@ -111,6 +111,14 @@ func sync_now() -> void:
 func create_batch() -> String:
 	return _batch_service.create_batch()
 
+## Procesa un batch específico (envía al backend)
+func process_batch(batch_id: String) -> bool:
+	return await _batch_service.process_batch(batch_id)
+
+## Obtiene los statements pendientes de sincronizar
+func get_pending_statements(limit: int = 50) -> Array[Dictionary]:
+	return _builder.get_pending_statements(limit)
+
 ## Obtiene estadísticas del sistema xAPI
 func get_stats() -> Dictionary:
 	return _batch_service.get_stats()

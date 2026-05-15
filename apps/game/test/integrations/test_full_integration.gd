@@ -35,7 +35,7 @@ func _ready() -> void:
 
 	# Fase 2: Run 1 — Nivel completado alto rendimiento
 	print("\n--- FASE 2: Run 1 - Nivel Completado Alto Rendimiento ---")
-	var r1 := _run_single_level(
+	var r1 := await _run_single_level(
 		"Run 1 - Alto Rendimiento",
 		0.85, 2, 90.0, true, "increase"
 	)
@@ -43,7 +43,7 @@ func _ready() -> void:
 
 	# Fase 3: Run 2 — Nivel fallido bajo rendimiento
 	print("\n--- FASE 3: Run 2 - Nivel Fallido Bajo Rendimiento ---")
-	var r2 := _run_single_level(
+	var r2 := await _run_single_level(
 		"Run 2 - Bajo Rendimiento",
 		0.20, 15, 200.0, false, "decrease"
 	)
@@ -51,7 +51,7 @@ func _ready() -> void:
 
 	# Fase 4: Run 3 — Nivel completado con mucho tiempo
 	print("\n--- FASE 4: Run 3 - Nivel Lento ---")
-	var r3 := _run_single_level(
+	var r3 := await _run_single_level(
 		"Run 3 - Lento",
 		0.70, 3, 300.0, true, "keep"
 	)
@@ -97,7 +97,7 @@ func _login() -> Dictionary:
 		api.queue_free()
 		return {"OK": true, "token": token, "user_data": user_data}
 	else:
-		var error_msg := result.get("error", "unknown")
+		var error_msg = result.get("error", "unknown")
 		print(">>> Login FALLIDO (backend offline?) <<<")
 		print("Error: %s" % str(error_msg))
 		print("Continuando con test offline...")
@@ -225,7 +225,7 @@ func _run_single_level(
 		print("Statement 'completed' creado")
 
 		# Mostrar statements pendientes
-		var pending := xapi._builder.get_pending_statements(50)
+		var pending := xapi.get_pending_statements(50)
 		print("Statements pendientes en SQLite: %d" % pending.size())
 		for stmt in pending:
 			print("  - %s: %s (%s)" % [stmt.get("id", "?"), stmt.get("verb_display", "?"), stmt.get("object_type", "?")])
@@ -234,7 +234,7 @@ func _run_single_level(
 			"level_1", label, "estudiante1",
 			score * 100.0, score, success, _format_duration(time)
 		)
-		var pending := xapi._builder.get_pending_statements(50)
+		var pending := xapi.get_pending_statements(50)
 		print("Statements guardados localmente: %d" % pending.size())
 
 	# 7. Crear batch para sync
@@ -285,9 +285,9 @@ func _sync_flow() -> Dictionary:
 	# Sincronizar batches pendientes
 	print("\n[2/4] Enviando batches xAPI...")
 	for i in range(_batch_ids.size()):
-		var bid := _batch_ids[i]
+		var bid = _batch_ids[i]
 		print("  Enviando batch %d/%d: %s" % [i + 1, _batch_ids.size(), bid])
-		var batch_result := await xapi._batch_service.process_batch(bid)
+		var batch_result := await xapi.process_batch(bid)
 		print("  Resultado batch %s: %s" % [bid, str(batch_result)])
 		results["batch_%d" % i] = batch_result
 
@@ -334,10 +334,10 @@ func _print_summary(runs: Array, sync_data: Dictionary) -> void:
 	var failed := 0
 
 	for run in runs:
-		var label := run.get("label", "?")
-		var test_passed := run.get("test_passed", false)
-		var action := run.get("action", "?")
-		var expected := run.get("expected_action", "?")
+		var label = run.get("label", "?")
+		var test_passed = run.get("test_passed", false)
+		var action = run.get("action", "?")
+		var expected = run.get("expected_action", "?")
 
 		if test_passed:
 			passed += 1
