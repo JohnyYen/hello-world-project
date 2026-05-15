@@ -378,7 +378,7 @@ export default function ReportsPage() {
               <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => setSelectedCourses(courses.map(c => String(c.id)))}
-                  className="flex-1 px-3 py-2 text-xs font-medium bg-slate-800/50 hover:bg-slate-700 dark:bg-slate-700/50 dark:hover:bg-slate-600 dark:border-slate-600 rounded-lg border border-slate-700 transition-colors"
+                  className="flex-1 px-3 py-2 text-xs font-medium bg-slate-200/80 hover:bg-slate-300/80 dark:bg-slate-700/50 dark:hover:bg-slate-600 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 transition-colors"
                 >
                   Todos
                 </button>
@@ -387,7 +387,7 @@ export default function ReportsPage() {
                     const latestYearCourses = courses.filter(c => c.schoolYear === latestYear);
                     setSelectedCourses(latestYearCourses.map(c => String(c.id)));
                   }}
-                  className="flex-1 px-3 py-2 text-xs font-medium bg-indigo-500/20 hover:bg-indigo-500/30 rounded-lg border border-indigo-500/30 text-indigo-400 transition-colors"
+                  className="flex-1 px-3 py-2 text-xs font-medium bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/30 rounded-lg border border-indigo-300 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-400 transition-colors"
                 >
                   Último Año
                 </button>

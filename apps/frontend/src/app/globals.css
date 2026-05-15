@@ -12,9 +12,9 @@
   --color-background-secondary: var(--bg-secondary);
   
   /* Fonts */
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --font-display: var(--font-display);
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: 'Share Tech Mono', ui-monospace, SFMono-Regular, 'Cascadia Code', 'Roboto Mono', 'Consolas', monospace;
+  --font-display: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   
   /* Sidebar */
   --color-sidebar-ring: var(--sidebar-ring);
