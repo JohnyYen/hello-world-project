@@ -113,7 +113,7 @@ func sync_all() -> void:
 		print("DEBUG [SyncBatchService]: Sync en proceso, ignorando")
 		return
 	
-		if not _connection_detector.is_online():
+	if not _connection_detector.is_online():
 		print("DEBUG [SyncBatchService]: Sin conexión, no se puede sincronizar")
 		return
 	
