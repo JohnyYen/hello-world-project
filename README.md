@@ -601,6 +601,7 @@ Then open a Pull Request on GitHub with:
 - [Game README](./apps/game/README.md) - Game architecture, GDScript conventions, GUT testing
 
 ### Technical Documentation
+- [Product Requirements Document](./PRD.md) - Product vision, features, and roadmap
 - [Backend Database Design](./apps/backend/docs/database-design.md) - ER diagrams, table schemas
 - [Backend User Stories](./apps/backend/docs/user_stories.md) - User requirements
 - [Backend Glossary](./apps/backend/GP.md) - Terminology reference
