@@ -4,10 +4,10 @@ const API_BASE_URL = process.env.API_URL || "http://hwp-backend:8000";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const studentId = params.id;
+    const { id: studentId } = await params;
     const token = request.cookies.get("auth_token")?.value;
     const { searchParams } = new URL(request.url);
     const days = searchParams.get("days") || "30";

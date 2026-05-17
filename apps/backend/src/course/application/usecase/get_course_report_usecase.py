@@ -28,8 +28,8 @@ class GetCourseReportUseCase:
             {
                 "id": course.id,
                 "name": course.name,
-                "display_period": course.display_period or f"{course.school_year} - {course.period_label}",
                 "school_year": course.school_year,
+                "period_label": course.period_label,
                 "start_date": course.start_date.isoformat() if course.start_date else "",
                 "end_date": course.end_date.isoformat() if course.end_date else "",
                 "totalStudents": student_count,
@@ -62,8 +62,8 @@ class GetCourseReportUseCase:
             results.append({
                 "courseId": str(course_id),
                 "courseName": course.name or "",  # From course object
-                "period": course.display_period or f"{course.school_year} - {course.period_label}",
                 "schoolYear": course.school_year,
+                "periodLabel": course.period_label,
                 "averageProgress": round(float(metrics.get("average_progress", 0)), 1),
                 "averageGrade": round(float(metrics.get("average_grade", 0)), 1),
                 "completionRate": round(float(metrics.get("completion_rate", 0)), 1),
@@ -134,8 +134,8 @@ class GetCourseReportUseCase:
             all_metrics.append({
                 "course_id": str(course.id),
                 "course_name": course.name,
-                "period": course.display_period or f"{course.school_year} - {course.period_label}",
                 "school_year": course.school_year,
+                "period_label": course.period_label,
                 "average_progress": float(metrics.get("average_progress", 0)),
                 "average_grade": float(metrics.get("average_grade", 0)),
                 "completion_rate": float(metrics.get("completion_rate", 0)),

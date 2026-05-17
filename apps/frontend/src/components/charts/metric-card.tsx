@@ -24,14 +24,14 @@ export function MetricCard({
 }: MetricCardProps) {
   const variantStyles = {
     default: "",
-    highlight: "border-amber-500/30 bg-gradient-to-br from-amber-50/50 to-orange-50/30 dark:from-amber-950/30 dark:to-orange-950/20",
-    accent: "border-indigo-500/30 bg-gradient-to-br from-indigo-50/50 to-violet-50/30 dark:from-indigo-950/30 dark:to-violet-950/20",
+    highlight: "border-accent/30 bg-amber-50 dark:bg-amber-950/30",
+    accent: "border-primary/30 bg-indigo-50 dark:bg-indigo-950/30",
   };
 
   const iconBgStyles = {
     default: "bg-primary/10 text-primary",
-    highlight: "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400",
-    accent: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400",
+    highlight: "bg-amber-200/50 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400",
+    accent: "bg-indigo-200/50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400",
   };
 
   return (
@@ -81,9 +81,9 @@ export function MetricCard({
       {/* Subtle bottom gradient line */}
       <div className={cn(
         "absolute bottom-0 left-0 right-0 h-0.5",
-        variant === "highlight" ? "bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400" :
-        variant === "accent" ? "bg-gradient-to-r from-indigo-400 via-violet-500 to-indigo-400" :
-        "bg-gradient-to-r from-primary/50 via-primary to-primary/50"
+        variant === "highlight" ? "bg-accent/40" :
+        variant === "accent" ? "bg-primary/40" :
+        "bg-primary/40"
       )} />
     </div>
   );

@@ -35,7 +35,7 @@ async def register_sync_event(
         event = await service.create(event_data=sync_event)
 
         # Save event_id before processing
-        event_id = int(str(event.id))
+        event_id = str(event.id)
 
         # Classify event
         event_type = str(event.event_type)
@@ -67,8 +67,8 @@ async def register_sync_event(
         updated_event = await repo.get_by_id(event_id)
 
         return SyncEventSchema(
-            id=event_id,
-            sync_session_id=int(str(updated_event.sync_session_id)),
+            id=str(updated_event.id),
+            sync_session_id=str(updated_event.sync_session_id),
             event_type=str(updated_event.event_type),
             payload=updated_event.payload,
             timestamp=updated_event.timestamp,

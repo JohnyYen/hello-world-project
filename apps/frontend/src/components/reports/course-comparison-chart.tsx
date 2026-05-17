@@ -56,19 +56,19 @@ export function CourseComparisonChart({
 
   return (
     <Card className="overflow-hidden border-0 shadow-lg">
-      <CardHeader className="pb-2 bg-gradient-to-r from-slate-900 to-slate-800">
+      <CardHeader className="pb-2 bg-gradient-to-r from-indigo-50 to-white dark:from-slate-900 dark:to-slate-800">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-white text-lg font-semibold tracking-tight">{title}</CardTitle>
+            <CardTitle className="text-slate-800 dark:text-white text-lg font-semibold tracking-tight">{title}</CardTitle>
             {description && (
-              <CardDescription className="text-slate-300">{description}</CardDescription>
+              <CardDescription className="text-slate-500 dark:text-slate-300">{description}</CardDescription>
             )}
           </div>
           <div className={cn(
             "flex items-center gap-1 text-sm font-medium px-2 py-1 rounded-full",
             trend > 0 ? "bg-accent/20 text-accent" :
             trend < 0 ? "bg-destructive/20 text-destructive" :
-            "bg-slate-500/20 text-slate-300"
+            "bg-slate-100 dark:bg-slate-500/20 text-slate-600 dark:text-slate-300"
           )}>
             {trend > 0 ? <TrendingUp className="w-3 h-3" /> :
              trend < 0 ? <TrendingDown className="w-3 h-3" /> :
@@ -102,9 +102,9 @@ export function CourseComparisonChart({
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (
-                      <div className="bg-slate-900 text-white px-3 py-2 rounded-lg shadow-xl text-sm">
+                      <div className="bg-white dark:bg-slate-900 text-slate-800 dark:text-white px-3 py-2 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 text-sm">
                         <p className="font-medium">{data.fullName}</p>
-                        <p className="text-slate-300">{data.value}{unit}</p>
+                        <p className="text-slate-500 dark:text-slate-300">{data.value}{unit}</p>
                       </div>
                     );
                   }

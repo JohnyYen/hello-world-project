@@ -6,8 +6,8 @@ from datetime import date
 class CourseResponse(BaseModel):
     id: UUID4
     name: str
-    period: str = Field(alias="display_period")
     schoolYear: str = Field(alias="school_year")
+    periodLabel: Optional[str] = Field(alias="period_label", default=None)
     startDate: date = Field(alias="start_date")
     endDate: date = Field(alias="end_date")
     totalStudents: int = 0
@@ -18,8 +18,8 @@ class CourseResponse(BaseModel):
 class CourseMetricsResponse(BaseModel):
     courseId: str = Field(alias="course_id")
     courseName: str = Field(alias="course_name")
-    period: str
     schoolYear: str = Field(alias="school_year")
+    periodLabel: Optional[str] = Field(alias="period_label", default=None)
     totalStudents: int = 0  # ← AGREGADO: Total de estudiantes
     averageProgress: float
     averageGrade: float

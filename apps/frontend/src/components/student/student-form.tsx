@@ -111,7 +111,7 @@ export default function StudentForm({ student, onChange, onSubmit, onCancel }: S
             <SelectContent>
               <SelectItem value="active">Activo</SelectItem>
               <SelectItem value="inactive">Inactivo</SelectItem>
-              <SelectItem value="unregistered">No Registrado</SelectItem>
+              <SelectItem value="unregistered">Pendiente</SelectItem>
             </SelectContent>
           </Select>
         </div>

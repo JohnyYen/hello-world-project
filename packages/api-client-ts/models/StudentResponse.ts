@@ -45,6 +45,12 @@ export interface StudentResponse {
     is_active: boolean;
     /**
      * 
+     * @type {Date}
+     * @memberof StudentResponse
+     */
+    last_activity?: Date | null;
+    /**
+     * 
      * @type {string}
      * @memberof StudentResponse
      */
@@ -96,6 +102,7 @@ export function StudentResponseFromJSONTyped(json: any, ignoreDiscriminator: boo
         'email': json['email'],
         'id': json['id'],
         'is_active': json['is_active'],
+        'last_activity': json['last_activity'] == null ? undefined : (new Date(json['last_activity'])),
         'lastname': json['lastname'],
         'name': json['name'],
         'updated_at': json['updated_at'] == null ? undefined : (new Date(json['updated_at'])),
@@ -118,6 +125,7 @@ export function StudentResponseToJSONTyped(value?: StudentResponse | null, ignor
         'email': value['email'],
         'id': value['id'],
         'is_active': value['is_active'],
+        'last_activity': value['last_activity'] == null ? value['last_activity'] : value['last_activity'].toISOString(),
         'lastname': value['lastname'],
         'name': value['name'],
         'updated_at': value['updated_at'] == null ? value['updated_at'] : value['updated_at'].toISOString(),

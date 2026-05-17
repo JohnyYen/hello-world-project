@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from uuid import UUID
 
 from src.sync.api.v1.schemas.sync_session import SyncSessionSchema
 from src.sync.application.service.sync_session_service import SyncSessionService
@@ -11,7 +12,7 @@ router = APIRouter(prefix="/sync-sessions")
 
 @router.put("/{session_id}/end", response_model=SyncSessionSchema)
 async def end_sync_session(
-    session_id: int,
+    session_id: UUID,
     service: SyncSessionService = Depends(get_sync_session_service),
 ):
     """
@@ -21,8 +22,8 @@ async def end_sync_session(
         session = await service.end_session(session_id=session_id)
 
         return SyncSessionSchema(
-            id=session.id,
-            instance_id=session.instance_id,
+            id=str(session.id),
+            instance_id=str(session.instance_id),
             is_active=session.status == "active",
             start_time=session.start_time,
             end_time=session.end_time,

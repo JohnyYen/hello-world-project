@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import Column, ForeignKey, Boolean, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from src.shared.infrastructure.base import Base
@@ -8,6 +8,11 @@ class Student(Base):
     __tablename__ = "students"
 
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+
+    # Activity tracking fields
+    last_active_at = Column(DateTime(timezone=True), nullable=True)
+    current_streak_days = Column(Boolean, default=False, nullable=False)
+    active_today = Column(Boolean, default=False, nullable=False)
 
     user = relationship("User", back_populates="student")
     game_instances = relationship("GameInstance", back_populates="student")

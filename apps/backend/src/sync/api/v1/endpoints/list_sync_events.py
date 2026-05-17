@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from typing import List
+from uuid import UUID
 
 from src.sync.api.v1.schemas.sync_event import SyncEventSchema
 from src.sync.application.service.sync_event_service import SyncEventService
@@ -11,7 +12,7 @@ router = APIRouter(prefix="/sync-events")
 
 @router.get("/{session_id}", response_model=List[SyncEventSchema])
 async def list_sync_events(
-    session_id: int,
+    session_id: UUID,
     service: SyncEventService = Depends(get_sync_event_service),
 ):
     """
@@ -21,12 +22,12 @@ async def list_sync_events(
 
     return [
         SyncEventSchema(
-            id=event.id,
-            sync_session_id=event.sync_session_id,
-            event_type=event.event_type,
+            id=str(event.id),
+            sync_session_id=str(event.sync_session_id),
+            event_type=str(event.event_type),
             payload=event.payload,
             timestamp=event.timestamp,
-            status=event.status,
+            status=str(event.status),
         )
         for event in events
     ]

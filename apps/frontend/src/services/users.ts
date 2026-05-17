@@ -32,9 +32,10 @@ export async function createUser(
 export async function getStudents(
   token: string,
   skip = 0,
-  limit = 100
+  limit = 100,
+  schoolYear?: string
 ): Promise<StudentListResponse> {
-  return usersApi.getStudents(token, skip, limit);
+  return usersApi.getStudents(token, skip, limit, schoolYear);
 }
 
 export async function getStudent(

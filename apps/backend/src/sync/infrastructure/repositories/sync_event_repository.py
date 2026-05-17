@@ -1,4 +1,5 @@
-from typing import List
+from typing import List, Union
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.sync.domain.sync_event import SyncEvent
@@ -15,7 +16,7 @@ class SyncEventRepository(BaseRepository[SyncEvent]):
         super().__init__(db, SyncEvent)
 
     async def get_by_session_id(
-        self, session_id: int, include_deleted: bool = False
+        self, session_id: Union[int, str, UUID], include_deleted: bool = False
     ) -> List[SyncEvent]:
         """
         Obtiene eventos de sincronización por ID de sesión.
@@ -27,7 +28,7 @@ class SyncEventRepository(BaseRepository[SyncEvent]):
         Returns:
             List[SyncEvent]: Lista de eventos de sincronización
         """
-        filters = {"session_id": session_id}
+        filters = {"sync_session_id": session_id}
         return await self.get_by_filters(filters, include_deleted=include_deleted)
 
     async def get_by_user_id(

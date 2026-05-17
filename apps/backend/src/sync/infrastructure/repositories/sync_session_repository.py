@@ -1,4 +1,5 @@
-from typing import List, Optional
+from typing import List, Optional, Union
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.sync.domain.sync_session import SyncSession

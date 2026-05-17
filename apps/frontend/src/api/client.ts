@@ -123,11 +123,13 @@ export const usersApi = {
     ),
 
   // Students
-  getStudents: (token: string, skip = 0, limit = 100) =>
-    request<import("./types").StudentListResponse>(
-      `/api/v1/users/students?skip=${skip}&limit=${limit}`,
-      { token }
-    ),
+  getStudents: (token: string, skip = 0, limit = 100, schoolYear?: string) => {
+    let url = `/api/v1/users/students?skip=${skip}&limit=${limit}`;
+    if (schoolYear && schoolYear !== 'all') {
+      url += `&school_year=${encodeURIComponent(schoolYear)}`;
+    }
+    return request<import("./types").StudentListResponse>(url, { token });
+  },
 
   getStudent: (studentId: string, token: string) =>
     request<import("./types").ApiResponse<import("./types").StudentResponse>>(

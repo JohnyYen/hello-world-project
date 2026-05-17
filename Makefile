@@ -30,7 +30,7 @@ seed-db-help: ## Show database seeder help
 	./scripts/seed-database.sh --help
 
 seed-analytics: ## Seed analytics test data (students, courses by school year, sync events)
-	docker cp apps/backend/src/src/shared/seed/seed_analytics_data.py hwp-backend:/app/src/shared/seed/seed_analytics_data.py
+	docker cp apps/backend/src/shared/seed/seed_analytics_data.py hwp-backend:/app/src/shared/seed/seed_analytics_data.py
 	docker exec hwp-backend bash -c "cd /app && export PYTHONPATH=/app && python3 src/shared/seed/seed_analytics_data.py"
 
 ##@ Testing

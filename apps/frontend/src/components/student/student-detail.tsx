@@ -104,12 +104,12 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
                       Activo
                     </Badge>
                   ) : student.status === "inactive" ? (
-                    <Badge variant="secondary" className="bg-yellow-600 text-white">
+                    <Badge variant="secondary" className="bg-red-600 text-white">
                       Inactivo
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="border-red-600 text-red-600">
-                      No Registrado
+                    <Badge variant="outline" className="border-orange-600 text-orange-600">
+                      Pendiente
                     </Badge>
                   )}
                 </div>
