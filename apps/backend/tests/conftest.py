@@ -1,5 +1,16 @@
 # Test configuration file for pytest
 import pytest
+import sys
+from types import ModuleType
+from unittest.mock import MagicMock
+
+# Mock sqladmin before any imports
+sqladmin_mock = ModuleType("sqladmin")
+sqladmin_mock.Admin = MagicMock()
+sqladmin_mock.ModelView = MagicMock()
+sqladmin_mock.AdminView = MagicMock()
+sys.modules["sqladmin"] = sqladmin_mock
+
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
