@@ -272,6 +272,64 @@ export const gamesApi = {
     ),
 };
 
+// ─── Course Management ─────────────────────────────────────────────────────
+
+export const coursesApi = {
+  list: (token: string, skip = 0, limit = 100) =>
+    request<import("@/types/course.interface").PaginatedCourseList>(
+      `/api/v1/courses/management?skip=${skip}&limit=${limit}`,
+      { token }
+    ),
+
+  getById: (courseId: string, token: string) =>
+    request<import("@/types/course.interface").CourseDetail>(
+      `/api/v1/courses/${courseId}`,
+      { token }
+    ),
+
+  create: (body: import("@/types/course.interface").CourseCreateRequest, token: string) =>
+    request<import("@/types/course.interface").CourseDetail>(
+      "/api/v1/courses/management",
+      { method: "POST", body: JSON.stringify(body), token }
+    ),
+
+  update: (courseId: string, body: import("@/types/course.interface").CourseUpdateRequest, token: string) =>
+    request<import("@/types/course.interface").CourseDetail>(
+      `/api/v1/courses/${courseId}`,
+      { method: "PUT", body: JSON.stringify(body), token }
+    ),
+
+  delete: (courseId: string, token: string) =>
+    request<{ success: boolean }>(
+      `/api/v1/courses/${courseId}`,
+      { method: "DELETE", token }
+    ),
+
+  getStudents: (courseId: string, token: string) =>
+    request<import("@/types/course.interface").StudentEnrollment[]>(
+      `/api/v1/courses/${courseId}/students`,
+      { token }
+    ),
+
+  enrollStudents: (courseId: string, body: import("@/types/course.interface").EnrollmentRequest, token: string) =>
+    request<import("@/types/course.interface").StudentEnrollment[]>(
+      `/api/v1/courses/${courseId}/students`,
+      { method: "POST", body: JSON.stringify(body), token }
+    ),
+
+  unenrollStudent: (courseId: string, studentId: string, token: string) =>
+    request<{ success: boolean }>(
+      `/api/v1/courses/${courseId}/students/${studentId}`,
+      { method: "DELETE", token }
+    ),
+
+  listByRole: (role: "student" | "professor", token: string) =>
+    request<import("./types").UserResponse[]>(
+      `/api/v1/users/by-role?role=${role}`,
+      { token }
+    ),
+};
+
 // ─── LMS ───────────────────────────────────────────────────────────────────
 
 export const lmsApi = {
