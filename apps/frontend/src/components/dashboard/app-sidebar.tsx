@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import {
-  IconBookOpen,
+  IconBook2,
   IconCamera,
   IconChartBar,
   IconDashboard,
@@ -47,7 +47,7 @@ const data = {
     {
       title: "Cursos",
       url: "/dashboard/cursos",
-      icon: IconBookOpen,
+      icon: IconBook2,
     },
     {
       title: "Métricas",
