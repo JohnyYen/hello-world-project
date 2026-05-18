@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi.security import HTTPBearer
 from uuid import UUID
 
 from src.auth.application.usecase.change_password_usecase import (
@@ -9,7 +10,10 @@ from src.users.api.v1.schemas.user import UserChangePassword, SingleUserResponse
 from src.shared.domain.exceptions import InvalidCredentialsException, NotFoundException
 
 
-router = APIRouter(prefix="/change-password")
+router = APIRouter(
+    prefix="/change-password",
+    dependencies=[Depends(HTTPBearer())],
+)
 
 
 @router.post("", response_model=SingleUserResponse)

@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 3600  # 1 hour for practical testing
     DEBUG: bool = False  # Default to False for security - override with DEBUG=true env var
+    DB_ECHO: bool = False  # SQLAlchemy echo mode (logs all queries) - override with DB_ECHO=true
 
     class Config:
         env_file = ".env"

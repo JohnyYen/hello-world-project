@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, List, Union
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -49,7 +49,7 @@ class SyncSessionService:
                 # Keep as string if not a valid UUID
                 pass
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         session_data = {
             "instance_id": instance_id,
             "start_time": now,
@@ -78,7 +78,7 @@ class SyncSessionService:
         if not session:
             raise NotFoundException(f"Sesión {session_id} no encontrada")
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         updated = await self.repository.update(
             session_id,
             {"end_time": now, "status": "completed"},

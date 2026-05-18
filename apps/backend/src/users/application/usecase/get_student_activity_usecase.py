@@ -1,6 +1,6 @@
 from typing import List
 from uuid import UUID
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
@@ -92,13 +92,13 @@ class GetStudentActivityUseCase:
         current_streak = self._calculate_streak(activities)
         
         # Verificar si está activo hoy
-        today = datetime.utcnow().date()
+        today = datetime.now(timezone.utc).date()
         active_today = any(
             a.occurred_at.date() == today 
             for a in activities 
             if a.occurred_at
         )
-        
+
         return ActivitySummaryResponse(
             student_id=student_id,
             last_active_at=last_active,
@@ -126,7 +126,7 @@ class GetStudentActivityUseCase:
         
         # Contar días consecutivos desde hoy
         streak = 0
-        today = datetime.utcnow().date()
+        today = datetime.now(timezone.utc).date()
         
         # Empezar desde hoy o yesterday
         check_date = today
