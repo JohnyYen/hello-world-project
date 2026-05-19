@@ -1,7 +1,0 @@
-- generic [active] [ref=e1]:
-  - button "Open Next.js Dev Tools" [ref=e33] [cursor=pointer]:
-    - img [ref=e34]
-  - alert [ref=e37]
-  - generic [ref=e39]:
-    - img [ref=e40]
-    - paragraph [ref=e42]: Verifying authentication...

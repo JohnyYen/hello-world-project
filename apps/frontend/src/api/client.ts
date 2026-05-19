@@ -324,10 +324,10 @@ export const coursesApi = {
     ),
 
   listByRole: (role: "student" | "professor", token: string) =>
-    request<import("./types").UserResponse[]>(
+    request<import("./types").UserListResponse>(
       `/api/v1/users/by-role?role=${role}`,
       { token }
-    ),
+    ).then(res => res.data ?? []),
 };
 
 // ─── LMS ───────────────────────────────────────────────────────────────────

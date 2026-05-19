@@ -71,8 +71,8 @@ class CourseResponse(BaseModel):
     start_date: date = Field(alias="startDate")
     end_date: date = Field(alias="endDate")
     is_active: bool = Field(alias="isActive")
-    student_count: int = 0
-    professor_count: int = 0
+    student_count: int = Field(default=0, alias="studentCount")
+    professor_count: int = Field(default=0, alias="professorCount")
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
