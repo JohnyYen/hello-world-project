@@ -26,11 +26,10 @@ wheels/
 .installed.cfg
 *.egg
 
-# Archivos de configuración local
-.env
-.env.local
-.env.dev
-.env.prod
+# Archivos de configuración local (entorno)
+# Mantener secrets fuera del repo
+.env*
+!.env.example
 
 # Archivos de IDE
 .vscode/

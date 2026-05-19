@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import Column, String, DateTime, Integer, Text, JSON
 from src.shared.infrastructure.base import Base
 
@@ -20,7 +20,7 @@ class SyncEventFailure(Base):
     timestamp = Column(DateTime, nullable=False)
 
     error_message = Column(Text, nullable=False)
-    failed_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    failed_at = Column(DateTime, nullable=False, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
 
     retry_count = Column(Integer, default=0, nullable=False)
     status = Column(String(50), default="pending", nullable=False)

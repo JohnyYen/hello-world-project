@@ -26,7 +26,8 @@ __pycache__/
 .idea/
 
 # Ficheros de entorno
-.env
+.env*
+!.env.example
 
 # Ficheros de testing y cobertura
 .pytest_cache/

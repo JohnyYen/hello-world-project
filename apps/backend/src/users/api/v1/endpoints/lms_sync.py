@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from src.shared.infrastructure.session import get_db
 from src.users.infrastructure.lms_credential_repository import LMSCredentialRepository
@@ -51,7 +51,7 @@ async def sync_lms_data(
     # TODO: Implementar sincronización real con el LMS
     # Por ahora, retornamos un resultado mock
 
-    sync_time = datetime.utcnow()
+    sync_time = datetime.now(timezone.utc)
     result = SyncResultResponse(
         status="success",
         message="Sincronización completada exitosamente",
