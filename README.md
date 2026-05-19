@@ -600,8 +600,13 @@ Then open a Pull Request on GitHub with:
 - [Frontend README](./apps/frontend/README.md) - UI development guide, conventions, testing
 - [Game README](./apps/game/README.md) - Game architecture, GDScript conventions, GUT testing
 
+### Product Requirements
+- [Root PRD](./PRD.md) — Cross-cutting product vision, features, and roadmap
+- [Game PRD](./apps/game/PRD.md) — Game-specific product requirements, features, and roadmap
+- [Frontend PRD](./apps/frontend/PRD.md) — Frontend-specific product requirements, features, and roadmap
+- [Backend PRD](./apps/backend/PRD.md) — Backend-specific product requirements, features, and roadmap
+
 ### Technical Documentation
-- [Product Requirements Document](./PRD.md) - Product vision, features, and roadmap
 - [Backend Database Design](./apps/backend/docs/database-design.md) - ER diagrams, table schemas
 - [Backend User Stories](./apps/backend/docs/user_stories.md) - User requirements
 - [Backend Glossary](./apps/backend/GP.md) - Terminology reference
@@ -619,6 +624,9 @@ Then open a Pull Request on GitHub with:
 - [Backend AGENTS.md](./apps/backend/AGENTS.md) - Backend-specific rules
 - [Frontend AGENTS.md](./apps/frontend/AGENTS.md) - Frontend-specific rules
 - [Game AGENTS.md](./apps/game/AGENTS.md) - Game-specific rules
+
+### Documentation Architecture
+The docs follow a layered structure: the **root PRD** defines cross-cutting vision, **component PRDs** (game, frontend, backend) break down per-app requirements, and **technical docs** provide implementation details and guides.
 
 ---
 
