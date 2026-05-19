@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 3600  # 1 hour for practical testing
     DEBUG: bool = False  # Default to False for security - override with DEBUG=true env var
     DB_ECHO: bool = False  # SQLAlchemy echo mode (logs all queries) - override with DB_ECHO=true
+    ADMIN_USERNAME: str = "admin"  # Default admin username
+    ADMIN_PASSWORD: str = ""  # Admin password - must be set via env var
 
     class Config:
         env_file = ".env"
@@ -71,6 +73,20 @@ class Settings(BaseSettings):
         # Warn if debug is enabled (security concern)
         if self.DEBUG:
             print("[SECURITY WARNING] DEBUG mode is enabled! Tracebacks will be exposed.")
+        
+        # Validate admin credentials at startup
+        if not self.ADMIN_PASSWORD:
+            raise ValueError(
+                "ADMIN_PASSWORD is not configured! "
+                "Set ADMIN_PASSWORD environment variable for admin access. "
+                "Generate one with: python -c \"import secrets; print(secrets.token_hex(16))\""
+            )
+        
+        if len(self.ADMIN_PASSWORD) < 8:
+            raise ValueError(
+                f"ADMIN_PASSWORD is too short ({len(self.ADMIN_PASSWORD)} chars). "
+                "Minimum 8 characters required."
+            )
 
 
 settings = Settings()
