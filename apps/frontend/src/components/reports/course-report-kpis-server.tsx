@@ -19,6 +19,7 @@ async function getReportKPIs(): Promise<CourseReportKPIs> {
         topPerformingCourse: {
           courseId: 'course-3',
           courseName: 'Química General',
+          totalStudents: 28,
           period: '2026 - Primer Semestre',
           schoolYear: '2026',
           averageProgress: 81,
@@ -39,6 +40,7 @@ async function getReportKPIs(): Promise<CourseReportKPIs> {
         needsAttentionCourse: {
           courseId: 'course-5',
           courseName: 'Introducción a la Programación',
+          totalStudents: 52,
           period: '2025 - Segundo Semestre',
           schoolYear: '2025',
           averageProgress: 45,

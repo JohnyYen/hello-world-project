@@ -82,13 +82,14 @@ export async function createCourse(
       token
     );
 
-    revalidatePath("/dashboard/cursos");
-    redirect("/dashboard/cursos");
+    revalidatePath("/dashboard/courses");
+
+    redirect("/dashboard/courses");
   } catch (error) {
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
     }
-    const message = error instanceof Error ? error.message : "Error al crear el curso";
+    const message = error instanceof Error ? error.message : "Error al actualizar el curso";
     return { success: false, message, errors: { _form: [message] } };
   }
 }
@@ -132,8 +133,8 @@ export async function updateCourse(
       token
     );
 
-    revalidatePath("/dashboard/cursos");
-    redirect("/dashboard/cursos");
+    revalidatePath("/dashboard/courses");
+    redirect("/dashboard/courses");
   } catch (error) {
     if (error instanceof Error && error.message.includes("NEXT_REDIRECT")) {
       throw error;
@@ -147,7 +148,7 @@ export async function deleteCourse(courseId: string) {
   try {
     const token = await getAuthToken();
     await coursesApi.delete(courseId, token);
-    revalidatePath("/dashboard/cursos");
+    revalidatePath("/dashboard/courses");
     return { success: true, message: "Curso eliminado correctamente" };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Error al eliminar el curso";
@@ -162,7 +163,7 @@ export async function enrollStudents(
   try {
     const token = await getAuthToken();
     await coursesApi.enrollStudents(courseId, { studentIds }, token);
-    revalidatePath(`/dashboard/cursos/${courseId}`);
+    revalidatePath(`/dashboard/courses/${courseId}`);
     return { success: true, message: "Estudiantes asignados correctamente" };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Error al asignar estudiantes";
@@ -177,7 +178,7 @@ export async function unenrollStudent(
   try {
     const token = await getAuthToken();
     await coursesApi.unenrollStudent(courseId, studentId, token);
-    revalidatePath(`/dashboard/cursos/${courseId}`);
+    revalidatePath(`/dashboard/courses/${courseId}`);
     return { success: true, message: "Estudiante desasignado correctamente" };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Error al desasignar estudiante";

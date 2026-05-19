@@ -37,7 +37,7 @@ import {
 import {
   enrollStudents,
   unenrollStudent,
-} from "@/app/dashboard/cursos/actions";
+} from "@/app/dashboard/courses/actions";
 import type { CourseDetail, StudentEnrollment } from "@/types/course.interface";
 import type { UserResponse } from "@/api/types";
 import { cn } from "@/lib/utils";
@@ -117,19 +117,19 @@ export default function CourseDetailView({
         </svg>
       </div>
 
-      <div className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 text-white py-10 px-6 md:px-12 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 text-white py-10 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
         <div className="max-w-7xl mx-auto relative z-10">
           <Link
-            href="/dashboard/cursos"
-            className="inline-flex items-center gap-2 text-emerald-200 hover:text-white transition-colors mb-4"
+            href="/dashboard/courses"
+            className="inline-flex items-center gap-2 text-indigo-200 hover:text-white transition-colors mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver a cursos
           </Link>
           <h1 className="text-3xl font-bold tracking-tight mb-2">{course.name}</h1>
-          <div className="flex flex-wrap gap-4 text-emerald-100">
+          <div className="flex flex-wrap gap-4 text-indigo-100">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               <span>
@@ -159,7 +159,7 @@ export default function CourseDetailView({
 
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-3">
-            <Users className="h-5 w-5 text-emerald-500" />
+            <Users className="h-5 w-5 text-indigo-500" />
             <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
               Estudiantes Inscritos
             </h2>
@@ -169,7 +169,7 @@ export default function CourseDetailView({
           </div>
           <Dialog open={enrollDialogOpen} onOpenChange={setEnrollDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
                 <UserPlus className="h-4 w-4 mr-2" />
                 Asignar Estudiantes
               </Button>
@@ -246,7 +246,7 @@ export default function CourseDetailView({
                 <Button
                   onClick={handleEnroll}
                   disabled={selectedNewStudents.length === 0 || loading}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white"
                 >
                   {loading
                     ? "Asignando..."
@@ -280,7 +280,7 @@ export default function CourseDetailView({
                 students.map((student) => (
                   <TableRow
                     key={student.studentId}
-                    className="hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all border-b border-slate-100 dark:border-slate-700/50"
+                    className="hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all border-b border-slate-100 dark:border-slate-700/50"
                   >
                     <TableCell className="font-medium text-slate-900 dark:text-slate-100">
                       <div className="flex items-center gap-2">

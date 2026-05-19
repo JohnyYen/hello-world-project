@@ -46,7 +46,7 @@ const data = {
     },
     {
       title: "Cursos",
-      url: "/dashboard/cursos",
+      url: "/dashboard/courses",
       icon: IconBook2,
     },
     {

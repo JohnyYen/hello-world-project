@@ -33,8 +33,8 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
-import CourseForm from "@/components/cursos/course-form";
-import { deleteCourse } from "@/app/dashboard/cursos/actions";
+import CourseForm from "@/components/courses/course-form";
+import { deleteCourse } from "@/app/dashboard/courses/actions";
 import type { Course } from "@/types/course.interface";
 import type { UserResponse } from "@/api/types";
 
@@ -92,26 +92,26 @@ export default function CourseTable({
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="grid-cursos" width="40" height="40" patternUnits="userSpaceOnUse">
+            <pattern id="grid-courses" width="40" height="40" patternUnits="userSpaceOnUse">
               <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
             </pattern>
           </defs>
-          <rect width="100%" height="100%" fill="url(#grid-cursos)" />
+          <rect width="100%" height="100%" fill="url(#grid-courses)" />
         </svg>
       </div>
 
-      <div className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 text-white py-10 px-6 md:px-12 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 text-white py-10 px-6 md:px-12 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex items-center gap-3 mb-2">
-            <BookOpen className="h-6 w-6 text-emerald-200" />
-            <span className="text-sm font-medium text-emerald-200 uppercase tracking-wider">
+            <BookOpen className="h-6 w-6 text-indigo-200" />
+            <span className="text-sm font-medium text-indigo-200 uppercase tracking-wider">
               Gestión Académica
             </span>
           </div>
           <h1 className="text-4xl font-bold tracking-tight mb-2">Cursos</h1>
-          <p className="text-emerald-100 text-lg max-w-2xl">
+          <p className="text-indigo-100 text-lg max-w-2xl">
             Administración de cursos, estudiantes y profesores
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function CourseTable({
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
-              <BookOpen className="h-4 w-4 text-emerald-500" />
+              <BookOpen className="h-4 w-4 text-indigo-500" />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 {total} cursos
               </span>
@@ -129,7 +129,7 @@ export default function CourseTable({
           </div>
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/25">
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/25">
                 <Plus className="h-4 w-4 mr-2" />
                 Crear Curso
               </Button>
@@ -162,7 +162,7 @@ export default function CourseTable({
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="pl-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-emerald-500/20"
+                className="pl-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-indigo-500/20"
               />
             </div>
           </div>
@@ -185,7 +185,7 @@ export default function CourseTable({
                 currentItems.map((course) => (
                   <TableRow
                     key={course.id}
-                    className="hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all border-b border-slate-100 dark:border-slate-700/50"
+                    className="hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all border-b border-slate-100 dark:border-slate-700/50"
                   >
                     <TableCell className="font-medium text-slate-900 dark:text-slate-100">
                       {course.name}
@@ -194,13 +194,13 @@ export default function CourseTable({
                       {course.schoolYear}
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center rounded-full bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                      <span className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/40 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
                         {course.periodLabel}
                       </span>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <Users className="h-3.5 w-3.5 text-emerald-500" />
+                        <Users className="h-3.5 w-3.5 text-indigo-500" />
                         <span className="text-slate-700 dark:text-slate-300">{course.studentCount}</span>
                       </div>
                     </TableCell>
@@ -212,11 +212,11 @@ export default function CourseTable({
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Link href={`/dashboard/cursos/${course.id}`}>
+                        <Link href={`/dashboard/courses/${course.id}`}>
                           <Button
                             variant="outline"
                             size="sm"
-                            className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700"
+                            className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700"
                           >
                             <Eye className="h-3.5 w-3.5 mr-1" />
                             Ver detalle
@@ -256,7 +256,7 @@ export default function CourseTable({
                       <BookOpen className="h-12 w-12 text-slate-300 dark:text-slate-600" />
                       <p className="text-lg font-medium">No hay cursos registrados</p>
                       <Button
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white"
                         onClick={() => setCreateDialogOpen(true)}
                       >
                         <Plus className="h-4 w-4 mr-2" />
@@ -274,15 +274,15 @@ export default function CourseTable({
           <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
             <div className="text-sm text-slate-600 dark:text-slate-400 bg-white/60 dark:bg-slate-800/60 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700">
               Mostrando{" "}
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400">
                 {startIndex + 1}
               </span>
               -
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400">
                 {Math.min(startIndex + rowsPerPage, filtered.length)}
               </span>{" "}
               de{" "}
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400">
                 {filtered.length}
               </span>{" "}
               cursos
@@ -305,7 +305,7 @@ export default function CourseTable({
                   onClick={() => setCurrentPage(page)}
                   className={
                     currentPage === page
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white min-w-[2.25rem]"
+                      ? "bg-indigo-600 hover:bg-indigo-700 text-white min-w-[2.25rem]"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }
                 >
@@ -361,7 +361,7 @@ export default function CourseTable({
               ¿Estás seguro de eliminar este curso? Esta acción no se puede deshacer.
               {courseToDelete && (
                 <span className="block mt-2 font-medium text-foreground">
-                  "{courseToDelete.name}" - {courseToDelete.schoolYear}
+                  &ldquo;{courseToDelete.name}&rdquo; - {courseToDelete.schoolYear}
                 </span>
               )}
             </DialogDescription>

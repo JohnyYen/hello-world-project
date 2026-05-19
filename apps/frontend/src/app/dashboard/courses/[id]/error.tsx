@@ -25,7 +25,7 @@ export default function CursoDetailError({
             Reintentar
           </Button>
           <Button
-            onClick={() => (window.location.href = "/dashboard/cursos")}
+            onClick={() => (window.location.href = "/dashboard/courses")}
             variant="outline"
           >
             Volver a cursos

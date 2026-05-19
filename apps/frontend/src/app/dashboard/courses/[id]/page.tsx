@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { coursesApi } from "@/api/client";
 import { cookies } from "next/headers";
-import CourseDetailView from "@/components/cursos/course-detail";
+import CourseDetailView from "@/components/courses/course-detail";
+import type { UserResponse } from "@/api/types";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +30,8 @@ export default async function CursoDetailPage({
             El curso que buscas no existe o ha sido eliminado.
           </p>
           <Link
-            href="/dashboard/cursos"
-            className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors font-medium"
+            href="/dashboard/courses"
+            className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 transition-colors font-medium"
           >
             ← Volver a cursos
           </Link>
@@ -39,7 +40,7 @@ export default async function CursoDetailPage({
     );
   }
 
-  let allStudents;
+  let allStudents: UserResponse[] = [];
   try {
     allStudents = await coursesApi.listByRole("student", token);
   } catch {

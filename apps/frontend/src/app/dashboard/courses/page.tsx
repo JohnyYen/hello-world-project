@@ -1,4 +1,4 @@
-import CourseTable from "@/components/cursos/course-table";
+import CourseTable from "@/components/courses/course-table";
 import { coursesApi } from "@/api/client";
 import { cookies } from "next/headers";
 
