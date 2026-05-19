@@ -166,9 +166,7 @@ The platform employs **adaptive learning algorithms** that dynamically adjust ga
 - **Dialogue System**: Interactive narrative with Dialogue Manager plugin
 - **Event Bus**: Signal-based communication between game components
 
-#### Shared Packages
-- **API Client** (`packages/api-client-ts/`): Auto-generated TypeScript client from OpenAPI spec
-- **API Contract** (`packages/api-contract/`): OpenAPI JSON/YAML specification
+
 
 ---
 
@@ -408,7 +406,7 @@ pnpm run test:e2e
 - No `useMemo`/`useCallback` (React Compiler)
 - Explicit return types on all functions
 - `interface` over `type` for objects
-- API calls via `@workspace/api-client-ts` package
+- API calls via custom `fetch` client (`src/api/client.ts`)
 
 **Key Routes:**
 ```
@@ -491,9 +489,6 @@ hello-world-project/
 │   ├── backend/              # FastAPI REST API (Python)
 │   ├── frontend/             # Next.js 15 dashboard (TypeScript)
 │   └── game/                 # Godot 4.4 educational game (GDScript)
-├── packages/
-│   ├── api-client-ts/        # Auto-generated TypeScript client
-│   └── api-contract/         # OpenAPI specification
 ├── infraestructure/
 │   └── docker/               # Docker Compose configurations
 ├── docs/                     # Documentation (ADR, SDD, etc.)
@@ -610,8 +605,6 @@ Then open a Pull Request on GitHub with:
 - [Frontend Performance](./apps/frontend/PERFORMANCE_OPTIMIZATION.md) - Optimization guide
 
 ### API Documentation
-- [API Contract](./packages/api-contract/openapi.json) - OpenAPI specification
-- [API Client Docs](./packages/api-client-ts/) - TypeScript client documentation
 - [Live Swagger UI](http://localhost:8000/docs) - Available when backend is running
 
 ### Development Guidelines

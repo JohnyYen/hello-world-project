@@ -1,6 +1,5 @@
 /**
  * API client using native fetch.
- * Replaces the auto-generated @workspace/api-client-ts package.
  */
 
 const API_BASE_URL =

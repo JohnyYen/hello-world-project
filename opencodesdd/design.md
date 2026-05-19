@@ -5,7 +5,7 @@
 ### 1. Mantener el Comportamiento del Backend
 - No se requieren cambios en el backend ya que funciona correctamente según las pruebas de duplicados
 - El backend ya previene usuarios duplicados mediante el caso de uso `RegisterUserUseCase`
-- Se mantiene la integración existente con el cliente API de TypeScript (`@workspace/api-client-ts`)
+- Se mantiene la integración existente con el cliente API de TypeScript (`@/services/auth`)
 
 ### 2. Enfoque de State Management Local
 - Implementar estado local de React para controlar la visibilidad de los campos de contraseña

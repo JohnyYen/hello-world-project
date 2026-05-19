@@ -1,6 +1,6 @@
 # Hello World Project - Unified Development Commands
 
-.PHONY: help dev dev-backend dev-frontend dev-docker test test-backend test-frontend lint lint-backend lint-frontend build build-frontend generate-api-client docker-up docker-down docker-logs clean clean-db stop
+.PHONY: help dev dev-backend dev-frontend dev-docker test test-backend test-frontend lint lint-backend lint-frontend build build-frontend docker-up docker-down docker-logs clean clean-db stop
 
 ##@ Development
 help: ## Show this help message
@@ -59,10 +59,6 @@ build: ## Build all projects
 
 build-frontend: ## Build frontend for production
 	cd apps/frontend && pnpm build
-
-##@ API Client
-generate-api-client: ## Generate API client from OpenAPI spec
-	bash scripts/generate-api-client.sh
 
 ##@ Docker
 docker-up: ## Start all services
