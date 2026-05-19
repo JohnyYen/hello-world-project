@@ -34,8 +34,8 @@ import {
   Trash2,
 } from "lucide-react";
 import CourseForm from "@/components/courses/course-form";
-import { deleteCourse } from "@/app/dashboard/courses/actions";
-import type { Course } from "@/types/course.interface";
+import { deleteCourse, getCourseDetailAction } from "@/app/dashboard/courses/actions";
+import type { Course, CourseDetail } from "@/types/course.interface";
 import type { UserResponse } from "@/api/types";
 
 interface CourseTableProps {
@@ -58,6 +58,8 @@ export default function CourseTable({
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editCourse, setEditCourse] = useState<Course | null>(null);
+  const [editCourseDetail, setEditCourseDetail] = useState<CourseDetail | null>(null);
+  const [editLoading, setEditLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -226,8 +228,17 @@ export default function CourseTable({
                           variant="outline"
                           size="sm"
                           className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-amber-300 dark:hover:border-amber-700"
-                          onClick={() => {
+                          onClick={async () => {
                             setEditCourse(course);
+                            setEditLoading(true);
+                            const detail = await getCourseDetailAction(course.id);
+                            if (detail) {
+                              setEditCourseDetail(detail);
+                            } else {
+                              notifications.error("Error al cargar datos del curso");
+                              setEditCourse(null);
+                            }
+                            setEditLoading(false);
                           }}
                         >
                           <Pencil className="h-3.5 w-3.5 mr-1" />
@@ -330,7 +341,10 @@ export default function CourseTable({
       <Dialog
         open={!!editCourse}
         onOpenChange={(open) => {
-          if (!open) setEditCourse(null);
+          if (!open) {
+            setEditCourse(null);
+            setEditCourseDetail(null);
+          }
         }}
       >
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -340,13 +354,25 @@ export default function CourseTable({
               Modifica los datos del curso. Los cambios se guardarán automáticamente.
             </DialogDescription>
           </DialogHeader>
-          {editCourse && (
+          {editLoading && (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin h-6 w-6 border-2 border-indigo-600 border-t-transparent rounded-full" />
+              <span className="ml-3 text-sm text-slate-500">Cargando datos del curso...</span>
+            </div>
+          )}
+          {editCourseDetail && (
             <CourseForm
-              course={editCourse as any}
+              course={editCourseDetail}
               students={students}
               professors={professors}
-              onSuccess={() => setEditCourse(null)}
-              onCancel={() => setEditCourse(null)}
+              onSuccess={() => {
+                setEditCourse(null);
+                setEditCourseDetail(null);
+              }}
+              onCancel={() => {
+                setEditCourse(null);
+                setEditCourseDetail(null);
+              }}
             />
           )}
         </DialogContent>

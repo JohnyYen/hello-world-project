@@ -30,8 +30,7 @@ class ManageEnrollmentUseCase:
         new_ids = [sid for sid in student_ids if sid not in existing_ids]
 
         if new_ids:
-            async with self.db.begin():
-                await self.course_repo.bulk_create_enrollments(course_id, new_ids)
+            await self.course_repo.bulk_create_enrollments(course_id, new_ids)
 
         students_data = await self.course_repo.get_students_for_course(course_id)
         return [StudentEnrollmentResponse.model_validate(s) for s in students_data]
@@ -41,34 +40,32 @@ class ManageEnrollmentUseCase:
         if not course:
             raise NotFoundException("Curso no encontrado")
 
-        async with self.db.begin():
-            existing_ids = await self.course_repo.get_existing_enrollment_ids(
-                course_id
-            )
-            if student_id not in existing_ids:
-                return False
+        existing_ids = await self.course_repo.get_existing_enrollment_ids(
+            course_id
+        )
+        if student_id not in existing_ids:
+            return False
 
-            now = datetime.utcnow()
-            result = await self.db.execute(
-                update(CourseEnrollment)
-                .where(
-                    CourseEnrollment.course_id == course_id,
-                    CourseEnrollment.student_id == student_id,
-                    CourseEnrollment.deleted_at.is_(None),
-                )
-                .values(deleted_at=now, is_deleted=True)
+        now = datetime.utcnow()
+        result = await self.db.execute(
+            update(CourseEnrollment)
+            .where(
+                CourseEnrollment.course_id == course_id,
+                CourseEnrollment.student_id == student_id,
+                CourseEnrollment.deleted_at.is_(None),
             )
-            return result.rowcount > 0
+            .values(deleted_at=now, is_deleted=True)
+        )
+        return result.rowcount > 0
 
     async def delete_course(self, course_id: UUID) -> bool:
         course = await self.course_repo.get_by_id(course_id)
         if not course:
             raise NotFoundException("Curso no encontrado")
 
-        async with self.db.begin():
-            await self.course_repo.soft_delete_enrollments_for_course(course_id)
-            await self.course_repo.soft_delete_professors_for_course(course_id)
-            result = await self.course_repo.soft_delete_course(course_id)
+        await self.course_repo.soft_delete_enrollments_for_course(course_id)
+        await self.course_repo.soft_delete_professors_for_course(course_id)
+        result = await self.course_repo.soft_delete_course(course_id)
 
         return result
 

@@ -194,3 +194,12 @@ export async function getUsersForForm(role: "student" | "professor") {
     return [];
   }
 }
+
+export async function getCourseDetailAction(courseId: string) {
+  try {
+    const token = await getAuthToken();
+    return await coursesApi.getById(courseId, token);
+  } catch {
+    return null;
+  }
+}

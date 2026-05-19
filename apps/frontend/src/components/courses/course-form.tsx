@@ -45,10 +45,10 @@ export default function CourseForm({
   const [state, formAction, isPending] = useActionState(action, null);
 
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>(
-    course?.students.map((s) => s.studentId) ?? []
+    course?.students?.map((s) => s.studentId) ?? []
   );
   const [selectedProfessorIds, setSelectedProfessorIds] = useState<string[]>(
-    course?.professors.map((p) => p.professorId) ?? []
+    course?.professors?.map((p) => p.professorId) ?? []
   );
 
   useEffect(() => {
