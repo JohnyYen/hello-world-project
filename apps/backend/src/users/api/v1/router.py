@@ -34,6 +34,9 @@ from src.users.api.v1.endpoints.get_user import router as get_user_router
 from src.users.api.v1.endpoints.update_user import router as update_user_router
 from src.users.api.v1.endpoints.delete_user import router as delete_user_router
 from src.users.api.v1.endpoints.student_activity import router as student_activity_router
+from src.users.api.v1.endpoints.get_users_by_role import (
+    router as get_users_by_role_router,
+)
 
 
 router = APIRouter(
@@ -60,5 +63,6 @@ router.include_router(lms_sync_router)
 router.include_router(update_user_router)
 router.include_router(delete_user_router)
 router.include_router(student_activity_router)
+router.include_router(get_users_by_role_router)
 # Este debe ser el último para rutas con path params
 router.include_router(get_user_router)
