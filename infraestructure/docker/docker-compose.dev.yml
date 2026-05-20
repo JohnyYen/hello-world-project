@@ -65,6 +65,8 @@ services:
     env_file:
       - .env
       - ../../apps/frontend/.env
+    environment:
+      API_URL: http://hwp-backend:8000
     ports:
       - "3000:3000"
     volumes:

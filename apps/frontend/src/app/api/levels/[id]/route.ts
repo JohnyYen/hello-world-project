@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const token = (await _request.cookies).get("auth_token")?.value;

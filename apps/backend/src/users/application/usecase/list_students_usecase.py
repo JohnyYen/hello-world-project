@@ -17,6 +17,7 @@ class ListStudentsUseCase:
 
     Responsabilidades:
     - Validar que el usuario actual sea professor o admin
+    - Si es profesor, filtrar solo estudiantes inscritos en sus cursos
     - Obtener lista de usuarios con rol de student
     - Retornar datos combinados de User + Student
     """
@@ -60,10 +61,16 @@ class ListStudentsUseCase:
                 detail="No tiene permisos para ver estudiantes",
             )
 
+        # Si es profesor, filtrar solo estudiantes en sus cursos
+        professor_user_id = None
+        if self.current_user.role.role_name == "professor":
+            professor_user_id = self.current_user.id
+
         # Buscar usuarios con rol de student
         user_repo = UserRepository(self.db)
         students = await user_repo.get_students_with_pagination(
-            skip=skip, limit=limit, search=search, course_id=course_id, school_year=school_year
+            skip=skip, limit=limit, search=search, course_id=course_id,
+            school_year=school_year, professor_user_id=professor_user_id
         )
 
         # Obtener repositorio de game_instances para calcular last_activity

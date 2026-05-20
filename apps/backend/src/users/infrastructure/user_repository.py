@@ -296,6 +296,7 @@ class UserRepository(BaseRepository[User]):
         search: str = None,
         course_id: UUID = None,
         school_year: str = None,
+        professor_user_id: UUID = None,
     ) -> List[User]:
         """Obtiene usuarios con rol de student con paginación y búsqueda.
 
@@ -305,6 +306,8 @@ class UserRepository(BaseRepository[User]):
             search: Búsqueda por nombre, email o username
             course_id: Filtrar por curso específico (UUID)
             school_year: Filtrar por curso escolar (ej: '2025 a 2026')
+            professor_user_id: Si se proporciona, filtra solo estudiantes inscritos
+                               en cursos que dicta ese profesor (UUID del User)
 
         Returns:
             List[User]: Lista de usuarios con rol de student
@@ -334,6 +337,32 @@ class UserRepository(BaseRepository[User]):
                 User.role_id == student_role_id, User.deleted_at.is_(None)
             )
         )
+
+        # Filtrar por profesor: solo estudiantes en cursos que dicta
+        if professor_user_id:
+            from src.users.domain.professor import Professor
+            from src.course.domain.course_professor import CourseProfessor
+
+            # Obtener el ID del registro Professor asociado al user_id
+            professor_subq = (
+                select(Professor.id)
+                .where(Professor.user_id == professor_user_id)
+            )
+
+            # Obtener IDs de cursos que enseña este profesor
+            course_ids_subq = (
+                select(CourseProfessor.course_id)
+                .where(CourseProfessor.professor_id.in_(professor_subq))
+            )
+
+            # Obtener IDs de estudiantes (user_ids) inscritos en esos cursos
+            enrolled_student_ids = (
+                select(Student.user_id)
+                .join(CourseEnrollment, CourseEnrollment.student_id == Student.id)
+                .where(CourseEnrollment.course_id.in_(course_ids_subq))
+            )
+
+            query = query.where(User.id.in_(enrolled_student_ids))
 
         # Filtrar por curso si se proporciona
         if course_id:
