@@ -48,6 +48,7 @@ class EnrollmentRequest(BaseModel):
 class StudentEnrollmentResponse(BaseModel):
     student_id: UUID = Field(alias="studentId")
     name: str
+    lastname: Optional[str] = None
     email: str
     enrolled_at: str = Field(alias="enrolledAt")
 

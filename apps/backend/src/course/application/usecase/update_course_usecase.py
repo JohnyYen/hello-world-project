@@ -25,11 +25,16 @@ class UpdateCourseUseCase:
     async def execute(
         self, course_id: UUID, request: CourseUpdateRequest
     ) -> CourseDetailResponse:
-        course = await self.course_repo.get_by_id(course_id)
-        if not course:
-            raise NotFoundException("Curso no encontrado")
-
+        """
+        Actualiza un curso y sincroniza estudiantes/profesores en una sola transacción.
+        Todo el flujo se ejecuta dentro de un único begin() para evitar que autobegin
+        abra una transacción implícita previa y se produzca el error de doble-begin.
+        """
         async with self.db.begin():
+            course = await self.course_repo.get_by_id(course_id)
+            if not course:
+                raise NotFoundException("Curso no encontrado")
+
             update_data = request.model_dump(
                 exclude_unset=True,
                 exclude={"student_ids", "professor_ids"},

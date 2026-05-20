@@ -3,6 +3,7 @@ from uuid import UUID as UUIDType
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, update
+from sqlalchemy.sql.selectable import Select
 from sqlalchemy.orm import selectinload
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.course.domain.course import Course
@@ -111,11 +112,45 @@ class CourseRepository(BaseRepository[Course]):
         result = await self.db.execute(query)
         return result.scalar_one_or_none()
 
+    async def get_student_profile_ids(
+        self, user_ids: list[UUIDType]
+    ) -> dict[UUIDType, UUIDType]:
+        """
+        Convierte User.id (cuenta de usuario) → Student.id (perfil de estudiante).
+        Retorna un dict {user_id: student_id} para convertir los IDs que envía el frontend.
+        """
+        if not user_ids:
+            return {}
+        query = select(Student.id, Student.user_id).where(
+            Student.user_id.in_(user_ids), Student.deleted_at.is_(None)
+        )
+        result = await self.db.execute(query)
+        rows = result.all()
+        return {row.user_id: row.id for row in rows}
+
+    async def get_professor_profile_ids(
+        self, user_ids: list[UUIDType]
+    ) -> dict[UUIDType, UUIDType]:
+        """
+        Convierte User.id (cuenta de usuario) → Professor.id (perfil de profesor).
+        Retorna un dict {user_id: professor_id} para convertir los IDs que envía el frontend.
+        """
+        if not user_ids:
+            return {}
+        query = select(Professor.id, Professor.user_id).where(
+            Professor.user_id.in_(user_ids), Professor.deleted_at.is_(None)
+        )
+        result = await self.db.execute(query)
+        rows = result.all()
+        return {row.user_id: row.id for row in rows}
+
     async def bulk_create_enrollments(
         self, course_id: UUIDType, student_ids: list[UUIDType]
     ) -> list[CourseEnrollment]:
         """
         Crea múltiples inscripciones en batch.
+        IMPORTANTE: `student_ids` debe ser Student.id (perfil de estudiante),
+        NO User.id (cuenta de usuario). Usar get_student_profile_ids() para convertir.
         """
         enrollments = [
             CourseEnrollment(course_id=course_id, student_id=sid)
@@ -143,7 +178,7 @@ class CourseRepository(BaseRepository[Course]):
         self, course_id: UUIDType
     ) -> int:
         """
-        Soft delete de todas las inscripciones activas de un curso.
+        Soft delete of all active enrollments for a course.
         """
         now = datetime.utcnow()
         result = await self.db.execute(
@@ -154,13 +189,14 @@ class CourseRepository(BaseRepository[Course]):
             )
             .values(deleted_at=now, is_deleted=True)
         )
+        await self.db.commit()
         return result.rowcount
 
     async def soft_delete_professors_for_course(
         self, course_id: UUIDType
     ) -> int:
         """
-        Soft delete de todas las asignaciones de profesores activas de un curso.
+        Soft delete of all active professor assignments for a course.
         """
         now = datetime.utcnow()
         result = await self.db.execute(
@@ -171,11 +207,12 @@ class CourseRepository(BaseRepository[Course]):
             )
             .values(deleted_at=now, is_deleted=True)
         )
+        await self.db.commit()
         return result.rowcount
 
     async def soft_delete_course(self, course_id: UUIDType) -> bool:
         """
-        Soft delete de un curso.
+        Soft delete of a course.
         """
         now = datetime.utcnow()
         result = await self.db.execute(
@@ -183,6 +220,7 @@ class CourseRepository(BaseRepository[Course]):
             .where(Course.id == course_id, Course.deleted_at.is_(None))
             .values(deleted_at=now, is_deleted=True)
         )
+        await self.db.commit()
         return result.rowcount > 0
 
     async def get_students_for_course(
@@ -196,6 +234,7 @@ class CourseRepository(BaseRepository[Course]):
             select(
                 CourseEnrollment.student_id,
                 User.name,
+                User.lastname,
                 User.email,
                 CourseEnrollment.enrolled_at,
             )
@@ -212,6 +251,7 @@ class CourseRepository(BaseRepository[Course]):
             {
                 "student_id": row.student_id,
                 "name": row.name,
+                "lastname": row.lastname,
                 "email": row.email,
                 "enrolled_at": row.enrolled_at.isoformat() if row.enrolled_at else None,
             }
@@ -280,9 +320,20 @@ class CourseRepository(BaseRepository[Course]):
     ) -> None:
         """
         Sincroniza estudiantes: crea nuevos, elimina los removidos.
+
+        IMPORTANTE: `student_ids` se espera como User.id (lo que envía el frontend).
+        Se convierte internamente a Student.id antes de escribir en course_enrollments.
         """
+        # Convertir User.id → Student.id
+        student_id_map = await self.get_student_profile_ids(student_ids)
+        valid_student_ids = [
+            student_id_map[uid]
+            for uid in student_ids
+            if uid in student_id_map
+        ]
+
         current_ids = await self.get_existing_enrollment_ids(course_id)
-        target_ids = set(student_ids)
+        target_ids = set(valid_student_ids)
 
         to_add = target_ids - current_ids
         to_remove = current_ids - target_ids
@@ -307,9 +358,20 @@ class CourseRepository(BaseRepository[Course]):
     ) -> None:
         """
         Sincroniza profesores: crea nuevos, elimina los removidos.
+
+        IMPORTANTE: `professor_ids` se espera como User.id (lo que envía el frontend).
+        Se convierte internamente a Professor.id antes de escribir en course_professors.
         """
+        # Convertir User.id → Professor.id
+        professor_id_map = await self.get_professor_profile_ids(professor_ids)
+        valid_professor_ids = [
+            professor_id_map[uid]
+            for uid in professor_ids
+            if uid in professor_id_map
+        ]
+
         current_ids = await self.get_existing_professor_ids(course_id)
-        target_ids = set(professor_ids)
+        target_ids = set(valid_professor_ids)
 
         to_add = target_ids - current_ids
         to_remove = current_ids - target_ids
@@ -338,8 +400,39 @@ class CourseRepository(BaseRepository[Course]):
     ) -> tuple[list[tuple[Course, int, int]], int]:
         """
         Lista cursos con conteo de estudiantes y profesores, paginado y filtrado.
+
+        Usa subqueries correlacionadas en el SELECT principal para evitar el efecto
+        multiplicador que aparece al hacer JOIN encadenado de CourseEnrollment +
+        CourseProfessor (cada combinación estudiante × profesor infla los COUNT).
         """
-        base_query = select(Course).where(Course.deleted_at.is_(None))
+        # Subquery correlacionada: estudiantes activos por curso (sin JOIN)
+        student_count_subq = (
+            select(func.count(CourseEnrollment.student_id))
+            .where(
+                CourseEnrollment.course_id == Course.id,
+                CourseEnrollment.deleted_at.is_(None),
+            )
+            .scalar_subquery()
+        )
+
+        # Subquery correlacionada: profesores activos por curso (sin JOIN)
+        professor_count_subq = (
+            select(func.count(CourseProfessor.professor_id))
+            .where(
+                CourseProfessor.course_id == Course.id,
+                CourseProfessor.deleted_at.is_(None),
+            )
+            .scalar_subquery()
+        )
+
+        base_query = (
+            select(
+                Course,
+                student_count_subq.label("student_count"),
+                professor_count_subq.label("professor_count"),
+            )
+            .where(Course.deleted_at.is_(None))
+        )
 
         if school_year:
             base_query = base_query.where(Course.school_year == school_year)
@@ -359,40 +452,12 @@ class CourseRepository(BaseRepository[Course]):
         total = total_result.scalar()
 
         query = (
-            select(
-                Course,
-                func.count(CourseEnrollment.student_id).label("student_count"),
-                func.count(CourseProfessor.professor_id).label("professor_count"),
-            )
-            .outerjoin(
-                CourseEnrollment,
-                (Course.id == CourseEnrollment.course_id)
-                & (CourseEnrollment.deleted_at.is_(None)),
-            )
-            .outerjoin(
-                CourseProfessor,
-                (Course.id == CourseProfessor.course_id)
-                & (CourseProfessor.deleted_at.is_(None)),
-            )
-            .where(Course.deleted_at.is_(None))
+            base_query
             .group_by(Course.id)
             .order_by(Course.school_year.desc(), Course.period_label)
             .offset(skip)
             .limit(limit)
         )
-
-        if school_year:
-            query = query.where(Course.school_year == school_year)
-
-        if professor_id:
-            query = query.where(
-                Course.id.in_(
-                    select(CourseProfessor.course_id).where(
-                        CourseProfessor.professor_id == professor_id,
-                        CourseProfessor.deleted_at.is_(None),
-                    )
-                )
-            )
 
         result = await self.db.execute(query)
         rows = result.all()
