@@ -20,24 +20,16 @@ import type { CourseDetail } from "@/types/course.interface";
 import type { ActionState } from "@/lib/actions";
 import type { UserResponse } from "@/api/types";
 
-const MONTHS = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
-];
-
-const PERIODS = [
-  "Semestre 1",
-  "Semestre 2",
-  "Anual",
-  "Trimestre 1",
-  "Trimestre 2",
-  "Trimestre 3",
-];
+interface GameOption {
+  id: string;
+  title: string;
+}
 
 interface CourseFormProps {
   course?: CourseDetail;
   students: UserResponse[];
   professors: UserResponse[];
+  games?: GameOption[];
   onSuccess?: () => void;
   onCancel?: () => void;
 }
@@ -63,6 +55,9 @@ export default function CourseForm({
   const [periodLabel, setPeriodLabel] = useState(course?.periodLabel ?? "");
   const [startDate, setStartDate] = useState(course?.startDate ?? "");
   const [endDate, setEndDate] = useState(course?.endDate ?? "");
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(
+    course?.gameId ?? null
+  );
 
   // Update local state when course prop changes (for edit forms)
   useEffect(() => {
@@ -247,6 +242,11 @@ export default function CourseForm({
         name="professorIds"
         value={JSON.stringify(selectedProfessorIds)}
       />
+      <input
+        type="hidden"
+        name="gameId"
+        value={selectedGameId ?? ""}
+      />
 
       {enrollmentYears.length > 0 && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -303,15 +303,53 @@ export default function CourseForm({
         filterFn={enrollmentFilterFn}
       />
 
-      <UserMultiSelect
-        label="Profesores"
-        options={professorOptions}
-        selected={selectedProfessorIds}
-        onChange={setSelectedProfessorIds}
-        placeholder="Seleccionar profesores..."
-        searchPlaceholder="Buscar profesores..."
-        emptyMessage="No se encontraron profesores"
-      />
+      {/* Profesores: mensaje fijo en creación, multi-select en edición */}
+      {!course ? (
+        <div className="space-y-2">
+          <Label className="text-sm text-slate-500">Profesor titular</Label>
+          <div className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 bg-slate-50 dark:bg-slate-900/40">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-4 w-4 text-indigo-500">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span className="text-sm text-slate-700 dark:text-slate-300">Tú ya estás asignado como profesor titular</span>
+          </div>
+        </div>
+      ) : (
+        <UserMultiSelect
+          label="Profesores adicionales"
+          options={professorOptions}
+          selected={selectedProfessorIds}
+          onChange={setSelectedProfessorIds}
+          placeholder="Agregar profesores adicionales..."
+          searchPlaceholder="Buscar profesores..."
+          emptyMessage="No se encontraron profesores"
+        />
+      )}
+
+      {/* Select de juegos */}
+      {games && games.length > 0 && (
+        <div className="space-y-2">
+          <Label htmlFor="gameId">Juego asociado</Label>
+          <Select
+            value={selectedGameId ?? "none"}
+            onValueChange={(v) => setSelectedGameId(v === "none" ? null : v)}
+            disabled={isPending}
+          >
+            <SelectTrigger id="gameId" className="w-full">
+              <SelectValue placeholder="Seleccionar juego (opcional)" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Sin juego</SelectItem>
+              {games.map((g) => (
+                <SelectItem key={g.id} value={g.id}>
+                  {g.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {state?.errors?._form && (
         <p className="text-sm text-destructive font-medium text-center">

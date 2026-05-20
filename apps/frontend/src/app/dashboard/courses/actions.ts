@@ -16,6 +16,7 @@ const courseSchema = z.object({
   periodLabel: z.string().min(1, "El período es requerido"),
   startDate: z.string().min(1, "La fecha de inicio es requerida"),
   endDate: z.string().min(1, "La fecha de fin es requerida"),
+  gameId: z.string().uuid().nullable().optional(),
   studentIds: z.string().transform((val) => {
     try {
       return JSON.parse(val) as string[];
@@ -70,12 +71,13 @@ export async function createCourse(
     }
 
     const token = await getAuthToken();
-    const { studentIds, professorIds, ...fields } = validated.data;
+    const { studentIds, professorIds, gameId, ...fields } = validated.data;
 
     await coursesApi.create(
       {
         ...fields,
         description: fields.description || undefined,
+        gameId: gameId ?? null,
         studentIds,
         professorIds,
       },
@@ -120,13 +122,14 @@ export async function updateCourse(
     }
 
     const token = await getAuthToken();
-    const { studentIds, professorIds, ...fields } = validated.data;
+    const { studentIds, professorIds, gameId, ...fields } = validated.data;
 
     await coursesApi.update(
       courseId,
       {
         ...fields,
         description: fields.description || undefined,
+        gameId: gameId ?? null,
         studentIds,
         professorIds,
       },

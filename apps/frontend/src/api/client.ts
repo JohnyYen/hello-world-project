@@ -327,6 +327,12 @@ export const coursesApi = {
       `/api/v1/users/by-role?role=${role}`,
       { token }
     ).then(res => res.data ?? []),
+
+  listGames: (token: string) =>
+    request<import("./types").GameListResponse>(
+      "/api/v1/games",
+      { token }
+    ).then(res => res.data ?? []),
 };
 
 // ─── LMS ───────────────────────────────────────────────────────────────────

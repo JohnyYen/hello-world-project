@@ -7,6 +7,7 @@ export interface Course {
   startDate: string;
   endDate: string;
   isActive: boolean;
+  gameId: string | null;
   studentCount: number;
   professorCount: number;
   createdAt: string | null;
@@ -39,6 +40,7 @@ export interface CourseCreateRequest {
   periodLabel: string;
   startDate: string;
   endDate: string;
+  gameId?: string | null;
   studentIds: string[];
   professorIds: string[];
 }
@@ -50,6 +52,7 @@ export interface CourseUpdateRequest {
   periodLabel?: string;
   startDate?: string;
   endDate?: string;
+  gameId?: string | null;
   studentIds?: string[];
   professorIds?: string[];
   isActive?: boolean;

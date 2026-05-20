@@ -44,11 +44,17 @@ import { deleteCourse } from "@/app/dashboard/courses/actions";
 import type { Course } from "@/types/course.interface";
 import type { UserResponse } from "@/api/types";
 
+interface GameOption {
+  id: string;
+  title: string;
+}
+
 interface CourseTableProps {
   initialCourses: Course[];
   total: number;
   students: UserResponse[];
   professors: UserResponse[];
+  gamesMap?: Record<string, string>;
 }
 
 export default function CourseTable({
@@ -56,6 +62,7 @@ export default function CourseTable({
   total,
   students,
   professors,
+  gamesMap = {},
 }: CourseTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSchoolYear, setSelectedSchoolYear] = useState("");
@@ -206,6 +213,7 @@ export default function CourseTable({
                 <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Nombre</TableHead>
                 <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Año Escolar</TableHead>
                 <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Período</TableHead>
+                <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Juego</TableHead>
                 <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Estudiantes</TableHead>
                 <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Profesores</TableHead>
                 <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Acciones</TableHead>
@@ -233,6 +241,17 @@ export default function CourseTable({
                         <span className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/40 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
                           {course.periodLabel}
                         </span>
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link href={`/dashboard/courses/${course.id}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded">
+                        {course.gameId ? (
+                          <span className="text-sm text-slate-700 dark:text-slate-300 bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-md border border-indigo-100 dark:border-indigo-800/50">
+                            {gamesMap[course.gameId] || course.gameId.slice(0, 8)}
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 dark:text-slate-500">—</span>
+                        )}
                       </Link>
                     </TableCell>
                     <TableCell>
