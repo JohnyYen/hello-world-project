@@ -11,7 +11,9 @@ from src.course.api.v1.schemas.course_management import (
     StudentEnrollmentResponse,
     ProfessorAssignmentResponse,
 )
-from src.shared.domain.exceptions import NotFoundException, DuplicateEntryException
+from src.shared.domain.exceptions import DuplicateEntryException
+from src.course.domain.game_assignment_exceptions import GameNotFoundException
+from src.game.infrastructure.game_repository import GameRepository
 
 
 class CreateCourseUseCase:
