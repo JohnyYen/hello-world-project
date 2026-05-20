@@ -96,7 +96,7 @@ class CourseRepository(BaseRepository[Course]):
         self, course_id: UUIDType
     ) -> Optional[Course]:
         """
-        Eager load enrollments + course_professors with their related users.
+        Eager load enrollments + course_professors + game with their related users.
         """
         query = (
             select(Course)
@@ -107,6 +107,7 @@ class CourseRepository(BaseRepository[Course]):
                 selectinload(Course.course_professors).selectinload(
                     CourseProfessor.professor
                 ).selectinload(Professor.user),
+                selectinload(Course.game),
             )
             .where(Course.id == course_id, Course.deleted_at.is_(None))
         )

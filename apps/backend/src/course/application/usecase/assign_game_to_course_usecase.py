@@ -9,8 +9,6 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.course.domain.course import Course
-from src.game.domain.game import Game
 from src.course.infrastructure.course_repository import CourseRepository
 from src.game.infrastructure.game_repository import GameRepository
 from src.course.api.v1.schemas.course_management import (
@@ -18,6 +16,7 @@ from src.course.api.v1.schemas.course_management import (
     CourseResponse,
     StudentEnrollmentResponse,
     ProfessorAssignmentResponse,
+    AssignedGameResponse,
 )
 from src.course.domain.game_assignment_exceptions import (
     GameAlreadyAssignedException,
@@ -64,24 +63,29 @@ class AssignGameToCourseUseCase:
         if not course:
             raise NotFoundException(f"Curso con ID {course_id} no encontrado.")
 
-        # 2. Obtener juego
+        # 2. Verificar que no tenga juego ya asignado
+        if course.game_id is not None:
+            raise GameAlreadyAssignedException(course.name)
+
+        # 3. Obtener juego
         game = await self.game_repo.get_by_id(game_id, include_deleted=False)
         if not game:
             raise GameNotFoundException(str(game_id))
 
-        # 3. Obtener estudiantes y profesores
-        students_data = await self.course_repo.get_students_for_course(course_id)
-        professors_data = await self.course_repo.get_professors_for_course(course_id)
-
-        # 4. Asignar juego
+        # 4. Asignar
         course.game_id = game_id
         await self.db.commit()
         await self.db.refresh(course)
 
-        # 5. Construir respuesta
+        # 5. Obtener datos para respuesta
+        students_data = await self.course_repo.get_students_for_course(course_id)
+        professors_data = await self.course_repo.get_professors_for_course(course_id)
+
         course_resp = CourseResponse.model_validate(course)
         course_resp.student_count = len(students_data)
         course_resp.professor_count = len(professors_data)
+
+        game_data = AssignedGameResponse.model_validate(game)
 
         return CourseDetailResponse(
             **course_resp.model_dump(by_alias=True),
@@ -91,4 +95,5 @@ class AssignGameToCourseUseCase:
             professors=[
                 ProfessorAssignmentResponse.model_validate(p) for p in professors_data
             ],
+            game=game_data,
         )

@@ -1,36 +1,42 @@
+"""
+Endpoint: Delete game (admin only)
+
+DELETE /games/{game_id}
+
+Administrador puede eliminar un juego del catálogo (soft delete).
+Delega en DeleteGameUseCase.
+"""
+
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.shared.infrastructure.session import get_db
-from src.game.infrastructure.game_repository import GameRepository
+from src.shared.deps.game_publisher import require_admin_role
+from src.game.application.usecase.delete_game_usecase import DeleteGameUseCase
 from src.game.api.v1.schemas.game import GameDeleteResponse
-from src.shared.domain.exceptions import NotFoundException
 
 
 router = APIRouter(prefix="/games")
 
 
-@router.delete("/{game_id}", response_model=GameDeleteResponse)
+@router.delete(
+    "/{game_id}",
+    response_model=GameDeleteResponse,
+    summary="Elimina un juego (soft delete, admin only)",
+)
 async def delete_game(
-    game_id: int,
+    game_id: UUID,
     db: AsyncSession = Depends(get_db),
+    current_admin=Depends(require_admin_role),
 ):
     """
-    Elimina un juego (soft delete).
+    Elimina un juego del catálogo (soft delete).
 
-    - **game_id**: ID del juego a eliminar
+    - **game_id**: UUID del juego a eliminar
+
+    Requiere rol de administrador.
     """
-    game_repo = GameRepository(db)
-
-    # Verificar que el juego existe
-    existing_game = await game_repo.get_by_id(game_id)
-    if not existing_game:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Juego con ID {game_id} no encontrado",
-        )
-
-    # Soft delete
-    await game_repo.delete(game_id)
-
-    return GameDeleteResponse()
+    usecase = DeleteGameUseCase(db)
+    return await usecase.execute(game_id)
