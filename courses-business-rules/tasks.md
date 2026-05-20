@@ -36,39 +36,39 @@
 
 ### T-7: Tipos TypeScript — agregar `gameId`
 - **Archivo**: `apps/frontend/src/types/course.interface.ts`
-- **Estado**: ⏳ Pendiente
+- **Estado**: ✅ Completado
 - **Descripción**: Agregar `gameId: string | null` a `Course`, `CourseCreateRequest`, `CourseUpdateRequest`.
 
 ### T-8: Schema Zod + actions — agregar `gameId`
 - **Archivo**: `apps/frontend/src/app/dashboard/courses/actions.ts`
-- **Estado**: ⏳ Pendiente
+- **Estado**: ✅ Completado
 - **Descripción**: Agregar `gameId` a `courseSchema` y a los body de `createCourse`/`updateCourse`.
 
 ### T-9: `CourseForm` — select de juegos + mensaje profesor
 - **Archivo**: `apps/frontend/src/components/courses/course-form.tsx`
-- **Estado**: ⏳ Pendiente
-- **Descripción**: Agregar prop `games`, reemplazar `UserMultiSelect` por mensaje en modo creación, agregar `<Select>` de juegos.
+- **Estado**: ✅ Completado
+- **Descripción**: Agregar prop `games`, reemplazar `UserMultiSelect` por mensaje en creación, agregar `<Select>` de juegos.
 
 ### T-10: `CourseTable` — columna "Juego"
 - **Archivo**: `apps/frontend/src/components/courses/course-table.tsx`
-- **Estado**: ⏳ Pendiente
+- **Estado**: ✅ Completado
 - **Descripción**: Agregar columna "Juego" entre Período y Estudiantes. Ajustar `colSpan` de 6 a 7.
 
 ### T-11: Página de cursos — cargar juegos
 - **Archivo**: `apps/frontend/src/app/dashboard/courses/page.tsx`
-- **Estado**: ⏳ Pendiente
+- **Estado**: ✅ Completado
 - **Descripción**: Llamar a `GET /api/v1/games` y pasar `games` como prop a `CourseTable` y `CourseForm`.
 
 ### T-12: `api/client.ts` — tipos de `coursesApi`
 - **Archivo**: `apps/frontend/src/api/client.ts`
-- **Estado**: ⏳ Pendiente
-- **Descripción**: Verificar que `create` y `update` incluyan `gameId` en el tipo del body.
+- **Estado**: ✅ Completado
+- **Descripción**: Verificar que `create` y `update` incluyan `gameId` en el tipo del body. Agregar `listGames`.
 
 ---
 
 ## Estado General
 
 - **Total tareas**: 12
-- **Completadas**: 0
-- **Pendientes**: 12
+- **Completadas**: 12
+- **Pendientes**: 0
 - **En progreso**: 0
