@@ -29,10 +29,16 @@ import {
   Users,
   GraduationCap,
   Plus,
-  Eye,
-  Pencil,
   Trash2,
+  Calendar,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import CourseForm from "@/components/courses/course-form";
 import { deleteCourse } from "@/app/dashboard/courses/actions";
 import type { Course } from "@/types/course.interface";
@@ -52,21 +58,24 @@ export default function CourseTable({
   professors,
 }: CourseTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSchoolYear, setSelectedSchoolYear] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const notifications = useNotifications();
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [editCourse, setEditCourse] = useState<Course | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const schoolYears = [...new Set(initialCourses.map((c) => c.schoolYear))].sort().reverse();
+
   const filtered = initialCourses.filter(
     (c) =>
-      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.schoolYear.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.periodLabel.toLowerCase().includes(searchTerm.toLowerCase())
+      (!selectedSchoolYear || c.schoolYear === selectedSchoolYear) &&
+      (c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.schoolYear.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.periodLabel.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const totalPages = Math.ceil(filtered.length / rowsPerPage);
@@ -152,7 +161,7 @@ export default function CourseTable({
         </div>
 
         <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg shadow-slate-200/50 dark:shadow-slate-900/50 p-4 mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
@@ -164,6 +173,28 @@ export default function CourseTable({
                 }}
                 className="pl-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-indigo-500/20"
               />
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Calendar className="h-4 w-4 text-slate-400 shrink-0" />
+              <Select
+                value={selectedSchoolYear || "all"}
+                onValueChange={(v) => {
+                  setSelectedSchoolYear(v === "all" ? "" : v);
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-full sm:w-44 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+                  <SelectValue placeholder="Todos los años" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos los años</SelectItem>
+                  {schoolYears.map((year) => (
+                    <SelectItem key={year} value={year}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -185,59 +216,49 @@ export default function CourseTable({
                 currentItems.map((course) => (
                   <TableRow
                     key={course.id}
-                    className="hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all border-b border-slate-100 dark:border-slate-700/50"
+                    className="cursor-pointer hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all border-b border-slate-100 dark:border-slate-700/50"
                   >
                     <TableCell className="font-medium text-slate-900 dark:text-slate-100">
-                      {course.name}
+                      <Link href={`/dashboard/courses/${course.id}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded">
+                        {course.name}
+                      </Link>
                     </TableCell>
                     <TableCell className="text-slate-700 dark:text-slate-300">
-                      {course.schoolYear}
+                      <Link href={`/dashboard/courses/${course.id}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded">
+                        {course.schoolYear}
+                      </Link>
                     </TableCell>
                     <TableCell>
-                      <span className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/40 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-                        {course.periodLabel}
-                      </span>
+                      <Link href={`/dashboard/courses/${course.id}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded">
+                        <span className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/40 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                          {course.periodLabel}
+                        </span>
+                      </Link>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Users className="h-3.5 w-3.5 text-indigo-500" />
-                        <span className="text-slate-700 dark:text-slate-300">{course.studentCount}</span>
-                      </div>
+                      <Link href={`/dashboard/courses/${course.id}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded">
+                        <div className="flex items-center gap-2">
+                          <Users className="h-3.5 w-3.5 text-indigo-500" />
+                          <span className="text-slate-700 dark:text-slate-300">{course.studentCount}</span>
+                        </div>
+                      </Link>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <GraduationCap className="h-3.5 w-3.5 text-violet-500" />
-                        <span className="text-slate-700 dark:text-slate-300">{course.professorCount}</span>
-                      </div>
+                      <Link href={`/dashboard/courses/${course.id}`} className="block outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded">
+                        <div className="flex items-center gap-2">
+                          <GraduationCap className="h-3.5 w-3.5 text-violet-500" />
+                          <span className="text-slate-700 dark:text-slate-300">{course.professorCount}</span>
+                        </div>
+                      </Link>
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Link href={`/dashboard/courses/${course.id}`}>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700"
-                          >
-                            <Eye className="h-3.5 w-3.5 mr-1" />
-                            Ver detalle
-                          </Button>
-                        </Link>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-amber-300 dark:hover:border-amber-700"
-                          onClick={() => {
-                            setEditCourse(course);
-                          }}
-                        >
-                          <Pencil className="h-3.5 w-3.5 mr-1" />
-                          Editar
-                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           className="border-slate-200 dark:border-slate-700 hover:bg-red-50 dark:hover:bg-red-950/20 hover:border-red-300 dark:hover:border-red-700 hover:text-red-600 dark:hover:text-red-400"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setCourseToDelete(course);
                             setDeleteDialogOpen(true);
                           }}
@@ -325,32 +346,6 @@ export default function CourseTable({
           </div>
         )}
       </div>
-
-      {/* Edit Dialog */}
-      <Dialog
-        open={!!editCourse}
-        onOpenChange={(open) => {
-          if (!open) setEditCourse(null);
-        }}
-      >
-        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Editar Curso</DialogTitle>
-            <DialogDescription>
-              Modifica los datos del curso. Los cambios se guardarán automáticamente.
-            </DialogDescription>
-          </DialogHeader>
-          {editCourse && (
-            <CourseForm
-              course={editCourse as any}
-              students={students}
-              professors={professors}
-              onSuccess={() => setEditCourse(null)}
-              onCancel={() => setEditCourse(null)}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
 
       {/* Delete Confirmation */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

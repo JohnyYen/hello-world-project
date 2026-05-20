@@ -95,8 +95,7 @@ Hello World Project is a multi-platform educational ecosystem that combines:
 | Backend | `apps/backend/` | FastAPI 0.115+, SQLAlchemy 2.0 (Async), Alembic, Pydantic v2, PostgreSQL 16, uv | REST API with JWT auth, user management, game/level CRUD, progress tracking, xAPI, LMS sync |
 | Frontend | `apps/frontend/` | Next.js 15.5, React 19, TypeScript 5, Tailwind 4, shadcn/ui, Zod 4, Zustand 5, Recharts | Admin dashboard for professors (course management, student tracking, analytics, reports) |
 | Game | `apps/game/` | Godot 4.4, GDScript 2.0, SQLite, GUT, Dialogue Manager | Educational visual programming game with adaptive difficulty and xAPI tracking |
-| API Client | `packages/api-client-ts/` | TypeScript, auto-generated from OpenAPI | Shared TypeScript client for backend API |
-| API Contract | `packages/api-contract/` | OpenAPI JSON/YAML | API specification contract |
+
 
 ### User Roles
 
@@ -127,8 +126,7 @@ Before creating a PR:
 1. Run all relevant tests and linters for the modified component.
 2. Ensure no hardcoded secrets are committed.
 3. Verify cross-component compatibility (e.g., API changes vs Frontend/Game).
-4. Update OpenAPI spec if backend endpoints changed.
-5. Regenerate API client if spec changed: `pnpm run generate:api-client`
+
 
 ### PR Description Template
 ```markdown
@@ -202,8 +200,6 @@ pnpm list -r --depth=-1
 
 ### Workspace Packages
 - `apps/frontend` - Next.js application
-- `packages/api-client-ts` - TypeScript API client
-- `packages/api-contract` - OpenAPI specification
 
 ---
 
@@ -218,10 +214,8 @@ pnpm list -r --depth=-1
 
 ### API Changes
 1. Update backend endpoints
-2. Update OpenAPI spec (`packages/api-contract/openapi.json`)
-3. Regenerate TypeScript client: `pnpm run generate:api-client`
-4. Update frontend to use new client methods
-5. Update game if new endpoints affect it
+2. Update frontend to use new methods
+3. Update game if new endpoints affect it
 
 ### Database Changes
 1. Modify SQLAlchemy models in backend
@@ -329,9 +323,7 @@ hello-world-project/
 │       ├── README.md            # Game architecture, GDScript guide
 │       ├── AGENTS.md            # Game AI rules
 │       └── LEVEL_1_DEVELOPMENT_ROADMAP.md
-└── packages/
-    ├── api-client-ts/           # TypeScript client
-    └── api-contract/            # OpenAPI spec
+
 ```
 
 ---

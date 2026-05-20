@@ -1,12 +1,11 @@
 /**
  * API client using native fetch.
- * Replaces the auto-generated @workspace/api-client-ts package.
  */
 
 const API_BASE_URL =
   typeof window !== "undefined"
     ? process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010"
-    : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://hwp-backend:8000";
+    : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010";
 
 export class ApiError extends Error {
   constructor(
@@ -324,10 +323,10 @@ export const coursesApi = {
     ),
 
   listByRole: (role: "student" | "professor", token: string) =>
-    request<import("./types").UserResponse[]>(
+    request<import("./types").UserListResponse>(
       `/api/v1/users/by-role?role=${role}`,
       { token }
-    ),
+    ).then(res => res.data ?? []),
 };
 
 // ─── LMS ───────────────────────────────────────────────────────────────────

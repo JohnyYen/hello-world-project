@@ -22,26 +22,37 @@ class ManageEnrollmentUseCase:
     async def enroll_students(
         self, course_id: UUID, student_ids: list[UUID]
     ) -> list[StudentEnrollmentResponse]:
-        course = await self.course_repo.get_by_id(course_id)
-        if not course:
-            raise NotFoundException("Curso no encontrado")
+        async with self.db.begin():
+            course = await self.course_repo.get_by_id(course_id)
+            if not course:
+                raise NotFoundException("Curso no encontrado")
 
-        existing_ids = await self.course_repo.get_existing_enrollment_ids(course_id)
-        new_ids = [sid for sid in student_ids if sid not in existing_ids]
+            # IMPORTANTE: student_ids llegan como User.id (cuenta de usuario, Level 1),
+            # pero course_enrollments.student_id referencia Student.id (perfil, Level 2).
+            # Convertimos antes de deduplicar e insertar.
+            student_id_map = await self.course_repo.get_student_profile_ids(student_ids)
+            valid_student_ids = [
+                student_id_map[uid]
+                for uid in student_ids
+                if uid in student_id_map
+            ]
 
-        if new_ids:
-            async with self.db.begin():
+            existing_ids = await self.course_repo.get_existing_enrollment_ids(course_id)
+            new_ids = [sid for sid in valid_student_ids if sid not in existing_ids]
+
+            if new_ids:
                 await self.course_repo.bulk_create_enrollments(course_id, new_ids)
 
+        # Lectura fuera de la transacción — solo SELECT
         students_data = await self.course_repo.get_students_for_course(course_id)
         return [StudentEnrollmentResponse.model_validate(s) for s in students_data]
 
     async def unenroll_student(self, course_id: UUID, student_id: UUID) -> bool:
-        course = await self.course_repo.get_by_id(course_id)
-        if not course:
-            raise NotFoundException("Curso no encontrado")
-
         async with self.db.begin():
+            course = await self.course_repo.get_by_id(course_id)
+            if not course:
+                raise NotFoundException("Curso no encontrado")
+
             existing_ids = await self.course_repo.get_existing_enrollment_ids(
                 course_id
             )
@@ -65,10 +76,9 @@ class ManageEnrollmentUseCase:
         if not course:
             raise NotFoundException("Curso no encontrado")
 
-        async with self.db.begin():
-            await self.course_repo.soft_delete_enrollments_for_course(course_id)
-            await self.course_repo.soft_delete_professors_for_course(course_id)
-            result = await self.course_repo.soft_delete_course(course_id)
+        await self.course_repo.soft_delete_enrollments_for_course(course_id)
+        await self.course_repo.soft_delete_professors_for_course(course_id)
+        result = await self.course_repo.soft_delete_course(course_id)
 
         return result
 

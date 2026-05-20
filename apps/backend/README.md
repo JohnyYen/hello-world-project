@@ -491,4 +491,4 @@ docker-compose -f infrastructure/docker/docker-compose.dev.yml up -d backend
 - **Website**: [hello-world-project.dev](https://hello-world-project.dev)
 - **Frontend**: [github.com/.../apps/frontend](https://github.com/tu-usuario/hello-world-project/apps/frontend)
 - **Game**: [github.com/.../apps/game](https://github.com/tu-usuario/hello-world-project/apps/game)
-- **API Client**: [github.com/.../packages/api-client-ts](https://github.com/tu-usuario/hello-world-project/packages/api-client-ts)
+

@@ -12,7 +12,6 @@
     "dev:backend": "cd apps/backend && poetry run fastapi dev src/main.py --reload",
     "dev:frontend": "cd apps/frontend && pnpm dev",
     "dev:frontend:prod": "cd apps/frontend && pnpm build && pnpm start",
-    "generate:api-client": "bash scripts/generate-api-client.sh",
     "docker:up": "docker compose -f infraestructure/docker/docker-compose.dev.yml up",
     "docker:down": "docker compose -f infraestructure/docker/docker-compose.dev.yml down",
     "docker:logs": "docker compose -f infraestructure/docker/docker-compose.dev.yml logs -f"
@@ -29,7 +28,5 @@
     "url": "https://github.com/JohnyYen/hello-world-project/issues"
   },
   "homepage": "https://github.com/JohnyYen/hello-world-project#readme",
-  "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.30.0"
-  }
+
 }

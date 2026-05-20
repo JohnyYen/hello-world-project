@@ -30,6 +30,7 @@ interface UserMultiSelectProps {
   searchPlaceholder?: string;
   emptyMessage?: string;
   label?: string;
+  filterFn?: (option: UserOption) => boolean;
 }
 
 export default function UserMultiSelect({
@@ -40,18 +41,21 @@ export default function UserMultiSelect({
   searchPlaceholder = "Buscar...",
   emptyMessage = "Sin resultados",
   label,
+  filterFn,
 }: UserMultiSelectProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
   const filteredOptions = useMemo(
     () =>
-      options.filter(
-        (opt) =>
-          opt.label.toLowerCase().includes(search.toLowerCase()) ||
-          (opt.subtitle && opt.subtitle.toLowerCase().includes(search.toLowerCase()))
-      ),
-    [options, search]
+      options
+        .filter(
+          (opt) =>
+            opt.label.toLowerCase().includes(search.toLowerCase()) ||
+            (opt.subtitle && opt.subtitle.toLowerCase().includes(search.toLowerCase()))
+        )
+        .filter((opt) => (filterFn ? filterFn(opt) : true)),
+    [options, search, filterFn]
   );
 
   const selectedOptions = useMemo(

@@ -39,9 +39,6 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 - ALWAYS: Prefer `interface` over `type` for object definitions.
 - NEVER: Use `any`; use `unknown` or generics if the type is truly dynamic.
 
-### API Client
-- ALWAYS: When the communicate with de api, use the api client package `workspace/api-client-ts`
-
 ### Runtime
 - NEVER: Never build for test the application
 ---

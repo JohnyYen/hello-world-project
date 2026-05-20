@@ -36,6 +36,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Playwright
+playwright-report/
+test-results/
+
+# AI Framework artifacts
+.opencode/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

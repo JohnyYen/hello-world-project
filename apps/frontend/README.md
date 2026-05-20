@@ -361,48 +361,11 @@ const data: any = fetchData()
 
 ### API Client
 
-El proyecto usa el paquete `@workspace/api-client-ts` para comunicarse con el backend:
-
-```typescript
-import { ApiClient } from '@workspace/api-client-ts'
-
-const api = new ApiClient({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL!,
-})
-
-// Ejemplo de uso
-const user = await api.users.getById('123')
-const games = await api.games.list()
-```
+El proyecto usa un cliente API custom basado en `fetch` nativo en `src/api/client.ts`.
 
 ### Server Actions
 
 Todas las mutaciones usan Server Actions:
-
-```typescript
-// src/app/api/games/create-game.ts
-'use server'
-
-import { z } from 'zod'
-import { api } from '@/services/api'
-
-const CreateGameSchema = z.object({
-  title: z.string().min(1).max(255),
-  description: z.string().optional(),
-  subject: z.string().optional(),
-})
-
-export async function createGame(formData: FormData) {
-  const gameData = CreateGameSchema.parse({
-    title: formData.get('title'),
-    description: formData.get('description'),
-    subject: formData.get('subject'),
-  })
-  
-  await api.games.create(gameData)
-  revalidatePath('/professor/games')
-}
-```
 
 ---
 
@@ -475,7 +438,7 @@ Mapeo completo de rutas contra el [PRD](./PRD.md) (Sección 6):
 | Documento | Descripción |
 |-----------|-------------|
 | [PRD.md](PRD.md) | Documento de requisitos del producto (autoritativo) |
-| [docs/api.md](../packages/api-client-ts/docs/) | Documentación del API Client |
+| [src/api/client.ts](src/api/client.ts) | Cliente API custom basado en fetch |
 | [AGENTS.md](AGENTS.md) | Guías para agentes IA |
 | [PERFORMANCE_OPTIMIZATION.md](PERFORMANCE_OPTIMIZATION.md) | Optimizaciones de rendimiento |
 
@@ -512,4 +475,4 @@ MIT License - ver [LICENSE](LICENSE) para más detalles.
 - **Website**: [hello-world-project.dev](https://hello-world-project.dev)
 - **Backend**: [github.com/.../apps/backend](https://github.com/tu-usuario/hello-world-project/apps/backend)
 - **Game**: [github.com/.../apps/game](https://github.com/tu-usuario/hello-world-project/apps/game)
-- **API Client**: [github.com/.../packages/api-client-ts](https://github.com/tu-usuario/hello-world-project/packages/api-client-ts)
+

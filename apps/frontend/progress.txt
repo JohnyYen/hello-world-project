@@ -15,13 +15,8 @@
   - Verificada la compilación exitosa del proyecto.
 - [x] US-003: Cambio de contraseña segura para usuario autenticado.
   - Creada `changePasswordSchema` con validación de fortaleza de contraseña (regex) y coincidencia.
-  - Implementada `changePasswordAction` (Server Action) que utiliza el paquete `@workspace/api-client-ts`.
-  - Creado componente `ChangePasswordForm` con `useActionState`, `sonner` para notificaciones y validación en español.
-  - Refactorizada la página `/dashboard/account` para integrar el nuevo formulario.
-  - Corregidos errores de tipos y ambigüedades en el paquete auto-generado `@workspace/api-client-ts`.
-  - Verificada la compilación exitosa del proyecto (build & lint).
-- [x] US-004: Creación de perfil de estudiante por el profesor.
-  - Actualizada `createStudentAction` en `src/lib/actions.ts` para usar `UsersApi` de `@workspace/api-client-ts`.
+  - Implementada `changePasswordAction` (Server Action) que utiliza el cliente API custom (`src/api/client.ts`).
+  - Actualizada `createStudentAction` en `src/lib/actions.ts` para usar los servicios de API.
   - Creado componente `CreateStudentForm` usando React 19 (`useActionState`) y validación con Zod en español.
   - Integrado `CreateStudentForm` en el `Dialog` de `StudentTable` en `/dashboard/students`.
   - Verificada la compilación exitosa del proyecto (build & lint).
