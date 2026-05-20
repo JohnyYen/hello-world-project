@@ -159,12 +159,12 @@ export async function deleteCourse(courseId: string) {
 export async function enrollStudents(
   courseId: string,
   studentIds: string[]
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: boolean; message: string; data?: import("@/types/course.interface").StudentEnrollment[] }> {
   try {
     const token = await getAuthToken();
-    await coursesApi.enrollStudents(courseId, { studentIds }, token);
+    const data = await coursesApi.enrollStudents(courseId, { studentIds }, token);
     revalidatePath(`/dashboard/courses/${courseId}`);
-    return { success: true, message: "Estudiantes asignados correctamente" };
+    return { success: true, message: "Estudiantes asignados correctamente", data };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Error al asignar estudiantes";
     return { success: false, message };
@@ -182,6 +182,51 @@ export async function unenrollStudent(
     return { success: true, message: "Estudiante desasignado correctamente" };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Error al desasignar estudiante";
+    return { success: false, message };
+  }
+}
+
+const courseInlineSchema = z.object({
+  name: z.string().min(1, "El nombre es requerido").max(100, "Máximo 100 caracteres"),
+  description: z.string().optional(),
+  schoolYear: z.string().regex(/^\d{4}-\d{4}$/, "Formato inválido. Use YYYY-YYYY"),
+  periodLabel: z.string().min(1, "El período es requerido"),
+  startDate: z.string().min(1, "La fecha de inicio es requerida"),
+  endDate: z.string().min(1, "La fecha de fin es requerida"),
+}).refine(
+  (data) => !data.startDate || !data.endDate || new Date(data.endDate) > new Date(data.startDate),
+  { message: "La fecha de fin debe ser posterior a la fecha de inicio", path: ["endDate"] }
+);
+
+export async function updateCourseInline(
+  courseId: string,
+  fields: {
+    name: string;
+    description?: string;
+    schoolYear: string;
+    periodLabel: string;
+    startDate: string;
+    endDate: string;
+  }
+): Promise<{ success: boolean; message: string; errors?: Record<string, string[]> }> {
+  try {
+    const validated = courseInlineSchema.safeParse(fields);
+
+    if (!validated.success) {
+      return {
+        success: false,
+        message: "Errores de validación",
+        errors: validated.error.flatten().fieldErrors,
+      };
+    }
+
+    const token = await getAuthToken();
+    await coursesApi.update(courseId, validated.data, token);
+    revalidatePath(`/dashboard/courses/${courseId}`);
+
+    return { success: true, message: "Curso actualizado correctamente" };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Error al actualizar el curso";
     return { success: false, message };
   }
 }

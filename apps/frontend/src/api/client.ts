@@ -5,7 +5,7 @@
 const API_BASE_URL =
   typeof window !== "undefined"
     ? process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010"
-    : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://hwp-backend:8000";
+    : process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010";
 
 export class ApiError extends Error {
   constructor(

@@ -18,7 +18,7 @@ export default function CursoDetailError({
           Error al cargar el curso
         </h1>
         <p className="text-slate-600 dark:text-slate-400 mb-6">
-          Ocurrió un error al cargar el detalle del curso.
+          {error.message || "Ocurrió un error al cargar el detalle del curso."}
         </p>
         <div className="flex gap-3 justify-center">
           <Button onClick={reset} variant="default">

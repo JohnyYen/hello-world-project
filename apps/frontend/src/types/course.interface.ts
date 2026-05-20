@@ -21,6 +21,7 @@ export interface CourseDetail extends Course {
 export interface StudentEnrollment {
   studentId: string;
   name: string;
+  lastname: string | null;
   email: string;
   enrolledAt: string;
 }
