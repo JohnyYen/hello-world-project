@@ -15,10 +15,12 @@ class GameInstance(Base):
 
     student_id = Column(UUID(as_uuid=True), ForeignKey("students.id"), nullable=False)
     game_id = Column(UUID(as_uuid=True), ForeignKey("games.id"), nullable=False)
+    course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=True)
 
     # Relationships
     student = relationship("Student", back_populates="game_instances")
     game = relationship("Game", back_populates="instances")
+    course = relationship("Course")
     # Using string reference to avoid circular import with sync domain
     sync_sessions = relationship(
         "src.sync.domain.sync_session.SyncSession", back_populates="game_instance"
