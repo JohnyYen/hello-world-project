@@ -5,6 +5,8 @@ from src.api.router import router
 from src.shared.infrastructure.config import settings
 from src.shared.seed.run_seed import run_all_seeds
 from src.shared.domain.exceptions import AppException
+from src.admin.admin import setup_admin, AdminAuthMiddleware
+from src.admin.auth import admin_auth_backend
 from alembic import command
 from alembic.config import Config as AlembicConfig
 import os
@@ -49,6 +51,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Admin middleware - must be added after CORS
+app.add_middleware(AdminAuthMiddleware)
+
+# Setup SQLAdmin - registers all models with authentication
+setup_admin(app)
 
 
 @app.exception_handler(AppException)
