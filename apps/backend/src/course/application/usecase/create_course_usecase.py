@@ -13,11 +13,13 @@ from src.course.api.v1.schemas.course_management import (
     ProfessorAssignmentResponse,
     AssignedGameResponse,
 )
+from src.shared.domain.exceptions import NotFoundException
 from src.shared.domain.exceptions import DuplicateEntryException
 from src.course.domain.game_assignment_exceptions import GameNotFoundException
 from src.game.infrastructure.game_repository import GameRepository
 from src.users.domain.student import Student
 from src.users.domain.professor import Professor
+from src.users.domain.user import User
 
 
 class CreateCourseUseCase:
@@ -26,9 +28,10 @@ class CreateCourseUseCase:
     Todo en una sola transacción.
     """
 
-    def __init__(self, db: AsyncSession, course_repo: CourseRepository):
+    def __init__(self, db: AsyncSession, course_repo: CourseRepository, current_user: User = None):
         self.db = db
         self.course_repo = course_repo
+        self.current_user = current_user
 
     async def execute(self, request: CourseCreateRequest) -> CourseDetailResponse:
         """
@@ -97,6 +100,17 @@ class CreateCourseUseCase:
                 if valid_professor_ids:
                     await self.course_repo.bulk_create_professors(
                         course.id, valid_professor_ids
+                    )
+
+            # Autoselección de profesor: si el usuario es profesor, agregar su ID
+            if self.current_user and self.current_user.role == "professor":
+                professor_id_map = await self.course_repo.get_professor_profile_ids(
+                    [self.current_user.id]
+                )
+                my_professor_id = professor_id_map.get(self.current_user.id)
+                if my_professor_id and my_professor_id not in valid_professor_ids:
+                    await self.course_repo.bulk_create_professors(
+                        course.id, [my_professor_id]
                     )
 
         await self.db.refresh(course)

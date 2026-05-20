@@ -20,6 +20,7 @@ from src.course.application.usecase.create_course_usecase import CreateCourseUse
 from src.course.application.usecase.manage_enrollment_usecase import ManageEnrollmentUseCase
 from src.course.application.usecase.update_course_usecase import UpdateCourseUseCase
 from src.course.infrastructure.course_repository import CourseRepository
+from src.shared.deps import get_current_user
 from src.shared.infrastructure.session import get_db
 
 router = APIRouter(
@@ -43,8 +44,9 @@ async def get_course_service(
 
 async def get_create_course_usecase(
     db: AsyncSession = Depends(get_db),
+    current_user = Depends(get_current_user),
 ) -> CreateCourseUseCase:
-    return CreateCourseUseCase(db, CourseRepository(db))
+    return CreateCourseUseCase(db, CourseRepository(db), current_user)
 
 
 async def get_update_course_usecase(
@@ -66,11 +68,20 @@ async def list_courses(
     professor_id: Optional[UUID] = Query(None, description="Filtrar por ID de profesor"),
     school_year: Optional[str] = Query(None, description="Filtrar por año escolar (ej: 2024-2025)"),
     service: CourseService = Depends(get_course_service),
+    current_user = Depends(get_current_user),
 ):
     """
     Lista cursos paginados con conteo de estudiantes y profesores.
     Filtros opcionales: professor_id, school_year.
+    Si el usuario es profesor, filtra automáticamente por su profesor_id.
     """
+    # Si es profesor y no se pasó professor_id explícito, usar el suyo
+    if current_user.role == "professor" and not professor_id:
+        professor_id_map = await service.course_repo.get_professor_profile_ids(
+            [current_user.id]
+        )
+        professor_id = professor_id_map.get(current_user.id)
+
     results, total = await service.list_courses_with_counts(
         professor_id=professor_id,
         school_year=school_year,

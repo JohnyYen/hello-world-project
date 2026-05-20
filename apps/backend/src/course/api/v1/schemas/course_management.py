@@ -33,6 +33,7 @@ class CourseUpdateRequest(BaseModel):
     period_label: Optional[str] = Field(None, alias="periodLabel")
     start_date: Optional[date] = Field(None, alias="startDate")
     end_date: Optional[date] = Field(None, alias="endDate")
+    game_id: Optional[UUID] = Field(None, alias="gameId")
     student_ids: Optional[list[UUID]] = Field(None, alias="studentIds")
     professor_ids: Optional[list[UUID]] = Field(None, alias="professorIds")
     is_active: Optional[bool] = Field(None, alias="isActive")

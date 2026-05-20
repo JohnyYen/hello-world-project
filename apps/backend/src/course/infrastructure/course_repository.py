@@ -515,3 +515,24 @@ class CourseRepository(BaseRepository[Course]):
     async def get_profile_id_by_user_id(
         self, user_id: UUIDType, profile_type: str
     ) -> UUIDType | None:
+        """
+        Obtiene el ID de perfil (student o professor) correspondiente a un user_id.
+
+        Args:
+            user_id: UUID del usuario (de la tabla users).
+            profile_type: 'student' o 'professor' para indicar qué tabla consultar.
+
+        Returns:
+            UUID del perfil si existe, None en caso contrario.
+        """
+        if profile_type == "student":
+            query = select(Student.id).where(Student.user_id == user_id)
+        elif profile_type == "professor":
+            query = select(Professor.id).where(Professor.user_id == user_id)
+        else:
+            raise ValueError(
+                f"profile_type debe ser 'student' o 'professor', recibido: {profile_type}"
+            )
+
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()

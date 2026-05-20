@@ -7,7 +7,7 @@ Endpoints de catálogo y gestión de juegos por curso.
 
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Path, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.shared.infrastructure.session import get_db
@@ -77,14 +77,14 @@ async def list_available_games(
     summary="Devuelve el juego asignado a un curso",
 )
 async def get_assigned_game(
-    course_id: UUID,
+    course_id: UUID = Path(..., description="UUID del curso"),
     repo: CourseRepository = Depends(get_course_repo),
     current_user=Depends(require_professor_ownership),
 ):
     """
     Devuelve el juego actualmente asignado a un curso.
 
-    - El profesor debe estar asignado al curso.
+    - El profesor debe estar asignado al curso (verificado por `require_professor_ownership`).
     - Si el curso no tiene juego asignado, retorna 204 No Content.
     """
     course = await repo.get_course_with_game(course_id)
