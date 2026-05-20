@@ -89,3 +89,6 @@ dump.rdb
 
 # Archivos de Visual Studio Code
 .vscode/
+
+# AI Framework artifacts
+.opencode/
