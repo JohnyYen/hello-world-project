@@ -90,7 +90,7 @@ func process_batch(batch_id: String) -> bool:
 	_batch_repository.update_status(batch_id, PendingBatchRepository.STATUS_SENDING)
 	
 	# Parsear payload
-	var payload := JSON.parse_string(batch.get("payload", "{}"))
+	var payload = JSON.parse_string(batch.get("payload", "{}"))
 	
 	var result := await _send_to_backend(payload)
 	
@@ -126,8 +126,8 @@ func sync_all() -> void:
 	# Procesar batches pendientes
 	var pending_batches := _batch_repository.get_pending()
 	for batch in pending_batches:
-		var batch_id := batch.get("id", "")
-		if process_batch(batch_id):
+		var batch_id = batch.get("id", "")
+		if await process_batch(batch_id):
 			success_count += 1
 		else:
 			failed_count += 1
@@ -135,8 +135,8 @@ func sync_all() -> void:
 	# Procesar batches que se pueden reintentar
 	var retryable_batches := _batch_repository.get_retryable(_config.MAX_RETRIES)
 	for batch in retryable_batches:
-		var batch_id := batch.get("id", "")
-		if process_batch(batch_id):
+		var batch_id = batch.get("id", "")
+		if await process_batch(batch_id):
 			success_count += 1
 		else:
 			failed_count += 1
@@ -191,15 +191,21 @@ func _send_to_backend(payload: Dictionary) -> bool:
 			return true  # No hay nada que sincronizar
 		events = _build_payload(statements).get("events", [])
 	
-	# Iniciar sesión de sync
-	var instance_id := Env.get_instance_id() if "get_instance_id" in Env else "default"
+	# Iniciar sesión de sync - usar un UUID válido
+	# Usar el player_id del usuario logueado o generar un UUID
+	var instance_id: String = "game-session-"
+	if Env.current_user.has("id"):
+		instance_id += Env.current_user.id.substr(0, 8)
+	else:
+		instance_id += str(Time.get_unix_time_from_system()).sha256_text().substr(0, 8)
+	
 	var session_result := await _api_client.start_sync_session(instance_id)
 	
 	if not session_result.get("OK", false):
 		push_error("SyncBatchService: Error al iniciar sesión: %s" % session_result.get("error", "unknown"))
 		return false
 	
-	var session_id := session_result.get("session_id", "")
+	var session_id = session_result.get("session_id", "")
 	
 	# Enviar cada evento
 	for event in events:

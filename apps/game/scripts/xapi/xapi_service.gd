@@ -25,7 +25,8 @@ func _ready() -> void:
 	_api_client = ApiClient.new()
 	add_child(_api_client)
 	
-	# Configurar batch service
+	# Agregar batch service como hijo (necesario para que _ready() corra y timer se cree)
+	add_child(_batch_service)
 	_batch_service.setup(_api_client, _connection_detector)
 	
 	print("DEBUG [XAPIService]: Inicializado")

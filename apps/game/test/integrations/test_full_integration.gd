@@ -83,7 +83,7 @@ func _login() -> Dictionary:
 	await get_tree().process_frame
 
 	print("Autenticando con estudiante1 / password123...")
-	var result := await api.login("estudiante1", "", "password123")
+	var result := await api.login("", "student.game@example.com", "Studentpass123!")
 
 	if result.get("OK", false):
 		var token := api.jwt_token
