@@ -54,6 +54,7 @@ interface CourseTableProps {
   total: number;
   students: UserResponse[];
   professors: UserResponse[];
+  games?: GameOption[];
   gamesMap?: Record<string, string>;
 }
 
@@ -62,6 +63,7 @@ export default function CourseTable({
   total,
   students,
   professors,
+  games,
   gamesMap = {},
 }: CourseTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -160,6 +162,7 @@ export default function CourseTable({
               <CourseForm
                 students={students}
                 professors={professors}
+                games={games}
                 onSuccess={() => setCreateDialogOpen(false)}
                 onCancel={() => setCreateDialogOpen(false)}
               />

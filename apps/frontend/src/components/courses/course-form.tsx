@@ -34,10 +34,28 @@ interface CourseFormProps {
   onCancel?: () => void;
 }
 
+const PERIODS = [
+  "Primer Trimestre",
+  "Segundo Trimestre",
+  "Tercer Trimestre",
+  "Q1",
+  "Q2",
+  "Q3",
+  "Q4",
+  "Semestre 1",
+  "Semestre 2",
+];
+
+const MONTHS = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+];
+
 export default function CourseForm({
   course,
   students,
   professors,
+  games,
   onSuccess,
   onCancel,
 }: CourseFormProps) {

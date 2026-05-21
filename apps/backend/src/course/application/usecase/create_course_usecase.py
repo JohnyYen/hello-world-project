@@ -2,7 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from shared.infrastructure.repositories.base_repository import BaseRepository
+from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.course.domain.course import Course
 from src.course.infrastructure.course_repository import CourseRepository
 from src.course.api.v1.schemas.course_management import (

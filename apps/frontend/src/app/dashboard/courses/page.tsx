@@ -27,6 +27,7 @@ export default async function CursosPage() {
       total={courses.total}
       students={students}
       professors={professors}
+      games={games}
       gamesMap={gamesMap}
     />
   );
