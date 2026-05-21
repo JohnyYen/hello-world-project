@@ -1,0 +1,575 @@
+- generic:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - list:
+                - listitem:
+                  - link:
+                    - /url: /dashboard
+                    - img
+                    - generic: Mi Plataforma
+            - generic:
+              - generic:
+                - generic: Estadísticas
+                - generic:
+                  - list:
+                    - listitem:
+                      - button:
+                        - img
+                        - generic: Quick Create
+                      - button:
+                        - img
+                        - generic: Inbox
+                  - list:
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard
+                          - text: Overview
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/students
+                          - text: Estudiantes
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/courses
+                          - text: Cursos
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/metrics
+                          - text: Métricas
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/reports
+                          - text: Reportes
+              - generic:
+                - generic: Gestión de Juegos y Niveles
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /dashboard/levels
+                      - img
+                      - generic: Niveles
+                  - listitem:
+                    - link:
+                      - /url: /dashboard/levels/create
+                      - img
+                      - generic: Crear Nivel
+              - generic:
+                - generic:
+                  - list:
+                    - listitem:
+                      - link:
+                        - /url: /dashboard/settings
+                        - img
+                        - generic: Settings
+                    - listitem:
+                      - link:
+                        - /url: /dashboard/help
+                        - img
+                        - generic: Ayuda
+      - main:
+        - generic:
+          - generic:
+            - button:
+              - img
+              - generic: Toggle Sidebar
+            - generic:
+              - button:
+                - generic: 🇪🇸
+                - generic: ES
+              - button:
+                - img
+                - generic: Toggle theme
+              - list:
+                - listitem:
+                  - button:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: JP
+                      - generic:
+                        - generic: Juan Pérez
+                        - generic: Usuario
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic:
+                  - generic:
+                    - generic:
+                      - img
+                      - generic: Gestión Académica
+                    - heading [level=1]: Cursos
+                    - paragraph: Administración de cursos, estudiantes y profesores
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                        - generic: 10 cursos
+                    - button [expanded]:
+                      - img
+                      - text: Crear Curso
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                        - textbox:
+                          - /placeholder: Buscar cursos...
+                      - generic:
+                        - img
+                        - combobox:
+                          - generic: Todos los años
+                          - img
+                  - generic:
+                    - generic:
+                      - table:
+                        - rowgroup:
+                          - row:
+                            - columnheader: Nombre
+                            - columnheader: Año Escolar
+                            - columnheader: Período
+                            - columnheader: Juego
+                            - columnheader: Estudiantes
+                            - columnheader: Profesores
+                            - columnheader: Acciones
+                        - rowgroup:
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                                - text: Biología Celular asasa
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                                - text: 2025-2026
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                                - generic: Primer Trimestre
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                                - generic:
+                                  - img
+                                  - generic: "32"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                                - generic:
+                                  - img
+                                  - generic: "1"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                                - text: Introducción a la Programación
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                                - text: 2025-2026
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                                - generic: Q1
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                                - generic:
+                                  - img
+                                  - generic: "38"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                                - generic:
+                                  - img
+                                  - generic: "1"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/07a6df99-935f-490e-b6e1-ed9fd8d9575a
+                                - text: asdasdas
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/07a6df99-935f-490e-b6e1-ed9fd8d9575a
+                                - text: 2025-2026
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/07a6df99-935f-490e-b6e1-ed9fd8d9575a
+                                - generic: Semestre 1
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/07a6df99-935f-490e-b6e1-ed9fd8d9575a
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/07a6df99-935f-490e-b6e1-ed9fd8d9575a
+                                - generic:
+                                  - img
+                                  - generic: "4"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/07a6df99-935f-490e-b6e1-ed9fd8d9575a
+                                - generic:
+                                  - img
+                                  - generic: "4"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/6644f91d-b417-4e0d-a0aa-685d1d102571
+                                - text: fsdfsdf
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/6644f91d-b417-4e0d-a0aa-685d1d102571
+                                - text: 2025-2026
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/6644f91d-b417-4e0d-a0aa-685d1d102571
+                                - generic: Semestre 2
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/6644f91d-b417-4e0d-a0aa-685d1d102571
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/6644f91d-b417-4e0d-a0aa-685d1d102571
+                                - generic:
+                                  - img
+                                  - generic: "4"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/6644f91d-b417-4e0d-a0aa-685d1d102571
+                                - generic:
+                                  - img
+                                  - generic: "1"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/e21fab85-ffb3-4d82-8ae7-f845bea52b4e
+                                - text: Periodista
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/e21fab85-ffb3-4d82-8ae7-f845bea52b4e
+                                - text: 2025-2026
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/e21fab85-ffb3-4d82-8ae7-f845bea52b4e
+                                - generic: Trimestre 1
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/e21fab85-ffb3-4d82-8ae7-f845bea52b4e
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/e21fab85-ffb3-4d82-8ae7-f845bea52b4e
+                                - generic:
+                                  - img
+                                  - generic: "3"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/e21fab85-ffb3-4d82-8ae7-f845bea52b4e
+                                - generic:
+                                  - img
+                                  - generic: "1"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                                - text: Biología Celular
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                                - text: 2024-2025
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                                - generic: Q1
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                                - generic:
+                                  - img
+                                  - generic: "20"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                                - generic:
+                                  - img
+                                  - generic: "1"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                                - text: Matemáticas Discretas
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                                - text: 2024-2025
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                                - generic: Q1
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                                - generic:
+                                  - img
+                                  - generic: "50"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                                - generic:
+                                  - img
+                                  - generic: "1"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                                - text: Química General
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                                - text: 2024-2025
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                                - generic: Q1
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                                - generic:
+                                  - img
+                                  - generic: "49"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                                - generic:
+                                  - img
+                                  - generic: "1"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/8661b483-0baf-4d80-957e-14e9d9e167e9
+                                - text: Estructuras de Datos
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/8661b483-0baf-4d80-957e-14e9d9e167e9
+                                - text: 2024-2025
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/8661b483-0baf-4d80-957e-14e9d9e167e9
+                                - generic: Q2
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/8661b483-0baf-4d80-957e-14e9d9e167e9
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/8661b483-0baf-4d80-957e-14e9d9e167e9
+                                - generic:
+                                  - img
+                                  - generic: "45"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/8661b483-0baf-4d80-957e-14e9d9e167e9
+                                - generic:
+                                  - img
+                                  - generic: "2"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+                          - row:
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/69f36c2c-47ff-4d2d-ae16-b7ea47d37b8c
+                                - text: Cálculo Diferencial
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/69f36c2c-47ff-4d2d-ae16-b7ea47d37b8c
+                                - text: 2024-2025
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/69f36c2c-47ff-4d2d-ae16-b7ea47d37b8c
+                                - generic: Q2
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/69f36c2c-47ff-4d2d-ae16-b7ea47d37b8c
+                                - text: —
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/69f36c2c-47ff-4d2d-ae16-b7ea47d37b8c
+                                - generic:
+                                  - img
+                                  - generic: "51"
+                            - cell:
+                              - link:
+                                - /url: /dashboard/courses/69f36c2c-47ff-4d2d-ae16-b7ea47d37b8c
+                                - generic:
+                                  - img
+                                  - generic: "1"
+                            - cell:
+                              - generic:
+                                - button:
+                                  - img
+                                  - text: Eliminar
+  - generic [ref=e456] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e457]:
+      - img [ref=e458]
+    - generic [ref=e461]:
+      - button "Open issues overlay" [ref=e462]:
+        - generic [ref=e463]:
+          - generic [ref=e464]: "2"
+          - generic [ref=e465]: "3"
+        - generic [ref=e466]:
+          - text: Issue
+          - generic [ref=e467]: s
+      - button "Collapse issues badge" [ref=e468]:
+        - img [ref=e469]
+  - alert
+  - dialog "Crear Nuevo Curso" [ref=e472]:
+    - generic [ref=e473]:
+      - heading "Crear Nuevo Curso" [level=2] [ref=e474]
+      - paragraph [ref=e475]: Completa los datos del nuevo curso. Puedes asignar estudiantes y profesores.
+    - generic [ref=e476]:
+      - generic [ref=e477]:
+        - generic [ref=e478]:
+          - generic [ref=e479]: Nombre del curso
+          - textbox "Nombre del curso" [active] [ref=e480]:
+            - /placeholder: Matemáticas I
+        - generic [ref=e481]:
+          - generic [ref=e482]: Año Escolar
+          - textbox "Año Escolar" [ref=e483]:
+            - /placeholder: 2025-2026
+      - generic [ref=e484]:
+        - generic [ref=e485]: Descripción
+        - textbox "Descripción" [ref=e486]:
+          - /placeholder: Descripción del curso...
+      - generic [ref=e487]:
+        - generic [ref=e488]: Período
+        - combobox "Período" [ref=e489]:
+          - option "Seleccionar período" [disabled] [selected]
+          - option "Primer Trimestre"
+          - option "Segundo Trimestre"
+          - option "Tercer Trimestre"
+          - option "Q1"
+          - option "Q2"
+          - option "Q3"
+          - option "Q4"
+          - option "Semestre 1"
+          - option "Semestre 2"
+      - generic [ref=e490]:
+        - generic [ref=e491]:
+          - generic [ref=e492]: Fecha de inicio
+          - textbox "Fecha de inicio" [ref=e493]
+        - generic [ref=e494]:
+          - generic [ref=e495]: Fecha de fin
+          - textbox "Fecha de fin" [ref=e496]
+      - generic [ref=e497]:
+        - img [ref=e498]
+        - generic [ref=e500]: "Período de inscripción:"
+        - combobox [ref=e501]:
+          - generic: Todos los años
+          - img
+        - combobox [ref=e502]
+        - combobox [ref=e503]:
+          - generic: Todos los meses
+          - img
+        - combobox [ref=e504]
+      - generic [ref=e505]:
+        - text: Estudiantes
+        - button "Seleccionar estudiantes..." [ref=e506]:
+          - generic [ref=e507]: Seleccionar estudiantes...
+      - generic [ref=e508]:
+        - generic [ref=e509]: Profesor titular
+        - generic [ref=e510]:
+          - img [ref=e511]
+          - generic [ref=e514]: Tú ya estás asignado como profesor titular
+      - generic [ref=e515]:
+        - generic [ref=e516]: Juego asociado
+        - combobox "Juego asociado" [ref=e517]:
+          - generic: Sin juego
+          - img
+        - combobox [ref=e518]
+      - generic [ref=e519]:
+        - button "Cancelar" [ref=e520]
+        - button "Crear Curso" [ref=e521]
+    - button "Close" [ref=e522]:
+      - img
+      - generic [ref=e523]: Close

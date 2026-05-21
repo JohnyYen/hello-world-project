@@ -1,0 +1,97 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Admin - Hello World" [level=1] [ref=e5]:
+        - link "Admin - Hello World" [ref=e6] [cursor=pointer]:
+          - /url: http://localhost:8010/admin/
+          - heading "Admin - Hello World" [level=3] [ref=e7]
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - listitem [ref=e11]:
+            - link " Usuarios" [ref=e12] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/user/list
+              - generic [ref=e14]: 
+              - generic [ref=e15]: Usuarios
+          - listitem [ref=e16]:
+            - link " Roles" [ref=e17] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/role/list
+              - generic [ref=e19]: 
+              - generic [ref=e20]: Roles
+          - listitem [ref=e21]:
+            - link " Profesores" [ref=e22] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/professor/list
+              - generic [ref=e24]: 
+              - generic [ref=e25]: Profesores
+          - listitem [ref=e26]:
+            - link " Estudiantes" [ref=e27] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/student/list
+              - generic [ref=e29]: 
+              - generic [ref=e30]: Estudiantes
+          - listitem [ref=e31]:
+            - link " Configuraciones de Profesor" [ref=e32] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/teacher-settings/list
+              - generic [ref=e34]: 
+              - generic [ref=e35]: Configuraciones de Profesor
+          - listitem [ref=e36]:
+            - link " Juegos" [ref=e37] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game/list
+              - generic [ref=e39]: 
+              - generic [ref=e40]: Juegos
+          - listitem [ref=e41]:
+            - link " Instancias de Juego" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game-instance/list
+              - generic [ref=e44]: 
+              - generic [ref=e45]: Instancias de Juego
+          - listitem [ref=e46]:
+            - link " Niveles de Segmento" [ref=e47] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/segment-level/list
+              - generic [ref=e49]: 
+              - generic [ref=e50]: Niveles de Segmento
+          - listitem [ref=e51]:
+            - link " Niveles" [ref=e52] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/level/list
+              - generic [ref=e54]: 
+              - generic [ref=e55]: Niveles
+          - listitem [ref=e56]:
+            - link " Cursos" [ref=e57] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course/list
+              - generic [ref=e59]: 
+              - generic [ref=e60]: Cursos
+          - listitem [ref=e61]:
+            - link " Inscripciones" [ref=e62] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course-enrollment/list
+              - generic [ref=e64]: 
+              - generic [ref=e65]: Inscripciones
+          - listitem [ref=e66]:
+            - link " Progresos" [ref=e67] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/progress/list
+              - generic [ref=e69]: 
+              - generic [ref=e70]: Progresos
+          - listitem [ref=e71]:
+            - link " Declaraciones xAPI" [ref=e72] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/xapi-statement/list
+              - generic [ref=e74]: 
+              - generic [ref=e75]: Declaraciones xAPI
+          - listitem [ref=e76]:
+            - link " Feedbacks" [ref=e77] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/feedback/list
+              - generic [ref=e79]: 
+              - generic [ref=e80]: Feedbacks
+          - listitem [ref=e81]:
+            - link " Sesiones de Sincronización" [ref=e82] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-session/list
+              - generic [ref=e84]: 
+              - generic [ref=e85]: Sesiones de Sincronización
+          - listitem [ref=e86]:
+            - link " Eventos de Sincronización" [ref=e87] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-event/list
+              - generic [ref=e89]: 
+              - generic [ref=e90]: Eventos de Sincronización
+      - link " Logout" [ref=e91] [cursor=pointer]:
+        - /url: http://localhost:8010/admin/logout
+        - generic [ref=e92]: 
+        - generic [ref=e93]: Logout
+  - generic [ref=e96]:
+    - generic:
+      - generic:
+        - heading [level=2]

@@ -1,0 +1,609 @@
+- generic:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - list:
+                - listitem:
+                  - link:
+                    - /url: /dashboard
+                    - img
+                    - generic: Mi Plataforma
+            - generic:
+              - generic:
+                - generic: Estadísticas
+                - generic:
+                  - list:
+                    - listitem:
+                      - button:
+                        - img
+                        - generic: Quick Create
+                      - button:
+                        - img
+                        - generic: Inbox
+                  - list:
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard
+                          - text: Overview
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/students
+                          - text: Estudiantes
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/courses
+                          - text: Cursos
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/metrics
+                          - text: Métricas
+                    - listitem:
+                      - button:
+                        - img
+                        - link:
+                          - /url: /dashboard/reports
+                          - text: Reportes
+              - generic:
+                - generic: Gestión de Juegos y Niveles
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /dashboard/levels
+                      - img
+                      - generic: Niveles
+                  - listitem:
+                    - link:
+                      - /url: /dashboard/levels/create
+                      - img
+                      - generic: Crear Nivel
+              - generic:
+                - generic:
+                  - list:
+                    - listitem:
+                      - link:
+                        - /url: /dashboard/settings
+                        - img
+                        - generic: Settings
+                    - listitem:
+                      - link:
+                        - /url: /dashboard/help
+                        - img
+                        - generic: Ayuda
+      - main:
+        - generic:
+          - generic:
+            - button:
+              - img
+              - generic: Toggle Sidebar
+            - generic:
+              - button:
+                - generic: 🇪🇸
+                - generic: ES
+              - button:
+                - img
+                - generic: Toggle theme
+              - list:
+                - listitem:
+                  - button:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: S
+                      - generic:
+                        - generic: superadmin
+                        - generic: Usuario
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - img
+                - generic:
+                  - generic:
+                    - link:
+                      - /url: /dashboard/courses
+                      - img
+                      - text: Volver a cursos
+                    - heading [level=1]: Introducción a la Programación
+                    - generic:
+                      - generic:
+                        - img
+                        - generic: 2025-2026 - Q1
+                      - generic:
+                        - img
+                        - generic: 14 de enero de 2026 → 29 de junio de 2026
+                - generic:
+                  - generic:
+                    - heading [level=2]: Descripción
+                    - paragraph: Curso de Computer Science
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                        - heading [level=2]: Estudiantes Inscritos
+                        - generic: "18"
+                      - button [expanded]:
+                        - img
+                        - text: Asignar Estudiantes
+                    - generic:
+                      - img
+                      - textbox:
+                        - /placeholder: Buscar en la tabla de estudiantes...
+                    - generic:
+                      - generic:
+                        - table:
+                          - rowgroup:
+                            - row:
+                              - columnheader: Nombre
+                              - columnheader: Email
+                              - columnheader: Fecha de inscripción
+                              - columnheader: Acciones
+                          - rowgroup:
+                            - row:
+                              - cell:
+                                - generic:
+                                  - img
+                                  - text: Diego
+                              - cell: diego.fernandez@student.edu
+                              - cell: 5 de mayo de 2026
+                              - cell:
+                                - button:
+                                  - img
+                                  - text: Desasignar
+                            - row:
+                              - cell:
+                                - generic:
+                                  - img
+                                  - text: Fernando
+                              - cell: fernando.ortiz@student.edu
+                              - cell: 5 de mayo de 2026
+                              - cell:
+                                - button:
+                                  - img
+                                  - text: Desasignar
+                            - row:
+                              - cell:
+                                - generic:
+                                  - img
+                                  - text: Alejandro
+                              - cell: alejandro.medina@student.edu
+                              - cell: 5 de mayo de 2026
+                              - cell:
+                                - button:
+                                  - img
+                                  - text: Desasignar
+                            - row:
+                              - cell:
+                                - generic:
+                                  - img
+                                  - text: Daniela
+                              - cell: daniela.cruz@student.edu
+                              - cell: 5 de mayo de 2026
+                              - cell:
+                                - button:
+                                  - img
+                                  - text: Desasignar
+                            - row:
+                              - cell:
+                                - generic:
+                                  - img
+                                  - text: Ricardo
+                              - cell: ricardo.luna@student.edu
+                              - cell: 5 de mayo de 2026
+                              - cell:
+                                - button:
+                                  - img
+                                  - text: Desasignar
+                    - generic:
+                      - generic: Mostrando 1-5 de 18 estudiantes
+                      - generic:
+                        - button [disabled]:
+                          - img
+                        - generic:
+                          - button: "1"
+                          - button: "2"
+                          - button: "3"
+                          - button: "4"
+                        - button:
+                          - img
+                  - generic:
+                    - generic:
+                      - img
+                      - heading [level=2]: Profesores Asignados
+                      - generic: "1"
+                    - generic:
+                      - img
+                      - textbox:
+                        - /placeholder: Buscar en la tabla de profesores...
+                    - generic:
+                      - generic:
+                        - table:
+                          - rowgroup:
+                            - row:
+                              - columnheader: Nombre
+                              - columnheader: Email
+                              - columnheader: Acciones
+                          - rowgroup:
+                            - row:
+                              - cell: Test Professor
+                              - cell: testprofessor2026@example.com
+                              - cell: Sin acciones
+  - generic [ref=e441] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e442]:
+      - img [ref=e443]
+    - generic [ref=e588]:
+      - button "Open issues overlay" [ref=e589]:
+        - generic [ref=e590]:
+          - generic [ref=e591]: "2"
+          - generic [ref=e592]: "3"
+        - generic [ref=e593]:
+          - text: Issue
+          - generic [ref=e594]: s
+      - button "Collapse issues badge" [ref=e595]:
+        - img [ref=e596]
+  - alert
+  - dialog "Asignar Estudiantes" [ref=e599]:
+    - generic [ref=e600]:
+      - heading "Asignar Estudiantes" [level=2] [ref=e601]
+      - paragraph [ref=e602]: Selecciona los estudiantes para asignar a este curso.
+    - generic [ref=e603]:
+      - img [ref=e604]
+      - textbox "Buscar estudiantes..." [active] [ref=e607]
+    - generic [ref=e611]:
+      - generic [ref=e612] [cursor=pointer]:
+        - checkbox "Pedro Álvarez student_001@student.edu" [ref=e613]
+        - generic [ref=e614]:
+          - generic [ref=e615]: Pedro Álvarez
+          - generic [ref=e616]: student_001@student.edu
+      - generic [ref=e617] [cursor=pointer]:
+        - checkbox "Laura Rodríguez student_002@student.edu" [ref=e618]
+        - generic [ref=e619]:
+          - generic [ref=e620]: Laura Rodríguez
+          - generic [ref=e621]: student_002@student.edu
+      - generic [ref=e622] [cursor=pointer]:
+        - checkbox "Miguel Hernández student_003@student.edu" [ref=e623]
+        - generic [ref=e624]:
+          - generic [ref=e625]: Miguel Hernández
+          - generic [ref=e626]: student_003@student.edu
+      - generic [ref=e627] [cursor=pointer]:
+        - checkbox "Sofia Gómez student_004@student.edu" [ref=e628]
+        - generic [ref=e629]:
+          - generic [ref=e630]: Sofia Gómez
+          - generic [ref=e631]: student_004@student.edu
+      - generic [ref=e632] [cursor=pointer]:
+        - checkbox "Diego Fernández student_005@student.edu" [ref=e633]
+        - generic [ref=e634]:
+          - generic [ref=e635]: Diego Fernández
+          - generic [ref=e636]: student_005@student.edu
+      - generic [ref=e637] [cursor=pointer]:
+        - checkbox "Carmen Torres student_006@student.edu" [ref=e638]
+        - generic [ref=e639]:
+          - generic [ref=e640]: Carmen Torres
+          - generic [ref=e641]: student_006@student.edu
+      - generic [ref=e642] [cursor=pointer]:
+        - checkbox "Javier Reyes student_007@student.edu" [ref=e643]
+        - generic [ref=e644]:
+          - generic [ref=e645]: Javier Reyes
+          - generic [ref=e646]: student_007@student.edu
+      - generic [ref=e647] [cursor=pointer]:
+        - checkbox "Eduardo Castillo student_011@student.edu" [ref=e648]
+        - generic [ref=e649]:
+          - generic [ref=e650]: Eduardo Castillo
+          - generic [ref=e651]: student_011@student.edu
+      - generic [ref=e652] [cursor=pointer]:
+        - checkbox "Natalia Jiménez student_012@student.edu" [ref=e653]
+        - generic [ref=e654]:
+          - generic [ref=e655]: Natalia Jiménez
+          - generic [ref=e656]: student_012@student.edu
+      - generic [ref=e657] [cursor=pointer]:
+        - checkbox "Fernando Ortiz student_013@student.edu" [ref=e658]
+        - generic [ref=e659]:
+          - generic [ref=e660]: Fernando Ortiz
+          - generic [ref=e661]: student_013@student.edu
+      - generic [ref=e662] [cursor=pointer]:
+        - checkbox "Andrea Vargas student_014@student.edu" [ref=e663]
+        - generic [ref=e664]:
+          - generic [ref=e665]: Andrea Vargas
+          - generic [ref=e666]: student_014@student.edu
+      - generic [ref=e667] [cursor=pointer]:
+        - checkbox "Alejandro Medina student_015@student.edu" [ref=e668]
+        - generic [ref=e669]:
+          - generic [ref=e670]: Alejandro Medina
+          - generic [ref=e671]: student_015@student.edu
+      - generic [ref=e672] [cursor=pointer]:
+        - checkbox "Daniela Cruz student_016@student.edu" [ref=e673]
+        - generic [ref=e674]:
+          - generic [ref=e675]: Daniela Cruz
+          - generic [ref=e676]: student_016@student.edu
+      - generic [ref=e677] [cursor=pointer]:
+        - checkbox "Ricardo Luna student_017@student.edu" [ref=e678]
+        - generic [ref=e679]:
+          - generic [ref=e680]: Ricardo Luna
+          - generic [ref=e681]: student_017@student.edu
+      - generic [ref=e682] [cursor=pointer]:
+        - checkbox "Gabriela Ramos student_018@student.edu" [ref=e683]
+        - generic [ref=e684]:
+          - generic [ref=e685]: Gabriela Ramos
+          - generic [ref=e686]: student_018@student.edu
+      - generic [ref=e687] [cursor=pointer]:
+        - checkbox "Oscar Vega student_019@student.edu" [ref=e688]
+        - generic [ref=e689]:
+          - generic [ref=e690]: Oscar Vega
+          - generic [ref=e691]: student_019@student.edu
+      - generic [ref=e692] [cursor=pointer]:
+        - checkbox "Paula Mendoza student_020@student.edu" [ref=e693]
+        - generic [ref=e694]:
+          - generic [ref=e695]: Paula Mendoza
+          - generic [ref=e696]: student_020@student.edu
+      - generic [ref=e697] [cursor=pointer]:
+        - checkbox "Isabella Flores student_008@student.edu" [ref=e698]
+        - generic [ref=e699]:
+          - generic [ref=e700]: Isabella Flores
+          - generic [ref=e701]: student_008@student.edu
+      - generic [ref=e702] [cursor=pointer]:
+        - checkbox "Luis Rivera student_009@student.edu" [ref=e703]
+        - generic [ref=e704]:
+          - generic [ref=e705]: Luis Rivera
+          - generic [ref=e706]: student_009@student.edu
+      - generic [ref=e707] [cursor=pointer]:
+        - checkbox "Valentina Morales student_010@student.edu" [ref=e708]
+        - generic [ref=e709]:
+          - generic [ref=e710]: Valentina Morales
+          - generic [ref=e711]: student_010@student.edu
+      - generic [ref=e712] [cursor=pointer]:
+        - checkbox "Student Test1 student_test1@example.com" [ref=e713]
+        - generic [ref=e714]:
+          - generic [ref=e715]: Student Test1
+          - generic [ref=e716]: student_test1@example.com
+      - generic [ref=e717] [cursor=pointer]:
+        - checkbox "Carlos García carlos.garcia@example.com" [ref=e718]
+        - generic [ref=e719]:
+          - generic [ref=e720]: Carlos García
+          - generic [ref=e721]: carlos.garcia@example.com
+      - generic [ref=e722] [cursor=pointer]:
+        - checkbox "Pepillo Perez pp.pp@example.com" [ref=e723]
+        - generic [ref=e724]:
+          - generic [ref=e725]: Pepillo Perez
+          - generic [ref=e726]: pp.pp@example.com
+      - generic [ref=e727] [cursor=pointer]:
+        - checkbox "Pedro Gonzales pedro.gonzales@example.com" [ref=e728]
+        - generic [ref=e729]:
+          - generic [ref=e730]: Pedro Gonzales
+          - generic [ref=e731]: pedro.gonzales@example.com
+      - generic [ref=e732] [cursor=pointer]:
+        - checkbox "Tito xczczx admin.213@example.com" [ref=e733]
+        - generic [ref=e734]:
+          - generic [ref=e735]: Tito xczczx
+          - generic [ref=e736]: admin.213@example.com
+      - generic [ref=e737] [cursor=pointer]:
+        - checkbox "Juan Álvarez juan.alvarez@student.edu" [ref=e738]
+        - generic [ref=e739]:
+          - generic [ref=e740]: Juan Álvarez
+          - generic [ref=e741]: juan.alvarez@student.edu
+      - generic [ref=e742] [cursor=pointer]:
+        - checkbox "Laura Rodríguez laura.rodriguez@student.edu" [ref=e743]
+        - generic [ref=e744]:
+          - generic [ref=e745]: Laura Rodríguez
+          - generic [ref=e746]: laura.rodriguez@student.edu
+      - generic [ref=e747] [cursor=pointer]:
+        - checkbox "Miguel Hernández miguel.hernandez@student.edu" [ref=e748]
+        - generic [ref=e749]:
+          - generic [ref=e750]: Miguel Hernández
+          - generic [ref=e751]: miguel.hernandez@student.edu
+      - generic [ref=e752] [cursor=pointer]:
+        - checkbox "Sofía Gómez sofia.gomez@student.edu" [ref=e753]
+        - generic [ref=e754]:
+          - generic [ref=e755]: Sofía Gómez
+          - generic [ref=e756]: sofia.gomez@student.edu
+      - generic [ref=e757] [cursor=pointer]:
+        - checkbox "Diego Fernández diego.fernandez@student.edu" [ref=e758]
+        - generic [ref=e759]:
+          - generic [ref=e760]: Diego Fernández
+          - generic [ref=e761]: diego.fernandez@student.edu
+      - generic [ref=e762] [cursor=pointer]:
+        - checkbox "Carmen Torres carmen.torres@student.edu" [ref=e763]
+        - generic [ref=e764]:
+          - generic [ref=e765]: Carmen Torres
+          - generic [ref=e766]: carmen.torres@student.edu
+      - generic [ref=e767] [cursor=pointer]:
+        - checkbox "Javier Reyes javier.reyes@student.edu" [ref=e768]
+        - generic [ref=e769]:
+          - generic [ref=e770]: Javier Reyes
+          - generic [ref=e771]: javier.reyes@student.edu
+      - generic [ref=e772] [cursor=pointer]:
+        - checkbox "Isabella Flores isabella.flores@student.edu" [ref=e773]
+        - generic [ref=e774]:
+          - generic [ref=e775]: Isabella Flores
+          - generic [ref=e776]: isabella.flores@student.edu
+      - generic [ref=e777] [cursor=pointer]:
+        - checkbox "Luis Rivera luis.rivera@student.edu" [ref=e778]
+        - generic [ref=e779]:
+          - generic [ref=e780]: Luis Rivera
+          - generic [ref=e781]: luis.rivera@student.edu
+      - generic [ref=e782] [cursor=pointer]:
+        - checkbox "Valentina Morales valentina.morales@student.edu" [ref=e783]
+        - generic [ref=e784]:
+          - generic [ref=e785]: Valentina Morales
+          - generic [ref=e786]: valentina.morales@student.edu
+      - generic [ref=e787] [cursor=pointer]:
+        - checkbox "Eduardo Castillo eduardo.castillo@student.edu" [ref=e788]
+        - generic [ref=e789]:
+          - generic [ref=e790]: Eduardo Castillo
+          - generic [ref=e791]: eduardo.castillo@student.edu
+      - generic [ref=e792] [cursor=pointer]:
+        - checkbox "Natalia Jiménez natalia.jimenez@student.edu" [ref=e793]
+        - generic [ref=e794]:
+          - generic [ref=e795]: Natalia Jiménez
+          - generic [ref=e796]: natalia.jimenez@student.edu
+      - generic [ref=e797] [cursor=pointer]:
+        - checkbox "Fernando Ortiz fernando.ortiz@student.edu" [ref=e798]
+        - generic [ref=e799]:
+          - generic [ref=e800]: Fernando Ortiz
+          - generic [ref=e801]: fernando.ortiz@student.edu
+      - generic [ref=e802] [cursor=pointer]:
+        - checkbox "Andrea Vargas andrea.vargas@student.edu" [ref=e803]
+        - generic [ref=e804]:
+          - generic [ref=e805]: Andrea Vargas
+          - generic [ref=e806]: andrea.vargas@student.edu
+      - generic [ref=e807] [cursor=pointer]:
+        - checkbox "Alejandro Medina alejandro.medina@student.edu" [ref=e808]
+        - generic [ref=e809]:
+          - generic [ref=e810]: Alejandro Medina
+          - generic [ref=e811]: alejandro.medina@student.edu
+      - generic [ref=e812] [cursor=pointer]:
+        - checkbox "Daniela Cruz daniela.cruz@student.edu" [ref=e813]
+        - generic [ref=e814]:
+          - generic [ref=e815]: Daniela Cruz
+          - generic [ref=e816]: daniela.cruz@student.edu
+      - generic [ref=e817] [cursor=pointer]:
+        - checkbox "Ricardo Luna ricardo.luna@student.edu" [ref=e818]
+        - generic [ref=e819]:
+          - generic [ref=e820]: Ricardo Luna
+          - generic [ref=e821]: ricardo.luna@student.edu
+      - generic [ref=e822] [cursor=pointer]:
+        - checkbox "Gabriela Ramos gabriela.ramos@student.edu" [ref=e823]
+        - generic [ref=e824]:
+          - generic [ref=e825]: Gabriela Ramos
+          - generic [ref=e826]: gabriela.ramos@student.edu
+      - generic [ref=e827] [cursor=pointer]:
+        - checkbox "Óscar Vega oscar.vega@student.edu" [ref=e828]
+        - generic [ref=e829]:
+          - generic [ref=e830]: Óscar Vega
+          - generic [ref=e831]: oscar.vega@student.edu
+      - generic [ref=e832] [cursor=pointer]:
+        - checkbox "Paula Mendoza paula.mendoza@student.edu" [ref=e833]
+        - generic [ref=e834]:
+          - generic [ref=e835]: Paula Mendoza
+          - generic [ref=e836]: paula.mendoza@student.edu
+      - generic [ref=e837] [cursor=pointer]:
+        - checkbox "Marco Delgado marco.delgado@student.edu" [ref=e838]
+        - generic [ref=e839]:
+          - generic [ref=e840]: Marco Delgado
+          - generic [ref=e841]: marco.delgado@student.edu
+      - generic [ref=e842] [cursor=pointer]:
+        - checkbox "Ana Castro ana.castro@student.edu" [ref=e843]
+        - generic [ref=e844]:
+          - generic [ref=e845]: Ana Castro
+          - generic [ref=e846]: ana.castro@student.edu
+      - generic [ref=e847] [cursor=pointer]:
+        - checkbox "Sergio Muñoz sergio.munoz@student.edu" [ref=e848]
+        - generic [ref=e849]:
+          - generic [ref=e850]: Sergio Muñoz
+          - generic [ref=e851]: sergio.munoz@student.edu
+      - generic [ref=e852] [cursor=pointer]:
+        - checkbox "Elena Ibáñez elena.ibanez@student.edu" [ref=e853]
+        - generic [ref=e854]:
+          - generic [ref=e855]: Elena Ibáñez
+          - generic [ref=e856]: elena.ibanez@student.edu
+      - generic [ref=e857] [cursor=pointer]:
+        - checkbox "Roberto Núñez roberto.nunez@student.edu" [ref=e858]
+        - generic [ref=e859]:
+          - generic [ref=e860]: Roberto Núñez
+          - generic [ref=e861]: roberto.nunez@student.edu
+      - generic [ref=e862] [cursor=pointer]:
+        - checkbox "María Gil maria.gil@student.edu" [ref=e863]
+        - generic [ref=e864]:
+          - generic [ref=e865]: María Gil
+          - generic [ref=e866]: maria.gil@student.edu
+      - generic [ref=e867] [cursor=pointer]:
+        - checkbox "Carlos Ruiz carlos.ruiz@student.edu" [ref=e868]
+        - generic [ref=e869]:
+          - generic [ref=e870]: Carlos Ruiz
+          - generic [ref=e871]: carlos.ruiz@student.edu
+      - generic [ref=e872] [cursor=pointer]:
+        - checkbox "Laura Serrano laura.serrano@student.edu" [ref=e873]
+        - generic [ref=e874]:
+          - generic [ref=e875]: Laura Serrano
+          - generic [ref=e876]: laura.serrano@student.edu
+      - generic [ref=e877] [cursor=pointer]:
+        - checkbox "Pedro Ortega pedro.ortega@student.edu" [ref=e878]
+        - generic [ref=e879]:
+          - generic [ref=e880]: Pedro Ortega
+          - generic [ref=e881]: pedro.ortega@student.edu
+      - generic [ref=e882] [cursor=pointer]:
+        - checkbox "Rosa Molina rosa.molina@student.edu" [ref=e883]
+        - generic [ref=e884]:
+          - generic [ref=e885]: Rosa Molina
+          - generic [ref=e886]: rosa.molina@student.edu
+      - generic [ref=e887] [cursor=pointer]:
+        - checkbox "Alberto Navarro alberto.navarro@student.edu" [ref=e888]
+        - generic [ref=e889]:
+          - generic [ref=e890]: Alberto Navarro
+          - generic [ref=e891]: alberto.navarro@student.edu
+      - generic [ref=e892] [cursor=pointer]:
+        - checkbox "Sandra Pérez sandra.perez@student.edu" [ref=e893]
+        - generic [ref=e894]:
+          - generic [ref=e895]: Sandra Pérez
+          - generic [ref=e896]: sandra.perez@student.edu
+      - generic [ref=e897] [cursor=pointer]:
+        - checkbox "Jorge Vargas jorge.vargas@student.edu" [ref=e898]
+        - generic [ref=e899]:
+          - generic [ref=e900]: Jorge Vargas
+          - generic [ref=e901]: jorge.vargas@student.edu
+      - generic [ref=e902] [cursor=pointer]:
+        - checkbox "Lucía Ramírez lucia.ramirez@student.edu" [ref=e903]
+        - generic [ref=e904]:
+          - generic [ref=e905]: Lucía Ramírez
+          - generic [ref=e906]: lucia.ramirez@student.edu
+      - generic [ref=e907] [cursor=pointer]:
+        - checkbox "Miguel Torres miguel.torres@student.edu" [ref=e908]
+        - generic [ref=e909]:
+          - generic [ref=e910]: Miguel Torres
+          - generic [ref=e911]: miguel.torres@student.edu
+      - generic [ref=e912] [cursor=pointer]:
+        - checkbox "Sara Herrera sara.herrera@student.edu" [ref=e913]
+        - generic [ref=e914]:
+          - generic [ref=e915]: Sara Herrera
+          - generic [ref=e916]: sara.herrera@student.edu
+      - generic [ref=e917] [cursor=pointer]:
+        - checkbox "David Cortés david.cortes@student.edu" [ref=e918]
+        - generic [ref=e919]:
+          - generic [ref=e920]: David Cortés
+          - generic [ref=e921]: david.cortes@student.edu
+      - generic [ref=e922] [cursor=pointer]:
+        - checkbox "Claudia Medina claudia.medina@student.edu" [ref=e923]
+        - generic [ref=e924]:
+          - generic [ref=e925]: Claudia Medina
+          - generic [ref=e926]: claudia.medina@student.edu
+      - generic [ref=e927] [cursor=pointer]:
+        - checkbox "Raúl Flores raul.flores@student.edu" [ref=e928]
+        - generic [ref=e929]:
+          - generic [ref=e930]: Raúl Flores
+          - generic [ref=e931]: raul.flores@student.edu
+      - generic [ref=e932] [cursor=pointer]:
+        - checkbox "Estudiante Test estudiante@test.com" [ref=e933]
+        - generic [ref=e934]:
+          - generic [ref=e935]: Estudiante Test
+          - generic [ref=e936]: estudiante@test.com
+      - generic [ref=e937] [cursor=pointer]:
+        - checkbox "Jorge Ernesto jorge_student@example.com" [ref=e938]
+        - generic [ref=e939]:
+          - generic [ref=e940]: Jorge Ernesto
+          - generic [ref=e941]: jorge_student@example.com
+      - generic [ref=e942] [cursor=pointer]:
+        - checkbox "wdfwf sdfsdfsd dfad@example.com" [ref=e943]
+        - generic [ref=e944]:
+          - generic [ref=e945]: wdfwf sdfsdfsd
+          - generic [ref=e946]: dfad@example.com
+      - generic [ref=e947] [cursor=pointer]:
+        - checkbox "Johny Pedraza Romero student.game@example.com" [ref=e948]
+        - generic [ref=e949]:
+          - generic [ref=e950]: Johny Pedraza Romero
+          - generic [ref=e951]: student.game@example.com
+    - generic [ref=e952]:
+      - button "Cancelar" [ref=e953]
+      - button "Asignar (0)" [disabled]
+    - button "Close" [ref=e954]:
+      - img
+      - generic [ref=e955]: Close

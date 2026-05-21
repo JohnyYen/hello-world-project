@@ -1,0 +1,443 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e32] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e33]:
+      - img [ref=e34]
+    - generic [ref=e39]:
+      - button "Open issues overlay" [ref=e40]:
+        - generic [ref=e41]:
+          - generic [ref=e42]: "5"
+          - generic [ref=e43]: "6"
+        - generic [ref=e44]:
+          - text: Issue
+          - generic [ref=e45]: s
+      - button "Collapse issues badge" [ref=e46]:
+        - img [ref=e47]
+  - alert [ref=e37]
+  - generic [ref=e50]:
+    - generic [ref=e53]:
+      - list [ref=e55]:
+        - listitem [ref=e56]:
+          - link "Mi Plataforma" [ref=e57] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e58]
+            - generic [ref=e61]: Mi Plataforma
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: Estadísticas
+          - generic [ref=e65]:
+            - list [ref=e66]:
+              - listitem [ref=e67]:
+                - button "Quick Create" [ref=e68]:
+                  - img [ref=e69]
+                  - generic [ref=e71]: Quick Create
+                - button "Inbox" [ref=e72]:
+                  - img
+                  - generic [ref=e73]: Inbox
+            - list [ref=e74]:
+              - listitem [ref=e75]:
+                - button "Overview" [ref=e76]:
+                  - img [ref=e77]
+                  - link "Overview" [ref=e81] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e82]:
+                - button "Estudiantes" [ref=e83]:
+                  - img [ref=e84]
+                  - link "Estudiantes" [ref=e87] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e88]:
+                - button "Cursos" [ref=e89]:
+                  - img [ref=e90]
+                  - link "Cursos" [ref=e93] [cursor=pointer]:
+                    - /url: /dashboard/courses
+              - listitem [ref=e94]:
+                - button "Métricas" [ref=e95]:
+                  - img [ref=e96]
+                  - link "Métricas" [ref=e100] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e101]:
+                - button "Reportes" [ref=e102]:
+                  - img [ref=e103]
+                  - link "Reportes" [ref=e105] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e106]:
+          - generic [ref=e107]: Gestión de Juegos y Niveles
+          - list [ref=e108]:
+            - listitem [ref=e109]:
+              - link "Niveles" [ref=e110] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e111]
+                - generic [ref=e114]: Niveles
+            - listitem [ref=e115]:
+              - link "Crear Nivel" [ref=e116] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e117]
+                - generic [ref=e118]: Crear Nivel
+        - list [ref=e121]:
+          - listitem [ref=e122]:
+            - link "Settings" [ref=e123] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e124]
+              - generic [ref=e127]: Settings
+          - listitem [ref=e128]:
+            - link "Ayuda" [ref=e129] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e130]
+              - generic [ref=e133]: Ayuda
+    - main [ref=e134]:
+      - generic [ref=e136]:
+        - button "Toggle Sidebar" [ref=e137]:
+          - img
+          - generic [ref=e138]: Toggle Sidebar
+        - generic [ref=e139]:
+          - button "🇪🇸 ES" [ref=e140]:
+            - generic [ref=e141]: 🇪🇸
+            - generic [ref=e142]: ES
+          - button "Toggle theme" [ref=e143]:
+            - img
+            - generic [ref=e144]: Toggle theme
+          - list [ref=e145]:
+            - listitem [ref=e146]:
+              - button "JP Juan Pérez Usuario" [ref=e147]:
+                - generic [ref=e150]:
+                  - generic [ref=e153]: JP
+                  - generic [ref=e155]:
+                    - generic [ref=e156]: Juan Pérez
+                    - generic [ref=e157]: Usuario
+      - generic [ref=e161]:
+        - generic:
+          - img
+        - generic [ref=e162]:
+          - generic [ref=e165]:
+            - heading "Dashboard" [level=1] [ref=e166]
+            - paragraph [ref=e167]: Resumen general del rendimiento y métricas clave de tu proyecto
+          - generic [ref=e168]:
+            - generic [ref=e169]:
+              - generic [ref=e172]:
+                - generic [ref=e173]:
+                  - img [ref=e175]
+                  - text: Estudiantes Totales
+                - generic [ref=e178]: "64"
+                - generic [ref=e180]:
+                  - img
+                  - text: 1.6%
+              - generic [ref=e181]:
+                - generic [ref=e182]:
+                  - text: Crecimiento positivo
+                  - img [ref=e183]
+                - generic [ref=e186]: Datos del período seleccionado
+            - generic [ref=e187]:
+              - generic [ref=e190]:
+                - generic [ref=e191]:
+                  - img [ref=e193]
+                  - text: Estudiantes Activos
+                - generic [ref=e198]: "64"
+                - generic [ref=e200]:
+                  - img
+                  - text: 1161.7%
+              - generic [ref=e201]:
+                - generic [ref=e202]:
+                  - text: En los últimos 30 días
+                  - img [ref=e203]
+                - generic [ref=e206]: Datos del período seleccionado
+            - generic [ref=e207]:
+              - generic [ref=e210]:
+                - generic [ref=e211]:
+                  - img [ref=e213]
+                  - text: Niveles Completados
+                - generic [ref=e217]: 26.5K
+                - generic [ref=e219]:
+                  - img
+                  - text: 1161.7%
+              - generic [ref=e220]:
+                - generic [ref=e221]:
+                  - text: Total de niveles
+                  - img [ref=e222]
+                - generic [ref=e225]: Datos del período seleccionado
+            - generic [ref=e226]:
+              - generic [ref=e229]:
+                - generic [ref=e230]:
+                  - img [ref=e232]
+                  - text: Tiempo de Juego
+                - generic [ref=e235]: 1331h 11m
+                - generic [ref=e237]:
+                  - img
+                  - text: 0%
+              - generic [ref=e238]:
+                - generic [ref=e239]:
+                  - text: "Promedio: 80%"
+                  - img [ref=e240]
+                - generic [ref=e243]: Datos del período seleccionado
+          - generic [ref=e246]:
+            - generic [ref=e247]:
+              - generic [ref=e248]: Actividad de Estudiantes
+              - generic [ref=e250]: Sesiones y estudiantes activos
+              - group [ref=e252]:
+                - radio "3 meses" [ref=e253]
+                - radio "30 días" [checked] [ref=e254]
+                - radio "7 días" [ref=e255]
+            - img [ref=e260]:
+              - generic [ref=e264]:
+                - generic [ref=e266]: 21 abr
+                - generic [ref=e268]: 23 abr
+                - generic [ref=e270]: 25 abr
+                - generic [ref=e272]: 27 abr
+                - generic [ref=e274]: 4 may
+                - generic [ref=e276]: 6 may
+                - generic [ref=e278]: 8 may
+                - generic [ref=e280]: 10 may
+                - generic [ref=e282]: 13 may
+                - generic [ref=e284]: 16 may
+                - generic [ref=e286]: 19 may
+              - generic [ref=e288]:
+                - generic [ref=e290]: "0"
+                - generic [ref=e292]: "1500"
+                - generic [ref=e294]: "3000"
+                - generic [ref=e296]: "4500"
+                - generic [ref=e298]: "6000"
+          - generic [ref=e305]:
+            - generic [ref=e306]:
+              - generic [ref=e307]:
+                - heading "Rendimiento por Nivel" [level=2] [ref=e308]
+                - generic [ref=e309]: 18 niveles
+              - generic [ref=e310]:
+                - generic [ref=e311]:
+                  - img [ref=e312]
+                  - textbox "Buscar niveles..." [ref=e315]
+                - combobox [ref=e316]:
+                  - img
+                  - generic: Todas las tasas
+                  - img
+                - button "Columnas" [ref=e317]:
+                  - img
+                  - generic [ref=e318]: Columnas
+                  - img
+                - button "Agregar" [ref=e319]:
+                  - img
+                  - generic [ref=e320]: Agregar
+            - generic [ref=e321]:
+              - table [ref=e323]:
+                - rowgroup [ref=e324]:
+                  - row "Seleccionar todo Nivel Tasa de Completado Intentos Promedio Tiempo Promedio" [ref=e325]:
+                    - columnheader [ref=e326]
+                    - columnheader "Seleccionar todo" [ref=e327]:
+                      - checkbox "Seleccionar todo" [ref=e329]
+                    - columnheader "Nivel" [ref=e330]
+                    - columnheader "Tasa de Completado" [ref=e331]
+                    - columnheader "Intentos Promedio" [ref=e332]
+                    - columnheader "Tiempo Promedio" [ref=e333]
+                    - columnheader [ref=e334]
+                - rowgroup [ref=e335]:
+                  - row "Drag to reorder Seleccionar fila Operaciones Básicas 1% 3.1 15m Abrir menú" [ref=e336]:
+                    - cell "Drag to reorder" [ref=e337]:
+                      - button "Drag to reorder" [ref=e338]:
+                        - img
+                        - generic [ref=e339]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e340]:
+                      - checkbox "Seleccionar fila" [ref=e342]
+                    - cell "Operaciones Básicas" [ref=e343]:
+                      - button "Operaciones Básicas" [ref=e344]
+                    - cell "1%" [ref=e345]:
+                      - generic [ref=e349]: 1%
+                    - cell "3.1" [ref=e350]:
+                      - generic [ref=e351]: "3.1"
+                    - cell "15m" [ref=e352]:
+                      - generic [ref=e353]: 15m
+                    - cell "Abrir menú" [ref=e354]:
+                      - button "Abrir menú" [ref=e355]:
+                        - img
+                        - generic [ref=e356]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Bucles 1% 2.9 15m Abrir menú" [ref=e357]:
+                    - cell "Drag to reorder" [ref=e358]:
+                      - button "Drag to reorder" [ref=e359]:
+                        - img
+                        - generic [ref=e360]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e361]:
+                      - checkbox "Seleccionar fila" [ref=e363]
+                    - cell "Bucles" [ref=e364]:
+                      - button "Bucles" [ref=e365]
+                    - cell "1%" [ref=e366]:
+                      - generic [ref=e370]: 1%
+                    - cell "2.9" [ref=e371]:
+                      - generic [ref=e372]: "2.9"
+                    - cell "15m" [ref=e373]:
+                      - generic [ref=e374]: 15m
+                    - cell "Abrir menú" [ref=e375]:
+                      - button "Abrir menú" [ref=e376]:
+                        - img
+                        - generic [ref=e377]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Condicionales 1% 2.8 14m Abrir menú" [ref=e378]:
+                    - cell "Drag to reorder" [ref=e379]:
+                      - button "Drag to reorder" [ref=e380]:
+                        - img
+                        - generic [ref=e381]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e382]:
+                      - checkbox "Seleccionar fila" [ref=e384]
+                    - cell "Condicionales" [ref=e385]:
+                      - button "Condicionales" [ref=e386]
+                    - cell "1%" [ref=e387]:
+                      - generic [ref=e391]: 1%
+                    - cell "2.8" [ref=e392]:
+                      - generic [ref=e393]: "2.8"
+                    - cell "14m" [ref=e394]:
+                      - generic [ref=e395]: 14m
+                    - cell "Abrir menú" [ref=e396]:
+                      - button "Abrir menú" [ref=e397]:
+                        - img
+                        - generic [ref=e398]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Velocidad y Aceleración 1% 3.0 15m Abrir menú" [ref=e399]:
+                    - cell "Drag to reorder" [ref=e400]:
+                      - button "Drag to reorder" [ref=e401]:
+                        - img
+                        - generic [ref=e402]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e403]:
+                      - checkbox "Seleccionar fila" [ref=e405]
+                    - cell "Velocidad y Aceleración" [ref=e406]:
+                      - button "Velocidad y Aceleración" [ref=e407]
+                    - cell "1%" [ref=e408]:
+                      - generic [ref=e412]: 1%
+                    - cell "3.0" [ref=e413]:
+                      - generic [ref=e414]: "3.0"
+                    - cell "15m" [ref=e415]:
+                      - generic [ref=e416]: 15m
+                    - cell "Abrir menú" [ref=e417]:
+                      - button "Abrir menú" [ref=e418]:
+                        - img
+                        - generic [ref=e419]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Variables y Tipos de Datos 1% 3.0 15m Abrir menú" [ref=e420]:
+                    - cell "Drag to reorder" [ref=e421]:
+                      - button "Drag to reorder" [ref=e422]:
+                        - img
+                        - generic [ref=e423]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e424]:
+                      - checkbox "Seleccionar fila" [ref=e426]
+                    - cell "Variables y Tipos de Datos" [ref=e427]:
+                      - button "Variables y Tipos de Datos" [ref=e428]
+                    - cell "1%" [ref=e429]:
+                      - generic [ref=e433]: 1%
+                    - cell "3.0" [ref=e434]:
+                      - generic [ref=e435]: "3.0"
+                    - cell "15m" [ref=e436]:
+                      - generic [ref=e437]: 15m
+                    - cell "Abrir menú" [ref=e438]:
+                      - button "Abrir menú" [ref=e439]:
+                        - img
+                        - generic [ref=e440]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Funciones 1% 3.0 15m Abrir menú" [ref=e441]:
+                    - cell "Drag to reorder" [ref=e442]:
+                      - button "Drag to reorder" [ref=e443]:
+                        - img
+                        - generic [ref=e444]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e445]:
+                      - checkbox "Seleccionar fila" [ref=e447]
+                    - cell "Funciones" [ref=e448]:
+                      - button "Funciones" [ref=e449]
+                    - cell "1%" [ref=e450]:
+                      - generic [ref=e454]: 1%
+                    - cell "3.0" [ref=e455]:
+                      - generic [ref=e456]: "3.0"
+                    - cell "15m" [ref=e457]:
+                      - generic [ref=e458]: 15m
+                    - cell "Abrir menú" [ref=e459]:
+                      - button "Abrir menú" [ref=e460]:
+                        - img
+                        - generic [ref=e461]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Condicionales 1% 3.0 15m Abrir menú" [ref=e462]:
+                    - cell "Drag to reorder" [ref=e463]:
+                      - button "Drag to reorder" [ref=e464]:
+                        - img
+                        - generic [ref=e465]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e466]:
+                      - checkbox "Seleccionar fila" [ref=e468]
+                    - cell "Condicionales" [ref=e469]:
+                      - button "Condicionales" [ref=e470]
+                    - cell "1%" [ref=e471]:
+                      - generic [ref=e475]: 1%
+                    - cell "3.0" [ref=e476]:
+                      - generic [ref=e477]: "3.0"
+                    - cell "15m" [ref=e478]:
+                      - generic [ref=e479]: 15m
+                    - cell "Abrir menú" [ref=e480]:
+                      - button "Abrir menú" [ref=e481]:
+                        - img
+                        - generic [ref=e482]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Bucles 1% 2.0 10m Abrir menú" [ref=e483]:
+                    - cell "Drag to reorder" [ref=e484]:
+                      - button "Drag to reorder" [ref=e485]:
+                        - img
+                        - generic [ref=e486]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e487]:
+                      - checkbox "Seleccionar fila" [ref=e489]
+                    - cell "Bucles" [ref=e490]:
+                      - button "Bucles" [ref=e491]
+                    - cell "1%" [ref=e492]:
+                      - generic [ref=e496]: 1%
+                    - cell "2.0" [ref=e497]:
+                      - generic [ref=e498]: "2.0"
+                    - cell "10m" [ref=e499]:
+                      - generic [ref=e500]: 10m
+                    - cell "Abrir menú" [ref=e501]:
+                      - button "Abrir menú" [ref=e502]:
+                        - img
+                        - generic [ref=e503]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Partes de la Célula 1% 3.0 15m Abrir menú" [ref=e504]:
+                    - cell "Drag to reorder" [ref=e505]:
+                      - button "Drag to reorder" [ref=e506]:
+                        - img
+                        - generic [ref=e507]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e508]:
+                      - checkbox "Seleccionar fila" [ref=e510]
+                    - cell "Partes de la Célula" [ref=e511]:
+                      - button "Partes de la Célula" [ref=e512]
+                    - cell "1%" [ref=e513]:
+                      - generic [ref=e517]: 1%
+                    - cell "3.0" [ref=e518]:
+                      - generic [ref=e519]: "3.0"
+                    - cell "15m" [ref=e520]:
+                      - generic [ref=e521]: 15m
+                    - cell "Abrir menú" [ref=e522]:
+                      - button "Abrir menú" [ref=e523]:
+                        - img
+                        - generic [ref=e524]: Abrir menú
+                  - row "Drag to reorder Seleccionar fila Procesos Celulares 1% 3.0 15m Abrir menú" [ref=e525]:
+                    - cell "Drag to reorder" [ref=e526]:
+                      - button "Drag to reorder" [ref=e527]:
+                        - img
+                        - generic [ref=e528]: Drag to reorder
+                    - cell "Seleccionar fila" [ref=e529]:
+                      - checkbox "Seleccionar fila" [ref=e531]
+                    - cell "Procesos Celulares" [ref=e532]:
+                      - button "Procesos Celulares" [ref=e533]
+                    - cell "1%" [ref=e534]:
+                      - generic [ref=e538]: 1%
+                    - cell "3.0" [ref=e539]:
+                      - generic [ref=e540]: "3.0"
+                    - cell "15m" [ref=e541]:
+                      - generic [ref=e542]: 15m
+                    - cell "Abrir menú" [ref=e543]:
+                      - button "Abrir menú" [ref=e544]:
+                        - img
+                        - generic [ref=e545]: Abrir menú
+              - status [ref=e546]
+            - generic [ref=e547]:
+              - generic [ref=e548]: 0 de 18 fila(s) seleccionada(s).
+              - generic [ref=e549]:
+                - generic [ref=e550]:
+                  - generic [ref=e551]: Filas por página
+                  - combobox [ref=e552]:
+                    - generic: "10"
+                    - img
+                - generic [ref=e553]: Página 1 de 2
+                - generic [ref=e554]:
+                  - button "Ir a primera página" [disabled]:
+                    - generic: Ir a primera página
+                    - img
+                  - button "Ir a página anterior" [disabled]:
+                    - generic: Ir a página anterior
+                    - img
+                  - button "Ir a siguiente página" [ref=e555]:
+                    - generic [ref=e556]: Ir a siguiente página
+                    - img
+                  - button "Ir a última página" [ref=e557]:
+                    - generic [ref=e558]: Ir a última página
+                    - img
+  - generic [ref=e559]: "0"

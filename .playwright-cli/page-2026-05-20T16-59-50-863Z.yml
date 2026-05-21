@@ -1,0 +1,313 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Admin - Hello World" [level=1] [ref=e5]:
+        - link "Admin - Hello World" [ref=e6] [cursor=pointer]:
+          - /url: http://localhost:8010/admin/
+          - heading "Admin - Hello World" [level=3] [ref=e7]
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - listitem [ref=e11]:
+            - link " Usuarios" [ref=e12] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/user/list
+              - generic [ref=e14]: 
+              - generic [ref=e15]: Usuarios
+          - listitem [ref=e16]:
+            - link " Roles" [ref=e17] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/role/list
+              - generic [ref=e19]: 
+              - generic [ref=e20]: Roles
+          - listitem [ref=e21]:
+            - link " Profesores" [ref=e22] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/professor/list
+              - generic [ref=e24]: 
+              - generic [ref=e25]: Profesores
+          - listitem [ref=e26]:
+            - link " Estudiantes" [ref=e27] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/student/list
+              - generic [ref=e29]: 
+              - generic [ref=e30]: Estudiantes
+          - listitem [ref=e31]:
+            - link " Configuraciones de Profesor" [ref=e32] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/teacher-settings/list
+              - generic [ref=e34]: 
+              - generic [ref=e35]: Configuraciones de Profesor
+          - listitem [ref=e36]:
+            - link " Juegos" [ref=e37] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game/list
+              - generic [ref=e39]: 
+              - generic [ref=e40]: Juegos
+          - listitem [ref=e41]:
+            - link " Instancias de Juego" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game-instance/list
+              - generic [ref=e44]: 
+              - generic [ref=e45]: Instancias de Juego
+          - listitem [ref=e46]:
+            - link " Niveles de Segmento" [ref=e47] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/segment-level/list
+              - generic [ref=e49]: 
+              - generic [ref=e50]: Niveles de Segmento
+          - listitem [ref=e51]:
+            - link " Niveles" [ref=e52] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/level/list
+              - generic [ref=e54]: 
+              - generic [ref=e55]: Niveles
+          - listitem [ref=e56]:
+            - link " Cursos" [ref=e57] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course/list
+              - generic [ref=e59]: 
+              - generic [ref=e60]: Cursos
+          - listitem [ref=e61]:
+            - link " Inscripciones" [ref=e62] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course-enrollment/list
+              - generic [ref=e64]: 
+              - generic [ref=e65]: Inscripciones
+          - listitem [ref=e66]:
+            - link " Progresos" [ref=e67] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/progress/list
+              - generic [ref=e69]: 
+              - generic [ref=e70]: Progresos
+          - listitem [ref=e71]:
+            - link " Declaraciones xAPI" [ref=e72] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/xapi-statement/list
+              - generic [ref=e74]: 
+              - generic [ref=e75]: Declaraciones xAPI
+          - listitem [ref=e76]:
+            - link " Feedbacks" [ref=e77] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/feedback/list
+              - generic [ref=e79]: 
+              - generic [ref=e80]: Feedbacks
+          - listitem [ref=e81]:
+            - link " Sesiones de Sincronización" [ref=e82] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-session/list
+              - generic [ref=e84]: 
+              - generic [ref=e85]: Sesiones de Sincronización
+          - listitem [ref=e86]:
+            - link " Eventos de Sincronización" [ref=e87] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-event/list
+              - generic [ref=e89]: 
+              - generic [ref=e90]: Eventos de Sincronización
+      - link " Logout" [ref=e91] [cursor=pointer]:
+        - /url: http://localhost:8010/admin/logout
+        - generic [ref=e92]: 
+        - generic [ref=e93]: Logout
+  - generic [ref=e94]:
+    - generic [ref=e96]:
+      - generic:
+        - generic:
+          - heading [level=2]
+    - generic [ref=e100]:
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - heading "Niveles" [level=3] [ref=e103]
+          - generic [ref=e104]:
+            - link "Export" [ref=e106] [cursor=pointer]:
+              - /url: "#"
+            - link "+ New Nivel" [ref=e108] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/level/create
+        - button "Actions" [ref=e112] [cursor=pointer]
+        - table [ref=e114]:
+          - rowgroup [ref=e115]:
+            - row "Select all id title game_id level_number" [ref=e116]:
+              - columnheader "Select all" [ref=e117]:
+                - checkbox "Select all" [ref=e118]
+              - columnheader [ref=e119]
+              - columnheader "id" [ref=e120]
+              - columnheader "title" [ref=e121]
+              - columnheader "game_id" [ref=e122]
+              - columnheader "level_number" [ref=e123]
+          - rowgroup [ref=e124]:
+            - row "Select item View Edit  0d379daa-2f12-43fe-97d4-d514a9494034 Operaciones Básicas 2006f783-a9b3-42c5-bafb-970e64bc22f0 1" [ref=e125]:
+              - cell "Select item" [ref=e126]:
+                - checkbox "Select item" [ref=e127]
+              - cell "View Edit " [ref=e128]:
+                - link "View" [ref=e129] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/0d379daa-2f12-43fe-97d4-d514a9494034
+                  - generic [ref=e131]: 
+                - link "Edit" [ref=e132] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/0d379daa-2f12-43fe-97d4-d514a9494034
+                  - generic [ref=e134]: 
+                - link "" [ref=e135] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e137]: 
+              - cell "0d379daa-2f12-43fe-97d4-d514a9494034" [ref=e138]
+              - cell "Operaciones Básicas" [ref=e139]
+              - cell "2006f783-a9b3-42c5-bafb-970e64bc22f0" [ref=e140]
+              - cell "1" [ref=e141]
+            - row "Select item View Edit  1ec819b5-0bc8-4319-9ae8-580fa90634e6 Procesos Celulares f6da5d9a-b95c-4f65-bfa8-5ea6b0190a5f 2" [ref=e142]:
+              - cell "Select item" [ref=e143]:
+                - checkbox "Select item" [ref=e144]
+              - cell "View Edit " [ref=e145]:
+                - link "View" [ref=e146] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/1ec819b5-0bc8-4319-9ae8-580fa90634e6
+                  - generic [ref=e148]: 
+                - link "Edit" [ref=e149] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/1ec819b5-0bc8-4319-9ae8-580fa90634e6
+                  - generic [ref=e151]: 
+                - link "" [ref=e152] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e154]: 
+              - cell "1ec819b5-0bc8-4319-9ae8-580fa90634e6" [ref=e155]
+              - cell "Procesos Celulares" [ref=e156]
+              - cell "f6da5d9a-b95c-4f65-bfa8-5ea6b0190a5f" [ref=e157]
+              - cell "2" [ref=e158]
+            - row "Select item View Edit  4d760c2d-35d2-41db-be65-a082afae2e87 Álgebra 2006f783-a9b3-42c5-bafb-970e64bc22f0 2" [ref=e159]:
+              - cell "Select item" [ref=e160]:
+                - checkbox "Select item" [ref=e161]
+              - cell "View Edit " [ref=e162]:
+                - link "View" [ref=e163] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/4d760c2d-35d2-41db-be65-a082afae2e87
+                  - generic [ref=e165]: 
+                - link "Edit" [ref=e166] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/4d760c2d-35d2-41db-be65-a082afae2e87
+                  - generic [ref=e168]: 
+                - link "" [ref=e169] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e171]: 
+              - cell "4d760c2d-35d2-41db-be65-a082afae2e87" [ref=e172]
+              - cell "Álgebra" [ref=e173]
+              - cell "2006f783-a9b3-42c5-bafb-970e64bc22f0" [ref=e174]
+              - cell "2" [ref=e175]
+            - row "Select item View Edit  51a4052f-1ad8-4ee9-9872-f1f02db801aa Variables 1a04c458-a32f-4a70-bdd3-5ee4845dbab9 1" [ref=e176]:
+              - cell "Select item" [ref=e177]:
+                - checkbox "Select item" [ref=e178]
+              - cell "View Edit " [ref=e179]:
+                - link "View" [ref=e180] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/51a4052f-1ad8-4ee9-9872-f1f02db801aa
+                  - generic [ref=e182]: 
+                - link "Edit" [ref=e183] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/51a4052f-1ad8-4ee9-9872-f1f02db801aa
+                  - generic [ref=e185]: 
+                - link "" [ref=e186] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e188]: 
+              - cell "51a4052f-1ad8-4ee9-9872-f1f02db801aa" [ref=e189]
+              - cell "Variables" [ref=e190]
+              - cell "1a04c458-a32f-4a70-bdd3-5ee4845dbab9" [ref=e191]
+              - cell "1" [ref=e192]
+            - row "Select item View Edit  6c92b8a3-adef-4905-943d-19708fe0db30 Funciones 1a04c458-a32f-4a70-bdd3-5ee4845dbab9 4" [ref=e193]:
+              - cell "Select item" [ref=e194]:
+                - checkbox "Select item" [ref=e195]
+              - cell "View Edit " [ref=e196]:
+                - link "View" [ref=e197] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/6c92b8a3-adef-4905-943d-19708fe0db30
+                  - generic [ref=e199]: 
+                - link "Edit" [ref=e200] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/6c92b8a3-adef-4905-943d-19708fe0db30
+                  - generic [ref=e202]: 
+                - link "" [ref=e203] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e205]: 
+              - cell "6c92b8a3-adef-4905-943d-19708fe0db30" [ref=e206]
+              - cell "Funciones" [ref=e207]
+              - cell "1a04c458-a32f-4a70-bdd3-5ee4845dbab9" [ref=e208]
+              - cell "4" [ref=e209]
+            - row "Select item View Edit  7370839b-3eee-4e35-a011-57fd8257f4fc Multiplicación 197edf2e-c4f9-40b6-87de-104584a33fb4 2" [ref=e210]:
+              - cell "Select item" [ref=e211]:
+                - checkbox "Select item" [ref=e212]
+              - cell "View Edit " [ref=e213]:
+                - link "View" [ref=e214] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/7370839b-3eee-4e35-a011-57fd8257f4fc
+                  - generic [ref=e216]: 
+                - link "Edit" [ref=e217] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/7370839b-3eee-4e35-a011-57fd8257f4fc
+                  - generic [ref=e219]: 
+                - link "" [ref=e220] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e222]: 
+              - cell "7370839b-3eee-4e35-a011-57fd8257f4fc" [ref=e223]
+              - cell "Multiplicación" [ref=e224]
+              - cell "197edf2e-c4f9-40b6-87de-104584a33fb4" [ref=e225]
+              - cell "2" [ref=e226]
+            - row "Select item View Edit  78461338-7753-4ec5-92b7-4bab1f1aaa2b Condicionales 1a04c458-a32f-4a70-bdd3-5ee4845dbab9 2" [ref=e227]:
+              - cell "Select item" [ref=e228]:
+                - checkbox "Select item" [ref=e229]
+              - cell "View Edit " [ref=e230]:
+                - link "View" [ref=e231] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/78461338-7753-4ec5-92b7-4bab1f1aaa2b
+                  - generic [ref=e233]: 
+                - link "Edit" [ref=e234] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/78461338-7753-4ec5-92b7-4bab1f1aaa2b
+                  - generic [ref=e236]: 
+                - link "" [ref=e237] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e239]: 
+              - cell "78461338-7753-4ec5-92b7-4bab1f1aaa2b" [ref=e240]
+              - cell "Condicionales" [ref=e241]
+              - cell "1a04c458-a32f-4a70-bdd3-5ee4845dbab9" [ref=e242]
+              - cell "2" [ref=e243]
+            - row "Select item View Edit  7adaad8b-742f-4f3d-aaa8-0f7fe825ac87 Leyes de Newton 443ba59b-72eb-4619-b064-277bdc2d3e01 2" [ref=e244]:
+              - cell "Select item" [ref=e245]:
+                - checkbox "Select item" [ref=e246]
+              - cell "View Edit " [ref=e247]:
+                - link "View" [ref=e248] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/7adaad8b-742f-4f3d-aaa8-0f7fe825ac87
+                  - generic [ref=e250]: 
+                - link "Edit" [ref=e251] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/7adaad8b-742f-4f3d-aaa8-0f7fe825ac87
+                  - generic [ref=e253]: 
+                - link "" [ref=e254] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e256]: 
+              - cell "7adaad8b-742f-4f3d-aaa8-0f7fe825ac87" [ref=e257]
+              - cell "Leyes de Newton" [ref=e258]
+              - cell "443ba59b-72eb-4619-b064-277bdc2d3e01" [ref=e259]
+              - cell "2" [ref=e260]
+            - row "Select item View Edit  7d8627ac-7fa5-4357-a0b3-3c972fa0c793 Bucles 1a04c458-a32f-4a70-bdd3-5ee4845dbab9 3" [ref=e261]:
+              - cell "Select item" [ref=e262]:
+                - checkbox "Select item" [ref=e263]
+              - cell "View Edit " [ref=e264]:
+                - link "View" [ref=e265] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/7d8627ac-7fa5-4357-a0b3-3c972fa0c793
+                  - generic [ref=e267]: 
+                - link "Edit" [ref=e268] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/7d8627ac-7fa5-4357-a0b3-3c972fa0c793
+                  - generic [ref=e270]: 
+                - link "" [ref=e271] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e273]: 
+              - cell "7d8627ac-7fa5-4357-a0b3-3c972fa0c793" [ref=e274]
+              - cell "Bucles" [ref=e275]
+              - cell "1a04c458-a32f-4a70-bdd3-5ee4845dbab9" [ref=e276]
+              - cell "3" [ref=e277]
+            - row "Select item View Edit  923865fb-c86f-47fd-b55f-053d4f1d427a Condicionales 6efd3011-882d-45e1-a088-aaa25152475a 2" [ref=e278]:
+              - cell "Select item" [ref=e279]:
+                - checkbox "Select item" [ref=e280]
+              - cell "View Edit " [ref=e281]:
+                - link "View" [ref=e282] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/details/923865fb-c86f-47fd-b55f-053d4f1d427a
+                  - generic [ref=e284]: 
+                - link "Edit" [ref=e285] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/level/edit/923865fb-c86f-47fd-b55f-053d4f1d427a
+                  - generic [ref=e287]: 
+                - link "" [ref=e288] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e290]: 
+              - cell "923865fb-c86f-47fd-b55f-053d4f1d427a" [ref=e291]
+              - cell "Condicionales" [ref=e292]
+              - cell "6efd3011-882d-45e1-a088-aaa25152475a" [ref=e293]
+              - cell "2" [ref=e294]
+        - generic [ref=e295]:
+          - paragraph [ref=e296]: Showing 1 to 10 of 18 items
+          - list [ref=e297]:
+            - listitem [ref=e298]:
+              - link " prev":
+                - /url: "#"
+                - generic: 
+                - text: prev
+            - listitem [ref=e299]:
+              - link "1" [ref=e300] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/level/list?page=1
+            - listitem [ref=e301]:
+              - link "2" [ref=e302] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/level/list?page=2
+            - listitem [ref=e303]:
+              - link "next " [ref=e304] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/level/list?page=2
+                - text: next
+                - generic [ref=e305]: 
+          - generic [ref=e306]:
+            - text: Show
+            - link "10 / Page" [ref=e307] [cursor=pointer]:
+              - /url: "#"
+      - text: 

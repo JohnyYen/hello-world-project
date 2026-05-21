@@ -1,0 +1,25 @@
+{
+  "cookies": [
+    {
+      "name": "__next_hmr_refresh_hash__",
+      "value": "2017",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "auth_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJwcm9mX2p1YW5fcGVyZXoiLCJleHAiOjE3Nzk1NDY5OTd9.erWfX4JuVClA3wNbJimxAfJfWXONKML4mTp0PtvQvkc",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

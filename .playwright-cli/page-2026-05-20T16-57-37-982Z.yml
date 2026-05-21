@@ -1,0 +1,9 @@
+- generic [ref=e4]:
+  - heading "Login to Admin - Hello World" [level=2] [ref=e5]
+  - generic [ref=e6]:
+    - generic [ref=e7]: Username
+    - textbox "Enter username" [ref=e8]
+  - generic [ref=e9]:
+    - generic [ref=e10]: Password
+    - textbox "Password" [ref=e12]
+  - button "Login" [ref=e14] [cursor=pointer]
