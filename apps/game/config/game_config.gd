@@ -15,9 +15,17 @@ var language:= "es"
 var music_volume := 1.0
 var sfx_volume := 1.0
 var fullscreen := false
+var jwt := ""
+var user := {}
 
 func _ready() -> void:
 	load_settings()
+
+func set_credentials(new_jwt: String, new_user: Dictionary):
+	if new_jwt != self.jwt:
+		self.jwt = new_jwt
+		self.user = new_user
+		save_settings()
 
 func set_art_style(new_style : String):
 	if art_style != new_style:
@@ -62,12 +70,15 @@ func load_settings():
 		sfx_volume = config.get_value("audio", "sfx_volume", 1.0)
 		language = config.get_value("system", "language", "en")
 		fullscreen = config.get_value("system", "fullscreen", false)
+		jwt = config.get_value("auth", "jwt", "")
+		user = config.get_value("auth", "user", {})
 
 		# Aplicar inmediatamente
 		set_language(language)
 		set_volume("music", music_volume)
 		set_volume("sfx", sfx_volume)
 		set_screen(fullscreen)
+		set_credentials(jwt, user)
 
 func save_settings():
 	var config = ConfigFile.new()
@@ -76,5 +87,7 @@ func save_settings():
 	config.set_value("audio", "music_volume", music_volume)
 	config.set_value("system", "language", language)
 	config.set_value("system", "fullscreen", fullscreen)
+	config.set_value("auth", "jwt", jwt)
+	config.set_value("auth", "user", user)
 
 	config.save(config_path)

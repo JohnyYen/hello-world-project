@@ -13,7 +13,7 @@ func _ready() -> void:
 	park_btn.mouse_exited.connect(_on_TextureButton_mouse_exited.bind(park_btn))
 	
 	dormitory_btn.pressed.connect(_on_mouse_click.bind("res://scenes/pages/maps/dormitory/dormitory_map.tscn"))
-	faculty_btn.pressed.connect(_on_mouse_click.bind("res://scenes/pages/maps/faculty/faculty_ map.tscn"))
+	faculty_btn.pressed.connect(_on_mouse_click.bind("res://scenes/pages/maps/faculty/faculty_map.tscn"))
 	park_btn.pressed.connect(_on_mouse_click.bind(""))
 	
 	if not _GameState.flags.get("has_complete_tutorial", false):

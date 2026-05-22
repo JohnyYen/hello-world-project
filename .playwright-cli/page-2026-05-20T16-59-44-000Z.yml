@@ -1,0 +1,328 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Admin - Hello World" [level=1] [ref=e5]:
+        - link "Admin - Hello World" [ref=e6] [cursor=pointer]:
+          - /url: http://localhost:8010/admin/
+          - heading "Admin - Hello World" [level=3] [ref=e7]
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - listitem [ref=e11]:
+            - link " Usuarios" [ref=e12] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/user/list
+              - generic [ref=e14]: 
+              - generic [ref=e15]: Usuarios
+          - listitem [ref=e16]:
+            - link " Roles" [ref=e17] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/role/list
+              - generic [ref=e19]: 
+              - generic [ref=e20]: Roles
+          - listitem [ref=e21]:
+            - link " Profesores" [ref=e22] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/professor/list
+              - generic [ref=e24]: 
+              - generic [ref=e25]: Profesores
+          - listitem [ref=e26]:
+            - link " Estudiantes" [ref=e27] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/student/list
+              - generic [ref=e29]: 
+              - generic [ref=e30]: Estudiantes
+          - listitem [ref=e31]:
+            - link " Configuraciones de Profesor" [ref=e32] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/teacher-settings/list
+              - generic [ref=e34]: 
+              - generic [ref=e35]: Configuraciones de Profesor
+          - listitem [ref=e36]:
+            - link " Juegos" [ref=e37] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game/list
+              - generic [ref=e39]: 
+              - generic [ref=e40]: Juegos
+          - listitem [ref=e41]:
+            - link " Instancias de Juego" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game-instance/list
+              - generic [ref=e44]: 
+              - generic [ref=e45]: Instancias de Juego
+          - listitem [ref=e46]:
+            - link " Niveles de Segmento" [ref=e47] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/segment-level/list
+              - generic [ref=e49]: 
+              - generic [ref=e50]: Niveles de Segmento
+          - listitem [ref=e51]:
+            - link " Niveles" [ref=e52] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/level/list
+              - generic [ref=e54]: 
+              - generic [ref=e55]: Niveles
+          - listitem [ref=e56]:
+            - link " Cursos" [ref=e57] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course/list
+              - generic [ref=e59]: 
+              - generic [ref=e60]: Cursos
+          - listitem [ref=e61]:
+            - link " Inscripciones" [ref=e62] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course-enrollment/list
+              - generic [ref=e64]: 
+              - generic [ref=e65]: Inscripciones
+          - listitem [ref=e66]:
+            - link " Progresos" [ref=e67] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/progress/list
+              - generic [ref=e69]: 
+              - generic [ref=e70]: Progresos
+          - listitem [ref=e71]:
+            - link " Declaraciones xAPI" [ref=e72] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/xapi-statement/list
+              - generic [ref=e74]: 
+              - generic [ref=e75]: Declaraciones xAPI
+          - listitem [ref=e76]:
+            - link " Feedbacks" [ref=e77] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/feedback/list
+              - generic [ref=e79]: 
+              - generic [ref=e80]: Feedbacks
+          - listitem [ref=e81]:
+            - link " Sesiones de Sincronización" [ref=e82] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-session/list
+              - generic [ref=e84]: 
+              - generic [ref=e85]: Sesiones de Sincronización
+          - listitem [ref=e86]:
+            - link " Eventos de Sincronización" [ref=e87] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-event/list
+              - generic [ref=e89]: 
+              - generic [ref=e90]: Eventos de Sincronización
+      - link " Logout" [ref=e91] [cursor=pointer]:
+        - /url: http://localhost:8010/admin/logout
+        - generic [ref=e92]: 
+        - generic [ref=e93]: Logout
+  - generic [ref=e94]:
+    - generic [ref=e96]:
+      - generic:
+        - generic:
+          - heading [level=2]
+    - generic [ref=e100]:
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - heading "Instancias de Juego" [level=3] [ref=e103]
+          - generic [ref=e104]:
+            - link "Export" [ref=e106] [cursor=pointer]:
+              - /url: "#"
+            - link "+ New Instancia de Juego" [ref=e108] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game-instance/create
+        - button "Actions" [ref=e112] [cursor=pointer]
+        - table [ref=e114]:
+          - rowgroup [ref=e115]:
+            - row "Select all id game_id student_id status" [ref=e116]:
+              - columnheader "Select all" [ref=e117]:
+                - checkbox "Select all" [ref=e118]
+              - columnheader [ref=e119]
+              - columnheader "id" [ref=e120]
+              - columnheader "game_id" [ref=e121]
+              - columnheader "student_id" [ref=e122]
+              - columnheader "status" [ref=e123]
+          - rowgroup [ref=e124]:
+            - row "Select item View Edit  00001aba-ec07-4ec1-a70b-5062c3bf7bd3 7d1ab9d4-1276-44d8-991c-87b91d969bf4 0024862b-56ca-426f-9e09-8db33c5873e9 COMPLETED" [ref=e125]:
+              - cell "Select item" [ref=e126]:
+                - checkbox "Select item" [ref=e127]
+              - cell "View Edit " [ref=e128]:
+                - link "View" [ref=e129] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/00001aba-ec07-4ec1-a70b-5062c3bf7bd3
+                  - generic [ref=e131]: 
+                - link "Edit" [ref=e132] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/00001aba-ec07-4ec1-a70b-5062c3bf7bd3
+                  - generic [ref=e134]: 
+                - link "" [ref=e135] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e137]: 
+              - cell "00001aba-ec07-4ec1-a70b-5062c3bf7bd3" [ref=e138]
+              - cell "7d1ab9d4-1276-44d8-991c-87b91d969bf4" [ref=e139]
+              - cell "0024862b-56ca-426f-9e09-8db33c5873e9" [ref=e140]
+              - cell "COMPLETED" [ref=e141]
+            - row "Select item View Edit  00018a2e-9b5f-42a9-babc-0ca19ade821c 7d1ab9d4-1276-44d8-991c-87b91d969bf4 d8871d73-9166-4bb1-b0d5-c6757fc9a6d0 FAILED" [ref=e142]:
+              - cell "Select item" [ref=e143]:
+                - checkbox "Select item" [ref=e144]
+              - cell "View Edit " [ref=e145]:
+                - link "View" [ref=e146] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/00018a2e-9b5f-42a9-babc-0ca19ade821c
+                  - generic [ref=e148]: 
+                - link "Edit" [ref=e149] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/00018a2e-9b5f-42a9-babc-0ca19ade821c
+                  - generic [ref=e151]: 
+                - link "" [ref=e152] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e154]: 
+              - cell "00018a2e-9b5f-42a9-babc-0ca19ade821c" [ref=e155]
+              - cell "7d1ab9d4-1276-44d8-991c-87b91d969bf4" [ref=e156]
+              - cell "d8871d73-9166-4bb1-b0d5-c6757fc9a6d0" [ref=e157]
+              - cell "FAILED" [ref=e158]
+            - row "Select item View Edit  000956e1-615c-4b6a-8c27-b2daad74c1d7 7d1ab9d4-1276-44d8-991c-87b91d969bf4 a0cb1da7-7282-48a4-8d30-fb30f44ad4cf FAILED" [ref=e159]:
+              - cell "Select item" [ref=e160]:
+                - checkbox "Select item" [ref=e161]
+              - cell "View Edit " [ref=e162]:
+                - link "View" [ref=e163] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/000956e1-615c-4b6a-8c27-b2daad74c1d7
+                  - generic [ref=e165]: 
+                - link "Edit" [ref=e166] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/000956e1-615c-4b6a-8c27-b2daad74c1d7
+                  - generic [ref=e168]: 
+                - link "" [ref=e169] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e171]: 
+              - cell "000956e1-615c-4b6a-8c27-b2daad74c1d7" [ref=e172]
+              - cell "7d1ab9d4-1276-44d8-991c-87b91d969bf4" [ref=e173]
+              - cell "a0cb1da7-7282-48a4-8d30-fb30f44ad4cf" [ref=e174]
+              - cell "FAILED" [ref=e175]
+            - row "Select item View Edit  000a6162-0d21-4f73-acdb-caf19ff412f4 7d1ab9d4-1276-44d8-991c-87b91d969bf4 71fee653-5f07-4583-9121-b5f8bd5d2f20 COMPLETED" [ref=e176]:
+              - cell "Select item" [ref=e177]:
+                - checkbox "Select item" [ref=e178]
+              - cell "View Edit " [ref=e179]:
+                - link "View" [ref=e180] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/000a6162-0d21-4f73-acdb-caf19ff412f4
+                  - generic [ref=e182]: 
+                - link "Edit" [ref=e183] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/000a6162-0d21-4f73-acdb-caf19ff412f4
+                  - generic [ref=e185]: 
+                - link "" [ref=e186] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e188]: 
+              - cell "000a6162-0d21-4f73-acdb-caf19ff412f4" [ref=e189]
+              - cell "7d1ab9d4-1276-44d8-991c-87b91d969bf4" [ref=e190]
+              - cell "71fee653-5f07-4583-9121-b5f8bd5d2f20" [ref=e191]
+              - cell "COMPLETED" [ref=e192]
+            - row "Select item View Edit  000a82d7-edfc-4daa-b0a6-ae17823a3534 197edf2e-c4f9-40b6-87de-104584a33fb4 0024862b-56ca-426f-9e09-8db33c5873e9 ACTIVE" [ref=e193]:
+              - cell "Select item" [ref=e194]:
+                - checkbox "Select item" [ref=e195]
+              - cell "View Edit " [ref=e196]:
+                - link "View" [ref=e197] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/000a82d7-edfc-4daa-b0a6-ae17823a3534
+                  - generic [ref=e199]: 
+                - link "Edit" [ref=e200] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/000a82d7-edfc-4daa-b0a6-ae17823a3534
+                  - generic [ref=e202]: 
+                - link "" [ref=e203] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e205]: 
+              - cell "000a82d7-edfc-4daa-b0a6-ae17823a3534" [ref=e206]
+              - cell "197edf2e-c4f9-40b6-87de-104584a33fb4" [ref=e207]
+              - cell "0024862b-56ca-426f-9e09-8db33c5873e9" [ref=e208]
+              - cell "ACTIVE" [ref=e209]
+            - row "Select item View Edit  000c4f60-4d69-47ae-9d24-f88ac466598b 443ba59b-72eb-4619-b064-277bdc2d3e01 7bee611d-f7b1-44c4-9a91-b38776415b58 COMPLETED" [ref=e210]:
+              - cell "Select item" [ref=e211]:
+                - checkbox "Select item" [ref=e212]
+              - cell "View Edit " [ref=e213]:
+                - link "View" [ref=e214] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/000c4f60-4d69-47ae-9d24-f88ac466598b
+                  - generic [ref=e216]: 
+                - link "Edit" [ref=e217] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/000c4f60-4d69-47ae-9d24-f88ac466598b
+                  - generic [ref=e219]: 
+                - link "" [ref=e220] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e222]: 
+              - cell "000c4f60-4d69-47ae-9d24-f88ac466598b" [ref=e223]
+              - cell "443ba59b-72eb-4619-b064-277bdc2d3e01" [ref=e224]
+              - cell "7bee611d-f7b1-44c4-9a91-b38776415b58" [ref=e225]
+              - cell "COMPLETED" [ref=e226]
+            - row "Select item View Edit  000c6571-4954-4975-876e-c3061612505e 197edf2e-c4f9-40b6-87de-104584a33fb4 0024862b-56ca-426f-9e09-8db33c5873e9 FAILED" [ref=e227]:
+              - cell "Select item" [ref=e228]:
+                - checkbox "Select item" [ref=e229]
+              - cell "View Edit " [ref=e230]:
+                - link "View" [ref=e231] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/000c6571-4954-4975-876e-c3061612505e
+                  - generic [ref=e233]: 
+                - link "Edit" [ref=e234] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/000c6571-4954-4975-876e-c3061612505e
+                  - generic [ref=e236]: 
+                - link "" [ref=e237] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e239]: 
+              - cell "000c6571-4954-4975-876e-c3061612505e" [ref=e240]
+              - cell "197edf2e-c4f9-40b6-87de-104584a33fb4" [ref=e241]
+              - cell "0024862b-56ca-426f-9e09-8db33c5873e9" [ref=e242]
+              - cell "FAILED" [ref=e243]
+            - row "Select item View Edit  000daca2-b2c0-4255-8729-06f0d3f5ba9e 7d1ab9d4-1276-44d8-991c-87b91d969bf4 0024862b-56ca-426f-9e09-8db33c5873e9 ACTIVE" [ref=e244]:
+              - cell "Select item" [ref=e245]:
+                - checkbox "Select item" [ref=e246]
+              - cell "View Edit " [ref=e247]:
+                - link "View" [ref=e248] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/000daca2-b2c0-4255-8729-06f0d3f5ba9e
+                  - generic [ref=e250]: 
+                - link "Edit" [ref=e251] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/000daca2-b2c0-4255-8729-06f0d3f5ba9e
+                  - generic [ref=e253]: 
+                - link "" [ref=e254] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e256]: 
+              - cell "000daca2-b2c0-4255-8729-06f0d3f5ba9e" [ref=e257]
+              - cell "7d1ab9d4-1276-44d8-991c-87b91d969bf4" [ref=e258]
+              - cell "0024862b-56ca-426f-9e09-8db33c5873e9" [ref=e259]
+              - cell "ACTIVE" [ref=e260]
+            - row "Select item View Edit  000f5eaf-894e-4bba-9bab-3a25cf21ab23 197edf2e-c4f9-40b6-87de-104584a33fb4 0024862b-56ca-426f-9e09-8db33c5873e9 ACTIVE" [ref=e261]:
+              - cell "Select item" [ref=e262]:
+                - checkbox "Select item" [ref=e263]
+              - cell "View Edit " [ref=e264]:
+                - link "View" [ref=e265] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/000f5eaf-894e-4bba-9bab-3a25cf21ab23
+                  - generic [ref=e267]: 
+                - link "Edit" [ref=e268] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/000f5eaf-894e-4bba-9bab-3a25cf21ab23
+                  - generic [ref=e270]: 
+                - link "" [ref=e271] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e273]: 
+              - cell "000f5eaf-894e-4bba-9bab-3a25cf21ab23" [ref=e274]
+              - cell "197edf2e-c4f9-40b6-87de-104584a33fb4" [ref=e275]
+              - cell "0024862b-56ca-426f-9e09-8db33c5873e9" [ref=e276]
+              - cell "ACTIVE" [ref=e277]
+            - row "Select item View Edit  00135491-d752-4f05-8840-6272fe3dbb21 7d1ab9d4-1276-44d8-991c-87b91d969bf4 a0cb1da7-7282-48a4-8d30-fb30f44ad4cf ACTIVE" [ref=e278]:
+              - cell "Select item" [ref=e279]:
+                - checkbox "Select item" [ref=e280]
+              - cell "View Edit " [ref=e281]:
+                - link "View" [ref=e282] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/details/00135491-d752-4f05-8840-6272fe3dbb21
+                  - generic [ref=e284]: 
+                - link "Edit" [ref=e285] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/game-instance/edit/00135491-d752-4f05-8840-6272fe3dbb21
+                  - generic [ref=e287]: 
+                - link "" [ref=e288] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e290]: 
+              - cell "00135491-d752-4f05-8840-6272fe3dbb21" [ref=e291]
+              - cell "7d1ab9d4-1276-44d8-991c-87b91d969bf4" [ref=e292]
+              - cell "a0cb1da7-7282-48a4-8d30-fb30f44ad4cf" [ref=e293]
+              - cell "ACTIVE" [ref=e294]
+        - generic [ref=e295]:
+          - paragraph [ref=e296]: Showing 1 to 10 of 20499 items
+          - list [ref=e297]:
+            - listitem [ref=e298]:
+              - link " prev":
+                - /url: "#"
+                - generic: 
+                - text: prev
+            - listitem [ref=e299]:
+              - link "1" [ref=e300] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/game-instance/list?page=1
+            - listitem [ref=e301]:
+              - link "2" [ref=e302] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/game-instance/list?page=2
+            - listitem [ref=e303]:
+              - link "3" [ref=e304] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/game-instance/list?page=3
+            - listitem [ref=e305]:
+              - link "4" [ref=e306] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/game-instance/list?page=4
+            - listitem [ref=e307]:
+              - link "5" [ref=e308] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/game-instance/list?page=5
+            - listitem [ref=e309]:
+              - link "6" [ref=e310] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/game-instance/list?page=6
+            - listitem [ref=e311]:
+              - link "7" [ref=e312] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/game-instance/list?page=7
+            - listitem [ref=e313]:
+              - link "next " [ref=e314] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/game-instance/list?page=2
+                - text: next
+                - generic [ref=e315]: 
+          - generic [ref=e316]:
+            - text: Show
+            - link "10 / Page" [ref=e317] [cursor=pointer]:
+              - /url: "#"
+      - text: 

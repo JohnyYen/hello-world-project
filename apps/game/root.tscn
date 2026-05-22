@@ -1,13 +1,13 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=10 format=3 uid="uid://bdfo0jp55ulor"]
 
-[ext_resource type="Script" path="res://env.gd" id="1_bf3um"]
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_manager.gd" id="2_huihk"]
-[ext_resource type="Script" path="res://scripts/eventBus.gd" id="3_tw3kd"]
-[ext_resource type="Script" path="res://scripts/controllers/feedback_controller.gd" id="4_gd4vy"]
-[ext_resource type="Script" path="res://config/game_config.gd" id="5_qw60f"]
-[ext_resource type="Script" path="res://scripts/globals/game_state.gd" id="6_eji0w"]
-[ext_resource type="Script" path="res://scripts/util.gd" id="7_qwhpj"]
-[ext_resource type="Script" path="res://scripts/controllers/save_controller.gd" id="8_qt76e"]
+[ext_resource type="Script" uid="uid://cp066yav8wipt" path="res://env.gd" id="1_bf3um"]
+[ext_resource type="Script" uid="uid://c3rodes2l3gxb" path="res://addons/dialogue_manager/dialogue_manager.gd" id="2_huihk"]
+[ext_resource type="Script" uid="uid://2xsci8xrftnw" path="res://scripts/eventBus.gd" id="3_tw3kd"]
+[ext_resource type="Script" uid="uid://cdee3khfnhygt" path="res://scripts/controllers/feedback_controller.gd" id="4_gd4vy"]
+[ext_resource type="Script" uid="uid://c142u4sibstmv" path="res://config/game_config.gd" id="5_qw60f"]
+[ext_resource type="Script" uid="uid://dgu81svk5a8cr" path="res://scripts/globals/game_state.gd" id="6_eji0w"]
+[ext_resource type="Script" uid="uid://4j2i6ygc64wn" path="res://scripts/util.gd" id="7_qwhpj"]
+[ext_resource type="Script" uid="uid://bv5y0gfqalcyb" path="res://scripts/controllers/save_controller.gd" id="8_qt76e"]
 
 [sub_resource type="World3D" id="World3D_sq7yr"]
 

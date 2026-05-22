@@ -1,0 +1,443 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e8]:
+    - generic [ref=e11]:
+      - list [ref=e13]:
+        - listitem [ref=e14]:
+          - link "Mi Plataforma" [ref=e15] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e16]
+            - generic [ref=e19]: Mi Plataforma
+      - generic [ref=e20]:
+        - generic [ref=e21]:
+          - generic [ref=e22]: Estadísticas
+          - generic [ref=e23]:
+            - list [ref=e24]:
+              - listitem [ref=e25]:
+                - button "Quick Create" [ref=e26]:
+                  - img [ref=e27]
+                  - generic [ref=e29]: Quick Create
+                - button "Inbox" [ref=e30]:
+                  - img
+                  - generic [ref=e31]: Inbox
+            - list [ref=e32]:
+              - listitem [ref=e33]:
+                - button "Overview" [ref=e34]:
+                  - img [ref=e35]
+                  - link "Overview" [ref=e39] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e40]:
+                - button "Estudiantes" [ref=e41]:
+                  - img [ref=e42]
+                  - link "Estudiantes" [ref=e45] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e46]:
+                - button "Cursos" [ref=e47]:
+                  - img [ref=e48]
+                  - link "Cursos" [ref=e51] [cursor=pointer]:
+                    - /url: /dashboard/courses
+              - listitem [ref=e52]:
+                - button "Métricas" [ref=e53]:
+                  - img [ref=e54]
+                  - link "Métricas" [ref=e58] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e59]:
+                - button "Reportes" [ref=e60]:
+                  - img [ref=e61]
+                  - link "Reportes" [ref=e63] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e64]:
+          - generic [ref=e65]: Gestión de Juegos y Niveles
+          - list [ref=e66]:
+            - listitem [ref=e67]:
+              - link "Niveles" [ref=e68] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e69]
+                - generic [ref=e72]: Niveles
+            - listitem [ref=e73]:
+              - link "Crear Nivel" [ref=e74] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e75]
+                - generic [ref=e76]: Crear Nivel
+        - list [ref=e79]:
+          - listitem [ref=e80]:
+            - link "Settings" [ref=e81] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e82]
+              - generic [ref=e85]: Settings
+          - listitem [ref=e86]:
+            - link "Ayuda" [ref=e87] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e88]
+              - generic [ref=e91]: Ayuda
+    - main [ref=e92]:
+      - generic [ref=e94]:
+        - button "Toggle Sidebar" [ref=e95]:
+          - img
+          - generic [ref=e96]: Toggle Sidebar
+        - generic [ref=e97]:
+          - button "🇪🇸 ES" [ref=e98]:
+            - generic [ref=e99]: 🇪🇸
+            - generic [ref=e100]: ES
+          - button "Toggle theme" [ref=e101]:
+            - img
+            - generic [ref=e102]: Toggle theme
+          - list [ref=e103]:
+            - listitem [ref=e104]:
+              - button "S superadmin Usuario" [ref=e105]:
+                - generic [ref=e108]:
+                  - generic [ref=e111]: S
+                  - generic [ref=e113]:
+                    - generic [ref=e114]: superadmin
+                    - generic [ref=e115]: Usuario
+      - generic [ref=e119]:
+        - generic:
+          - img
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - img [ref=e125]
+            - generic [ref=e127]: Gestión Académica
+          - heading "Cursos" [level=1] [ref=e128]
+          - paragraph [ref=e129]: Administración de cursos, estudiantes y profesores
+        - generic [ref=e130]:
+          - generic [ref=e131]:
+            - generic [ref=e133]:
+              - img [ref=e134]
+              - generic [ref=e136]: 13 cursos
+            - button "Crear Curso" [ref=e137]:
+              - img
+              - text: Crear Curso
+          - generic [ref=e140]:
+            - img [ref=e141]
+            - textbox "Buscar cursos..." [ref=e144]
+          - table [ref=e147]:
+            - rowgroup [ref=e148]:
+              - row "Nombre Año Escolar Período Estudiantes Profesores Acciones" [ref=e149]:
+                - columnheader "Nombre" [ref=e150]
+                - columnheader "Año Escolar" [ref=e151]
+                - columnheader "Período" [ref=e152]
+                - columnheader "Estudiantes" [ref=e153]
+                - columnheader "Profesores" [ref=e154]
+                - columnheader "Acciones" [ref=e155]
+            - rowgroup [ref=e156]:
+              - row "Álgebra Lineal 2025-2026 Q1 27 27 Editar Eliminar" [ref=e157] [cursor=pointer]:
+                - cell "Álgebra Lineal" [ref=e158]:
+                  - link "Álgebra Lineal" [ref=e159]:
+                    - /url: /dashboard/courses/47db8b07-57bc-4534-89ea-142eaf69e74f
+                - cell "2025-2026" [ref=e160]:
+                  - link "2025-2026" [ref=e161]:
+                    - /url: /dashboard/courses/47db8b07-57bc-4534-89ea-142eaf69e74f
+                - cell "Q1" [ref=e162]:
+                  - link "Q1" [ref=e163]:
+                    - /url: /dashboard/courses/47db8b07-57bc-4534-89ea-142eaf69e74f
+                    - generic [ref=e164]: Q1
+                - cell "27" [ref=e165]:
+                  - link "27" [ref=e166]:
+                    - /url: /dashboard/courses/47db8b07-57bc-4534-89ea-142eaf69e74f
+                    - generic [ref=e167]:
+                      - img [ref=e168]
+                      - generic [ref=e173]: "27"
+                - cell "27" [ref=e174]:
+                  - link "27" [ref=e175]:
+                    - /url: /dashboard/courses/47db8b07-57bc-4534-89ea-142eaf69e74f
+                    - generic [ref=e176]:
+                      - img [ref=e177]
+                      - generic [ref=e180]: "27"
+                - cell "Editar Eliminar" [ref=e181]:
+                  - generic [ref=e182]:
+                    - button "Editar" [ref=e183]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e184]:
+                      - img
+                      - text: Eliminar
+              - row "Biología Celular 2025-2026 Q1 24 24 Editar Eliminar" [ref=e185] [cursor=pointer]:
+                - cell "Biología Celular" [ref=e186]:
+                  - link "Biología Celular" [ref=e187]:
+                    - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                - cell "2025-2026" [ref=e188]:
+                  - link "2025-2026" [ref=e189]:
+                    - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                - cell "Q1" [ref=e190]:
+                  - link "Q1" [ref=e191]:
+                    - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                    - generic [ref=e192]: Q1
+                - cell "24" [ref=e193]:
+                  - link "24" [ref=e194]:
+                    - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                    - generic [ref=e195]:
+                      - img [ref=e196]
+                      - generic [ref=e201]: "24"
+                - cell "24" [ref=e202]:
+                  - link "24" [ref=e203]:
+                    - /url: /dashboard/courses/b5b1a91d-4530-41bc-80e2-4238859f691c
+                    - generic [ref=e204]:
+                      - img [ref=e205]
+                      - generic [ref=e208]: "24"
+                - cell "Editar Eliminar" [ref=e209]:
+                  - generic [ref=e210]:
+                    - button "Editar" [ref=e211]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e212]:
+                      - img
+                      - text: Eliminar
+              - row "Introducción a la Programación 2025-2026 Q1 18 18 Editar Eliminar" [ref=e213] [cursor=pointer]:
+                - cell "Introducción a la Programación" [ref=e214]:
+                  - link "Introducción a la Programación" [ref=e215]:
+                    - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                - cell "2025-2026" [ref=e216]:
+                  - link "2025-2026" [ref=e217]:
+                    - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                - cell "Q1" [ref=e218]:
+                  - link "Q1" [ref=e219]:
+                    - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                    - generic [ref=e220]: Q1
+                - cell "18" [ref=e221]:
+                  - link "18" [ref=e222]:
+                    - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                    - generic [ref=e223]:
+                      - img [ref=e224]
+                      - generic [ref=e229]: "18"
+                - cell "18" [ref=e230]:
+                  - link "18" [ref=e231]:
+                    - /url: /dashboard/courses/cab80401-88ec-40a4-b798-d29fe4853cc0
+                    - generic [ref=e232]:
+                      - img [ref=e233]
+                      - generic [ref=e236]: "18"
+                - cell "Editar Eliminar" [ref=e237]:
+                  - generic [ref=e238]:
+                    - button "Editar" [ref=e239]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e240]:
+                      - img
+                      - text: Eliminar
+              - row "Programación Visual 2025-2026 Q1 24 24 Editar Eliminar" [ref=e241] [cursor=pointer]:
+                - cell "Programación Visual" [ref=e242]:
+                  - link "Programación Visual" [ref=e243]:
+                    - /url: /dashboard/courses/cc0b3b9c-646d-4ab7-abbe-f1bf100fa2ee
+                - cell "2025-2026" [ref=e244]:
+                  - link "2025-2026" [ref=e245]:
+                    - /url: /dashboard/courses/cc0b3b9c-646d-4ab7-abbe-f1bf100fa2ee
+                - cell "Q1" [ref=e246]:
+                  - link "Q1" [ref=e247]:
+                    - /url: /dashboard/courses/cc0b3b9c-646d-4ab7-abbe-f1bf100fa2ee
+                    - generic [ref=e248]: Q1
+                - cell "24" [ref=e249]:
+                  - link "24" [ref=e250]:
+                    - /url: /dashboard/courses/cc0b3b9c-646d-4ab7-abbe-f1bf100fa2ee
+                    - generic [ref=e251]:
+                      - img [ref=e252]
+                      - generic [ref=e257]: "24"
+                - cell "24" [ref=e258]:
+                  - link "24" [ref=e259]:
+                    - /url: /dashboard/courses/cc0b3b9c-646d-4ab7-abbe-f1bf100fa2ee
+                    - generic [ref=e260]:
+                      - img [ref=e261]
+                      - generic [ref=e264]: "24"
+                - cell "Editar Eliminar" [ref=e265]:
+                  - generic [ref=e266]:
+                    - button "Editar" [ref=e267]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e268]:
+                      - img
+                      - text: Eliminar
+              - row "Física I 2024-2025 Q1 20 20 Editar Eliminar" [ref=e269] [cursor=pointer]:
+                - cell "Física I" [ref=e270]:
+                  - link "Física I" [ref=e271]:
+                    - /url: /dashboard/courses/dd693250-86ea-478c-9b9f-c22cf3868f97
+                - cell "2024-2025" [ref=e272]:
+                  - link "2024-2025" [ref=e273]:
+                    - /url: /dashboard/courses/dd693250-86ea-478c-9b9f-c22cf3868f97
+                - cell "Q1" [ref=e274]:
+                  - link "Q1" [ref=e275]:
+                    - /url: /dashboard/courses/dd693250-86ea-478c-9b9f-c22cf3868f97
+                    - generic [ref=e276]: Q1
+                - cell "20" [ref=e277]:
+                  - link "20" [ref=e278]:
+                    - /url: /dashboard/courses/dd693250-86ea-478c-9b9f-c22cf3868f97
+                    - generic [ref=e279]:
+                      - img [ref=e280]
+                      - generic [ref=e285]: "20"
+                - cell "20" [ref=e286]:
+                  - link "20" [ref=e287]:
+                    - /url: /dashboard/courses/dd693250-86ea-478c-9b9f-c22cf3868f97
+                    - generic [ref=e288]:
+                      - img [ref=e289]
+                      - generic [ref=e292]: "20"
+                - cell "Editar Eliminar" [ref=e293]:
+                  - generic [ref=e294]:
+                    - button "Editar" [ref=e295]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e296]:
+                      - img
+                      - text: Eliminar
+              - row "Matemáticas Discretas 2024-2025 Q1 50 50 Editar Eliminar" [ref=e297] [cursor=pointer]:
+                - cell "Matemáticas Discretas" [ref=e298]:
+                  - link "Matemáticas Discretas" [ref=e299]:
+                    - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                - cell "2024-2025" [ref=e300]:
+                  - link "2024-2025" [ref=e301]:
+                    - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                - cell "Q1" [ref=e302]:
+                  - link "Q1" [ref=e303]:
+                    - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                    - generic [ref=e304]: Q1
+                - cell "50" [ref=e305]:
+                  - link "50" [ref=e306]:
+                    - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                    - generic [ref=e307]:
+                      - img [ref=e308]
+                      - generic [ref=e313]: "50"
+                - cell "50" [ref=e314]:
+                  - link "50" [ref=e315]:
+                    - /url: /dashboard/courses/46e5b576-994c-4dbe-b87e-9b068f8e8ed5
+                    - generic [ref=e316]:
+                      - img [ref=e317]
+                      - generic [ref=e320]: "50"
+                - cell "Editar Eliminar" [ref=e321]:
+                  - generic [ref=e322]:
+                    - button "Editar" [ref=e323]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e324]:
+                      - img
+                      - text: Eliminar
+              - row "Introducción a la Programación 2024-2025 Q1 51 51 Editar Eliminar" [ref=e325] [cursor=pointer]:
+                - cell "Introducción a la Programación" [ref=e326]:
+                  - link "Introducción a la Programación" [ref=e327]:
+                    - /url: /dashboard/courses/6f91b272-a5b4-4776-9ef6-e875be0845f0
+                - cell "2024-2025" [ref=e328]:
+                  - link "2024-2025" [ref=e329]:
+                    - /url: /dashboard/courses/6f91b272-a5b4-4776-9ef6-e875be0845f0
+                - cell "Q1" [ref=e330]:
+                  - link "Q1" [ref=e331]:
+                    - /url: /dashboard/courses/6f91b272-a5b4-4776-9ef6-e875be0845f0
+                    - generic [ref=e332]: Q1
+                - cell "51" [ref=e333]:
+                  - link "51" [ref=e334]:
+                    - /url: /dashboard/courses/6f91b272-a5b4-4776-9ef6-e875be0845f0
+                    - generic [ref=e335]:
+                      - img [ref=e336]
+                      - generic [ref=e341]: "51"
+                - cell "51" [ref=e342]:
+                  - link "51" [ref=e343]:
+                    - /url: /dashboard/courses/6f91b272-a5b4-4776-9ef6-e875be0845f0
+                    - generic [ref=e344]:
+                      - img [ref=e345]
+                      - generic [ref=e348]: "51"
+                - cell "Editar Eliminar" [ref=e349]:
+                  - generic [ref=e350]:
+                    - button "Editar" [ref=e351]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e352]:
+                      - img
+                      - text: Eliminar
+              - row "Biología Celular 2024-2025 Q1 20 20 Editar Eliminar" [ref=e353] [cursor=pointer]:
+                - cell "Biología Celular" [ref=e354]:
+                  - link "Biología Celular" [ref=e355]:
+                    - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                - cell "2024-2025" [ref=e356]:
+                  - link "2024-2025" [ref=e357]:
+                    - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                - cell "Q1" [ref=e358]:
+                  - link "Q1" [ref=e359]:
+                    - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                    - generic [ref=e360]: Q1
+                - cell "20" [ref=e361]:
+                  - link "20" [ref=e362]:
+                    - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                    - generic [ref=e363]:
+                      - img [ref=e364]
+                      - generic [ref=e369]: "20"
+                - cell "20" [ref=e370]:
+                  - link "20" [ref=e371]:
+                    - /url: /dashboard/courses/c840ee21-d661-4bee-a6c5-ac8b21b2e7c8
+                    - generic [ref=e372]:
+                      - img [ref=e373]
+                      - generic [ref=e376]: "20"
+                - cell "Editar Eliminar" [ref=e377]:
+                  - generic [ref=e378]:
+                    - button "Editar" [ref=e379]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e380]:
+                      - img
+                      - text: Eliminar
+              - row "Química General 2024-2025 Q1 49 49 Editar Eliminar" [ref=e381] [cursor=pointer]:
+                - cell "Química General" [ref=e382]:
+                  - link "Química General" [ref=e383]:
+                    - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                - cell "2024-2025" [ref=e384]:
+                  - link "2024-2025" [ref=e385]:
+                    - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                - cell "Q1" [ref=e386]:
+                  - link "Q1" [ref=e387]:
+                    - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                    - generic [ref=e388]: Q1
+                - cell "49" [ref=e389]:
+                  - link "49" [ref=e390]:
+                    - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                    - generic [ref=e391]:
+                      - img [ref=e392]
+                      - generic [ref=e397]: "49"
+                - cell "49" [ref=e398]:
+                  - link "49" [ref=e399]:
+                    - /url: /dashboard/courses/1227daef-3488-48fb-92e9-a8f0e1f3eac9
+                    - generic [ref=e400]:
+                      - img [ref=e401]
+                      - generic [ref=e404]: "49"
+                - cell "Editar Eliminar" [ref=e405]:
+                  - generic [ref=e406]:
+                    - button "Editar" [ref=e407]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e408]:
+                      - img
+                      - text: Eliminar
+              - row "Física I 2024-2025 Q2 27 27 Editar Eliminar" [ref=e409] [cursor=pointer]:
+                - cell "Física I" [ref=e410]:
+                  - link "Física I" [ref=e411]:
+                    - /url: /dashboard/courses/16612ab4-dc46-4c91-971b-7665a1a65602
+                - cell "2024-2025" [ref=e412]:
+                  - link "2024-2025" [ref=e413]:
+                    - /url: /dashboard/courses/16612ab4-dc46-4c91-971b-7665a1a65602
+                - cell "Q2" [ref=e414]:
+                  - link "Q2" [ref=e415]:
+                    - /url: /dashboard/courses/16612ab4-dc46-4c91-971b-7665a1a65602
+                    - generic [ref=e416]: Q2
+                - cell "27" [ref=e417]:
+                  - link "27" [ref=e418]:
+                    - /url: /dashboard/courses/16612ab4-dc46-4c91-971b-7665a1a65602
+                    - generic [ref=e419]:
+                      - img [ref=e420]
+                      - generic [ref=e425]: "27"
+                - cell "27" [ref=e426]:
+                  - link "27" [ref=e427]:
+                    - /url: /dashboard/courses/16612ab4-dc46-4c91-971b-7665a1a65602
+                    - generic [ref=e428]:
+                      - img [ref=e429]
+                      - generic [ref=e432]: "27"
+                - cell "Editar Eliminar" [ref=e433]:
+                  - generic [ref=e434]:
+                    - button "Editar" [ref=e435]:
+                      - img
+                      - text: Editar
+                    - button "Eliminar" [ref=e436]:
+                      - img
+                      - text: Eliminar
+          - generic [ref=e437]:
+            - generic [ref=e438]: Mostrando 1-10 de 13 cursos
+            - generic [ref=e439]:
+              - button [disabled]:
+                - img
+              - button "1" [ref=e440]
+              - button "2" [ref=e441]
+              - button [ref=e442]:
+                - img
+  - button "Open Next.js Dev Tools" [ref=e448] [cursor=pointer]:
+    - img [ref=e449]
+  - alert [ref=e7]

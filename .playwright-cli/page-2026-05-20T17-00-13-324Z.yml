@@ -1,0 +1,328 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Admin - Hello World" [level=1] [ref=e5]:
+        - link "Admin - Hello World" [ref=e6] [cursor=pointer]:
+          - /url: http://localhost:8010/admin/
+          - heading "Admin - Hello World" [level=3] [ref=e7]
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - listitem [ref=e11]:
+            - link " Usuarios" [ref=e12] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/user/list
+              - generic [ref=e14]: 
+              - generic [ref=e15]: Usuarios
+          - listitem [ref=e16]:
+            - link " Roles" [ref=e17] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/role/list
+              - generic [ref=e19]: 
+              - generic [ref=e20]: Roles
+          - listitem [ref=e21]:
+            - link " Profesores" [ref=e22] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/professor/list
+              - generic [ref=e24]: 
+              - generic [ref=e25]: Profesores
+          - listitem [ref=e26]:
+            - link " Estudiantes" [ref=e27] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/student/list
+              - generic [ref=e29]: 
+              - generic [ref=e30]: Estudiantes
+          - listitem [ref=e31]:
+            - link " Configuraciones de Profesor" [ref=e32] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/teacher-settings/list
+              - generic [ref=e34]: 
+              - generic [ref=e35]: Configuraciones de Profesor
+          - listitem [ref=e36]:
+            - link " Juegos" [ref=e37] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game/list
+              - generic [ref=e39]: 
+              - generic [ref=e40]: Juegos
+          - listitem [ref=e41]:
+            - link " Instancias de Juego" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game-instance/list
+              - generic [ref=e44]: 
+              - generic [ref=e45]: Instancias de Juego
+          - listitem [ref=e46]:
+            - link " Niveles de Segmento" [ref=e47] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/segment-level/list
+              - generic [ref=e49]: 
+              - generic [ref=e50]: Niveles de Segmento
+          - listitem [ref=e51]:
+            - link " Niveles" [ref=e52] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/level/list
+              - generic [ref=e54]: 
+              - generic [ref=e55]: Niveles
+          - listitem [ref=e56]:
+            - link " Cursos" [ref=e57] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course/list
+              - generic [ref=e59]: 
+              - generic [ref=e60]: Cursos
+          - listitem [ref=e61]:
+            - link " Inscripciones" [ref=e62] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course-enrollment/list
+              - generic [ref=e64]: 
+              - generic [ref=e65]: Inscripciones
+          - listitem [ref=e66]:
+            - link " Progresos" [ref=e67] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/progress/list
+              - generic [ref=e69]: 
+              - generic [ref=e70]: Progresos
+          - listitem [ref=e71]:
+            - link " Declaraciones xAPI" [ref=e72] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/xapi-statement/list
+              - generic [ref=e74]: 
+              - generic [ref=e75]: Declaraciones xAPI
+          - listitem [ref=e76]:
+            - link " Feedbacks" [ref=e77] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/feedback/list
+              - generic [ref=e79]: 
+              - generic [ref=e80]: Feedbacks
+          - listitem [ref=e81]:
+            - link " Sesiones de Sincronización" [ref=e82] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-session/list
+              - generic [ref=e84]: 
+              - generic [ref=e85]: Sesiones de Sincronización
+          - listitem [ref=e86]:
+            - link " Eventos de Sincronización" [ref=e87] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-event/list
+              - generic [ref=e89]: 
+              - generic [ref=e90]: Eventos de Sincronización
+      - link " Logout" [ref=e91] [cursor=pointer]:
+        - /url: http://localhost:8010/admin/logout
+        - generic [ref=e92]: 
+        - generic [ref=e93]: Logout
+  - generic [ref=e94]:
+    - generic [ref=e96]:
+      - generic:
+        - generic:
+          - heading [level=2]
+    - generic [ref=e100]:
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - heading "Sesiones de Sincronización" [level=3] [ref=e103]
+          - generic [ref=e104]:
+            - link "Export" [ref=e106] [cursor=pointer]:
+              - /url: "#"
+            - link "+ New Sesión de Sincronización" [ref=e108] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-session/create
+        - button "Actions" [ref=e112] [cursor=pointer]
+        - table [ref=e114]:
+          - rowgroup [ref=e115]:
+            - row "Select all id instance_id status start_time" [ref=e116]:
+              - columnheader "Select all" [ref=e117]:
+                - checkbox "Select all" [ref=e118]
+              - columnheader [ref=e119]
+              - columnheader "id" [ref=e120]
+              - columnheader "instance_id" [ref=e121]
+              - columnheader "status" [ref=e122]
+              - columnheader "start_time" [ref=e123]
+          - rowgroup [ref=e124]:
+            - row "Select item View Edit  075015f4-3db5-4703-8e69-9598d62b63ea 641426e5-5a22-4ed3-9a04-7d38c151f410 completed 2026-03-09 05:24:07.549756" [ref=e125]:
+              - cell "Select item" [ref=e126]:
+                - checkbox "Select item" [ref=e127]
+              - cell "View Edit " [ref=e128]:
+                - link "View" [ref=e129] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/075015f4-3db5-4703-8e69-9598d62b63ea
+                  - generic [ref=e131]: 
+                - link "Edit" [ref=e132] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/075015f4-3db5-4703-8e69-9598d62b63ea
+                  - generic [ref=e134]: 
+                - link "" [ref=e135] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e137]: 
+              - cell "075015f4-3db5-4703-8e69-9598d62b63ea" [ref=e138]
+              - cell "641426e5-5a22-4ed3-9a04-7d38c151f410" [ref=e139]
+              - cell "completed" [ref=e140]
+              - cell "2026-03-09 05:24:07.549756" [ref=e141]
+            - row "Select item View Edit  08923012-1bfa-4fb8-8aa8-1fc5622184eb c087f000-e990-4f49-9ef0-1ef7a28025bb completed 2026-04-04 10:24:08.378247" [ref=e142]:
+              - cell "Select item" [ref=e143]:
+                - checkbox "Select item" [ref=e144]
+              - cell "View Edit " [ref=e145]:
+                - link "View" [ref=e146] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/08923012-1bfa-4fb8-8aa8-1fc5622184eb
+                  - generic [ref=e148]: 
+                - link "Edit" [ref=e149] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/08923012-1bfa-4fb8-8aa8-1fc5622184eb
+                  - generic [ref=e151]: 
+                - link "" [ref=e152] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e154]: 
+              - cell "08923012-1bfa-4fb8-8aa8-1fc5622184eb" [ref=e155]
+              - cell "c087f000-e990-4f49-9ef0-1ef7a28025bb" [ref=e156]
+              - cell "completed" [ref=e157]
+              - cell "2026-04-04 10:24:08.378247" [ref=e158]
+            - row "Select item View Edit  08b628a8-dab5-4daa-8479-f87f59901f4a 53d8e349-d696-4996-acf2-1df8a25f5cbe active 2026-03-31 02:24:09.198590" [ref=e159]:
+              - cell "Select item" [ref=e160]:
+                - checkbox "Select item" [ref=e161]
+              - cell "View Edit " [ref=e162]:
+                - link "View" [ref=e163] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/08b628a8-dab5-4daa-8479-f87f59901f4a
+                  - generic [ref=e165]: 
+                - link "Edit" [ref=e166] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/08b628a8-dab5-4daa-8479-f87f59901f4a
+                  - generic [ref=e168]: 
+                - link "" [ref=e169] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e171]: 
+              - cell "08b628a8-dab5-4daa-8479-f87f59901f4a" [ref=e172]
+              - cell "53d8e349-d696-4996-acf2-1df8a25f5cbe" [ref=e173]
+              - cell "active" [ref=e174]
+              - cell "2026-03-31 02:24:09.198590" [ref=e175]
+            - row "Select item View Edit  09a00c36-7982-41a6-af7b-d2fb552f09dc 0b1ee828-6bfb-49a3-8791-cdd42f557027 active 2026-03-28 06:24:08.284787" [ref=e176]:
+              - cell "Select item" [ref=e177]:
+                - checkbox "Select item" [ref=e178]
+              - cell "View Edit " [ref=e179]:
+                - link "View" [ref=e180] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/09a00c36-7982-41a6-af7b-d2fb552f09dc
+                  - generic [ref=e182]: 
+                - link "Edit" [ref=e183] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/09a00c36-7982-41a6-af7b-d2fb552f09dc
+                  - generic [ref=e185]: 
+                - link "" [ref=e186] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e188]: 
+              - cell "09a00c36-7982-41a6-af7b-d2fb552f09dc" [ref=e189]
+              - cell "0b1ee828-6bfb-49a3-8791-cdd42f557027" [ref=e190]
+              - cell "active" [ref=e191]
+              - cell "2026-03-28 06:24:08.284787" [ref=e192]
+            - row "Select item View Edit  0a1f1e43-5045-4e5f-9269-fd871990b579 2f218c08-0b2b-4592-9b56-7acda5eb742c completed 2026-03-16 18:24:07.796654" [ref=e193]:
+              - cell "Select item" [ref=e194]:
+                - checkbox "Select item" [ref=e195]
+              - cell "View Edit " [ref=e196]:
+                - link "View" [ref=e197] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/0a1f1e43-5045-4e5f-9269-fd871990b579
+                  - generic [ref=e199]: 
+                - link "Edit" [ref=e200] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/0a1f1e43-5045-4e5f-9269-fd871990b579
+                  - generic [ref=e202]: 
+                - link "" [ref=e203] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e205]: 
+              - cell "0a1f1e43-5045-4e5f-9269-fd871990b579" [ref=e206]
+              - cell "2f218c08-0b2b-4592-9b56-7acda5eb742c" [ref=e207]
+              - cell "completed" [ref=e208]
+              - cell "2026-03-16 18:24:07.796654" [ref=e209]
+            - row "Select item View Edit  0bb46e30-481c-457d-8aa3-305d567957f6 1eccf91f-0ed7-4d99-a6bc-66df381fe0af active 2026-04-06 21:24:08.212593" [ref=e210]:
+              - cell "Select item" [ref=e211]:
+                - checkbox "Select item" [ref=e212]
+              - cell "View Edit " [ref=e213]:
+                - link "View" [ref=e214] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/0bb46e30-481c-457d-8aa3-305d567957f6
+                  - generic [ref=e216]: 
+                - link "Edit" [ref=e217] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/0bb46e30-481c-457d-8aa3-305d567957f6
+                  - generic [ref=e219]: 
+                - link "" [ref=e220] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e222]: 
+              - cell "0bb46e30-481c-457d-8aa3-305d567957f6" [ref=e223]
+              - cell "1eccf91f-0ed7-4d99-a6bc-66df381fe0af" [ref=e224]
+              - cell "active" [ref=e225]
+              - cell "2026-04-06 21:24:08.212593" [ref=e226]
+            - row "Select item View Edit  0d659a8e-9c26-497a-ad3f-93bee3c73a63 a3b839b4-de6c-46e9-a82a-9571c0bbf88d completed 2026-03-28 08:24:09.286356" [ref=e227]:
+              - cell "Select item" [ref=e228]:
+                - checkbox "Select item" [ref=e229]
+              - cell "View Edit " [ref=e230]:
+                - link "View" [ref=e231] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/0d659a8e-9c26-497a-ad3f-93bee3c73a63
+                  - generic [ref=e233]: 
+                - link "Edit" [ref=e234] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/0d659a8e-9c26-497a-ad3f-93bee3c73a63
+                  - generic [ref=e236]: 
+                - link "" [ref=e237] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e239]: 
+              - cell "0d659a8e-9c26-497a-ad3f-93bee3c73a63" [ref=e240]
+              - cell "a3b839b4-de6c-46e9-a82a-9571c0bbf88d" [ref=e241]
+              - cell "completed" [ref=e242]
+              - cell "2026-03-28 08:24:09.286356" [ref=e243]
+            - row "Select item View Edit  0eca3b95-6bfe-4f10-8f0c-1b03e394359d 832ba2bc-66f0-4a1c-bbbd-3198c5f59ee8 completed 2026-03-19 22:24:07.727767" [ref=e244]:
+              - cell "Select item" [ref=e245]:
+                - checkbox "Select item" [ref=e246]
+              - cell "View Edit " [ref=e247]:
+                - link "View" [ref=e248] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/0eca3b95-6bfe-4f10-8f0c-1b03e394359d
+                  - generic [ref=e250]: 
+                - link "Edit" [ref=e251] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/0eca3b95-6bfe-4f10-8f0c-1b03e394359d
+                  - generic [ref=e253]: 
+                - link "" [ref=e254] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e256]: 
+              - cell "0eca3b95-6bfe-4f10-8f0c-1b03e394359d" [ref=e257]
+              - cell "832ba2bc-66f0-4a1c-bbbd-3198c5f59ee8" [ref=e258]
+              - cell "completed" [ref=e259]
+              - cell "2026-03-19 22:24:07.727767" [ref=e260]
+            - row "Select item View Edit  108adbe0-5fb2-4f55-98e7-08fd822ace36 7ea6333b-645c-4960-98fd-8cbdf0975aee active 2026-03-08 08:24:08.549431" [ref=e261]:
+              - cell "Select item" [ref=e262]:
+                - checkbox "Select item" [ref=e263]
+              - cell "View Edit " [ref=e264]:
+                - link "View" [ref=e265] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/108adbe0-5fb2-4f55-98e7-08fd822ace36
+                  - generic [ref=e267]: 
+                - link "Edit" [ref=e268] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/108adbe0-5fb2-4f55-98e7-08fd822ace36
+                  - generic [ref=e270]: 
+                - link "" [ref=e271] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e273]: 
+              - cell "108adbe0-5fb2-4f55-98e7-08fd822ace36" [ref=e274]
+              - cell "7ea6333b-645c-4960-98fd-8cbdf0975aee" [ref=e275]
+              - cell "active" [ref=e276]
+              - cell "2026-03-08 08:24:08.549431" [ref=e277]
+            - row "Select item View Edit  10ae9712-6ddd-4d6d-8fed-e2f1acf0ba6a 4906be23-7d7e-4977-8673-b4f1bb105d6a completed 2026-04-01 07:24:08.507271" [ref=e278]:
+              - cell "Select item" [ref=e279]:
+                - checkbox "Select item" [ref=e280]
+              - cell "View Edit " [ref=e281]:
+                - link "View" [ref=e282] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/details/10ae9712-6ddd-4d6d-8fed-e2f1acf0ba6a
+                  - generic [ref=e284]: 
+                - link "Edit" [ref=e285] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/sync-session/edit/10ae9712-6ddd-4d6d-8fed-e2f1acf0ba6a
+                  - generic [ref=e287]: 
+                - link "" [ref=e288] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e290]: 
+              - cell "10ae9712-6ddd-4d6d-8fed-e2f1acf0ba6a" [ref=e291]
+              - cell "4906be23-7d7e-4977-8673-b4f1bb105d6a" [ref=e292]
+              - cell "completed" [ref=e293]
+              - cell "2026-04-01 07:24:08.507271" [ref=e294]
+        - generic [ref=e295]:
+          - paragraph [ref=e296]: Showing 1 to 10 of 201 items
+          - list [ref=e297]:
+            - listitem [ref=e298]:
+              - link " prev":
+                - /url: "#"
+                - generic: 
+                - text: prev
+            - listitem [ref=e299]:
+              - link "1" [ref=e300] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/sync-session/list?page=1
+            - listitem [ref=e301]:
+              - link "2" [ref=e302] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/sync-session/list?page=2
+            - listitem [ref=e303]:
+              - link "3" [ref=e304] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/sync-session/list?page=3
+            - listitem [ref=e305]:
+              - link "4" [ref=e306] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/sync-session/list?page=4
+            - listitem [ref=e307]:
+              - link "5" [ref=e308] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/sync-session/list?page=5
+            - listitem [ref=e309]:
+              - link "6" [ref=e310] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/sync-session/list?page=6
+            - listitem [ref=e311]:
+              - link "7" [ref=e312] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/sync-session/list?page=7
+            - listitem [ref=e313]:
+              - link "next " [ref=e314] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/sync-session/list?page=2
+                - text: next
+                - generic [ref=e315]: 
+          - generic [ref=e316]:
+            - text: Show
+            - link "10 / Page" [ref=e317] [cursor=pointer]:
+              - /url: "#"
+      - text: 

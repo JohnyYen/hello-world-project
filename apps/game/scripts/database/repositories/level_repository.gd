@@ -3,7 +3,6 @@ class_name LevelRepository
 
 # Conexión a la base de datos SQLite
 var _db: SQLite
-
 # Inicializar la conexión a la base de datos
 func _init() -> void:
 	_db = SQLite.new()

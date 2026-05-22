@@ -1,0 +1,305 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Admin - Hello World" [level=1] [ref=e5]:
+        - link "Admin - Hello World" [ref=e6] [cursor=pointer]:
+          - /url: http://localhost:8010/admin/
+          - heading "Admin - Hello World" [level=3] [ref=e7]
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - listitem [ref=e11]:
+            - link " Usuarios" [ref=e12] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/user/list
+              - generic [ref=e14]: 
+              - generic [ref=e15]: Usuarios
+          - listitem [ref=e16]:
+            - link " Roles" [ref=e17] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/role/list
+              - generic [ref=e19]: 
+              - generic [ref=e20]: Roles
+          - listitem [ref=e21]:
+            - link " Profesores" [ref=e22] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/professor/list
+              - generic [ref=e24]: 
+              - generic [ref=e25]: Profesores
+          - listitem [ref=e26]:
+            - link " Estudiantes" [ref=e27] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/student/list
+              - generic [ref=e29]: 
+              - generic [ref=e30]: Estudiantes
+          - listitem [ref=e31]:
+            - link " Configuraciones de Profesor" [ref=e32] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/teacher-settings/list
+              - generic [ref=e34]: 
+              - generic [ref=e35]: Configuraciones de Profesor
+          - listitem [ref=e36]:
+            - link " Juegos" [ref=e37] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game/list
+              - generic [ref=e39]: 
+              - generic [ref=e40]: Juegos
+          - listitem [ref=e41]:
+            - link " Instancias de Juego" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game-instance/list
+              - generic [ref=e44]: 
+              - generic [ref=e45]: Instancias de Juego
+          - listitem [ref=e46]:
+            - link " Niveles de Segmento" [ref=e47] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/segment-level/list
+              - generic [ref=e49]: 
+              - generic [ref=e50]: Niveles de Segmento
+          - listitem [ref=e51]:
+            - link " Niveles" [ref=e52] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/level/list
+              - generic [ref=e54]: 
+              - generic [ref=e55]: Niveles
+          - listitem [ref=e56]:
+            - link " Cursos" [ref=e57] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course/list
+              - generic [ref=e59]: 
+              - generic [ref=e60]: Cursos
+          - listitem [ref=e61]:
+            - link " Inscripciones" [ref=e62] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course-enrollment/list
+              - generic [ref=e64]: 
+              - generic [ref=e65]: Inscripciones
+          - listitem [ref=e66]:
+            - link " Progresos" [ref=e67] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/progress/list
+              - generic [ref=e69]: 
+              - generic [ref=e70]: Progresos
+          - listitem [ref=e71]:
+            - link " Declaraciones xAPI" [ref=e72] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/xapi-statement/list
+              - generic [ref=e74]: 
+              - generic [ref=e75]: Declaraciones xAPI
+          - listitem [ref=e76]:
+            - link " Feedbacks" [ref=e77] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/feedback/list
+              - generic [ref=e79]: 
+              - generic [ref=e80]: Feedbacks
+          - listitem [ref=e81]:
+            - link " Sesiones de Sincronización" [ref=e82] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-session/list
+              - generic [ref=e84]: 
+              - generic [ref=e85]: Sesiones de Sincronización
+          - listitem [ref=e86]:
+            - link " Eventos de Sincronización" [ref=e87] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-event/list
+              - generic [ref=e89]: 
+              - generic [ref=e90]: Eventos de Sincronización
+      - link " Logout" [ref=e91] [cursor=pointer]:
+        - /url: http://localhost:8010/admin/logout
+        - generic [ref=e92]: 
+        - generic [ref=e93]: Logout
+  - generic [ref=e94]:
+    - generic [ref=e96]:
+      - generic:
+        - generic:
+          - heading [level=2]
+    - generic [ref=e100]:
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - heading "Niveles de Segmento" [level=3] [ref=e103]
+          - generic [ref=e104]:
+            - link "Export" [ref=e106] [cursor=pointer]:
+              - /url: "#"
+            - link "+ New Nivel de Segmento" [ref=e108] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/segment-level/create
+        - button "Actions" [ref=e112] [cursor=pointer]
+        - table [ref=e114]:
+          - rowgroup [ref=e115]:
+            - row "Select all id level_number_id configuration" [ref=e116]:
+              - columnheader "Select all" [ref=e117]:
+                - checkbox "Select all" [ref=e118]
+              - columnheader [ref=e119]
+              - columnheader "id" [ref=e120]
+              - columnheader "level_number_id" [ref=e121]
+              - columnheader "configuration" [ref=e122]
+          - rowgroup [ref=e123]:
+            - 'row "Select item View Edit  03350bb9-dc34-41fb-be3f-cce7c7c44e55 78461338-7753-4ec5-92b7-4bab1f1aaa2b {''type'': ''exercise_1'', ''count'': 5}" [ref=e124]':
+              - cell "Select item" [ref=e125]:
+                - checkbox "Select item" [ref=e126]
+              - cell "View Edit " [ref=e127]:
+                - link "View" [ref=e128] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/03350bb9-dc34-41fb-be3f-cce7c7c44e55
+                  - generic [ref=e130]: 
+                - link "Edit" [ref=e131] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/03350bb9-dc34-41fb-be3f-cce7c7c44e55
+                  - generic [ref=e133]: 
+                - link "" [ref=e134] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e136]: 
+              - cell "03350bb9-dc34-41fb-be3f-cce7c7c44e55" [ref=e137]
+              - cell "78461338-7753-4ec5-92b7-4bab1f1aaa2b" [ref=e138]
+              - 'cell "{''type'': ''exercise_1'', ''count'': 5}" [ref=e139]'
+            - 'row "Select item View Edit  1cfe7fc7-d6b4-4d0b-9b35-09168add9082 4d760c2d-35d2-41db-be65-a082afae2e87 {''type'': ''exercise_1'', ''count'': 5}" [ref=e140]':
+              - cell "Select item" [ref=e141]:
+                - checkbox "Select item" [ref=e142]
+              - cell "View Edit " [ref=e143]:
+                - link "View" [ref=e144] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/1cfe7fc7-d6b4-4d0b-9b35-09168add9082
+                  - generic [ref=e146]: 
+                - link "Edit" [ref=e147] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/1cfe7fc7-d6b4-4d0b-9b35-09168add9082
+                  - generic [ref=e149]: 
+                - link "" [ref=e150] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e152]: 
+              - cell "1cfe7fc7-d6b4-4d0b-9b35-09168add9082" [ref=e153]
+              - cell "4d760c2d-35d2-41db-be65-a082afae2e87" [ref=e154]
+              - 'cell "{''type'': ''exercise_1'', ''count'': 5}" [ref=e155]'
+            - 'row "Select item View Edit  2ae923c4-0fa5-4f2f-adf3-c2fa05f61e7c 7d8627ac-7fa5-4357-a0b3-3c972fa0c793 {''type'': ''exercise_1'', ''count'': 5}" [ref=e156]':
+              - cell "Select item" [ref=e157]:
+                - checkbox "Select item" [ref=e158]
+              - cell "View Edit " [ref=e159]:
+                - link "View" [ref=e160] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/2ae923c4-0fa5-4f2f-adf3-c2fa05f61e7c
+                  - generic [ref=e162]: 
+                - link "Edit" [ref=e163] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/2ae923c4-0fa5-4f2f-adf3-c2fa05f61e7c
+                  - generic [ref=e165]: 
+                - link "" [ref=e166] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e168]: 
+              - cell "2ae923c4-0fa5-4f2f-adf3-c2fa05f61e7c" [ref=e169]
+              - cell "7d8627ac-7fa5-4357-a0b3-3c972fa0c793" [ref=e170]
+              - 'cell "{''type'': ''exercise_1'', ''count'': 5}" [ref=e171]'
+            - 'row "Select item View Edit  2c32caa7-9e9b-4bbd-906f-c7716bf90f52 b4d9473e-4a01-4a5e-85e3-1c47908bc6d8 {''type'': ''organelle_identification'', ''organelles'': [''nucleus'', ''mitochondria'', ''ribosome'', ''golgi'', ''er'']}" [ref=e172]':
+              - cell "Select item" [ref=e173]:
+                - checkbox "Select item" [ref=e174]
+              - cell "View Edit " [ref=e175]:
+                - link "View" [ref=e176] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/2c32caa7-9e9b-4bbd-906f-c7716bf90f52
+                  - generic [ref=e178]: 
+                - link "Edit" [ref=e179] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/2c32caa7-9e9b-4bbd-906f-c7716bf90f52
+                  - generic [ref=e181]: 
+                - link "" [ref=e182] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e184]: 
+              - cell "2c32caa7-9e9b-4bbd-906f-c7716bf90f52" [ref=e185]
+              - cell "b4d9473e-4a01-4a5e-85e3-1c47908bc6d8" [ref=e186]
+              - 'cell "{''type'': ''organelle_identification'', ''organelles'': [''nucleus'', ''mitochondria'', ''ribosome'', ''golgi'', ''er'']}" [ref=e187]'
+            - 'row "Select item View Edit  32f5e290-b71e-40fc-adfb-1b79524af355 abbd153d-090c-4793-af77-78ddc8c87f3e {''type'': ''acceleration_calc'', ''difficulty'': ''basic''}" [ref=e188]':
+              - cell "Select item" [ref=e189]:
+                - checkbox "Select item" [ref=e190]
+              - cell "View Edit " [ref=e191]:
+                - link "View" [ref=e192] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/32f5e290-b71e-40fc-adfb-1b79524af355
+                  - generic [ref=e194]: 
+                - link "Edit" [ref=e195] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/32f5e290-b71e-40fc-adfb-1b79524af355
+                  - generic [ref=e197]: 
+                - link "" [ref=e198] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e200]: 
+              - cell "32f5e290-b71e-40fc-adfb-1b79524af355" [ref=e201]
+              - cell "abbd153d-090c-4793-af77-78ddc8c87f3e" [ref=e202]
+              - 'cell "{''type'': ''acceleration_calc'', ''difficulty'': ''basic''}" [ref=e203]'
+            - 'row "Select item View Edit  3456aeb1-9808-4d20-8827-7fdda54c471b 923865fb-c86f-47fd-b55f-053d4f1d427a {''type'': ''if_statement'', ''exercises'': 5}" [ref=e204]':
+              - cell "Select item" [ref=e205]:
+                - checkbox "Select item" [ref=e206]
+              - cell "View Edit " [ref=e207]:
+                - link "View" [ref=e208] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/3456aeb1-9808-4d20-8827-7fdda54c471b
+                  - generic [ref=e210]: 
+                - link "Edit" [ref=e211] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/3456aeb1-9808-4d20-8827-7fdda54c471b
+                  - generic [ref=e213]: 
+                - link "" [ref=e214] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e216]: 
+              - cell "3456aeb1-9808-4d20-8827-7fdda54c471b" [ref=e217]
+              - cell "923865fb-c86f-47fd-b55f-053d4f1d427a" [ref=e218]
+              - 'cell "{''type'': ''if_statement'', ''exercises'': 5}" [ref=e219]'
+            - 'row "Select item View Edit  59571b9f-c470-4d9d-b169-60e98739c6f7 923865fb-c86f-47fd-b55f-053d4f1d427a {''type'': ''if_else'', ''exercises'': 5}" [ref=e220]':
+              - cell "Select item" [ref=e221]:
+                - checkbox "Select item" [ref=e222]
+              - cell "View Edit " [ref=e223]:
+                - link "View" [ref=e224] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/59571b9f-c470-4d9d-b169-60e98739c6f7
+                  - generic [ref=e226]: 
+                - link "Edit" [ref=e227] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/59571b9f-c470-4d9d-b169-60e98739c6f7
+                  - generic [ref=e229]: 
+                - link "" [ref=e230] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e232]: 
+              - cell "59571b9f-c470-4d9d-b169-60e98739c6f7" [ref=e233]
+              - cell "923865fb-c86f-47fd-b55f-053d4f1d427a" [ref=e234]
+              - 'cell "{''type'': ''if_else'', ''exercises'': 5}" [ref=e235]'
+            - 'row "Select item View Edit  601028ac-0490-4675-a71c-26270451be36 7370839b-3eee-4e35-a011-57fd8257f4fc {''type'': ''multiplication'', ''table'': 1, ''count'': 10}" [ref=e236]':
+              - cell "Select item" [ref=e237]:
+                - checkbox "Select item" [ref=e238]
+              - cell "View Edit " [ref=e239]:
+                - link "View" [ref=e240] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/601028ac-0490-4675-a71c-26270451be36
+                  - generic [ref=e242]: 
+                - link "Edit" [ref=e243] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/601028ac-0490-4675-a71c-26270451be36
+                  - generic [ref=e245]: 
+                - link "" [ref=e246] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e248]: 
+              - cell "601028ac-0490-4675-a71c-26270451be36" [ref=e249]
+              - cell "7370839b-3eee-4e35-a011-57fd8257f4fc" [ref=e250]
+              - 'cell "{''type'': ''multiplication'', ''table'': 1, ''count'': 10}" [ref=e251]'
+            - 'row "Select item View Edit  79e053e4-faeb-4059-bafe-b1fddf7852be 0d379daa-2f12-43fe-97d4-d514a9494034 {''type'': ''exercise_1'', ''count'': 5}" [ref=e252]':
+              - cell "Select item" [ref=e253]:
+                - checkbox "Select item" [ref=e254]
+              - cell "View Edit " [ref=e255]:
+                - link "View" [ref=e256] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/79e053e4-faeb-4059-bafe-b1fddf7852be
+                  - generic [ref=e258]: 
+                - link "Edit" [ref=e259] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/79e053e4-faeb-4059-bafe-b1fddf7852be
+                  - generic [ref=e261]: 
+                - link "" [ref=e262] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e264]: 
+              - cell "79e053e4-faeb-4059-bafe-b1fddf7852be" [ref=e265]
+              - cell "0d379daa-2f12-43fe-97d4-d514a9494034" [ref=e266]
+              - 'cell "{''type'': ''exercise_1'', ''count'': 5}" [ref=e267]'
+            - 'row "Select item View Edit  80d10f09-79e4-496d-bd88-5d767969b846 a9bb994f-9f46-4d80-813a-4f3d4c476d86 {''type'': ''data_types'', ''types'': [''int'', ''float'', ''str'', ''bool'']}" [ref=e268]':
+              - cell "Select item" [ref=e269]:
+                - checkbox "Select item" [ref=e270]
+              - cell "View Edit " [ref=e271]:
+                - link "View" [ref=e272] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/details/80d10f09-79e4-496d-bd88-5d767969b846
+                  - generic [ref=e274]: 
+                - link "Edit" [ref=e275] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/segment-level/edit/80d10f09-79e4-496d-bd88-5d767969b846
+                  - generic [ref=e277]: 
+                - link "" [ref=e278] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e280]: 
+              - cell "80d10f09-79e4-496d-bd88-5d767969b846" [ref=e281]
+              - cell "a9bb994f-9f46-4d80-813a-4f3d4c476d86" [ref=e282]
+              - 'cell "{''type'': ''data_types'', ''types'': [''int'', ''float'', ''str'', ''bool'']}" [ref=e283]'
+        - generic [ref=e284]:
+          - paragraph [ref=e285]: Showing 1 to 10 of 29 items
+          - list [ref=e286]:
+            - listitem [ref=e287]:
+              - link " prev":
+                - /url: "#"
+                - generic: 
+                - text: prev
+            - listitem [ref=e288]:
+              - link "1" [ref=e289] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/segment-level/list?page=1
+            - listitem [ref=e290]:
+              - link "2" [ref=e291] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/segment-level/list?page=2
+            - listitem [ref=e292]:
+              - link "3" [ref=e293] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/segment-level/list?page=3
+            - listitem [ref=e294]:
+              - link "next " [ref=e295] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/segment-level/list?page=2
+                - text: next
+                - generic [ref=e296]: 
+          - generic [ref=e297]:
+            - text: Show
+            - link "10 / Page" [ref=e298] [cursor=pointer]:
+              - /url: "#"
+      - text: 

@@ -1,0 +1,105 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e33] [cursor=pointer]:
+    - img [ref=e34]
+  - alert [ref=e37]
+  - generic [ref=e39]:
+    - generic [ref=e42]:
+      - list [ref=e44]:
+        - listitem [ref=e45]:
+          - link "Mi Plataforma" [ref=e46] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e47]
+            - generic [ref=e50]: Mi Plataforma
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - generic [ref=e53]: Estadísticas
+          - generic [ref=e54]:
+            - list [ref=e55]:
+              - listitem [ref=e56]:
+                - button "Quick Create" [ref=e57]:
+                  - img [ref=e58]
+                  - generic [ref=e60]: Quick Create
+                - button "Inbox" [ref=e61]:
+                  - img
+                  - generic [ref=e62]: Inbox
+            - list [ref=e63]:
+              - listitem [ref=e64]:
+                - button "Overview" [ref=e65]:
+                  - img [ref=e66]
+                  - link "Overview" [ref=e70] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e71]:
+                - button "Estudiantes" [ref=e72]:
+                  - img [ref=e73]
+                  - link "Estudiantes" [ref=e76] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e77]:
+                - button "Cursos" [ref=e78]:
+                  - img [ref=e79]
+                  - link "Cursos" [ref=e82] [cursor=pointer]:
+                    - /url: /dashboard/courses
+              - listitem [ref=e83]:
+                - button "Métricas" [ref=e84]:
+                  - img [ref=e85]
+                  - link "Métricas" [ref=e89] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e90]:
+                - button "Reportes" [ref=e91]:
+                  - img [ref=e92]
+                  - link "Reportes" [ref=e94] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e95]:
+          - generic [ref=e96]: Gestión de Juegos y Niveles
+          - list [ref=e97]:
+            - listitem [ref=e98]:
+              - link "Niveles" [ref=e99] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e100]
+                - generic [ref=e103]: Niveles
+            - listitem [ref=e104]:
+              - link "Crear Nivel" [ref=e105] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e106]
+                - generic [ref=e107]: Crear Nivel
+        - list [ref=e110]:
+          - listitem [ref=e111]:
+            - link "Settings" [ref=e112] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e113]
+              - generic [ref=e116]: Settings
+          - listitem [ref=e117]:
+            - link "Ayuda" [ref=e118] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e119]
+              - generic [ref=e122]: Ayuda
+    - main [ref=e123]:
+      - generic [ref=e125]:
+        - button "Toggle Sidebar" [ref=e126]:
+          - img
+          - generic [ref=e127]: Toggle Sidebar
+        - generic [ref=e128]:
+          - button "🇪🇸 ES" [ref=e129]:
+            - generic [ref=e130]: 🇪🇸
+            - generic [ref=e131]: ES
+          - button "Toggle theme" [ref=e132]:
+            - img
+            - generic [ref=e133]: Toggle theme
+          - list [ref=e134]:
+            - listitem [ref=e135]:
+              - button "JP Juan Pérez Usuario" [ref=e136]:
+                - generic [ref=e139]:
+                  - generic [ref=e142]: JP
+                  - generic [ref=e144]:
+                    - generic [ref=e145]: Juan Pérez
+                    - generic [ref=e146]: Usuario
+      - generic [ref=e150]:
+        - generic:
+          - img
+        - generic [ref=e151]:
+          - generic [ref=e154]:
+            - heading "Dashboard" [level=1] [ref=e155]
+            - paragraph [ref=e156]: Resumen general del rendimiento y métricas clave de tu proyecto
+          - generic [ref=e209]:
+            - generic [ref=e210]: Actividad
+            - generic [ref=e212]: Actividad de estudiantes
+          - heading "Rendimiento por Nivel" [level=2] [ref=e221]

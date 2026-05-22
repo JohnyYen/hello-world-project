@@ -55,6 +55,9 @@ func create_tables() -> void:
 	# Tabla: Segment_Blocks
 	on_create_segment_block_table();
 
+	# Tabla: xAPI
+	on_create_xapi_tables();
+
 	print("Tablas creadas correctamente.")
 	
 	
@@ -127,10 +130,15 @@ func on_create_segment_block_table():
 	var segment_blocks_table = {
 	"segment_id": {"data_type": "INTEGER", "not_null": true, "foreign_key": {"table": "segments", "column": "segment_id"}},
 	"block_id": {"data_type": "INTEGER", "not_null": true, "foreign_key": {"table": "blocks", "column": "block_id"}},
-	"is_required": {"data_type": "INTEGER", "not_null": true}  # 0 para false, 1 para true
+	"is_required": {"data_type": "INTEGER", "not_null": true}
 	}
-	
+
 	db.create_table("Segment_Blocks", segment_blocks_table)
+
+func on_create_xapi_tables() -> void:
+	var migration_script := load("res://scripts/database/migrations/001_create_xapi_tables.gd")
+	var migration := migration_script.new()
+	migration.run(db)
 
 	
 	

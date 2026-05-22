@@ -1,0 +1,161 @@
+[gd_scene load_steps=2 format=3 uid="uid://cy2swlxd8t7fw"]
+
+[ext_resource type="Script" uid="uid://dkacwy6lbe1ii" path="res://scenes/pages/login.gd" id="1_kga3m"]
+
+[node name="Login" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_kga3m")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 128.0
+offset_top = 96.0
+offset_right = -128.0
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -51.0
+offset_top = 36.0
+offset_right = 52.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 40
+text = "Iniciar Sesion"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="NameContainer" type="Control" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/NameContainer"]
+layout_mode = 2
+offset_left = 234.0
+offset_top = 59.0
+offset_right = 354.0
+offset_bottom = 87.0
+theme_override_font_sizes/font_size = 20
+text = "Usuario:"
+
+[node name="Username" type="TextEdit" parent="Panel/VBoxContainer/NameContainer"]
+custom_minimum_size = Vector2(350, 25)
+layout_mode = 2
+offset_left = 370.0
+offset_top = 51.0
+offset_right = 720.0
+offset_bottom = 101.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+placeholder_text = "Escribe tu usuario del juego"
+autowrap_mode = 1
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="EmailContainer" type="Control" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/EmailContainer"]
+layout_mode = 2
+offset_left = 234.0
+offset_top = -9.0
+offset_right = 354.0
+offset_bottom = 19.0
+theme_override_font_sizes/font_size = 20
+text = "Email"
+
+[node name="Email" type="TextEdit" parent="Panel/VBoxContainer/EmailContainer"]
+custom_minimum_size = Vector2(350, 25)
+layout_mode = 2
+offset_left = 370.0
+offset_top = -17.0
+offset_right = 720.0
+offset_bottom = 33.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+placeholder_text = "Escribe tu email del juego"
+autowrap_mode = 1
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="PassContainer" type="Control" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/PassContainer"]
+layout_mode = 2
+offset_left = 234.0
+offset_top = -77.0
+offset_right = 351.0
+offset_bottom = -49.0
+theme_override_font_sizes/font_size = 20
+text = "Contraseña:"
+
+[node name="Password" type="TextEdit" parent="Panel/VBoxContainer/PassContainer"]
+custom_minimum_size = Vector2(350, 25)
+layout_mode = 2
+offset_left = 370.0
+offset_top = -85.0
+offset_right = 720.0
+offset_bottom = -35.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+placeholder_text = "Escribe tu contraseña del juego"
+autowrap_mode = 1
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="Enter" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -88.0
+offset_top = -47.0
+offset_right = -19.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Aceptar"
+
+[node name="Exit" type="Button" parent="Panel"]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -48.0
+offset_top = 12.0
+offset_right = -14.0
+offset_bottom = 43.0
+grow_horizontal = 0
+text = "X"
+
+[connection signal="pressed" from="Panel/Enter" to="." method="_on_enter_pressed"]
+[connection signal="pressed" from="Panel/Exit" to="." method="_on_exit_pressed"]

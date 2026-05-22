@@ -1,0 +1,371 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Admin - Hello World" [level=1] [ref=e5]:
+        - link "Admin - Hello World" [ref=e6] [cursor=pointer]:
+          - /url: http://localhost:8010/admin/
+          - heading "Admin - Hello World" [level=3] [ref=e7]
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - listitem [ref=e11]:
+            - link " Usuarios" [ref=e12] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/user/list
+              - generic [ref=e14]: 
+              - generic [ref=e15]: Usuarios
+          - listitem [ref=e16]:
+            - link " Roles" [ref=e17] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/role/list
+              - generic [ref=e19]: 
+              - generic [ref=e20]: Roles
+          - listitem [ref=e21]:
+            - link " Profesores" [ref=e22] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/professor/list
+              - generic [ref=e24]: 
+              - generic [ref=e25]: Profesores
+          - listitem [ref=e26]:
+            - link " Estudiantes" [ref=e27] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/student/list
+              - generic [ref=e29]: 
+              - generic [ref=e30]: Estudiantes
+          - listitem [ref=e31]:
+            - link " Configuraciones de Profesor" [ref=e32] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/teacher-settings/list
+              - generic [ref=e34]: 
+              - generic [ref=e35]: Configuraciones de Profesor
+          - listitem [ref=e36]:
+            - link " Juegos" [ref=e37] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game/list
+              - generic [ref=e39]: 
+              - generic [ref=e40]: Juegos
+          - listitem [ref=e41]:
+            - link " Instancias de Juego" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game-instance/list
+              - generic [ref=e44]: 
+              - generic [ref=e45]: Instancias de Juego
+          - listitem [ref=e46]:
+            - link " Niveles de Segmento" [ref=e47] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/segment-level/list
+              - generic [ref=e49]: 
+              - generic [ref=e50]: Niveles de Segmento
+          - listitem [ref=e51]:
+            - link " Niveles" [ref=e52] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/level/list
+              - generic [ref=e54]: 
+              - generic [ref=e55]: Niveles
+          - listitem [ref=e56]:
+            - link " Cursos" [ref=e57] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course/list
+              - generic [ref=e59]: 
+              - generic [ref=e60]: Cursos
+          - listitem [ref=e61]:
+            - link " Inscripciones" [ref=e62] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course-enrollment/list
+              - generic [ref=e64]: 
+              - generic [ref=e65]: Inscripciones
+          - listitem [ref=e66]:
+            - link " Progresos" [ref=e67] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/progress/list
+              - generic [ref=e69]: 
+              - generic [ref=e70]: Progresos
+          - listitem [ref=e71]:
+            - link " Declaraciones xAPI" [ref=e72] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/xapi-statement/list
+              - generic [ref=e74]: 
+              - generic [ref=e75]: Declaraciones xAPI
+          - listitem [ref=e76]:
+            - link " Feedbacks" [ref=e77] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/feedback/list
+              - generic [ref=e79]: 
+              - generic [ref=e80]: Feedbacks
+          - listitem [ref=e81]:
+            - link " Sesiones de Sincronización" [ref=e82] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-session/list
+              - generic [ref=e84]: 
+              - generic [ref=e85]: Sesiones de Sincronización
+          - listitem [ref=e86]:
+            - link " Eventos de Sincronización" [ref=e87] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-event/list
+              - generic [ref=e89]: 
+              - generic [ref=e90]: Eventos de Sincronización
+      - link " Logout" [ref=e91] [cursor=pointer]:
+        - /url: http://localhost:8010/admin/logout
+        - generic [ref=e92]: 
+        - generic [ref=e93]: Logout
+  - generic [ref=e94]:
+    - generic [ref=e96]:
+      - generic:
+        - generic:
+          - heading [level=2]
+    - generic [ref=e100]:
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - heading "Usuarios" [level=3] [ref=e103]
+          - generic [ref=e104]:
+            - link "Export" [ref=e106] [cursor=pointer]:
+              - /url: "#"
+            - link "+ New Usuario" [ref=e108] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/user/create
+        - button "Actions" [ref=e112] [cursor=pointer]
+        - table [ref=e114]:
+          - rowgroup [ref=e115]:
+            - row "Select all id username name lastname email is_active role_id" [ref=e116]:
+              - columnheader "Select all" [ref=e117]:
+                - checkbox "Select all" [ref=e118]
+              - columnheader [ref=e119]
+              - columnheader "id" [ref=e120]
+              - columnheader "username" [ref=e121]
+              - columnheader "name" [ref=e122]
+              - columnheader "lastname" [ref=e123]
+              - columnheader "email" [ref=e124]
+              - columnheader "is_active" [ref=e125]
+              - columnheader "role_id" [ref=e126]
+          - rowgroup [ref=e127]:
+            - row "Select item View Edit  02a32487-81b8-487a-ac2f-2049d79d98f0 luis.rivera Luis Rivera luis.rivera@student.edu  b879f90e-5515-4a08-9205-8687937decb4" [ref=e128]:
+              - cell "Select item" [ref=e129]:
+                - checkbox "Select item" [ref=e130]
+              - cell "View Edit " [ref=e131]:
+                - link "View" [ref=e132] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/02a32487-81b8-487a-ac2f-2049d79d98f0
+                  - generic [ref=e134]: 
+                - link "Edit" [ref=e135] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/02a32487-81b8-487a-ac2f-2049d79d98f0
+                  - generic [ref=e137]: 
+                - link "" [ref=e138] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e140]: 
+              - cell "02a32487-81b8-487a-ac2f-2049d79d98f0" [ref=e141]
+              - cell "luis.rivera" [ref=e142]
+              - cell "Luis" [ref=e143]
+              - cell "Rivera" [ref=e144]
+              - cell "luis.rivera@student.edu" [ref=e145]
+              - cell "" [ref=e146]:
+                - generic [ref=e147]: 
+              - cell "b879f90e-5515-4a08-9205-8687937decb4" [ref=e148]
+            - row "Select item View Edit  0b313821-c232-439d-9262-d8db54e51080 andrea.vargas Andrea Vargas andrea.vargas@student.edu  b879f90e-5515-4a08-9205-8687937decb4" [ref=e149]:
+              - cell "Select item" [ref=e150]:
+                - checkbox "Select item" [ref=e151]
+              - cell "View Edit " [ref=e152]:
+                - link "View" [ref=e153] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/0b313821-c232-439d-9262-d8db54e51080
+                  - generic [ref=e155]: 
+                - link "Edit" [ref=e156] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/0b313821-c232-439d-9262-d8db54e51080
+                  - generic [ref=e158]: 
+                - link "" [ref=e159] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e161]: 
+              - cell "0b313821-c232-439d-9262-d8db54e51080" [ref=e162]
+              - cell "andrea.vargas" [ref=e163]
+              - cell "Andrea" [ref=e164]
+              - cell "Vargas" [ref=e165]
+              - cell "andrea.vargas@student.edu" [ref=e166]
+              - cell "" [ref=e167]:
+                - generic [ref=e168]: 
+              - cell "b879f90e-5515-4a08-9205-8687937decb4" [ref=e169]
+            - row "Select item View Edit  0d7b2c86-8605-45cf-8aff-95a4deb7bd05 pedro.gonzales@example.com Pedro Gonzales pedro.gonzales@example.com  b879f90e-5515-4a08-9205-8687937decb4" [ref=e170]:
+              - cell "Select item" [ref=e171]:
+                - checkbox "Select item" [ref=e172]
+              - cell "View Edit " [ref=e173]:
+                - link "View" [ref=e174] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/0d7b2c86-8605-45cf-8aff-95a4deb7bd05
+                  - generic [ref=e176]: 
+                - link "Edit" [ref=e177] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/0d7b2c86-8605-45cf-8aff-95a4deb7bd05
+                  - generic [ref=e179]: 
+                - link "" [ref=e180] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e182]: 
+              - cell "0d7b2c86-8605-45cf-8aff-95a4deb7bd05" [ref=e183]
+              - cell "pedro.gonzales@example.com" [ref=e184]
+              - cell "Pedro" [ref=e185]
+              - cell "Gonzales" [ref=e186]
+              - cell "pedro.gonzales@example.com" [ref=e187]
+              - cell "" [ref=e188]:
+                - generic [ref=e189]: 
+              - cell "b879f90e-5515-4a08-9205-8687937decb4" [ref=e190]
+            - row "Select item View Edit  0eda7e51-064e-4bf3-ac27-c08faed655f4 student_014 Andrea Vargas student_014@student.edu  b879f90e-5515-4a08-9205-8687937decb4" [ref=e191]:
+              - cell "Select item" [ref=e192]:
+                - checkbox "Select item" [ref=e193]
+              - cell "View Edit " [ref=e194]:
+                - link "View" [ref=e195] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/0eda7e51-064e-4bf3-ac27-c08faed655f4
+                  - generic [ref=e197]: 
+                - link "Edit" [ref=e198] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/0eda7e51-064e-4bf3-ac27-c08faed655f4
+                  - generic [ref=e200]: 
+                - link "" [ref=e201] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e203]: 
+              - cell "0eda7e51-064e-4bf3-ac27-c08faed655f4" [ref=e204]
+              - cell "student_014" [ref=e205]
+              - cell "Andrea" [ref=e206]
+              - cell "Vargas" [ref=e207]
+              - cell "student_014@student.edu" [ref=e208]
+              - cell "" [ref=e209]:
+                - generic [ref=e210]: 
+              - cell "b879f90e-5515-4a08-9205-8687937decb4" [ref=e211]
+            - row "Select item View Edit  14ce4aa6-a5e1-4859-abb4-84e43e14dad5 javier.reyes Javier Reyes javier.reyes@student.edu  b879f90e-5515-4a08-9205-8687937decb4" [ref=e212]:
+              - cell "Select item" [ref=e213]:
+                - checkbox "Select item" [ref=e214]
+              - cell "View Edit " [ref=e215]:
+                - link "View" [ref=e216] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/14ce4aa6-a5e1-4859-abb4-84e43e14dad5
+                  - generic [ref=e218]: 
+                - link "Edit" [ref=e219] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/14ce4aa6-a5e1-4859-abb4-84e43e14dad5
+                  - generic [ref=e221]: 
+                - link "" [ref=e222] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e224]: 
+              - cell "14ce4aa6-a5e1-4859-abb4-84e43e14dad5" [ref=e225]
+              - cell "javier.reyes" [ref=e226]
+              - cell "Javier" [ref=e227]
+              - cell "Reyes" [ref=e228]
+              - cell "javier.reyes@student.edu" [ref=e229]
+              - cell "" [ref=e230]:
+                - generic [ref=e231]: 
+              - cell "b879f90e-5515-4a08-9205-8687937decb4" [ref=e232]
+            - row "Select item View Edit  19c2ee80-3f87-4400-b261-e43567112c81 prof_maria_lopez María López maria.lopez@university.edu  9c211b74-b861-41f7-a658-fc3a5cb9a9c1" [ref=e233]:
+              - cell "Select item" [ref=e234]:
+                - checkbox "Select item" [ref=e235]
+              - cell "View Edit " [ref=e236]:
+                - link "View" [ref=e237] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/19c2ee80-3f87-4400-b261-e43567112c81
+                  - generic [ref=e239]: 
+                - link "Edit" [ref=e240] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/19c2ee80-3f87-4400-b261-e43567112c81
+                  - generic [ref=e242]: 
+                - link "" [ref=e243] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e245]: 
+              - cell "19c2ee80-3f87-4400-b261-e43567112c81" [ref=e246]
+              - cell "prof_maria_lopez" [ref=e247]
+              - cell "María" [ref=e248]
+              - cell "López" [ref=e249]
+              - cell "maria.lopez@university.edu" [ref=e250]
+              - cell "" [ref=e251]:
+                - generic [ref=e252]: 
+              - cell "9c211b74-b861-41f7-a658-fc3a5cb9a9c1" [ref=e253]
+            - row "Select item View Edit  1c7dd93d-6f6a-44bd-805a-c8d5a59582ac alejandro.medina Alejandro Medina alejandro.medina@student.edu  b879f90e-5515-4a08-9205-8687937decb4" [ref=e254]:
+              - cell "Select item" [ref=e255]:
+                - checkbox "Select item" [ref=e256]
+              - cell "View Edit " [ref=e257]:
+                - link "View" [ref=e258] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/1c7dd93d-6f6a-44bd-805a-c8d5a59582ac
+                  - generic [ref=e260]: 
+                - link "Edit" [ref=e261] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/1c7dd93d-6f6a-44bd-805a-c8d5a59582ac
+                  - generic [ref=e263]: 
+                - link "" [ref=e264] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e266]: 
+              - cell "1c7dd93d-6f6a-44bd-805a-c8d5a59582ac" [ref=e267]
+              - cell "alejandro.medina" [ref=e268]
+              - cell "Alejandro" [ref=e269]
+              - cell "Medina" [ref=e270]
+              - cell "alejandro.medina@student.edu" [ref=e271]
+              - cell "" [ref=e272]:
+                - generic [ref=e273]: 
+              - cell "b879f90e-5515-4a08-9205-8687937decb4" [ref=e274]
+            - row "Select item View Edit  1fb755ac-1c7b-487a-98d9-40a22c84bdd6 student_007 Javier Reyes student_007@student.edu  b879f90e-5515-4a08-9205-8687937decb4" [ref=e275]:
+              - cell "Select item" [ref=e276]:
+                - checkbox "Select item" [ref=e277]
+              - cell "View Edit " [ref=e278]:
+                - link "View" [ref=e279] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/1fb755ac-1c7b-487a-98d9-40a22c84bdd6
+                  - generic [ref=e281]: 
+                - link "Edit" [ref=e282] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/1fb755ac-1c7b-487a-98d9-40a22c84bdd6
+                  - generic [ref=e284]: 
+                - link "" [ref=e285] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e287]: 
+              - cell "1fb755ac-1c7b-487a-98d9-40a22c84bdd6" [ref=e288]
+              - cell "student_007" [ref=e289]
+              - cell "Javier" [ref=e290]
+              - cell "Reyes" [ref=e291]
+              - cell "student_007@student.edu" [ref=e292]
+              - cell "" [ref=e293]:
+                - generic [ref=e294]: 
+              - cell "b879f90e-5515-4a08-9205-8687937decb4" [ref=e295]
+            - row "Select item View Edit  20c89b72-5ecb-4450-b843-2a2e7f08005f johny.yen John Doe johny.yen@example.com  9c211b74-b861-41f7-a658-fc3a5cb9a9c1" [ref=e296]:
+              - cell "Select item" [ref=e297]:
+                - checkbox "Select item" [ref=e298]
+              - cell "View Edit " [ref=e299]:
+                - link "View" [ref=e300] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/20c89b72-5ecb-4450-b843-2a2e7f08005f
+                  - generic [ref=e302]: 
+                - link "Edit" [ref=e303] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/20c89b72-5ecb-4450-b843-2a2e7f08005f
+                  - generic [ref=e305]: 
+                - link "" [ref=e306] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e308]: 
+              - cell "20c89b72-5ecb-4450-b843-2a2e7f08005f" [ref=e309]
+              - cell "johny.yen" [ref=e310]
+              - cell "John" [ref=e311]
+              - cell "Doe" [ref=e312]
+              - cell "johny.yen@example.com" [ref=e313]
+              - cell "" [ref=e314]:
+                - generic [ref=e315]: 
+              - cell "9c211b74-b861-41f7-a658-fc3a5cb9a9c1" [ref=e316]
+            - row "Select item View Edit  20e61ac9-c469-48f4-a4d3-c0142bffc6be admin johny_yen admin.253@example.com  154420d2-db67-4dde-be19-c398fd17f9b7" [ref=e317]:
+              - cell "Select item" [ref=e318]:
+                - checkbox "Select item" [ref=e319]
+              - cell "View Edit " [ref=e320]:
+                - link "View" [ref=e321] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/details/20e61ac9-c469-48f4-a4d3-c0142bffc6be
+                  - generic [ref=e323]: 
+                - link "Edit" [ref=e324] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/user/edit/20e61ac9-c469-48f4-a4d3-c0142bffc6be
+                  - generic [ref=e326]: 
+                - link "" [ref=e327] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e329]: 
+              - cell "20e61ac9-c469-48f4-a4d3-c0142bffc6be" [ref=e330]
+              - cell "admin" [ref=e331]
+              - cell "johny_yen" [ref=e332]
+              - cell [ref=e333]
+              - cell "admin.253@example.com" [ref=e334]
+              - cell "" [ref=e335]:
+                - generic [ref=e336]: 
+              - cell "154420d2-db67-4dde-be19-c398fd17f9b7" [ref=e337]
+        - generic [ref=e338]:
+          - paragraph [ref=e339]: Showing 1 to 10 of 93 items
+          - list [ref=e340]:
+            - listitem [ref=e341]:
+              - link " prev":
+                - /url: "#"
+                - generic: 
+                - text: prev
+            - listitem [ref=e342]:
+              - link "1" [ref=e343] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/user/list?page=1
+            - listitem [ref=e344]:
+              - link "2" [ref=e345] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/user/list?page=2
+            - listitem [ref=e346]:
+              - link "3" [ref=e347] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/user/list?page=3
+            - listitem [ref=e348]:
+              - link "4" [ref=e349] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/user/list?page=4
+            - listitem [ref=e350]:
+              - link "5" [ref=e351] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/user/list?page=5
+            - listitem [ref=e352]:
+              - link "6" [ref=e353] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/user/list?page=6
+            - listitem [ref=e354]:
+              - link "7" [ref=e355] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/user/list?page=7
+            - listitem [ref=e356]:
+              - link "next " [ref=e357] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/user/list?page=2
+                - text: next
+                - generic [ref=e358]: 
+          - generic [ref=e359]:
+            - text: Show
+            - link "10 / Page" [ref=e360] [cursor=pointer]:
+              - /url: "#"
+      - text: 

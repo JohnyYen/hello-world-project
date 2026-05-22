@@ -1,0 +1,249 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e32] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e33]:
+      - img [ref=e34]
+    - generic [ref=e38]:
+      - button "Open issues overlay" [ref=e39]:
+        - generic [ref=e892]:
+          - generic [ref=e893]: "8"
+          - generic [ref=e894]: "9"
+        - generic [ref=e43]:
+          - text: Issue
+          - generic [ref=e44]: s
+      - button "Collapse issues badge" [ref=e45]:
+        - img [ref=e46]
+  - alert [ref=e37]
+  - generic [ref=e49]:
+    - generic [ref=e52]:
+      - list [ref=e54]:
+        - listitem [ref=e55]:
+          - link "Mi Plataforma" [ref=e56] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e57]
+            - generic [ref=e60]: Mi Plataforma
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - generic [ref=e63]: Estadísticas
+          - generic [ref=e64]:
+            - list [ref=e65]:
+              - listitem [ref=e66]:
+                - button "Quick Create" [ref=e67]:
+                  - img [ref=e68]
+                  - generic [ref=e70]: Quick Create
+                - button "Inbox" [ref=e71]:
+                  - img
+                  - generic [ref=e72]: Inbox
+            - list [ref=e73]:
+              - listitem [ref=e74]:
+                - button "Overview" [ref=e75]:
+                  - img [ref=e76]
+                  - link "Overview" [ref=e80] [cursor=pointer]:
+                    - /url: /dashboard
+              - listitem [ref=e81]:
+                - button "Estudiantes" [ref=e82]:
+                  - img [ref=e83]
+                  - link "Estudiantes" [ref=e86] [cursor=pointer]:
+                    - /url: /dashboard/students
+              - listitem [ref=e87]:
+                - button "Cursos" [ref=e88]:
+                  - img [ref=e89]
+                  - link "Cursos" [ref=e92] [cursor=pointer]:
+                    - /url: /dashboard/courses
+              - listitem [ref=e93]:
+                - button "Métricas" [ref=e94]:
+                  - img [ref=e95]
+                  - link "Métricas" [ref=e99] [cursor=pointer]:
+                    - /url: /dashboard/metrics
+              - listitem [ref=e100]:
+                - button "Reportes" [ref=e101]:
+                  - img [ref=e102]
+                  - link "Reportes" [ref=e104] [cursor=pointer]:
+                    - /url: /dashboard/reports
+        - generic [ref=e105]:
+          - generic [ref=e106]: Gestión de Juegos y Niveles
+          - list [ref=e107]:
+            - listitem [ref=e108]:
+              - link "Niveles" [ref=e109] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e110]
+                - generic [ref=e113]: Niveles
+            - listitem [ref=e114]:
+              - link "Crear Nivel" [ref=e115] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e116]
+                - generic [ref=e117]: Crear Nivel
+        - list [ref=e120]:
+          - listitem [ref=e121]:
+            - link "Settings" [ref=e122] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e123]
+              - generic [ref=e126]: Settings
+          - listitem [ref=e127]:
+            - link "Ayuda" [ref=e128] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e129]
+              - generic [ref=e132]: Ayuda
+    - main [ref=e133]:
+      - generic [ref=e135]:
+        - button "Toggle Sidebar" [ref=e136]:
+          - img
+          - generic [ref=e137]: Toggle Sidebar
+        - generic [ref=e138]:
+          - button "🇪🇸 ES" [ref=e139]:
+            - generic [ref=e140]: 🇪🇸
+            - generic [ref=e141]: ES
+          - button "Toggle theme" [ref=e142]:
+            - img
+            - generic [ref=e143]: Toggle theme
+          - list [ref=e144]:
+            - listitem [ref=e145]:
+              - button "JP Juan Pérez Usuario" [ref=e146]:
+                - generic [ref=e149]:
+                  - generic [ref=e152]: JP
+                  - generic [ref=e154]:
+                    - generic [ref=e155]: Juan Pérez
+                    - generic [ref=e156]: Usuario
+      - generic [ref=e895]:
+        - generic:
+          - img
+        - generic [ref=e899]:
+          - generic [ref=e900]:
+            - link "Volver a cursos" [ref=e901] [cursor=pointer]:
+              - /url: /dashboard/courses
+              - img [ref=e902]
+              - text: Volver a cursos
+            - button "Editar" [ref=e904]:
+              - img
+              - text: Editar
+          - heading "Biología Celular asasa" [level=1] [ref=e905]
+          - generic [ref=e906]:
+            - generic [ref=e907]:
+              - img [ref=e908]
+              - generic [ref=e910]: 2025-2026 - Primer Trimestre
+            - generic [ref=e911]:
+              - img [ref=e912]
+              - generic [ref=e914]: 14 de enero de 2026 → 29 de junio de 2026
+        - generic [ref=e915]:
+          - generic [ref=e916]:
+            - heading "Descripción" [level=2] [ref=e917]
+            - paragraph [ref=e918]: Curso de Biologiaaaaaa secsoooooo
+          - generic [ref=e919]:
+            - generic [ref=e920]:
+              - generic [ref=e921]:
+                - img [ref=e922]
+                - heading "Estudiantes Inscritos" [level=2] [ref=e927]
+                - generic [ref=e928]: "32"
+              - button "Asignar Estudiantes" [ref=e929]:
+                - img
+                - text: Asignar Estudiantes
+            - generic [ref=e930]:
+              - generic [ref=e931]:
+                - img [ref=e932]
+                - textbox "Buscar en la tabla de estudiantes..." [ref=e935]
+              - generic [ref=e936]:
+                - combobox [ref=e937]:
+                  - img
+                  - generic: Todos los años
+                  - img
+                - combobox [ref=e938]:
+                  - img
+                  - generic: Todos los meses
+                  - img
+            - table [ref=e941]:
+              - rowgroup [ref=e942]:
+                - row "Nombre Email Fecha de inscripción Acciones" [ref=e943]:
+                  - columnheader "Nombre" [ref=e944]
+                  - columnheader "Email" [ref=e945]
+                  - columnheader "Fecha de inscripción" [ref=e946]
+                  - columnheader "Acciones" [ref=e947]
+              - rowgroup [ref=e948]:
+                - row "Miguel student_003@student.edu 19 de mayo de 2026 Desasignar" [ref=e949]:
+                  - cell "Miguel" [ref=e950]:
+                    - generic [ref=e951]:
+                      - img [ref=e952]
+                      - text: Miguel
+                  - cell "student_003@student.edu" [ref=e957]
+                  - cell "19 de mayo de 2026" [ref=e958]
+                  - cell "Desasignar" [ref=e959]:
+                    - button "Desasignar" [ref=e960]:
+                      - img
+                      - text: Desasignar
+                - row "Eduardo student_011@student.edu 19 de mayo de 2026 Desasignar" [ref=e961]:
+                  - cell "Eduardo" [ref=e962]:
+                    - generic [ref=e963]:
+                      - img [ref=e964]
+                      - text: Eduardo
+                  - cell "student_011@student.edu" [ref=e969]
+                  - cell "19 de mayo de 2026" [ref=e970]
+                  - cell "Desasignar" [ref=e971]:
+                    - button "Desasignar" [ref=e972]:
+                      - img
+                      - text: Desasignar
+                - row "Natalia student_012@student.edu 19 de mayo de 2026 Desasignar" [ref=e973]:
+                  - cell "Natalia" [ref=e974]:
+                    - generic [ref=e975]:
+                      - img [ref=e976]
+                      - text: Natalia
+                  - cell "student_012@student.edu" [ref=e981]
+                  - cell "19 de mayo de 2026" [ref=e982]
+                  - cell "Desasignar" [ref=e983]:
+                    - button "Desasignar" [ref=e984]:
+                      - img
+                      - text: Desasignar
+                - row "Andrea student_014@student.edu 19 de mayo de 2026 Desasignar" [ref=e985]:
+                  - cell "Andrea" [ref=e986]:
+                    - generic [ref=e987]:
+                      - img [ref=e988]
+                      - text: Andrea
+                  - cell "student_014@student.edu" [ref=e993]
+                  - cell "19 de mayo de 2026" [ref=e994]
+                  - cell "Desasignar" [ref=e995]:
+                    - button "Desasignar" [ref=e996]:
+                      - img
+                      - text: Desasignar
+                - row "Daniela student_016@student.edu 19 de mayo de 2026 Desasignar" [ref=e997]:
+                  - cell "Daniela" [ref=e998]:
+                    - generic [ref=e999]:
+                      - img [ref=e1000]
+                      - text: Daniela
+                  - cell "student_016@student.edu" [ref=e1005]
+                  - cell "19 de mayo de 2026" [ref=e1006]
+                  - cell "Desasignar" [ref=e1007]:
+                    - button "Desasignar" [ref=e1008]:
+                      - img
+                      - text: Desasignar
+            - generic [ref=e1009]:
+              - generic [ref=e1010]: Mostrando 1-5 de 32 estudiantes
+              - generic [ref=e1011]:
+                - button [disabled]:
+                  - img
+                - generic [ref=e1012]:
+                  - button "1" [ref=e1013]
+                  - button "2" [ref=e1014]
+                  - button "3" [ref=e1015]
+                  - button "4" [ref=e1016]
+                  - button "5" [ref=e1017]
+                  - button "6" [ref=e1018]
+                  - button "7" [ref=e1019]
+                - button [ref=e1020]:
+                  - img
+          - generic [ref=e1021]:
+            - generic [ref=e1022]:
+              - img [ref=e1023]
+              - heading "Profesores Asignados" [level=2] [ref=e1026]
+              - generic [ref=e1027]: "1"
+            - generic [ref=e1028]:
+              - img [ref=e1029]
+              - textbox "Buscar en la tabla de profesores..." [ref=e1032]
+            - table [ref=e1035]:
+              - rowgroup [ref=e1036]:
+                - row "Nombre Email Acciones" [ref=e1037]:
+                  - columnheader "Nombre" [ref=e1038]
+                  - columnheader "Email" [ref=e1039]
+                  - columnheader "Acciones" [ref=e1040]
+              - rowgroup [ref=e1041]:
+                - row "Profesor Test profesortest@example.com Sin acciones" [ref=e1042]:
+                  - cell "Profesor Test" [ref=e1043]
+                  - cell "profesortest@example.com" [ref=e1044]
+                  - cell "Sin acciones" [ref=e1045]
+  - generic [ref=e558]: "0"

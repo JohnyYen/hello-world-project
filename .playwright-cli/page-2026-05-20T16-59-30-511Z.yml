@@ -1,0 +1,316 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Admin - Hello World" [level=1] [ref=e5]:
+        - link "Admin - Hello World" [ref=e6] [cursor=pointer]:
+          - /url: http://localhost:8010/admin/
+          - heading "Admin - Hello World" [level=3] [ref=e7]
+      - navigation [ref=e8]:
+        - generic [ref=e10]:
+          - listitem [ref=e11]:
+            - link " Usuarios" [ref=e12] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/user/list
+              - generic [ref=e14]: 
+              - generic [ref=e15]: Usuarios
+          - listitem [ref=e16]:
+            - link " Roles" [ref=e17] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/role/list
+              - generic [ref=e19]: 
+              - generic [ref=e20]: Roles
+          - listitem [ref=e21]:
+            - link " Profesores" [ref=e22] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/professor/list
+              - generic [ref=e24]: 
+              - generic [ref=e25]: Profesores
+          - listitem [ref=e26]:
+            - link " Estudiantes" [ref=e27] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/student/list
+              - generic [ref=e29]: 
+              - generic [ref=e30]: Estudiantes
+          - listitem [ref=e31]:
+            - link " Configuraciones de Profesor" [ref=e32] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/teacher-settings/list
+              - generic [ref=e34]: 
+              - generic [ref=e35]: Configuraciones de Profesor
+          - listitem [ref=e36]:
+            - link " Juegos" [ref=e37] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game/list
+              - generic [ref=e39]: 
+              - generic [ref=e40]: Juegos
+          - listitem [ref=e41]:
+            - link " Instancias de Juego" [ref=e42] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/game-instance/list
+              - generic [ref=e44]: 
+              - generic [ref=e45]: Instancias de Juego
+          - listitem [ref=e46]:
+            - link " Niveles de Segmento" [ref=e47] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/segment-level/list
+              - generic [ref=e49]: 
+              - generic [ref=e50]: Niveles de Segmento
+          - listitem [ref=e51]:
+            - link " Niveles" [ref=e52] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/level/list
+              - generic [ref=e54]: 
+              - generic [ref=e55]: Niveles
+          - listitem [ref=e56]:
+            - link " Cursos" [ref=e57] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course/list
+              - generic [ref=e59]: 
+              - generic [ref=e60]: Cursos
+          - listitem [ref=e61]:
+            - link " Inscripciones" [ref=e62] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/course-enrollment/list
+              - generic [ref=e64]: 
+              - generic [ref=e65]: Inscripciones
+          - listitem [ref=e66]:
+            - link " Progresos" [ref=e67] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/progress/list
+              - generic [ref=e69]: 
+              - generic [ref=e70]: Progresos
+          - listitem [ref=e71]:
+            - link " Declaraciones xAPI" [ref=e72] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/xapi-statement/list
+              - generic [ref=e74]: 
+              - generic [ref=e75]: Declaraciones xAPI
+          - listitem [ref=e76]:
+            - link " Feedbacks" [ref=e77] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/feedback/list
+              - generic [ref=e79]: 
+              - generic [ref=e80]: Feedbacks
+          - listitem [ref=e81]:
+            - link " Sesiones de Sincronización" [ref=e82] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-session/list
+              - generic [ref=e84]: 
+              - generic [ref=e85]: Sesiones de Sincronización
+          - listitem [ref=e86]:
+            - link " Eventos de Sincronización" [ref=e87] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/sync-event/list
+              - generic [ref=e89]: 
+              - generic [ref=e90]: Eventos de Sincronización
+      - link " Logout" [ref=e91] [cursor=pointer]:
+        - /url: http://localhost:8010/admin/logout
+        - generic [ref=e92]: 
+        - generic [ref=e93]: Logout
+  - generic [ref=e94]:
+    - generic [ref=e96]:
+      - generic:
+        - generic:
+          - heading [level=2]
+    - generic [ref=e100]:
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - heading "Profesores" [level=3] [ref=e103]
+          - generic [ref=e104]:
+            - link "Export" [ref=e106] [cursor=pointer]:
+              - /url: "#"
+            - link "+ New Profesor" [ref=e108] [cursor=pointer]:
+              - /url: http://localhost:8010/admin/professor/create
+        - button "Actions" [ref=e112] [cursor=pointer]
+        - table [ref=e114]:
+          - rowgroup [ref=e115]:
+            - row "Select all id user_id department contact_phone" [ref=e116]:
+              - columnheader "Select all" [ref=e117]:
+                - checkbox "Select all" [ref=e118]
+              - columnheader [ref=e119]
+              - columnheader "id" [ref=e120]
+              - columnheader "user_id" [ref=e121]
+              - columnheader "department" [ref=e122]
+              - columnheader "contact_phone" [ref=e123]
+          - rowgroup [ref=e124]:
+            - row "Select item View Edit  080a9115-8d64-49fd-ae72-9236ccda0473 4b80e3c6-1bf3-4adc-8dec-51f0df99f89f General" [ref=e125]:
+              - cell "Select item" [ref=e126]:
+                - checkbox "Select item" [ref=e127]
+              - cell "View Edit " [ref=e128]:
+                - link "View" [ref=e129] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/080a9115-8d64-49fd-ae72-9236ccda0473
+                  - generic [ref=e131]: 
+                - link "Edit" [ref=e132] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/080a9115-8d64-49fd-ae72-9236ccda0473
+                  - generic [ref=e134]: 
+                - link "" [ref=e135] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e137]: 
+              - cell "080a9115-8d64-49fd-ae72-9236ccda0473" [ref=e138]
+              - cell "4b80e3c6-1bf3-4adc-8dec-51f0df99f89f" [ref=e139]
+              - cell "General" [ref=e140]
+              - cell [ref=e141]
+            - row "Select item View Edit  09962b72-a5d4-4a24-b417-bdd57251b0c2 cf9b1cdb-4e97-4c42-aaf3-27f84046dcd3 General" [ref=e142]:
+              - cell "Select item" [ref=e143]:
+                - checkbox "Select item" [ref=e144]
+              - cell "View Edit " [ref=e145]:
+                - link "View" [ref=e146] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/09962b72-a5d4-4a24-b417-bdd57251b0c2
+                  - generic [ref=e148]: 
+                - link "Edit" [ref=e149] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/09962b72-a5d4-4a24-b417-bdd57251b0c2
+                  - generic [ref=e151]: 
+                - link "" [ref=e152] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e154]: 
+              - cell "09962b72-a5d4-4a24-b417-bdd57251b0c2" [ref=e155]
+              - cell "cf9b1cdb-4e97-4c42-aaf3-27f84046dcd3" [ref=e156]
+              - cell "General" [ref=e157]
+              - cell [ref=e158]
+            - row "Select item View Edit  1aab38ad-6c26-46af-8671-4f454cc73398 ab9d65e9-be73-4892-a31d-411acc73cadc General" [ref=e159]:
+              - cell "Select item" [ref=e160]:
+                - checkbox "Select item" [ref=e161]
+              - cell "View Edit " [ref=e162]:
+                - link "View" [ref=e163] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/1aab38ad-6c26-46af-8671-4f454cc73398
+                  - generic [ref=e165]: 
+                - link "Edit" [ref=e166] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/1aab38ad-6c26-46af-8671-4f454cc73398
+                  - generic [ref=e168]: 
+                - link "" [ref=e169] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e171]: 
+              - cell "1aab38ad-6c26-46af-8671-4f454cc73398" [ref=e172]
+              - cell "ab9d65e9-be73-4892-a31d-411acc73cadc" [ref=e173]
+              - cell "General" [ref=e174]
+              - cell [ref=e175]
+            - row "Select item View Edit  1ed73ea4-fa3f-4b6f-9437-acfcfb120269 77edd869-1350-469e-ad9b-50627b11698c General" [ref=e176]:
+              - cell "Select item" [ref=e177]:
+                - checkbox "Select item" [ref=e178]
+              - cell "View Edit " [ref=e179]:
+                - link "View" [ref=e180] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/1ed73ea4-fa3f-4b6f-9437-acfcfb120269
+                  - generic [ref=e182]: 
+                - link "Edit" [ref=e183] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/1ed73ea4-fa3f-4b6f-9437-acfcfb120269
+                  - generic [ref=e185]: 
+                - link "" [ref=e186] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e188]: 
+              - cell "1ed73ea4-fa3f-4b6f-9437-acfcfb120269" [ref=e189]
+              - cell "77edd869-1350-469e-ad9b-50627b11698c" [ref=e190]
+              - cell "General" [ref=e191]
+              - cell [ref=e192]
+            - row "Select item View Edit  2a9e0216-47a9-4f66-bfdd-71c00a69cb9d 4871d3e3-2f6d-407b-bad9-c3394fc1deb5 Computer Science +52 555 123 4567" [ref=e193]:
+              - cell "Select item" [ref=e194]:
+                - checkbox "Select item" [ref=e195]
+              - cell "View Edit " [ref=e196]:
+                - link "View" [ref=e197] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/2a9e0216-47a9-4f66-bfdd-71c00a69cb9d
+                  - generic [ref=e199]: 
+                - link "Edit" [ref=e200] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/2a9e0216-47a9-4f66-bfdd-71c00a69cb9d
+                  - generic [ref=e202]: 
+                - link "" [ref=e203] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e205]: 
+              - cell "2a9e0216-47a9-4f66-bfdd-71c00a69cb9d" [ref=e206]
+              - cell "4871d3e3-2f6d-407b-bad9-c3394fc1deb5" [ref=e207]
+              - cell "Computer Science" [ref=e208]
+              - cell "+52 555 123 4567" [ref=e209]
+            - row "Select item View Edit  2b6a8966-4717-47c5-9c97-d71ba5c2ea22 707a19dc-260f-45dd-92c4-bf1c7e51d68f General" [ref=e210]:
+              - cell "Select item" [ref=e211]:
+                - checkbox "Select item" [ref=e212]
+              - cell "View Edit " [ref=e213]:
+                - link "View" [ref=e214] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/2b6a8966-4717-47c5-9c97-d71ba5c2ea22
+                  - generic [ref=e216]: 
+                - link "Edit" [ref=e217] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/2b6a8966-4717-47c5-9c97-d71ba5c2ea22
+                  - generic [ref=e219]: 
+                - link "" [ref=e220] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e222]: 
+              - cell "2b6a8966-4717-47c5-9c97-d71ba5c2ea22" [ref=e223]
+              - cell "707a19dc-260f-45dd-92c4-bf1c7e51d68f" [ref=e224]
+              - cell "General" [ref=e225]
+              - cell [ref=e226]
+            - row "Select item View Edit  2ecbb9fc-7421-49c5-8e8b-c8a27d9abd4a 20e61ac9-c469-48f4-a4d3-c0142bffc6be General" [ref=e227]:
+              - cell "Select item" [ref=e228]:
+                - checkbox "Select item" [ref=e229]
+              - cell "View Edit " [ref=e230]:
+                - link "View" [ref=e231] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/2ecbb9fc-7421-49c5-8e8b-c8a27d9abd4a
+                  - generic [ref=e233]: 
+                - link "Edit" [ref=e234] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/2ecbb9fc-7421-49c5-8e8b-c8a27d9abd4a
+                  - generic [ref=e236]: 
+                - link "" [ref=e237] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e239]: 
+              - cell "2ecbb9fc-7421-49c5-8e8b-c8a27d9abd4a" [ref=e240]
+              - cell "20e61ac9-c469-48f4-a4d3-c0142bffc6be" [ref=e241]
+              - cell "General" [ref=e242]
+              - cell [ref=e243]
+            - row "Select item View Edit  3055d6d8-f27a-4bbe-b3a0-ff60d8ec0357 2564e053-b4ff-46f5-b5c5-6f1a39c51e0c General" [ref=e244]:
+              - cell "Select item" [ref=e245]:
+                - checkbox "Select item" [ref=e246]
+              - cell "View Edit " [ref=e247]:
+                - link "View" [ref=e248] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/3055d6d8-f27a-4bbe-b3a0-ff60d8ec0357
+                  - generic [ref=e250]: 
+                - link "Edit" [ref=e251] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/3055d6d8-f27a-4bbe-b3a0-ff60d8ec0357
+                  - generic [ref=e253]: 
+                - link "" [ref=e254] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e256]: 
+              - cell "3055d6d8-f27a-4bbe-b3a0-ff60d8ec0357" [ref=e257]
+              - cell "2564e053-b4ff-46f5-b5c5-6f1a39c51e0c" [ref=e258]
+              - cell "General" [ref=e259]
+              - cell [ref=e260]
+            - row "Select item View Edit  33fc73b8-e9fc-4f11-aaec-759c8802ccda 7b39926a-ecd8-43ee-81b5-cd2bff0c4df3 General" [ref=e261]:
+              - cell "Select item" [ref=e262]:
+                - checkbox "Select item" [ref=e263]
+              - cell "View Edit " [ref=e264]:
+                - link "View" [ref=e265] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/33fc73b8-e9fc-4f11-aaec-759c8802ccda
+                  - generic [ref=e267]: 
+                - link "Edit" [ref=e268] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/33fc73b8-e9fc-4f11-aaec-759c8802ccda
+                  - generic [ref=e270]: 
+                - link "" [ref=e271] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e273]: 
+              - cell "33fc73b8-e9fc-4f11-aaec-759c8802ccda" [ref=e274]
+              - cell "7b39926a-ecd8-43ee-81b5-cd2bff0c4df3" [ref=e275]
+              - cell "General" [ref=e276]
+              - cell [ref=e277]
+            - row "Select item View Edit  44533e30-7f79-4aa3-8612-9f207cd88935 7453b7fb-55be-4f73-b853-7fe4c9ae65cf General" [ref=e278]:
+              - cell "Select item" [ref=e279]:
+                - checkbox "Select item" [ref=e280]
+              - cell "View Edit " [ref=e281]:
+                - link "View" [ref=e282] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/details/44533e30-7f79-4aa3-8612-9f207cd88935
+                  - generic [ref=e284]: 
+                - link "Edit" [ref=e285] [cursor=pointer]:
+                  - /url: http://localhost:8010/admin/professor/edit/44533e30-7f79-4aa3-8612-9f207cd88935
+                  - generic [ref=e287]: 
+                - link "" [ref=e288] [cursor=pointer]:
+                  - /url: "#"
+                  - generic [ref=e290]: 
+              - cell "44533e30-7f79-4aa3-8612-9f207cd88935" [ref=e291]
+              - cell "7453b7fb-55be-4f73-b853-7fe4c9ae65cf" [ref=e292]
+              - cell "General" [ref=e293]
+              - cell [ref=e294]
+        - generic [ref=e295]:
+          - paragraph [ref=e296]: Showing 1 to 10 of 22 items
+          - list [ref=e297]:
+            - listitem [ref=e298]:
+              - link " prev":
+                - /url: "#"
+                - generic: 
+                - text: prev
+            - listitem [ref=e299]:
+              - link "1" [ref=e300] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/professor/list?page=1
+            - listitem [ref=e301]:
+              - link "2" [ref=e302] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/professor/list?page=2
+            - listitem [ref=e303]:
+              - link "3" [ref=e304] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/professor/list?page=3
+            - listitem [ref=e305]:
+              - link "next " [ref=e306] [cursor=pointer]:
+                - /url: http://localhost:8010/admin/professor/list?page=2
+                - text: next
+                - generic [ref=e307]: 
+          - generic [ref=e308]:
+            - text: Show
+            - link "10 / Page" [ref=e309] [cursor=pointer]:
+              - /url: "#"
+      - text: 
