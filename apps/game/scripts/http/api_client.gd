@@ -54,11 +54,14 @@ func _make_request(endpoint: String, method: int, body: Dictionary = {}, auth_re
 	
 	var err = http_request.request(url, headers, method, json_body)
 	if err != OK:
+		print(err)
 		var error_msg = "Error al iniciar request: %s" % err
 		return {"OK": false, "error": error_msg}
 	
 	# Esperar a que se complete la petición
 	var response = await http_request.request_completed
+	
+	print("REquest")
 	
 	var status = response[0]
 	var response_code = response[1]
@@ -67,6 +70,7 @@ func _make_request(endpoint: String, method: int, body: Dictionary = {}, auth_re
 	
 	if status != OK:
 		var error_msg = "Error de red: %s" % status
+		print("BODY RAW: ", body_bytes.get_string_from_utf8())
 		return {"OK": false, "error": error_msg}
 	
 	var body_text = body_bytes.get_string_from_utf8()
@@ -93,11 +97,13 @@ func login(username: String = "", email: String = "", password: String = "") -> 
 		return {"OK": false, "error": "Debe proporcionar username o email"}
 	
 	var result = await _make_request("api/v1/auth/login", HTTPClient.METHOD_POST, body, false)
+	print("LOGIN")
 	
 	if result.OK:
 		jwt_token = result.data.access_token
 		current_user = result.data.user if result.data.has("user") else {}
 		
+		_GameConfig.set_credentials(jwt_token, current_user)
 		# Guardar en el store global
 		Env.jwt_token = jwt_token
 		Env.current_user = current_user

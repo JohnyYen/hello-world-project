@@ -9,18 +9,21 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource("1_kga3m")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.0815972
-anchor_top = 0.166667
-anchor_right = 0.916667
-anchor_bottom = 0.875
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 128.0
+offset_top = 96.0
+offset_right = -128.0
+offset_bottom = -72.0
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
 
 [node name="Title" type="Label" parent="Panel"]
 layout_mode = 1
@@ -72,6 +75,33 @@ autowrap_mode = 1
 scroll_fit_content_height = true
 scroll_fit_content_width = true
 
+[node name="EmailContainer" type="Control" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer/EmailContainer"]
+layout_mode = 2
+offset_left = 234.0
+offset_top = -9.0
+offset_right = 354.0
+offset_bottom = 19.0
+theme_override_font_sizes/font_size = 20
+text = "Email"
+
+[node name="Email" type="TextEdit" parent="Panel/VBoxContainer/EmailContainer"]
+custom_minimum_size = Vector2(350, 25)
+layout_mode = 2
+offset_left = 370.0
+offset_top = -17.0
+offset_right = 720.0
+offset_bottom = 33.0
+size_flags_horizontal = 4
+size_flags_vertical = 6
+placeholder_text = "Escribe tu email del juego"
+autowrap_mode = 1
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
 [node name="PassContainer" type="Control" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 6
@@ -115,6 +145,7 @@ grow_vertical = 0
 text = "Aceptar"
 
 [node name="Exit" type="Button" parent="Panel"]
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0

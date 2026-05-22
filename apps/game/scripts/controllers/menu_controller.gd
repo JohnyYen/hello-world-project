@@ -10,9 +10,26 @@ extends Control
 func _ready():
 	panel.visible = false
 	main_button.visible = true
+	
+	if _GameConfig.jwt == "" or _GameConfig.user == {}:
+		print(_GameConfig.jwt)
+		print(_GameConfig.user)
+		_go_to_login()
 
 
-
+func _go_to_login():
+	
+	await get_tree().process_frame
+	
+	await AlertComponent.show_alert(
+		"No hay una sesión activa. Por favor inicia sesión para continuar.",
+		"warning",
+		3.0
+	)
+	
+	print("aaadasdas")
+	LoadingScreen.change_scene("res://scenes/pages/login.tscn")
+	
 func _on_play_pressed():
 	print("[MainMenu] Play pressed")
 	_Util.fade_out_music(audio, 0.4)
