@@ -2,3 +2,10 @@ node_modules
 dist
 .next
 .env
+
+# Playwright
+playwright-report/
+test-results/
+
+# AI Framework artifacts
+.opencode/

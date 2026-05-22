@@ -8,15 +8,50 @@
 
 **Hello World Frontend** es la aplicación web desarrollada en **Next.js 15** que sirve como interfaz administrativa para profesores y estudiantes. Permite gestionar videojuegos educativos, seguir el progreso de estudiantes y configurar aspectos pedagógicos.
 
+[![PRD](https://img.shields.io/badge/PRD-v0.1.0--draft-1a1b26)](PRD.md)
+
+> **Documento de requisitos:** Consulta el [PRD](./PRD.md) para la especificación completa de funcionalidades, criterios de aceptación y flujos de usuario.
+
 ## 📖 Descripción del Proyecto
 
-El frontend proporciona:
+Hello World Frontend es el **centro de comando** del ecosistema Hello World — la interfaz administrativa desde donde los profesores orquestan experiencias educativas, monitorean el progreso en tiempo real y toman decisiones pedagógicas informadas.
 
-- **Panel de Profesores**: Crear y gestionar videojuegos, niveles y configuraciones
-- **Panel de Estudiantes**: Ver progreso, acceder a juegos, dejar feedback
-- **Dashboard**: Estadísticas y métricas de aprendizaje
-- **Sistema de Autenticación**: Login seguro con JWT
-- **Diseño Responsive**: Adaptable a diferentes dispositivos
+El dashboard convierte a cada profesor en un **arquitecto del aprendizaje**, con herramientas para diseñar contenido, visibilidad total del progreso estudiantil y datos accionables — todo sin escribir código.
+
+### Funcionalidades por Prioridad
+
+**P0 — MVP/GA (Fase 1):**
+- **Autenticación UI**: Login/registro con JWT vía cookies httpOnly, protección de rutas por rol
+- **Dashboard de Progreso**: Métricas aggregate, listado de estudiantes con drill-down individual, detección de estudiantes atascados
+- **Gestión de Cursos**: CRUD completo de juegos, niveles y configuración pedagógica
+- **Configuración de Juegos/Niveles**: Metadatos, segmentos, reordenamiento drag & drop
+
+**P1 — Post-MVP (Fase 2):**
+- **Analytics Dashboard**: Gráficos Recharts con filtros, distribución de errores, tendencias de engagement
+- **Exportación de Reportes**: Exportación CSV/PDF de progreso y analytics
+- **Panel de Administración**: Gestión de usuarios, roles, logs de auditoría
+
+**P2 — Futuro (Fase 3):**
+- **UI de Sincronización LMS**: Conexión con Moodle/Canvas
+- **Configuración de Accesibilidad**: Tamaño de fuente, alto contraste
+- **Editor de Contenido con Vista Previa**: WYSIWYG-like para descripciones de nivel
+
+### 🎯 Filosofía del Producto: Teacher Empowerment
+
+El dashboard se fundamenta en un principio rector: **el profesor es el experto, la tecnología lo potencia, no lo reemplaza**.
+
+| Principio | Manifestación |
+|-----------|---------------|
+| **Control pedagógico** | El profesor decide qué estudiantes acceden a qué contenido, cuándo y con qué parámetros |
+| **Visibilidad total** | Cada clic, error y acierto del estudiante es visible — no más "no sé cómo le está yendo" |
+| **Creación sin código** | Crear juegos, niveles y configuraciones educativas sin escribir una línea de código |
+| **Decisiones basadas en datos** | Analítica que responde preguntas concretas: "¿quién está atascado?", "¿qué nivel es demasiado difícil?" |
+| **Automatización de lo repetitivo** | Exportación de reportes, sincronización con LMS, gestión de usuarios |
+
+**Personas objetivo:**
+
+- **Profesor** (primaria) — Docente de computación, NO desarrollador. Necesita crear contenido y monitorear estudiantes diariamente.
+- **Administrador** (secundaria) — Jefe de departamento o coordinador. Necesita visibilidad cross-classroom y reportes institucionales.
 
 ---
 
@@ -98,6 +133,27 @@ apps/frontend/
 ├── tsconfig.json          # Config de TypeScript
 └── README.md              # Este archivo
 ```
+
+---
+
+## 📊 Estado del Proyecto
+
+Mapeo de funcionalidades contra el [PRD](./PRD.md):
+
+| Feature | ID PRD | Prioridad | Fase | Estado |
+|---------|--------|-----------|------|--------|
+| Autenticación UI (Login/Registro) | F-01 | P0 | Fase 1 | 🟡 En desarrollo |
+| Dashboard de Progreso Estudiantil | F-02 | P0 | Fase 1 | 🟡 En desarrollo |
+| Gestión de Cursos (Creación/Edición) | F-03 | P0 | Fase 1 | 🟡 En desarrollo |
+| Configuración de Juegos y Niveles | F-04 | P0 | Fase 1 | 🟡 En desarrollo |
+| Analytics Dashboard (Gráficos) | F-05 | P1 | Fase 2 | ⬜ Planificado |
+| Exportación de Reportes CSV/PDF | F-06 | P1 | Fase 2 | ⬜ Planificado |
+| Panel de Administración | F-07 | P1 | Fase 2 | ⬜ Planificado |
+| UI de Sincronización LMS | F-08 | P2 | Fase 3 | ⬜ Planificado |
+| Configuración de Accesibilidad | F-09 | P2 | Fase 3 | ⬜ Planificado |
+| Editor de Contenido con Vista Previa | F-10 | P2 | Fase 3 | ⬜ Planificado |
+
+> **Leyenda:** 🟡 En desarrollo · ✅ Completado · ⬜ Planificado · 🔴 Bloqueado
 
 ---
 
@@ -305,48 +361,11 @@ const data: any = fetchData()
 
 ### API Client
 
-El proyecto usa el paquete `@workspace/api-client-ts` para comunicarse con el backend:
-
-```typescript
-import { ApiClient } from '@workspace/api-client-ts'
-
-const api = new ApiClient({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL!,
-})
-
-// Ejemplo de uso
-const user = await api.users.getById('123')
-const games = await api.games.list()
-```
+El proyecto usa un cliente API custom basado en `fetch` nativo en `src/api/client.ts`.
 
 ### Server Actions
 
 Todas las mutaciones usan Server Actions:
-
-```typescript
-// src/app/api/games/create-game.ts
-'use server'
-
-import { z } from 'zod'
-import { api } from '@/services/api'
-
-const CreateGameSchema = z.object({
-  title: z.string().min(1).max(255),
-  description: z.string().optional(),
-  subject: z.string().optional(),
-})
-
-export async function createGame(formData: FormData) {
-  const gameData = CreateGameSchema.parse({
-    title: formData.get('title'),
-    description: formData.get('description'),
-    subject: formData.get('subject'),
-  })
-  
-  await api.games.create(gameData)
-  revalidatePath('/professor/games')
-}
-```
 
 ---
 
@@ -391,16 +410,26 @@ El proyecto usa un tema **Blue-Noir** con acentos en azul y negro. Los colores s
 
 ## 🌐 Rutas del Frontend
 
-```
-/                           # Landing page (público)
-/login                      # Login de usuario
-/register                   # Registro (profesor)
-/dashboard                  # Dashboard principal
-/admin                      # Panel de admin
-/docs                       # Documentación
-/error                      # Página de error
-/not-found                  # Página 404
-```
+Mapeo completo de rutas contra el [PRD](./PRD.md) (Sección 6):
+
+| Ruta | Descripción | Rol | PRD |
+|------|-------------|-----|-----|
+| `/` | Landing page pública | Todos | — |
+| `/login` | Inicio de sesión | No auth | F-01 |
+| `/register` | Registro de profesor | No auth | F-01 |
+| `/dashboard` | Dashboard principal con resumen | Profesor | F-02 |
+| `/dashboard/courses` | Gestión de cursos/juegos | Profesor | F-03 |
+| `/dashboard/courses/[id]` | Detalle y configuración del juego | Profesor | F-03, F-04 |
+| `/dashboard/students` | Lista de estudiantes | Profesor | F-02 |
+| `/dashboard/students/[id]` | Progreso detallado del estudiante | Profesor | F-02 |
+| `/dashboard/analytics` | Analytics y gráficos (P1) | Profesor | F-05 |
+| `/dashboard/reports` | Exportación de reportes (P1) | Profesor | F-06 |
+| `/dashboard/settings` | Configuración del profesor (P1) | Profesor | — |
+| `/admin` | Panel de administración | Admin | F-07 |
+| `/admin/users` | Gestión de usuarios (P1) | Admin | F-07 |
+| `/admin/audit` | Logs de auditoría (P1) | Admin | F-07 |
+| `/admin/settings` | Configuración del sistema (P2) | Admin | — |
+| `/docs` | Documentación interna | Todos | — |
 
 ---
 
@@ -408,7 +437,8 @@ El proyecto usa un tema **Blue-Noir** con acentos en azul y negro. Los colores s
 
 | Documento | Descripción |
 |-----------|-------------|
-| [docs/api.md](../packages/api-client-ts/docs/) | Documentación del API Client |
+| [PRD.md](PRD.md) | Documento de requisitos del producto (autoritativo) |
+| [src/api/client.ts](src/api/client.ts) | Cliente API custom basado en fetch |
 | [AGENTS.md](AGENTS.md) | Guías para agentes IA |
 | [PERFORMANCE_OPTIMIZATION.md](PERFORMANCE_OPTIMIZATION.md) | Optimizaciones de rendimiento |
 
@@ -445,4 +475,4 @@ MIT License - ver [LICENSE](LICENSE) para más detalles.
 - **Website**: [hello-world-project.dev](https://hello-world-project.dev)
 - **Backend**: [github.com/.../apps/backend](https://github.com/tu-usuario/hello-world-project/apps/backend)
 - **Game**: [github.com/.../apps/game](https://github.com/tu-usuario/hello-world-project/apps/game)
-- **API Client**: [github.com/.../packages/api-client-ts](https://github.com/tu-usuario/hello-world-project/packages/api-client-ts)
+

@@ -148,8 +148,10 @@ export default function ReportsPage() {
             courseReportsService.getReportKPIs()
           ]);
 
+        const coursesArray = coursesData.data ?? [];
+
         // Backend returns snake_case (school_year), handle both cases
-        const normalizedCourses = (coursesData || []).map((c: any) => ({
+        const normalizedCourses = coursesArray.map((c: any) => ({
           ...c,
           schoolYear: c.schoolYear || c.school_year || '',
           name: c.name || c.course_name || '',
@@ -157,16 +159,16 @@ export default function ReportsPage() {
         }));
 
         setCourses(normalizedCourses);
-        setKpis(kpisData);
+        setKpis(kpisData.data ?? null);
 
         // Select latest year by default (without sort)
-        if (coursesData.length > 0) {
+        if (coursesArray.length > 0) {
           let latestSchoolYear = '';
-          for (const c of coursesData) {
+          for (const c of coursesArray) {
             const year = (c as any)?.schoolYear || (c as any)?.school_year || '';
             if (year && year > latestSchoolYear) latestSchoolYear = year;
           }
-          const latestYearCourses = coursesData.filter(c => {
+          const latestYearCourses = coursesArray.filter(c => {
             const year = (c as any)?.schoolYear || (c as any)?.school_year || '';
             return year === latestSchoolYear;
           });

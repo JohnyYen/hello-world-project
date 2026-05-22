@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.sync.domain.sync_event import SyncEvent
@@ -42,7 +42,7 @@ class DeadLetterHandler:
             "sync_session_id": event.sync_session_id,
             "timestamp": event.timestamp,
             "error_message": error_message,
-            "failed_at": datetime.utcnow(),
+            "failed_at": datetime.now(timezone.utc),
             "retry_count": 0,
             "status": "pending",
         }

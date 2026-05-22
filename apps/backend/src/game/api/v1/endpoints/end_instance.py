@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -43,7 +43,7 @@ async def end_instance(
     # Actualizar instancia
     update_data = {
         "status": final_status,
-        "ended_at": datetime.utcnow(),
+        "ended_at": datetime.now(timezone.utc),
     }
 
     updated_instance = await instance_repo.update(instance_id, update_data)

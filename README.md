@@ -166,9 +166,7 @@ The platform employs **adaptive learning algorithms** that dynamically adjust ga
 - **Dialogue System**: Interactive narrative with Dialogue Manager plugin
 - **Event Bus**: Signal-based communication between game components
 
-#### Shared Packages
-- **API Client** (`packages/api-client-ts/`): Auto-generated TypeScript client from OpenAPI spec
-- **API Contract** (`packages/api-contract/`): OpenAPI JSON/YAML specification
+
 
 ---
 
@@ -408,7 +406,7 @@ pnpm run test:e2e
 - No `useMemo`/`useCallback` (React Compiler)
 - Explicit return types on all functions
 - `interface` over `type` for objects
-- API calls via `@workspace/api-client-ts` package
+- API calls via custom `fetch` client (`src/api/client.ts`)
 
 **Key Routes:**
 ```
@@ -491,9 +489,6 @@ hello-world-project/
 │   ├── backend/              # FastAPI REST API (Python)
 │   ├── frontend/             # Next.js 15 dashboard (TypeScript)
 │   └── game/                 # Godot 4.4 educational game (GDScript)
-├── packages/
-│   ├── api-client-ts/        # Auto-generated TypeScript client
-│   └── api-contract/         # OpenAPI specification
 ├── infraestructure/
 │   └── docker/               # Docker Compose configurations
 ├── docs/                     # Documentation (ADR, SDD, etc.)
@@ -600,8 +595,13 @@ Then open a Pull Request on GitHub with:
 - [Frontend README](./apps/frontend/README.md) - UI development guide, conventions, testing
 - [Game README](./apps/game/README.md) - Game architecture, GDScript conventions, GUT testing
 
+### Product Requirements
+- [Root PRD](./PRD.md) — Cross-cutting product vision, features, and roadmap
+- [Game PRD](./apps/game/PRD.md) — Game-specific product requirements, features, and roadmap
+- [Frontend PRD](./apps/frontend/PRD.md) — Frontend-specific product requirements, features, and roadmap
+- [Backend PRD](./apps/backend/PRD.md) — Backend-specific product requirements, features, and roadmap
+
 ### Technical Documentation
-- [Product Requirements Document](./PRD.md) - Product vision, features, and roadmap
 - [Backend Database Design](./apps/backend/docs/database-design.md) - ER diagrams, table schemas
 - [Backend User Stories](./apps/backend/docs/user_stories.md) - User requirements
 - [Backend Glossary](./apps/backend/GP.md) - Terminology reference
@@ -610,8 +610,6 @@ Then open a Pull Request on GitHub with:
 - [Frontend Performance](./apps/frontend/PERFORMANCE_OPTIMIZATION.md) - Optimization guide
 
 ### API Documentation
-- [API Contract](./packages/api-contract/openapi.json) - OpenAPI specification
-- [API Client Docs](./packages/api-client-ts/) - TypeScript client documentation
 - [Live Swagger UI](http://localhost:8000/docs) - Available when backend is running
 
 ### Development Guidelines
@@ -619,6 +617,9 @@ Then open a Pull Request on GitHub with:
 - [Backend AGENTS.md](./apps/backend/AGENTS.md) - Backend-specific rules
 - [Frontend AGENTS.md](./apps/frontend/AGENTS.md) - Frontend-specific rules
 - [Game AGENTS.md](./apps/game/AGENTS.md) - Game-specific rules
+
+### Documentation Architecture
+The docs follow a layered structure: the **root PRD** defines cross-cutting vision, **component PRDs** (game, frontend, backend) break down per-app requirements, and **technical docs** provide implementation details and guides.
 
 ---
 

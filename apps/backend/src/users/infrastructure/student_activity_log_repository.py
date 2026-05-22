@@ -1,5 +1,5 @@
 from typing import List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select, func
@@ -38,7 +38,7 @@ class StudentActivityLogRepository(BaseRepository[StudentActivityLog]):
         log_data = {
             "student_id": student_id,
             "activity_type": activity_type,
-            "occurred_at": occurred_at or datetime.utcnow(),
+            "occurred_at": occurred_at or datetime.now(timezone.utc),
             "metadata": metadata or {},
         }
         return await self.create(log_data)
@@ -90,8 +90,8 @@ class StudentActivityLogRepository(BaseRepository[StudentActivityLog]):
         Returns:
             List[StudentActivityLog]: Lista de registros de actividad
         """
-        start_date = datetime.utcnow() - timedelta(days=days)
-        return await self.get_activity_by_date_range(student_id, start_date, datetime.utcnow())
+        start_date = datetime.now(timezone.utc) - timedelta(days=days)
+        return await self.get_activity_by_date_range(student_id, start_date, datetime.now(timezone.utc))
 
     async def count_by_day_and_hour(
         self,

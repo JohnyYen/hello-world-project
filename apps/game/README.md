@@ -3,8 +3,9 @@
 [![Godot Version](https://img.shields.io/badge/Godot-4.4-blue)](https://godotengine.org)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Mobile%2FDesktop-purple)](https://godotengine.org)
+[![PRD](https://img.shields.io/badge/PRD-v0.1.0--draft-blue)](PRD.md)
 
-**Hello World Game** es un videojuego educativo desarrollado en **Godot 4.x** diseñado para enseñar fundamentos de programación a través de una novela visual interactiva y puzzles de programación visual.
+**Hello World Game** es un videojuego educativo desarrollado en **Godot 4.4** diseñado para enseñar fundamentos de programación a través de una novela visual interactiva y puzzles de programación visual.
 
 ## 📖 Descripción del Proyecto
 
@@ -14,14 +15,54 @@ El juego funciona como una novela visual donde los estudiantes:
 - Reciben retroalimentación instantánea sobre su código
 - Progresan a través de niveles que se adaptan automáticamente a su rendimiento
 
+### Filosofía Educativa
+
+El diseño del juego se fundamenta en tres pilares educativos definidos en el [PRD](PRD.md):
+
+- **🏗️ Construccionismo (Papert)**: Los estudiantes construyen programas visuales para resolver problemas auténticos. Los bloques son "objetos para pensar" — representaciones tangibles de conceptos abstractos.
+- **🎯 Aprendizaje por Maestría (Bloom)**: El agente adaptativo ajusta la dificultad dinámicamente para que cada estudiante progrese a su ritmo hacia el mismo estándar de dominio.
+- **🔧 Aprender Haciendo (Dewey)**: No hay lecciones teóricas. Cada nivel presenta un problema, el estudiante construye una solución, la ejecuta, recibe feedback inmediato, itera y aprende.
+
 ### Características Principales
 
-- 🎮 **Novela Visual**: Historia interactiva con diálogos y toma de decisiones
-- 🧩 **Programación Visual**: Bloques intuitivos para construir programas (if, while, execute)
-- 🤖 **Agente Adaptativo**: Ajusta la dificultad según el rendimiento del estudiante
-- 📊 **Registro de Progreso**: Envía xAPI statements al backend
-- 🔄 **Sincronización**: Guarda progreso local y sincroniza con el servidor
-- 🌍 **Multidioma**: Interfaz y diálogos en español
+Las funcionalidades están priorizadas según el [PRD](PRD.md#3-catálogo-de-funcionalidades):
+
+#### P0 — MVP / Lanzamiento
+- 🎮 **Novela Visual** ([F-05](PRD.md#f-05-sistema-de-diálogos-y-narrativa)): Historia interactiva con diálogos y toma de decisiones
+- 🧩 **Programación Visual** ([F-01](PRD.md#f-01-motor-de-programación-visual)): Bloques intuitivos para construir programas (Si, Mientras, Ejecutar)
+- ⚙️ **Motor de Ejecución** ([F-03](PRD.md#f-03-motor-de-ejecución-execution-engine)): Intérprete que ejecuta y valida programas contra problemas del mundo real
+- 📊 **Registro de Progreso** ([F-06](PRD.md#f-06-emisión-de-eventos-xapi)): Envía statements xAPI al backend para tracking de aprendizaje
+- 💾 **Almacenamiento Local** ([F-04](PRD.md#f-04-almacenamiento-local-offline-sqlite)): SQLite offline-first con sincronización asíncrona
+- 📖 **Sistema de Contexto** ([F-02](PRD.md#f-02-sistema-de-contexto-de-problemas-problem-context)): Problemas del mundo real con estado, reglas y condiciones de éxito
+
+#### P1 — Post-MVP
+- 🤖 **Agente Adaptativo** ([F-07](PRD.md#f-07-agente-adaptativo-adaptive-agent)): Ajusta la dificultad según el rendimiento del estudiante
+- 🏗️ **Modo Sandbox** ([F-08](PRD.md#f-08-modo-sandbox)): Entorno abierto para experimentar sin objetivos fijos
+- 📚 **Multi-Capítulo** ([F-09](PRD.md#f-09-soporte-multi-capítulo)): Progresión narrativa con capítulos desbloqueables
+
+#### P2 — Futuro
+- 🧩 **Bloques Personalizados** ([F-10](PRD.md#f-10-personalización-de-librería-de-bloques)): Profesores crean bloques de dominio específico
+- 🏆 **Desafío entre Pares** ([F-11](PRD.md#f-11-modo-desafío-entre-pares)): Compartir soluciones y competir con restricciones
+
+---
+
+## 📋 Estado del Proyecto
+
+| Funcionalidad | ID PRD | Prioridad | Estado |
+|--------------|--------|-----------|--------|
+| Motor de Programación Visual | [F-01](PRD.md#f-01-motor-de-programación-visual) | **P0** | ✅ Implementado |
+| Sistema de Contexto de Problemas | [F-02](PRD.md#f-02-sistema-de-contexto-de-problemas-problem-context) | **P0** | ✅ Implementado |
+| Motor de Ejecución | [F-03](PRD.md#f-03-motor-de-ejecución-execution-engine) | **P0** | ✅ Implementado |
+| Almacenamiento Local SQLite | [F-04](PRD.md#f-04-almacenamiento-local-offline-sqlite) | **P0** | ✅ Implementado |
+| Sistema de Diálogos y Narrativa | [F-05](PRD.md#f-05-sistema-de-diálogos-y-narrativa) | **P0** | ✅ Implementado |
+| Emisión de Eventos xAPI | [F-06](PRD.md#f-06-emisión-de-eventos-xapi) | **P0** | ✅ Implementado |
+| Agente Adaptativo | [F-07](PRD.md#f-07-agente-adaptativo-adaptive-agent) | **P1** | 🔄 En desarrollo |
+| Modo Sandbox | [F-08](PRD.md#f-08-modo-sandbox) | **P1** | ⏳ Planificado |
+| Soporte Multi-Capítulo | [F-09](PRD.md#f-09-soporte-multi-capítulo) | **P1** | ⏳ Planificado |
+| Personalización de Bloques | [F-10](PRD.md#f-10-personalización-de-librería-de-bloques) | **P2** | 🔮 Futuro |
+| Modo Desafío entre Pares | [F-11](PRD.md#f-11-modo-desafío-entre-pares) | **P2** | 🔮 Futuro |
+
+> Para el detalle completo de requisitos, criterios de aceptación y dependencias, consultar el [PRD](PRD.md#3-catálogo-de-funcionalidades).
 
 ---
 
@@ -305,8 +346,9 @@ scripts/database/ → Model (datos)
 
 | Documento | Descripción |
 |-----------|-------------|
+| [PRD.md](PRD.md) | Documento de Requisitos de Producto (autoritativo) |
 | [docs/engine.md](docs/engine.md) | Motor de ejecución de código |
-| [docs/adaptive_agent.md](docs/adaptive_agent.md) | Implementación del agente |
+| [docs/adaptive_agent.md](docs/adaptive_agent.md) | Implementación del agente adaptativo |
 | [docs/nivel_1_design.md](docs/nivel_1_design.md) | Diseño del nivel 1 |
 | [LEVEL_1_DEVELOPMENT_ROADMAP.md](LEVEL_1_DEVELOPMENT_ROADMAP.md) | Roadmap de desarrollo |
 
@@ -335,4 +377,4 @@ Este proyecto está bajo la licencia MIT. Ver [LICENSE](LICENSE) para más detal
 - **Website**: [hello-world-project.dev](https://hello-world-project.dev)
 - **Frontend**: [github.com/.../apps/frontend](https://github.com/tu-usuario/hello-world-project/apps/frontend)
 - **Backend**: [github.com/.../apps/backend](https://github.com/tu-usuario/hello-world-project/apps/backend)
-- **API Client**: [github.com/.../packages/api-client-ts](https://github.com/tu-usuario/hello-world-project/packages/api-client-ts)
+

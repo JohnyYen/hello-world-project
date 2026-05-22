@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from uuid import UUID
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import and_, or_, select, update, delete, func, exists
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -278,7 +278,7 @@ class BaseRepository(ABC, Generic[ModelType]):
         result = await self.db.execute(
             update(self.model)
             .where(and_(self.model.id == id, self.model.deleted_at.is_(None)))
-            .values(deleted_at=datetime.utcnow(), is_deleted=True)
+            .values(deleted_at=datetime.now(timezone.utc), is_deleted=True)
         )
         await self.db.commit()
         return result.rowcount > 0

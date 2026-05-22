@@ -43,7 +43,7 @@ class SyncEventService:
         await self._validate_session_exists(event_data.sync_session_id)
 
         event_dict = event_data.model_dump()
-        event_dict["timestamp"] = datetime.utcnow()
+        event_dict["timestamp"] = datetime.now(timezone.utc)
         event_dict["status"] = "pending"
 
         event = await self.repository.create(event_dict)
