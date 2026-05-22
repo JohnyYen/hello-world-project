@@ -1,5 +1,5 @@
 from typing import Any, Sequence
-from sqladmin import Admin, ModelView, AdminView
+from sqladmin import Admin, ModelView
 from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from starlette.middleware.base import BaseHTTPMiddleware
