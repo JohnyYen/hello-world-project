@@ -1,6 +1,7 @@
 from typing import Any, Sequence
 from sqladmin import Admin, ModelView
 
+
 from src.shared.infrastructure.session import engine
 from src.admin.auth import admin_auth_backend
 
