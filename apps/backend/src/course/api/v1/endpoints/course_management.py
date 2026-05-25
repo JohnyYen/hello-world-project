@@ -76,8 +76,8 @@ async def list_courses(
     Si el usuario es profesor, filtra automáticamente por su profesor_id.
     """
     # Si es profesor y no se pasó professor_id explícito, usar el suyo
-    if current_user.role == "professor" and not professor_id:
-        professor_id_map = await service.course_repo.get_professor_profile_ids(
+    if current_user.role.role_name == "professor" and not professor_id:
+        professor_id_map = await service.repository.get_professor_profile_ids(
             [current_user.id]
         )
         professor_id = professor_id_map.get(current_user.id)
