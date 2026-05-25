@@ -45,6 +45,7 @@ import {
   ChevronRight,
   Pencil,
   Save,
+  Gamepad2,
 } from "lucide-react";
 import {
   enrollStudents,
@@ -63,11 +64,13 @@ const MONTHS = [
 interface CourseDetailViewProps {
   course: CourseDetail;
   allStudents: UserResponse[];
+  availableGames: { id: string; title: string }[];
 }
 
 export default function CourseDetailView({
   course,
   allStudents,
+  availableGames,
 }: CourseDetailViewProps) {
   const notifications = useNotifications();
   const router = useRouter();
@@ -95,6 +98,7 @@ export default function CourseDetailView({
     periodLabel: course.periodLabel,
     startDate: course.startDate,
     endDate: course.endDate,
+    gameId: course.game?.id ?? null as string | null,
   });
   const [saving, setSaving] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string[]> | null>(null);
@@ -232,6 +236,7 @@ export default function CourseDetailView({
       periodLabel: course.periodLabel,
       startDate: course.startDate,
       endDate: course.endDate,
+      gameId: course.game?.id ?? null,
     });
     setValidationErrors(null);
     setIsEditing(true);
@@ -245,7 +250,15 @@ export default function CourseDetailView({
   const handleSaveEdit = async () => {
     setSaving(true);
     setValidationErrors(null);
-    const result = await updateCourseInline(course.id, editForm);
+    const result = await updateCourseInline(course.id, {
+      name: editForm.name,
+      description: editForm.description,
+      schoolYear: editForm.schoolYear,
+      periodLabel: editForm.periodLabel,
+      startDate: editForm.startDate,
+      endDate: editForm.endDate,
+      gameId: editForm.gameId,
+    });
     setSaving(false);
     if (result.success) {
       notifications.success("Curso actualizado correctamente");
@@ -404,7 +417,20 @@ export default function CourseDetailView({
             </>
           ) : (
             <>
-              <h1 className="text-3xl font-bold tracking-tight mb-2">{course.name}</h1>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold tracking-tight">{course.name}</h1>
+                <Badge
+                  variant={course.isActive ? "default" : "secondary"}
+                  className={cn(
+                    "text-xs font-semibold px-3 py-1",
+                    course.isActive
+                      ? "bg-emerald-500/20 text-emerald-200 border border-emerald-400/30"
+                      : "bg-slate-500/20 text-slate-300 border border-slate-400/30"
+                  )}
+                >
+                  {course.isActive ? "Activo" : "Inactivo"}
+                </Badge>
+              </div>
               <div className="flex flex-wrap gap-4 text-indigo-100">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
@@ -448,6 +474,89 @@ export default function CourseDetailView({
             )}
           </div>
         )}
+
+        {/* ─── Juego Asignado ─── */}
+        <section>
+          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50">
+                <Gamepad2 className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">
+                Juego Asignado
+              </h2>
+            </div>
+
+            {isEditing ? (
+              <div className="space-y-3">
+                <Select
+                  value={editForm.gameId ?? "none"}
+                  onValueChange={(v) =>
+                    setEditForm((f) => ({
+                      ...f,
+                      gameId: v === "none" ? null : v,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+                    <Gamepad2 className="h-3.5 w-3.5 mr-2 shrink-0 text-muted-foreground" />
+                    <SelectValue placeholder="Seleccionar juego..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      <span className="text-muted-foreground">Sin juego</span>
+                    </SelectItem>
+                    {availableGames.map((game) => (
+                      <SelectItem key={game.id} value={game.id}>
+                        {game.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {validationErrors?.gameId && (
+                  <p className="text-red-500 text-sm">
+                    {validationErrors.gameId[0]}
+                  </p>
+                )}
+              </div>
+            ) : course.game ? (
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                    {course.game.title}
+                  </p>
+                  {course.game.description && (
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                      {course.game.description}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-4 text-sm text-slate-500 dark:text-slate-400">
+                  {course.game.subject && (
+                    <div className="flex items-center gap-1.5">
+                      <BookOpen className="h-3.5 w-3.5" />
+                      <span>{course.game.subject}</span>
+                    </div>
+                  )}
+                  {course.game.creator && (
+                    <div className="flex items-center gap-1.5">
+                      <Users className="h-3.5 w-3.5" />
+                      <span>Creado por: {course.game.creator}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center py-6 text-slate-400 dark:text-slate-500">
+                <Gamepad2 className="h-10 w-10 mb-2 opacity-50" />
+                <p className="text-sm">Este curso no tiene un juego asignado</p>
+                <p className="text-xs mt-1">
+                  Asigná un juego desde la edición del curso
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
 
         {/* ─── Estudiantes ─── */}
         <section>
