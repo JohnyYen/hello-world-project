@@ -14,9 +14,18 @@ export interface Course {
   updatedAt: string | null;
 }
 
+export interface AssignedGame {
+  id: string;
+  title: string;
+  description: string | null;
+  subject: string | null;
+  creator: string | null;
+}
+
 export interface CourseDetail extends Course {
   students: StudentEnrollment[];
   professors: ProfessorAssignment[];
+  game: AssignedGame | null;
 }
 
 export interface StudentEnrollment {
