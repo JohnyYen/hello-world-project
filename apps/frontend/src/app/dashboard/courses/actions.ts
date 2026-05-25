@@ -58,6 +58,7 @@ export async function createCourse(
       periodLabel: formData.get("periodLabel"),
       startDate: formData.get("startDate"),
       endDate: formData.get("endDate"),
+      gameId: formData.get("gameId") || undefined,
       studentIds: formData.get("studentIds") ?? "[]",
       professorIds: formData.get("professorIds") ?? "[]",
     });
@@ -109,6 +110,7 @@ export async function updateCourse(
       periodLabel: formData.get("periodLabel"),
       startDate: formData.get("startDate"),
       endDate: formData.get("endDate"),
+      gameId: formData.get("gameId") || undefined,
       studentIds: formData.get("studentIds") ?? "[]",
       professorIds: formData.get("professorIds") ?? "[]",
     });

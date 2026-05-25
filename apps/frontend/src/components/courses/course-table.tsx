@@ -40,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CourseForm from "@/components/courses/course-form";
+import { useAuth } from "@/context/auth-context";
 import { deleteCourse } from "@/app/dashboard/courses/actions";
 import type { Course } from "@/types/course.interface";
 import type { UserResponse } from "@/api/types";
@@ -76,6 +77,28 @@ export default function CourseTable({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+
+  // Ensure the current user is in the professors list for the multi-select
+  const professorsList: UserResponse[] =
+    user && currentUserId && !professors.some((p) => p.id === currentUserId)
+      ? [
+          {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            name: user.name,
+            lastname: user.lastname,
+            is_active: true,
+            role: null,
+            created_at: null,
+            updated_at: null,
+          } as UserResponse,
+          ...professors,
+        ]
+      : professors;
 
   const schoolYears = [...new Set(initialCourses.map((c) => c.schoolYear))].sort().reverse();
 
@@ -161,8 +184,9 @@ export default function CourseTable({
               </DialogHeader>
               <CourseForm
                 students={students}
-                professors={professors}
+                professors={professorsList}
                 games={games}
+                currentUserId={currentUserId}
                 onSuccess={() => setCreateDialogOpen(false)}
                 onCancel={() => setCreateDialogOpen(false)}
               />

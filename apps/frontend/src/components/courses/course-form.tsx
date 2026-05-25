@@ -30,6 +30,7 @@ interface CourseFormProps {
   students: UserResponse[];
   professors: UserResponse[];
   games?: GameOption[];
+  currentUserId?: string;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
@@ -56,6 +57,7 @@ export default function CourseForm({
   students,
   professors,
   games,
+  currentUserId,
   onSuccess,
   onCancel,
 }: CourseFormProps) {
@@ -92,8 +94,8 @@ export default function CourseForm({
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>(
     course?.students?.map((s) => s.studentId) ?? []
   );
-  const [selectedProfessorIds, setSelectedProfessorIds] = useState<string[]>(
-    course?.professors?.map((p) => p.professorId) ?? []
+  const [selectedProfessorIds, setSelectedProfessorIds] = useState<string[]>(() =>
+    course?.professors?.map((p) => p.professorId) ?? (currentUserId ? [currentUserId] : [])
   );
 
   const [filterEnrollYear, setFilterEnrollYear] = useState("");
@@ -320,28 +322,20 @@ export default function CourseForm({
         filterFn={enrollmentFilterFn}
       />
 
-      {/* Profesores: mensaje fijo en creación, multi-select en edición */}
-      {!course ? (
-        <div className="space-y-2">
-          <Label className="text-sm text-slate-500">Profesor titular</Label>
-          <div className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2.5 bg-slate-50 dark:bg-slate-900/40">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="h-4 w-4 text-indigo-500">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            <span className="text-sm text-slate-700 dark:text-slate-300">Tú ya estás asignado como profesor titular</span>
-          </div>
-        </div>
-      ) : (
-        <UserMultiSelect
-          label="Profesores adicionales"
-          options={professorOptions}
-          selected={selectedProfessorIds}
-          onChange={setSelectedProfessorIds}
-          placeholder="Agregar profesores adicionales..."
-          searchPlaceholder="Buscar profesores..."
-          emptyMessage="No se encontraron profesores"
-        />
+      {/* Profesores: multi-select en creación y edición */}
+      <UserMultiSelect
+        label={course ? "Profesores adicionales" : "Profesores"}
+        options={professorOptions}
+        selected={selectedProfessorIds}
+        onChange={setSelectedProfessorIds}
+        placeholder={course ? "Agregar profesores adicionales..." : "Seleccionar profesores..."}
+        searchPlaceholder="Buscar profesores..."
+        emptyMessage="No se encontraron profesores"
+      />
+      {!course && currentUserId && (
+        <p className="text-xs text-muted-foreground -mt-2">
+          Tú estás preseleccionado como profesor titular. Puedes agregar más profesores si lo deseas.
+        </p>
       )}
 
       {/* Select de juegos */}
