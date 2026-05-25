@@ -198,7 +198,6 @@ export default function CourseForm({
         <select
           id="periodLabel"
           name="periodLabel"
-          required
           value={periodLabel}
           onChange={(e) => setPeriodLabel(e.target.value)}
           disabled={isPending}
