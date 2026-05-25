@@ -16,6 +16,7 @@ const courseSchema = z.object({
   periodLabel: z.string().min(1, "El período es requerido"),
   startDate: z.string().min(1, "La fecha de inicio es requerida"),
   endDate: z.string().min(1, "La fecha de fin es requerida"),
+  gameId: z.string().uuid().nullable().optional(),
   studentIds: z.string().transform((val) => {
     try {
       return JSON.parse(val) as string[];
@@ -57,6 +58,7 @@ export async function createCourse(
       periodLabel: formData.get("periodLabel"),
       startDate: formData.get("startDate"),
       endDate: formData.get("endDate"),
+      gameId: formData.get("gameId") || undefined,
       studentIds: formData.get("studentIds") ?? "[]",
       professorIds: formData.get("professorIds") ?? "[]",
     });
@@ -70,12 +72,13 @@ export async function createCourse(
     }
 
     const token = await getAuthToken();
-    const { studentIds, professorIds, ...fields } = validated.data;
+    const { studentIds, professorIds, gameId, ...fields } = validated.data;
 
     await coursesApi.create(
       {
         ...fields,
         description: fields.description || undefined,
+        gameId: gameId ?? null,
         studentIds,
         professorIds,
       },
@@ -107,6 +110,7 @@ export async function updateCourse(
       periodLabel: formData.get("periodLabel"),
       startDate: formData.get("startDate"),
       endDate: formData.get("endDate"),
+      gameId: formData.get("gameId") || undefined,
       studentIds: formData.get("studentIds") ?? "[]",
       professorIds: formData.get("professorIds") ?? "[]",
     });
@@ -120,13 +124,14 @@ export async function updateCourse(
     }
 
     const token = await getAuthToken();
-    const { studentIds, professorIds, ...fields } = validated.data;
+    const { studentIds, professorIds, gameId, ...fields } = validated.data;
 
     await coursesApi.update(
       courseId,
       {
         ...fields,
         description: fields.description || undefined,
+        gameId: gameId ?? null,
         studentIds,
         professorIds,
       },
@@ -193,6 +198,7 @@ const courseInlineSchema = z.object({
   periodLabel: z.string().min(1, "El período es requerido"),
   startDate: z.string().min(1, "La fecha de inicio es requerida"),
   endDate: z.string().min(1, "La fecha de fin es requerida"),
+  gameId: z.string().uuid().nullable().optional(),
 }).refine(
   (data) => !data.startDate || !data.endDate || new Date(data.endDate) > new Date(data.startDate),
   { message: "La fecha de fin debe ser posterior a la fecha de inicio", path: ["endDate"] }
@@ -207,6 +213,7 @@ export async function updateCourseInline(
     periodLabel: string;
     startDate: string;
     endDate: string;
+    gameId?: string | null;
   }
 ): Promise<{ success: boolean; message: string; errors?: Record<string, string[]> }> {
   try {
@@ -221,7 +228,8 @@ export async function updateCourseInline(
     }
 
     const token = await getAuthToken();
-    await coursesApi.update(courseId, validated.data, token);
+    const { gameId, ...rest } = validated.data;
+    await coursesApi.update(courseId, { ...rest, gameId: gameId ?? null }, token);
     revalidatePath(`/dashboard/courses/${courseId}`);
 
     return { success: true, message: "Curso actualizado correctamente" };
@@ -235,6 +243,16 @@ export async function getUsersForForm(role: "student" | "professor") {
   try {
     const token = await getAuthToken();
     return coursesApi.listByRole(role, token);
+  } catch {
+    return [];
+  }
+}
+
+export async function getAvailableGamesAction(): Promise<{ id: string; title: string }[]> {
+  try {
+    const token = await getAuthToken();
+    const games = await coursesApi.listGames(token);
+    return games.map((g) => ({ id: g.id, title: g.title }));
   } catch {
     return [];
   }

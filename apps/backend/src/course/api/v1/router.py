@@ -4,7 +4,9 @@ from src.course.api.v1.endpoints.course_reports import router as course_reports_
 from src.course.api.v1.endpoints.course_management import (
     router as course_management_router,
 )
+from src.course.api.v1.endpoints.course_game import router as course_game_router
 
 router = APIRouter(dependencies=[Depends(HTTPBearer())])
 router.include_router(course_reports_router)
 router.include_router(course_management_router)
+router.include_router(course_game_router)

@@ -14,6 +14,7 @@ class CourseCreateRequest(BaseModel):
     end_date: date = Field(..., alias="endDate")
     student_ids: list[UUID] = Field(default=[], alias="studentIds")
     professor_ids: list[UUID] = Field(default=[], alias="professorIds")
+    game_id: Optional[UUID] = Field(None, alias="gameId")
 
     model_config = {"populate_by_name": True}
 
@@ -32,6 +33,7 @@ class CourseUpdateRequest(BaseModel):
     period_label: Optional[str] = Field(None, alias="periodLabel")
     start_date: Optional[date] = Field(None, alias="startDate")
     end_date: Optional[date] = Field(None, alias="endDate")
+    game_id: Optional[UUID] = Field(None, alias="gameId")
     student_ids: Optional[list[UUID]] = Field(None, alias="studentIds")
     professor_ids: Optional[list[UUID]] = Field(None, alias="professorIds")
     is_active: Optional[bool] = Field(None, alias="isActive")
@@ -72,6 +74,8 @@ class CourseResponse(BaseModel):
     start_date: date = Field(alias="startDate")
     end_date: date = Field(alias="endDate")
     is_active: bool = Field(alias="isActive")
+    game_id: Optional[UUID] = Field(None, alias="gameId")
+    game_title: Optional[str] = Field(None, alias="gameTitle")
     student_count: int = Field(default=0, alias="studentCount")
     professor_count: int = Field(default=0, alias="professorCount")
     created_at: Optional[datetime] = None
@@ -80,9 +84,42 @@ class CourseResponse(BaseModel):
     model_config = {"from_attributes": True, "populate_by_name": True}
 
 
+class AvailableGameResponse(BaseModel):
+    """Esquema simplificado de juego para listado de catálogo."""
+
+    id: UUID
+    title: str
+    description: Optional[str] = None
+    subject: Optional[str] = None
+    creator: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+
+class AvailableGamesResponse(BaseModel):
+    """Lista de juegos disponibles para asignar a un curso."""
+
+    success: bool = True
+    message: str = "Juegos disponibles"
+    data: list[AvailableGameResponse] = []
+
+
+class AssignedGameResponse(BaseModel):
+    """Juego actualmente asignado a un curso."""
+
+    id: UUID
+    title: str
+    description: Optional[str] = None
+    subject: Optional[str] = None
+    creator: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+
 class CourseDetailResponse(CourseResponse):
     students: list[StudentEnrollmentResponse] = []
     professors: list[ProfessorAssignmentResponse] = []
+    game: Optional[AssignedGameResponse] = None
 
 
 class PaginatedCourseListResponse(BaseModel):

@@ -1,32 +1,8 @@
 from typing import Any, Sequence
-from sqladmin import Admin, ModelView, AdminView
-from fastapi import Request, Response
-from fastapi.responses import RedirectResponse
-from starlette.middleware.base import BaseHTTPMiddleware
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqladmin import Admin, ModelView
 
 from src.shared.infrastructure.session import engine
-from src.admin.auth import admin_auth, verify_admin_role, get_session, load_user_with_session
-
-
-class AdminAuthMiddleware(BaseHTTPMiddleware):
-    """
-    Middleware que carga el usuario y sesión de DB para las request del admin.
-    Necesario para verificar el rol admin en cada request.
-    """
-
-    async def dispatch(self, request: Request, call_next):
-        if request.url.path.startswith("/admin"):
-            result = await load_user_with_session(request)
-            if result:
-                user, session = result
-                request.state.admin_user = user
-                request.state.admin_session = session
-            else:
-                request.state.admin_user = None
-                request.state.admin_session = None
-        return await call_next(request)
+from src.admin.auth import admin_auth_backend
 
 from src.users.domain.user import User
 from src.users.domain.professor import Professor
@@ -52,74 +28,13 @@ from src.sync.domain.sync_event import SyncEvent
 
 class BaseAdminModelView(ModelView):
     """
-    Base ModelView que verifica el rol admin en cada request.
-    Solo permite acceso a usuarios con rol 'admin'.
+    Base ModelView compartido.
+    La autenticación y verificación de rol admin la maneja
+    SQLAdmin 0.20.0 via AuthenticationBackend (login_required decorator).
     """
 
-    async def _check_admin_role(self, request: Request) -> bool:
-        """Verifica si el usuario actual tiene rol de admin."""
-        session = request.state.admin_session
-        if not session:
-            return False
-        
-        user = request.state.admin_user
-        if not user:
-            return False
 
-        return await verify_admin_role(user, session)
-
-    async def list(self, request: Request) -> Any:
-        """Override list para verificar rol admin."""
-        if not await self._check_admin_role(request):
-            from fastapi.responses import JSONResponse
-            return JSONResponse(
-                status_code=403,
-                content={"detail": "Acceso denegado. Se requiere rol de admin."}
-            )
-        return await super().list(request)
-
-    async def detail(self, request: Request, pk: Any) -> Any:
-        """Override detail para verificar rol admin."""
-        if not await self._check_admin_role(request):
-            from fastapi.responses import JSONResponse
-            return JSONResponse(
-                status_code=403,
-                content={"detail": "Acceso denegado. Se requiere rol de admin."}
-            )
-        return await super().detail(request, pk)
-
-    async def insert(self, request: Request) -> Any:
-        """Override insert para verificar rol admin."""
-        if not await self._check_admin_role(request):
-            from fastapi.responses import JSONResponse
-            return JSONResponse(
-                status_code=403,
-                content={"detail": "Acceso denegado. Se requiere rol de admin."}
-            )
-        return await super().insert(request)
-
-    async def edit(self, request: Request, pk: Any) -> Any:
-        """Override edit para verificar rol admin."""
-        if not await self._check_admin_role(request):
-            from fastapi.responses import JSONResponse
-            return JSONResponse(
-                status_code=403,
-                content={"detail": "Acceso denegado. Se requiere rol de admin."}
-            )
-        return await super().edit(request, pk)
-
-    async def delete(self, request: Request, pk: Any) -> Any:
-        """Override delete para verificar rol admin."""
-        if not await self._check_admin_role(request):
-            from fastapi.responses import JSONResponse
-            return JSONResponse(
-                status_code=403,
-                content={"detail": "Acceso denegado. Se requiere rol de admin."}
-            )
-        return await super().delete(request, pk)
-
-
-class UserAdminView(BaseAdminModelView):
+class UserAdminView(BaseAdminModelView, model=User):
     """AdminView para el modelo User."""
     name = "Usuario"
     name_plural = "Usuarios"
@@ -142,7 +57,7 @@ class UserAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class RoleAdminView(BaseAdminModelView):
+class RoleAdminView(BaseAdminModelView, model=Role):
     """AdminView para el modelo Role."""
     name = "Rol"
     name_plural = "Roles"
@@ -156,7 +71,7 @@ class RoleAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class ProfessorAdminView(BaseAdminModelView):
+class ProfessorAdminView(BaseAdminModelView, model=Professor):
     """AdminView para el modelo Professor."""
     name = "Profesor"
     name_plural = "Profesores"
@@ -170,7 +85,7 @@ class ProfessorAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class StudentAdminView(BaseAdminModelView):
+class StudentAdminView(BaseAdminModelView, model=Student):
     """AdminView para el modelo Student."""
     name = "Estudiante"
     name_plural = "Estudiantes"
@@ -184,7 +99,7 @@ class StudentAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class TeacherSettingsAdminView(BaseAdminModelView):
+class TeacherSettingsAdminView(BaseAdminModelView, model=TeacherSettings):
     """AdminView para el modelo TeacherSettings."""
     name = "Configuración de Profesor"
     name_plural = "Configuraciones de Profesor"
@@ -209,7 +124,7 @@ class TeacherSettingsAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class GameAdminView(BaseAdminModelView):
+class GameAdminView(BaseAdminModelView, model=Game):
     """AdminView para el modelo Game."""
     name = "Juego"
     name_plural = "Juegos"
@@ -223,7 +138,7 @@ class GameAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class GameInstanceAdminView(BaseAdminModelView):
+class GameInstanceAdminView(BaseAdminModelView, model=GameInstance):
     """AdminView para el modelo GameInstance."""
     name = "Instancia de Juego"
     name_plural = "Instancias de Juego"
@@ -237,7 +152,7 @@ class GameInstanceAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class SegmentLevelAdminView(BaseAdminModelView):
+class SegmentLevelAdminView(BaseAdminModelView, model=SegmentLevel):
     """AdminView para el modelo SegmentLevel."""
     name = "Nivel de Segmento"
     name_plural = "Niveles de Segmento"
@@ -251,7 +166,7 @@ class SegmentLevelAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class LevelAdminView(BaseAdminModelView):
+class LevelAdminView(BaseAdminModelView, model=Level):
     """AdminView para el modelo Level."""
     name = "Nivel"
     name_plural = "Niveles"
@@ -265,7 +180,7 @@ class LevelAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class CourseAdminView(BaseAdminModelView):
+class CourseAdminView(BaseAdminModelView, model=Course):
     """AdminView para el modelo Course."""
     name = "Curso"
     name_plural = "Cursos"
@@ -279,7 +194,7 @@ class CourseAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class CourseEnrollmentAdminView(BaseAdminModelView):
+class CourseEnrollmentAdminView(BaseAdminModelView, model=CourseEnrollment):
     """AdminView para el modelo CourseEnrollment."""
     name = "Inscripción"
     name_plural = "Inscripciones"
@@ -293,7 +208,7 @@ class CourseEnrollmentAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class ProgressAdminView(BaseAdminModelView):
+class ProgressAdminView(BaseAdminModelView, model=Progress):
     """AdminView para el modelo Progress."""
     name = "Progreso"
     name_plural = "Progresos"
@@ -311,7 +226,7 @@ class ProgressAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class XAPIStatementAdminView(BaseAdminModelView):
+class XAPIStatementAdminView(BaseAdminModelView, model=XAPIStatement):
     """AdminView para el modelo XAPIStatement."""
     name = "Declaración xAPI"
     name_plural = "Declaraciones xAPI"
@@ -330,7 +245,7 @@ class XAPIStatementAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class FeedbackAdminView(BaseAdminModelView):
+class FeedbackAdminView(BaseAdminModelView, model=Feedback):
     """AdminView para el modelo Feedback."""
     name = "Feedback"
     name_plural = "Feedbacks"
@@ -347,7 +262,7 @@ class FeedbackAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class SyncSessionAdminView(BaseAdminModelView):
+class SyncSessionAdminView(BaseAdminModelView, model=SyncSession):
     """AdminView para el modelo SyncSession."""
     name = "Sesión de Sincronización"
     name_plural = "Sesiones de Sincronización"
@@ -364,7 +279,7 @@ class SyncSessionAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class SyncEventAdminView(BaseAdminModelView):
+class SyncEventAdminView(BaseAdminModelView, model=SyncEvent):
     """AdminView para el modelo SyncEvent."""
     name = "Evento de Sincronización"
     name_plural = "Eventos de Sincronización"
@@ -381,7 +296,7 @@ class SyncEventAdminView(BaseAdminModelView):
     can_delete = True
 
 
-async def setup_admin(app: Any) -> Admin:
+def setup_admin(app: Any) -> Admin:
     """
     Configura SQLAdmin con todos los modelos y autenticación.
     """
@@ -390,28 +305,29 @@ async def setup_admin(app: Any) -> Admin:
         engine=engine,
         title="Admin - Hello World",
         base_url="/admin",
+        authentication_backend=admin_auth_backend,
     )
 
-    # Agregar autenticación
-    admin.add_view(UserAdminView(User, name="Usuarios"))
-    admin.add_view(RoleAdminView(Role, name="Roles"))
-    admin.add_view(ProfessorAdminView(Professor, name="Profesores"))
-    admin.add_view(StudentAdminView(Student, name="Estudiantes"))
-    admin.add_view(TeacherSettingsAdminView(TeacherSettings, name="Configuración de Profesor"))
+    # Agregar vistas - el metaclass ModelViewMeta ya instancia la clase automáticamente
+    admin.add_view(UserAdminView)
+    admin.add_view(RoleAdminView)
+    admin.add_view(ProfessorAdminView)
+    admin.add_view(StudentAdminView)
+    admin.add_view(TeacherSettingsAdminView)
 
-    admin.add_view(GameAdminView(Game, name="Juegos"))
-    admin.add_view(GameInstanceAdminView(GameInstance, name="Instancias de Juego"))
-    admin.add_view(SegmentLevelAdminView(SegmentLevel, name="Niveles de Segmento"))
-    admin.add_view(LevelAdminView(Level, name="Niveles"))
+    admin.add_view(GameAdminView)
+    admin.add_view(GameInstanceAdminView)
+    admin.add_view(SegmentLevelAdminView)
+    admin.add_view(LevelAdminView)
 
-    admin.add_view(CourseAdminView(Course, name="Cursos"))
-    admin.add_view(CourseEnrollmentAdminView(CourseEnrollment, name="Inscripciones"))
+    admin.add_view(CourseAdminView)
+    admin.add_view(CourseEnrollmentAdminView)
 
-    admin.add_view(ProgressAdminView(Progress, name="Progresos"))
-    admin.add_view(XAPIStatementAdminView(XAPIStatement, name="Declaraciones xAPI"))
-    admin.add_view(FeedbackAdminView(Feedback, name="Feedbacks"))
+    admin.add_view(ProgressAdminView)
+    admin.add_view(XAPIStatementAdminView)
+    admin.add_view(FeedbackAdminView)
 
-    admin.add_view(SyncSessionAdminView(SyncSession, name="Sesiones de Sincronización"))
-    admin.add_view(SyncEventAdminView(SyncEvent, name="Eventos de Sincronización"))
+    admin.add_view(SyncSessionAdminView)
+    admin.add_view(SyncEventAdminView)
 
     return admin

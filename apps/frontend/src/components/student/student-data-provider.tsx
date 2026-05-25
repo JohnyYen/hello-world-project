@@ -125,9 +125,17 @@ export async function getUniqueCourses(): Promise<string[]> {
     const token = await getAuthToken();
     if (!token) return [];
 
+    // Mismo API_BASE_URL que usa el api client:
+    // - cliente    → NEXT_PUBLIC_API_URL (localhost:8010 en local, o el dominio en prod)
+    // - servidor   → API_URL (hwp-backend:8000 en Docker, 8010 en local)
+    const apiBase =
+      typeof window !== "undefined"
+        ? (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010")
+        : (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010");
+
     // Llamar al endpoint /api/v1/users/students/courses
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8010'}/api/v1/users/students/courses`,
+      `${apiBase}/api/v1/users/students/courses`,
       {
         headers: {
           'Authorization': `Bearer ${token}`,

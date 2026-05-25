@@ -7,15 +7,25 @@ export interface Course {
   startDate: string;
   endDate: string;
   isActive: boolean;
+  gameId: string | null;
   studentCount: number;
   professorCount: number;
   createdAt: string | null;
   updatedAt: string | null;
 }
 
+export interface AssignedGame {
+  id: string;
+  title: string;
+  description: string | null;
+  subject: string | null;
+  creator: string | null;
+}
+
 export interface CourseDetail extends Course {
   students: StudentEnrollment[];
   professors: ProfessorAssignment[];
+  game: AssignedGame | null;
 }
 
 export interface StudentEnrollment {
@@ -39,6 +49,7 @@ export interface CourseCreateRequest {
   periodLabel: string;
   startDate: string;
   endDate: string;
+  gameId?: string | null;
   studentIds: string[];
   professorIds: string[];
 }
@@ -50,6 +61,7 @@ export interface CourseUpdateRequest {
   periodLabel?: string;
   startDate?: string;
   endDate?: string;
+  gameId?: string | null;
   studentIds?: string[];
   professorIds?: string[];
   isActive?: boolean;

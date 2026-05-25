@@ -12,12 +12,13 @@ from src.course.domain.course_professor import CourseProfessor
 from src.users.domain.student import Student
 from src.users.domain.professor import Professor
 from src.users.domain.user import User
+from src.game.infrastructure.game_instance_repository import GameInstanceRepository
+from src.game.domain.game_instance import GameInstance
+from src.shared.domain.enums import GameStatus
 
 
 class CourseRepository(BaseRepository[Course]):
-    """
-    Repositorio para el modelo Course con soporte de enrollments.
-    """
+    """Repositorio para el modelo Course con soporte de enrollments."""
 
     def __init__(self, db: AsyncSession):
         super().__init__(db, Course)
@@ -95,7 +96,7 @@ class CourseRepository(BaseRepository[Course]):
         self, course_id: UUIDType
     ) -> Optional[Course]:
         """
-        Eager load enrollments + course_professors with their related users.
+        Eager load enrollments + course_professors + game with their related users.
         """
         query = (
             select(Course)
@@ -106,6 +107,7 @@ class CourseRepository(BaseRepository[Course]):
                 selectinload(Course.course_professors).selectinload(
                     CourseProfessor.professor
                 ).selectinload(Professor.user),
+                selectinload(Course.game),
             )
             .where(Course.id == course_id, Course.deleted_at.is_(None))
         )
@@ -462,3 +464,75 @@ class CourseRepository(BaseRepository[Course]):
         result = await self.db.execute(query)
         rows = result.all()
         return list(rows), total
+
+    async def is_professor_assigned_to_course(
+        self, professor_user_id: UUIDType, course_id: UUIDType
+    ) -> bool:
+        """
+        Verifica si un profesor (por su user.id) está asignado a un curso.
+
+        Hace JOIN contra CourseProfessor → Professor para obtenerlo en un solo query.
+        """
+        query = (
+            select(func.count())
+            .select_from(CourseProfessor)
+            .join(Professor, Professor.id == CourseProfessor.professor_id)
+            .where(
+                CourseProfessor.course_id == course_id,
+                Professor.user_id == professor_user_id,
+                CourseProfessor.deleted_at.is_(None),
+            )
+        )
+        result = await self.db.execute(query)
+        return (result.scalar() or 0) > 0
+
+    async def get_course_with_game(
+        self, course_id: UUIDType
+    ) -> Course | None:
+        """
+        Obtiene un curso con su juego asociado cargado.
+        """
+        query = (
+            select(Course)
+            .options(selectinload(Course.game))
+            .where(Course.id == course_id, Course.deleted_at.is_(None))
+        )
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()
+
+    async def has_active_game_instances(self, course_id: UUIDType) -> bool:
+        """
+        Verifica si un curso tiene instancias de juego activas o en pausa.
+
+        Delega la consulta a GameInstanceRepository para mantener la
+        responsabilidad de cada dominio en su propio repositorio.
+        """
+        instance_repo = GameInstanceRepository(self.db)
+        return await instance_repo.has_active_instances_for_course(
+            course_id, include_deleted=False
+        )
+
+    async def get_profile_id_by_user_id(
+        self, user_id: UUIDType, profile_type: str
+    ) -> UUIDType | None:
+        """
+        Obtiene el ID de perfil (student o professor) correspondiente a un user_id.
+
+        Args:
+            user_id: UUID del usuario (de la tabla users).
+            profile_type: 'student' o 'professor' para indicar qué tabla consultar.
+
+        Returns:
+            UUID del perfil si existe, None en caso contrario.
+        """
+        if profile_type == "student":
+            query = select(Student.id).where(Student.user_id == user_id)
+        elif profile_type == "professor":
+            query = select(Professor.id).where(Professor.user_id == user_id)
+        else:
+            raise ValueError(
+                f"profile_type debe ser 'student' o 'professor', recibido: {profile_type}"
+            )
+
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()

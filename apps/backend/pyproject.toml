@@ -31,6 +31,7 @@ dependencies = [
     
     # Admin
     "sqladmin>=0.1.5",
+    "itsdangerous>=2.2.0",  # Requerido por SessionMiddleware de Starlette
     
     # Testing
     "pytest>=8.3.0",

@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.course.domain.course import Course
 from src.course.infrastructure.course_repository import CourseRepository
 from src.course.api.v1.schemas.course_management import (
@@ -10,8 +11,15 @@ from src.course.api.v1.schemas.course_management import (
     CourseResponse,
     StudentEnrollmentResponse,
     ProfessorAssignmentResponse,
+    AssignedGameResponse,
 )
-from src.shared.domain.exceptions import NotFoundException, DuplicateEntryException
+from src.shared.domain.exceptions import NotFoundException
+from src.shared.domain.exceptions import DuplicateEntryException
+from src.course.domain.game_assignment_exceptions import GameNotFoundException
+from src.game.infrastructure.game_repository import GameRepository
+from src.users.domain.student import Student
+from src.users.domain.professor import Professor
+from src.users.domain.user import User
 
 
 class CreateCourseUseCase:
@@ -20,18 +28,22 @@ class CreateCourseUseCase:
     Todo en una sola transacción.
     """
 
-    def __init__(self, db: AsyncSession, course_repo: CourseRepository):
+    def __init__(self, db: AsyncSession, course_repo: CourseRepository, current_user: User = None):
         self.db = db
         self.course_repo = course_repo
+        self.current_user = current_user
 
     async def execute(self, request: CourseCreateRequest) -> CourseDetailResponse:
         """
         Crea un curso con estudiantes y profesores en una sola transacción.
-        El SELECT de validación de duplicados se ejecuta DENTRO de begin()
-        para que autobegin no abra una transacción previa y no se produzca el
-        error 'A transaction is already begun on this Session'.
+
+        NOTA: No usamos async with self.db.begin() porque get_current_user
+        (ejecutado antes en la cadena de dependencias) ya activa autobegin
+        al hacer db.execute(select(User)). Si hiciéramos begin() explícito
+        acá, SQLAlchemy tiraría:
+          "A transaction is already begun on this Session"
         """
-        async with self.db.begin():
+        try:
             existing = await self.course_repo.get_one_by_filters({
                 "school_year": request.school_year,
                 "period_label": request.period_label,
@@ -45,9 +57,19 @@ class CreateCourseUseCase:
                 exclude={"student_ids", "professor_ids"},
                 by_alias=False,
             )
+            # Validar game_id si viene en el request
+            game_id = course_data.pop("game_id", None)
             course = Course(**course_data)
             self.db.add(course)
             await self.db.flush()
+
+            # Si viene game_id, validar que el juego exista
+            if game_id is not None:
+                game_repo = GameRepository(self.db)
+                game_exists = await game_repo.exists(game_id, include_deleted=False)
+                if not game_exists:
+                    raise GameNotFoundException(str(game_id))
+                course.game_id = game_id
 
             if request.student_ids:
                 # Convertir User.id → Student.id antes de insertar en course_enrollments
@@ -83,6 +105,11 @@ class CreateCourseUseCase:
                         course.id, valid_professor_ids
                     )
 
+            await self.db.commit()
+        except Exception:
+            await self.db.rollback()
+            raise
+
         await self.db.refresh(course)
         return await self._build_detail_response(course.id)
 
@@ -100,13 +127,18 @@ class CreateCourseUseCase:
         course_resp.student_count = len(students_data)
         course_resp.professor_count = len(professors_data)
 
+        game_data = None
+        if course.game:
+            # Course.game viene cargado por get_by_id_with_relations
+            game_data = AssignedGameResponse.model_validate(course.game)
+
         return CourseDetailResponse(
             **course_resp.model_dump(by_alias=True),
             students=[
                 StudentEnrollmentResponse.model_validate(s) for s in students_data
             ],
             professors=[
-                ProfessorAssignmentResponse.model_validate(p)
-                for p in professors_data
+                ProfessorAssignmentResponse.model_validate(p) for p in professors_data
             ],
+            game=game_data,
         )

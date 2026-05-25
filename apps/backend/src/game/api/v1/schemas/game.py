@@ -21,7 +21,6 @@ class GameBase(BaseModel):
     )
     creator: Optional[str] = Field(None, max_length=255, example="Profesor García")
     subject: Optional[str] = Field(None, max_length=255, example="Matemáticas")
-    publication_status: Optional[str] = Field(None, max_length=255, example="published")
 
 
 # ------------------------
@@ -46,7 +45,6 @@ class GameUpdate(BaseModel):
     )
     creator: Optional[str] = Field(None, max_length=255, example="Profesor García")
     subject: Optional[str] = Field(None, max_length=255, example="Matemáticas")
-    publication_status: Optional[str] = Field(None, max_length=255, example="published")
 
 
 # ------------------------

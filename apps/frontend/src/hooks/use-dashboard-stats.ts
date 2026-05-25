@@ -18,7 +18,7 @@ interface UseDashboardStatsReturn {
   refetch: () => void;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export function useDashboardStats(
   period: "7d" | "30d" | "3m" = "30d"
