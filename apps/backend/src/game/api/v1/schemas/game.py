@@ -21,6 +21,9 @@ class GameBase(BaseModel):
     )
     creator: Optional[str] = Field(None, max_length=255, example="Profesor García")
     subject: Optional[str] = Field(None, max_length=255, example="Matemáticas")
+    download_link: str = Field(
+        ..., min_length=1, max_length=500, example="https://games.helloworld.edu/math-game.zip"
+    )
 
 
 # ------------------------
@@ -45,6 +48,9 @@ class GameUpdate(BaseModel):
     )
     creator: Optional[str] = Field(None, max_length=255, example="Profesor García")
     subject: Optional[str] = Field(None, max_length=255, example="Matemáticas")
+    download_link: Optional[str] = Field(
+        None, max_length=500, example="https://games.helloworld.edu/math-game.zip"
+    )
 
 
 # ------------------------
