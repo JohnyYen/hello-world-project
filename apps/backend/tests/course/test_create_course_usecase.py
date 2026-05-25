@@ -46,9 +46,6 @@ class TestCreateCourseUseCase:
         mock_db.add = MagicMock()
         mock_db.flush = AsyncMock()
         mock_db.refresh = AsyncMock()
-        mock_db.begin = MagicMock()
-        mock_db.begin.return_value.__aenter__ = AsyncMock(return_value=mock_db)
-        mock_db.begin.return_value.__aexit__ = AsyncMock(return_value=None)
 
         uc = CreateCourseUseCase(db=mock_db, course_repo=mock_repo)
 
@@ -70,6 +67,7 @@ class TestCreateCourseUseCase:
         mock_repo.get_one_by_filters.assert_awaited_once()
         mock_repo.bulk_create_enrollments.assert_awaited_once()
         mock_repo.bulk_create_professors.assert_awaited_once()
+        mock_db.commit.assert_awaited_once()
 
     @pytest.mark.asyncio
     async def test_execute_duplicate_school_year_and_period_raises_exception(
@@ -106,9 +104,6 @@ class TestCreateCourseUseCase:
         mock_db.add = MagicMock()
         mock_db.flush = AsyncMock()
         mock_db.refresh = AsyncMock()
-        mock_db.begin = MagicMock()
-        mock_db.begin.return_value.__aenter__ = AsyncMock(return_value=mock_db)
-        mock_db.begin.return_value.__aexit__ = AsyncMock(return_value=None)
 
         mock_repo.get_by_id_with_relations = AsyncMock(return_value=sample_course)
         mock_repo.get_students_for_course = AsyncMock(return_value=[])
@@ -154,9 +149,6 @@ class TestCreateCourseUseCase:
         mock_db.add = MagicMock()
         mock_db.flush = AsyncMock()
         mock_db.refresh = AsyncMock()
-        mock_db.begin = MagicMock()
-        mock_db.begin.return_value.__aenter__ = AsyncMock(return_value=mock_db)
-        mock_db.begin.return_value.__aexit__ = AsyncMock(return_value=None)
 
         mock_repo.get_by_id_with_relations = AsyncMock(return_value=sample_course)
         mock_repo.get_students_for_course = AsyncMock(

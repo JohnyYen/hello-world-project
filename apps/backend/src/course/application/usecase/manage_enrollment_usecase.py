@@ -22,7 +22,7 @@ class ManageEnrollmentUseCase:
     async def enroll_students(
         self, course_id: UUID, student_ids: list[UUID]
     ) -> list[StudentEnrollmentResponse]:
-        async with self.db.begin():
+        try:
             course = await self.course_repo.get_by_id(course_id)
             if not course:
                 raise NotFoundException("Curso no encontrado")
@@ -43,12 +43,17 @@ class ManageEnrollmentUseCase:
             if new_ids:
                 await self.course_repo.bulk_create_enrollments(course_id, new_ids)
 
+            await self.db.commit()
+        except Exception:
+            await self.db.rollback()
+            raise
+
         # Lectura fuera de la transacción — solo SELECT
         students_data = await self.course_repo.get_students_for_course(course_id)
         return [StudentEnrollmentResponse.model_validate(s) for s in students_data]
 
     async def unenroll_student(self, course_id: UUID, student_id: UUID) -> bool:
-        async with self.db.begin():
+        try:
             course = await self.course_repo.get_by_id(course_id)
             if not course:
                 raise NotFoundException("Curso no encontrado")
@@ -69,7 +74,11 @@ class ManageEnrollmentUseCase:
                 )
                 .values(deleted_at=now, is_deleted=True)
             )
+            await self.db.commit()
             return result.rowcount > 0
+        except Exception:
+            await self.db.rollback()
+            raise
 
     async def delete_course(self, course_id: UUID) -> bool:
         course = await self.course_repo.get_by_id(course_id)

@@ -36,11 +36,14 @@ class CreateCourseUseCase:
     async def execute(self, request: CourseCreateRequest) -> CourseDetailResponse:
         """
         Crea un curso con estudiantes y profesores en una sola transacción.
-        El SELECT de validación de duplicados se ejecuta DENTRO de begin()
-        para que autobegin no abra una transacción previa y no se produzca el
-        error 'A transaction is already begun on this Session'.
+
+        NOTA: No usamos async with self.db.begin() porque get_current_user
+        (ejecutado antes en la cadena de dependencias) ya activa autobegin
+        al hacer db.execute(select(User)). Si hiciéramos begin() explícito
+        acá, SQLAlchemy tiraría:
+          "A transaction is already begun on this Session"
         """
-        async with self.db.begin():
+        try:
             existing = await self.course_repo.get_one_by_filters({
                 "school_year": request.school_year,
                 "period_label": request.period_label,
@@ -102,16 +105,10 @@ class CreateCourseUseCase:
                         course.id, valid_professor_ids
                     )
 
-            # Autoselección de profesor: si el usuario es profesor, agregar su ID
-            if self.current_user and self.current_user.role == "professor":
-                professor_id_map = await self.course_repo.get_professor_profile_ids(
-                    [self.current_user.id]
-                )
-                my_professor_id = professor_id_map.get(self.current_user.id)
-                if my_professor_id and my_professor_id not in valid_professor_ids:
-                    await self.course_repo.bulk_create_professors(
-                        course.id, [my_professor_id]
-                    )
+            await self.db.commit()
+        except Exception:
+            await self.db.rollback()
+            raise
 
         await self.db.refresh(course)
         return await self._build_detail_response(course.id)
