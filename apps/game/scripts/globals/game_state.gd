@@ -39,7 +39,6 @@ func start_dialogue(dialogue_path: String, next_scene: String = "", is_overlay :
 	# Registrar el diálogo actual y la escena siguiente
 	current_dialogue_path = dialogue_path
 	next_scene_path = next_scene
-	
 	print("DEBUG [Game State]: Iniciando diálogo %s" % current_dialogue_path)
 	print("DEBUG [Game State]: Siguiente escena asignada %s" % next_scene_path)
 	#DialogueManager.show_dialogue_balloon(load(current_dialogue_path))
