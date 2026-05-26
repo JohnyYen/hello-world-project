@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://6gr1ei4kgnc8"]
+[gd_scene load_steps=54 format=3 uid="uid://6gr1ei4kgnc8"]
 
 [ext_resource type="PackedScene" uid="uid://bm5lwl4uv5x07" path="res://scenes/pages/levels/template_level.tscn" id="1_lxa08"]
 [ext_resource type="Script" uid="uid://g33a1ssjrn0p" path="res://scenes/pages/levels/cafeteria/cafeteria_gameplay.gd" id="2_krp0b"]
@@ -9,12 +9,13 @@
 [ext_resource type="Texture2D" uid="uid://dswur01en88wh" path="res://assets/anime/sprites/level_1/Table.png" id="4_ledsl"]
 [ext_resource type="Script" uid="uid://cnula2sch333j" path="res://scenes/pages/levels/cafeteria/player.gd" id="5_r0cij"]
 [ext_resource type="Texture2D" uid="uid://40nd5k6h8esi" path="res://assets/anime/sprites/level_1/main_character_sprite.png" id="6_8ivq4"]
-[ext_resource type="Texture2D" uid="uid://rax3g6cvle6w" path="res://assets/anime/sprites/level_1/Player_Sprite.png" id="7_cl8ni"]
+[ext_resource type="Script" uid="uid://ccup0qaec60cq" path="res://scenes/pages/levels/cafeteria/world_gameplay.gd" id="7_1ngbw"]
 [ext_resource type="Texture2D" uid="uid://cr2itxc11hn3" path="res://assets/anime/sprites/level_1/male_main_wall.png" id="8_xi6db"]
 [ext_resource type="PackedScene" uid="uid://vgv7q3fyxtxi" path="res://scenes/characters/level_one/student_1.tscn" id="9_c28ar"]
 [ext_resource type="PackedScene" uid="uid://dn51spf7wjded" path="res://scenes/characters/level_one/student_2.tscn" id="10_f0h7g"]
 [ext_resource type="PackedScene" uid="uid://bkdoo1tod213m" path="res://scenes/characters/level_one/student_3.tscn" id="14_402hk"]
 [ext_resource type="PackedScene" uid="uid://cy2yutf7syrox" path="res://scenes/characters/level_one/student_4.tscn" id="15_1ngbw"]
+[ext_resource type="Texture2D" uid="uid://dn2w571sq4h4p" path="res://assets/anime/sprites/level_1/pan_station.png" id="16_bj6j8"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_402hk"]
 radius = 20.0
@@ -261,17 +262,27 @@ animations = [{
 size = Vector2(618, 52)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1ngbw"]
-size = Vector2(49, 65)
+size = Vector2(56, 105.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bj6j8"]
 size = Vector2(74, 59)
 
-[node name="CafeteriaLevel" instance=ExtResource("1_lxa08")]
+[node name="CafeteriaLevel" node_paths=PackedStringArray("hud", "drink_machine", "bread_station", "cash_register") instance=ExtResource("1_lxa08")]
 script = ExtResource("2_krp0b")
 back_scene = "uid://f1phaldnojoi"
+hud = NodePath("MarginContainer/Hud")
+drink_machine = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/DrinkMachine")
+bread_station = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/BreadStation")
+cash_register = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/CashRegister")
 student_scenes = [ExtResource("9_c28ar"), ExtResource("10_f0h7g"), ExtResource("14_402hk"), ExtResource("15_1ngbw")]
 
-[node name="World" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport" index="0"]
+[node name="World" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport" index="0" node_paths=PackedStringArray("player_node", "drink_machine", "bread_storage")]
+z_as_relative = false
+y_sort_enabled = true
+script = ExtResource("7_1ngbw")
+player_node = NodePath("PlayerZone/CharacterBody2D")
+drink_machine = NodePath("Stations/DrinkMachine")
+bread_storage = NodePath("Stations/BreadStation")
 
 [node name="Background" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World" index="0"]
 
@@ -290,6 +301,7 @@ texture = ExtResource("3_cl8ni")
 position = Vector2(355, 547)
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone" index="0"]
+z_index = 4
 position = Vector2(-60, -199)
 script = ExtResource("5_r0cij")
 
@@ -297,14 +309,15 @@ script = ExtResource("5_r0cij")
 visible = false
 texture_filter = 1
 scale = Vector2(0.419872, 0.454327)
-texture = ExtResource("7_cl8ni")
+centered = false
+offset = Vector2(10, 20)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/CharacterBody2D" index="1"]
 z_index = 1
 shape = SubResource("CapsuleShape2D_402hk")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/PlayerZone/CharacterBody2D" index="2"]
-z_as_relative = false
+z_index = 4
 texture_filter = 1
 scale = Vector2(0.45, 0.433)
 sprite_frames = SubResource("SpriteFrames_8hk0t")
@@ -356,7 +369,24 @@ texture = ExtResource("3_krp0b")
 position = Vector2(-2.5, 4.5)
 shape = SubResource("RectangleShape2D_1ngbw")
 
-[node name="DrinkMachine" type="StaticBody2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations" index="2"]
+[node name="BreadStation" type="StaticBody2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations" index="2"]
+z_index = 2
+z_as_relative = false
+y_sort_enabled = true
+position = Vector2(-153, 194)
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/BreadStation" index="0"]
+z_index = 2
+position = Vector2(-16, -21)
+scale = Vector2(0.169118, 0.179714)
+texture = ExtResource("16_bj6j8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/BreadStation" index="1"]
+z_index = 2
+position = Vector2(-16, -15.75)
+shape = SubResource("RectangleShape2D_1ngbw")
+
+[node name="DrinkMachine" type="StaticBody2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations" index="3"]
 position = Vector2(316, 236)
 
 [node name="Sprite2D" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/DrinkMachine" index="0"]
@@ -425,7 +455,6 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer/Hud" index="1"]
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
