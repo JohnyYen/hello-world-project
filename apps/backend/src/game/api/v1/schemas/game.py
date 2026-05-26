@@ -25,6 +25,15 @@ class GameBase(BaseModel):
         ..., min_length=1, max_length=500, example="https://games.helloworld.edu/math-game.zip"
     )
 
+    @field_validator("download_link")
+    @classmethod
+    def validate_download_link(cls, v: str) -> str:
+        if not v.startswith(("http://", "https://")):
+            raise ValueError(
+                "download_link must be a valid URL starting with http:// or https://"
+            )
+        return v
+
 
 # ------------------------
 # Esquemas de Request
@@ -51,6 +60,15 @@ class GameUpdate(BaseModel):
     download_link: Optional[str] = Field(
         None, max_length=500, example="https://games.helloworld.edu/math-game.zip"
     )
+
+    @field_validator("download_link")
+    @classmethod
+    def validate_download_link(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None and not v.startswith(("http://", "https://")):
+            raise ValueError(
+                "download_link must be a valid URL starting with http:// or https://"
+            )
+        return v
 
 
 # ------------------------
