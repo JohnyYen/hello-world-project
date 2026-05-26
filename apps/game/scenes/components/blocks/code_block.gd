@@ -12,11 +12,12 @@ class_name CodeBlockComponent
 signal block_selected(block_data: Dictionary)
 
 func _ready():
-	print("BTN:", btn)
+	#print("BTN:", btn._on_te)
 	# Configurar el texto y el tooltip
 	$Label.text = block_name
 	tooltip_text = description
-
+	if not btn.pressed.is_connected(_on_texture_button_pressed):
+		btn.pressed.connect(_on_texture_button_pressed)
 	# Aplicar color al TextureRect como fondo del bloque
 	if $TextureRect.texture:
 		$TextureRect.self_modulate = block_color

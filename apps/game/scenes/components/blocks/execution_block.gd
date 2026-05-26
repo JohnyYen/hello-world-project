@@ -4,7 +4,7 @@ class_name ExecutionCodeBlock
 @export var color: Color = Color(0.9, 0.8, 0.3, 1.0)
 signal action_chosen(action_name: String)
 
-@onready var action_slot: OptionButton = $TextureButton/OptionButton
+@export var action_slot: OptionButton
 var actions_list : Array = []
 var action_selected : String = "atender_siguiente_cliente"
 
@@ -19,6 +19,7 @@ func _ready():
 	self.block_type = BlockTypesEnum.BlockTypesEnum.ACTION
 	self.block_name = "Ejecutar"
 	self.description = "Bloque que marca el inicio de la ejecución"
+	
 	$TextureButton.self_modulate = color
 
 # Este método puede ser llamado desde fuera, por ejemplo, cuando el nivel emite las acciones disponibles
