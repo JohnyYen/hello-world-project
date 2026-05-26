@@ -11,6 +11,6 @@ signal showed_title(title: String, duration : float)
 signal clean_character(duration : float)
 signal set_flag(flag : String, value : bool)
 
+
 func _ready() -> void:
 	pass
-	

@@ -1,8 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://bglln6g25urq"]
+[gd_scene load_steps=12 format=3 uid="uid://bglln6g25urq"]
 
 [ext_resource type="Script" uid="uid://bgw0wuh0gny54" path="res://scenes/components/dialogue/balloon.gd" id="1_36de5"]
 [ext_resource type="PackedScene" uid="uid://ckvgyvclnwggo" path="res://addons/dialogue_manager/dialogue_label.tscn" id="2_a8ve6"]
+[ext_resource type="Texture2D" uid="uid://bdfu2l5rvc32c" path="res://icon.svg" id="3_6rgr6"]
 [ext_resource type="Script" uid="uid://bb52rsfwhkxbn" path="res://addons/dialogue_manager/dialogue_responses_menu.gd" id="3_72ixx"]
+[ext_resource type="Script" uid="uid://cpvimyp7r5ulg" path="res://scripts/globals/dialogue_director.gd" id="5_3exws"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spyqn"]
 bg_color = Color(0, 0, 0, 1)
@@ -132,6 +134,13 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "Dialogue..."
 
+[node name="TextureButton" type="TextureButton" parent="Balloon/MarginContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture_normal = ExtResource("3_6rgr6")
+
 [node name="ResponsesMenu" type="VBoxContainer" parent="Balloon" node_paths=PackedStringArray("response_template")]
 unique_name_in_owner = true
 z_index = 1
@@ -234,6 +243,16 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 50
 text = "Title"
+
+[node name="SkipHint" type="Label" parent="."]
+offset_right = 500.0
+offset_bottom = 36.0
+theme_override_font_sizes/font_size = 14
+text = "[ESC] Saltar escena  |  [Z] Siguiente línea  |  [A] Texto instantáneo"
+
+[node name="DialogueDirector" type="Node" parent="."]
+script = ExtResource("5_3exws")
+metadata/_custom_type_script = "uid://cpvimyp7r5ulg"
 
 [connection signal="gui_input" from="Balloon" to="." method="_on_balloon_gui_input"]
 [connection signal="response_selected" from="Balloon/ResponsesMenu" to="." method="_on_responses_menu_response_selected"]
