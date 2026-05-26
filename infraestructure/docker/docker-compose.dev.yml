@@ -44,6 +44,9 @@ services:
       - ../../apps/backend:/app
       - /app/__pycache__
       - /app/.venv
+    environment:
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
     depends_on:
       postgresql_db:
         condition: service_healthy
