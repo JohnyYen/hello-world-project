@@ -2,7 +2,7 @@ class_name ExecutionEngine
 
 # Función principal de ejecución, ahora genérica para BaseProblemContext
 static func execute(blocks: Array, context: BaseProblemContext) -> BaseProblemContext:
-	print("Llegueeeeeee")
+	#print("Llegueeeeeee")
 
 	# Validar primer y último bloque
 	if blocks.size() == 0:
@@ -22,10 +22,10 @@ static func execute(blocks: Array, context: BaseProblemContext) -> BaseProblemCo
 	if is_valid:
 		# Ejecutar los bloques
 		for block in blocks:
-			print("DEBUG [Execution Engine]: Ejecutando el bloque ", block)
+			#print("DEBUG [Execution Engine]: Ejecutando el bloque ", block)
 			if block.has_method("execute"):
 				block.execute(context)
-				print("DEBUG [Execution Engine]: Context Outputs: ", context.outputs)
+				#print("DEBUG [Execution Engine]: Context Outputs: ", context.outputs)
 			else:
 				context.log("Error: El bloque '" + block.name + "' no tiene método 'execute'")
 			context.advance_pc() # Avanzar el contador de programa
