@@ -25,7 +25,7 @@ func _init():
 		return
 	
 	self.engine = ExecutionEngine.new()
-	print("DEBUG [Game Controller]: Crear un nuevo agente")
+	#print("DEBUG [Game Controller]: Crear un nuevo agente")
 	self.agent = AdaptiveAgent.new()
 	self.feedback_controller = FeedbackController.new()
 
