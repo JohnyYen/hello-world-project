@@ -33,6 +33,7 @@ function normalizeMetric(metric: any): any {
     // Handle snake_case from backend
     courseName: metric.courseName || metric.course_name || '',
     schoolYear: metric.schoolYear || metric.school_year || '',
+    period: metric.period || metric.periodLabel || metric.period_label || '',
   };
 }
 
@@ -156,7 +157,8 @@ export default function ReportsPage() {
           ...c,
           schoolYear: c.schoolYear || c.school_year || '',
           name: c.name || c.course_name || '',
-          display_period: c.display_period || c.displayPeriod || '',
+          period: c.period || c.periodLabel || c.period_label || '',
+          display_period: c.display_period || c.displayPeriod || c.period || '',
         }));
 
         setCourses(normalizedCourses);
@@ -204,7 +206,7 @@ export default function ReportsPage() {
         );
         if (cancelled) return;
 
-        const metrics = (metricsResponse?.data || metricsResponse || []) as any[];
+        const metrics = (Array.isArray(metricsResponse) ? metricsResponse : (metricsResponse?.data || metricsResponse || [])) as any[];
         // Normalize metrics to handle snake_case from backend
         const normalizedMetrics = metrics.map(normalizeMetric);
         // Sort without localeCompare to avoid errors
@@ -602,24 +604,24 @@ export default function ReportsPage() {
                  
                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
                    <h3 className="text-lg font-semibold mb-6">Progreso y Calificación</h3>
-                  <LineChartComponent
-                    data={selectedMetrics.map(m => ({ date: m.period.replace(' - ', '\n'), averageProgress: m.averageProgress, averageGrade: m.averageGrade }))}
-                    xAxisDataKey="date"
-                    lines={[
-                      { dataKey: "averageProgress", name: "Progreso", color: "#10B981" },
-                      { dataKey: "averageGrade", name: "Calificación", color: "#06B6D4" },
-                    ]}
-                    title=""
-                    subtitle=""
-                    yAxisLabel="%"
-                    height={300}
-                  />
-                </div>
+                   <LineChartComponent
+                     data={selectedMetrics.map(m => ({ date: (m.period || '').replace(' - ', '\n'), averageProgress: m.averageProgress, averageGrade: m.averageGrade }))}
+                     xAxisDataKey="date"
+                     lines={[
+                       { dataKey: "averageProgress", name: "Progreso", color: "#10B981" },
+                       { dataKey: "averageGrade", name: "Calificación", color: "#06B6D4" },
+                     ]}
+                     title=""
+                     subtitle=""
+                     yAxisLabel="%"
+                     height={300}
+                   />
+                 </div>
 
-                 <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
-                   <h3 className="text-lg font-semibold mb-6">Completación y Engagement</h3>
-                  <LineChartComponent
-                    data={selectedMetrics.map(m => ({ date: m.period.replace(' - ', '\n'), completionRate: m.completionRate, sessionsPerStudent: m.averageSessionsPerStudent * 2 }))}
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
+                    <h3 className="text-lg font-semibold mb-6">Completación y Engagement</h3>
+                   <LineChartComponent
+                     data={selectedMetrics.map(m => ({ date: (m.period || '').replace(' - ', '\n'), completionRate: m.completionRate, sessionsPerStudent: m.averageSessionsPerStudent * 2 }))}
                     xAxisDataKey="date"
                     lines={[
                       { dataKey: "completionRate", name: "Tasa Completación", color: "#F59E0B" },
@@ -648,7 +650,7 @@ export default function ReportsPage() {
                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
                    <h3 className="text-lg font-semibold mb-6">Métricas Comparadas</h3>
                   <BarChart
-                    data={selectedMetrics.map(m => ({ name: m.period.replace(' - ', '\n'), Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
+                     data={selectedMetrics.map(m => ({ name: (m.period || '').replace(' - ', '\n'), Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
                     xAxisDataKey="name"
                     bars={[
                       { dataKey: "Progreso", name: "Progreso", color: "#10B981" },
