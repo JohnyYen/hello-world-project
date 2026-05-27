@@ -1,6 +1,8 @@
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
+from datetime import date as datetime_date, timedelta
+from collections import defaultdict
 
 from src.shared.infrastructure.session import get_db
 from src.statistic.infrastructure.progress_repository import ProgressRepository
@@ -18,7 +20,7 @@ class GetStudentProgressUseCase:
     Caso de uso para obtener el progreso de un estudiante desde el dominio statistic.
 
     Responsabilidades:
-    - Consultar datos de progreso desde la tabla progresses (dominio statistic)
+    - Consultar datos de progreso enriquecidos (con nombres de nivel y juego)
     - Calcular métricas: KPIs, progreso en el tiempo, rendimiento por nivel, distribución de actividades
     - Retornar estructura lista para el frontend
     """
@@ -48,10 +50,10 @@ class GetStudentProgressUseCase:
             )
 
         progress_repo = ProgressRepository(self.db)
-        progresses = await progress_repo.get_by_student_id(student_uuid)
+        enriched_rows = await progress_repo.get_enriched_by_student_id(student_uuid)
 
         # Si no hay progreso, retornar datos vacíos (no es un error)
-        if not progresses:
+        if not enriched_rows:
             return StudentProgressResponse(
                 student_id=student_id,
                 kpis=StudentReportKPIs(
@@ -67,10 +69,10 @@ class GetStudentProgressUseCase:
                 activity_distribution=[],
             )
 
-        kpis = self._calculate_kpis(progresses)
-        progress_over_time = self._calculate_progress_over_time(progresses)
-        level_performance = self._calculate_level_performance(progresses)
-        activity_distribution = self._calculate_activity_distribution(progresses)
+        kpis = self._calculate_kpis(enriched_rows)
+        progress_over_time = self._calculate_progress_over_time(enriched_rows)
+        level_performance = self._calculate_level_performance(enriched_rows)
+        activity_distribution = self._calculate_activity_distribution(enriched_rows)
 
         return StudentProgressResponse(
             student_id=student_id,
@@ -80,89 +82,136 @@ class GetStudentProgressUseCase:
             activity_distribution=activity_distribution,
         )
 
-    def _calculate_kpis(self, progresses: list) -> StudentReportKPIs:
-        completed = [p for p in progresses if p.objectives_completed > 0]
+    def _calculate_kpis(self, enriched_rows: list) -> StudentReportKPIs:
+        """Calcula KPIs del estudiante a partir de datos enriquecidos."""
+        completed = [r for r in enriched_rows if r["progress"].objectives_completed > 0]
         unique_games = set()
-        total_time = 0
+        total_attempts = 0
         total_score = 0
         last_activity = None
+        activity_dates = set()
 
-        for p in progresses:
-            if p.segment_level_id:
-                unique_games.add(str(p.segment_level_id))
-            total_time += p.attempt_count * 5
+        for r in enriched_rows:
+            p = r["progress"]
+            unique_games.add(r["game_title"])
+            total_attempts += p.attempt_count
             if p.efficiency_rating > 0:
                 total_score += p.efficiency_rating
+            if p.created_at:
+                activity_dates.add(p.created_at.date())
             if p.updated_at and (not last_activity or p.updated_at > last_activity):
                 last_activity = p.updated_at
 
-        avg_score = total_score / len(progresses) if progresses else 0.0
+        avg_score = total_score / len(enriched_rows) if enriched_rows else 0.0
+
+        # Calcular racha actual: días consecutivos hacia atrás desde la última actividad
+        current_streak = self._calculate_current_streak(activity_dates)
 
         return StudentReportKPIs(
             total_levels_completed=len(completed),
             total_games_played=len(unique_games),
-            total_play_time=total_time,
+            total_play_time=total_attempts,
             average_score=round(avg_score, 1),
-            current_streak=len(completed),
+            current_streak=current_streak,
             last_activity=last_activity,
         )
 
+    def _calculate_current_streak(self, activity_dates: set) -> int:
+        """
+        Calcula la racha actual de días consecutivos de actividad.
+
+        Cuenta hacia atrás desde la última fecha de actividad hasta
+        encontrar un día sin actividad.
+        """
+        if not activity_dates:
+            return 0
+
+        sorted_dates = sorted(activity_dates, reverse=True)
+        streak = 1  # Al menos 1 día si hay actividad
+
+        for i in range(len(sorted_dates) - 1):
+            diff = (sorted_dates[i] - sorted_dates[i + 1]).days
+            if diff == 1:
+                streak += 1
+            elif diff > 1:
+                break  # Se rompió la racha
+
+        return streak
+
     def _calculate_progress_over_time(
-        self, progresses: list
+        self, enriched_rows: list
     ) -> list[ProgressOverTimeItem]:
-        sorted_progress = sorted(
-            [p for p in progresses if p.created_at is not None],
-            key=lambda p: p.created_at
+        """Calcula evolución del progreso con nombres de nivel reales."""
+        sorted_data = sorted(
+            [r for r in enriched_rows if r["progress"].created_at is not None],
+            key=lambda r: r["progress"].created_at,
         )
-        result = []
-        for p in sorted_progress[:10]:
-            result.append(
-                ProgressOverTimeItem(
-                    date=p.created_at.strftime("%b %d") if p.created_at else "N/A",
-                    level=p.attempt_count,
-                    score=p.efficiency_rating,
-                    time_spent=p.attempt_count * 5,
-                )
+
+        return [
+            ProgressOverTimeItem(
+                date=p["progress"].created_at.strftime("%b %d"),
+                level=p["level_number"],
+                score=p["progress"].efficiency_rating,
+                time_spent=p["progress"].attempt_count,
             )
-        return result
+            for p in sorted_data
+        ]
 
     def _calculate_level_performance(
-        self, progresses: list
+        self, enriched_rows: list
     ) -> list[LevelPerformanceItem]:
-        result = []
-        for p in progresses[:6]:
-            result.append(
-                LevelPerformanceItem(
-                    level_name=f"Nivel {p.attempt_count}",
-                    score=p.efficiency_rating,
-                    attempts=p.attempt_count + 1,
-                    time_spent=p.attempt_count * 5,
-                    completed=p.objectives_completed > 0,
-                )
+        """Calcula rendimiento por nivel con nombres reales."""
+        # Agrupar por nivel para consolidar múltiples intentos
+        level_groups: dict[str, dict] = {}
+        for r in enriched_rows:
+            p = r["progress"]
+            level_name = r["level_title"]
+            if level_name not in level_groups:
+                level_groups[level_name] = {
+                    "total_score": 0,
+                    "total_attempts": 0,
+                    "total_time": 0,
+                    "count": 0,
+                    "completed": False,
+                }
+            lg = level_groups[level_name]
+            lg["total_score"] += p.efficiency_rating
+            lg["total_attempts"] += p.attempt_count
+            lg["total_time"] += p.attempt_count
+            lg["count"] += 1
+            if p.objectives_completed > 0:
+                lg["completed"] = True
+
+        return [
+            LevelPerformanceItem(
+                level_name=level_name,
+                score=round(metrics["total_score"] / metrics["count"], 1),
+                attempts=metrics["total_attempts"],
+                time_spent=metrics["total_time"],
+                completed=metrics["completed"],
             )
-        return result
+            for level_name, metrics in level_groups.items()
+        ]
 
     def _calculate_activity_distribution(
-        self, progresses: list
+        self, enriched_rows: list
     ) -> list[ActivityDistributionItem]:
-        game_times: dict[str, int] = {}
-        game_sessions: dict[str, int] = {}
+        """Calcula distribución de actividad por juego con nombres reales."""
+        game_data: dict[str, dict] = defaultdict(
+            lambda: {"time_spent": 0, "sessions": 0}
+        )
 
-        for p in progresses:
-            # Skip if segment_level_id is None
-            if p.segment_level_id is None:
-                continue
-            game_key = str(p.segment_level_id)[:8]
-            game_times[game_key] = game_times.get(game_key, 0) + (p.attempt_count * 5)
-            game_sessions[game_key] = game_sessions.get(game_key, 0) + 1
+        for r in enriched_rows:
+            p = r["progress"]
+            game_name = r["game_title"]
+            game_data[game_name]["time_spent"] += p.attempt_count
+            game_data[game_name]["sessions"] += 1
 
-        result = []
-        for game_key in list(game_times.keys())[:4]:
-            result.append(
-                ActivityDistributionItem(
-                    game_name=f"Juego {game_key}",
-                    time_spent=game_times[game_key],
-                    sessions=game_sessions[game_key],
-                )
+        return [
+            ActivityDistributionItem(
+                game_name=game_name,
+                time_spent=data["time_spent"],
+                sessions=data["sessions"],
             )
-        return result
+            for game_name, data in game_data.items()
+        ]

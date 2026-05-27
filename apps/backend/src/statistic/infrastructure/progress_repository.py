@@ -39,6 +39,58 @@ class ProgressRepository(BaseRepository[Progress]):
         filters = {"student_id": student_id}
         return await self.get_by_filters(filters, include_deleted=include_deleted)
 
+    async def get_enriched_by_student_id(
+        self,
+        student_id: UUID,
+        include_deleted: bool = False,
+    ) -> List[Dict[str, Any]]:
+        """
+        Obtiene progresos enriquecidos con nombres de nivel y juego.
+
+        Joins Progress -> SegmentLevel -> Level -> Game para obtener nombres reales.
+
+        Args:
+            student_id: UUID del estudiante
+            include_deleted: Si True, incluye progresos marcados como eliminados
+
+        Returns:
+            List[Dict]: Lista de diccionarios con datos enriquecidos
+        """
+        from src.game.domain.segment_level import SegmentLevel
+        from src.game.domain.level import Level
+        from src.game.domain.game import Game
+
+        stmt = (
+            select(
+                Progress,
+                Level.title.label("level_title"),
+                Level.level_number.label("level_number"),
+                Game.title.label("game_title"),
+            )
+            .join(SegmentLevel, Progress.segment_level_id == SegmentLevel.id)
+            .join(Level, SegmentLevel.level_number_id == Level.id)
+            .join(Game, Level.game_id == Game.id)
+            .where(Progress.student_id == student_id)
+        )
+
+        if not include_deleted:
+            stmt = stmt.where(Progress.deleted_at.is_(None))
+
+        stmt = stmt.order_by(Progress.created_at.asc())
+
+        result = await self.db.execute(stmt)
+        rows = result.fetchall()
+
+        return [
+            {
+                "progress": row.Progress,
+                "level_title": row.level_title,
+                "level_number": row.level_number,
+                "game_title": row.game_title,
+            }
+            for row in rows
+        ]
+
     async def get_by_segment_level_id(
         self,
         segment_level_id: int,
