@@ -415,7 +415,7 @@ class ProgressRepository(BaseRepository[Progress]):
         students_completed = sum(1 for r in rows if r.has_progress)
         avg_progress = sum(all_efficiencies) / len(all_efficiencies)
         completion_rate = (students_completed / max(total_students, 1)) * 100
-        avg_active_time = sum(all_attempts) * 5
+        avg_active_time = sum(all_attempts)
         avg_sessions = sum(all_attempts) / max(len(all_attempts), 1)
 
         return {
@@ -565,8 +565,8 @@ class ProgressRepository(BaseRepository[Progress]):
         query = text("""
             SELECT DATE(created_at) as activity_date,
                    COUNT(DISTINCT student_id) as active_students,
-                   SUM(attempt_count) * 5 as total_time_spent,
-                   AVG(attempt_count) * 5 as avg_session_time
+                   SUM(attempt_count) as total_time_spent,
+                   AVG(attempt_count) as avg_session_time
             FROM progresses
             WHERE student_id = ANY(:student_ids)
               AND created_at >= CURRENT_DATE - make_interval(days := :days)
