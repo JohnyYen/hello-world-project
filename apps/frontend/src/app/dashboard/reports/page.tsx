@@ -148,7 +148,8 @@ export default function ReportsPage() {
             courseReportsService.getReportKPIs()
           ]);
 
-        const coursesArray = coursesData.data ?? [];
+        // Backend returns raw data (not wrapped in ApiResponse), handle both formats
+        const coursesArray = Array.isArray(coursesData) ? coursesData : (coursesData?.data ?? []);
 
         // Backend returns snake_case (school_year), handle both cases
         const normalizedCourses = coursesArray.map((c: any) => ({
@@ -159,7 +160,7 @@ export default function ReportsPage() {
         }));
 
         setCourses(normalizedCourses);
-        setKpis(kpisData.data ?? null);
+        setKpis(kpisData?.data ?? kpisData ?? null);
 
         // Select latest year by default (without sort)
         if (coursesArray.length > 0) {
