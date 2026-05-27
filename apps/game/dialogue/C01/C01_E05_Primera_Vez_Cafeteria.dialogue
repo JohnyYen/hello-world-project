@@ -1,8 +1,9 @@
 ~ start
+do _DialogueUiController.set_flag.emit("has_first_time_cafeteria", true)
 # Escena: Llegada a la Cafetería – Primer Encuentro con el Problema
 # Contexto: El jugador llega por primera vez a la cafetería para realizar la tarea asignada por el profesor.
 
-# La puerta de la cafetería se abre lentamente. Se escucha ruido de platos, conversaciones y el constante “bip” de la caja registradora.
+# La puerta de la cafetería se abre lentamente. Se escucha ruido de platos, conversaciones y el constante "bip" de la caja registradora.
 do _DialogueUiController.changed_character.emit("center","characters/main_characters/orqui/Happy.png")
 Orqui: Bienvenido a la cafetería, {{_GameState.player_data.name}}. Aquí es donde pondrás en práctica tus primeros pasos como programador.
 Orqui: El profesor dijo que observaras… y solucionaras un problema. ¡Así que abre bien los ojos!
@@ -77,5 +78,4 @@ do _DialogueUiController.changed_character.emit("center","characters/main_charac
 Orqui: Vamos, {{_GameState.player_data.name}}. Este es tu primer desafío real.
 Orqui: Y estoy contigo en cada paso.
 
-do _DialogueUiController.set_flag.emit("has_first_time_cafeteria", true)
 => END

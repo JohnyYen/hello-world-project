@@ -1,4 +1,5 @@
 ~ start
+do _DialogueUiController.set_flag.emit("has_complete_one_level", true)
 # Escena: Fin de la Versión Alpha – Salida de la Cafetería
 # Contexto: El jugador acaba de terminar la tarea práctica en la cafetería. Orqui aparece para cerrar la versión.
 
@@ -29,5 +30,4 @@ Orqui: Pero por ahora… este segmento llega a su fin.
 Orqui: Descansa, {{_GameState.player_data.name}}. Lo que viene será todavía mejor.
 Orqui: Nos vemos en la siguiente versión…
 
-do _DialogueUiController.set_flag.emit("has_complete_one_level", true)
 => END

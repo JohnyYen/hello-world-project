@@ -1,4 +1,5 @@
 ~ start
+do _DialogueUiController.set_flag.emit("has_first_time_faculty")
 # Escena: Encuentro matutino con Alex y primer día de clases
 
 #do game.fade_in()
@@ -72,7 +73,5 @@ Profesor: *Sus ojos brillan con interés, claramente disfrutando la pregunta.*
 Profesor: Excelente duda, Laura. Pensar como programador no es memorizar, es comprender la lógica detrás de cada decisión.
 Profesor: Cuando empiezas a preguntarte “¿qué problema resuelvo?” antes de escribir una línea… ahí es cuando empieza la magia.
 Profesor: Y justo por eso, la clase de hoy será especial.
-
-do _DialogueUiController.set_flag.emit("has_first_time_faculty")
 
 => END
