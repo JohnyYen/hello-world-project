@@ -30,6 +30,7 @@ func _on_play_level(segment_id : int):
 			level_instance.segment_id = segment_id
 			get_tree().root.add_child(level_instance)
 			get_tree().current_scene.queue_free()
+			get_tree().current_scene = level_instance
 	else:
 		print("De pinga")
 
