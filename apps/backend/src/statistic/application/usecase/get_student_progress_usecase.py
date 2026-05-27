@@ -1,4 +1,5 @@
 from fastapi import Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from datetime import date as datetime_date, timedelta
@@ -13,6 +14,7 @@ from src.statistic.api.v1.schemas.student_progress import (
     LevelPerformanceItem,
     ActivityDistributionItem,
 )
+from src.users.domain.student import Student
 
 
 class GetStudentProgressUseCase:
@@ -49,8 +51,13 @@ class GetStudentProgressUseCase:
                 detail="ID de estudiante inválido",
             )
 
+        # Resolver si el ID recibido es un user_id (enviado por el frontend)
+        # en lugar de student_id. Progress.student_id referencia students.id,
+        # pero el frontend envía users.id. Mapeamos user_id → student_id.
+        resolved_id = await self._resolve_student_id(student_uuid)
+
         progress_repo = ProgressRepository(self.db)
-        enriched_rows = await progress_repo.get_enriched_by_student_id(student_uuid)
+        enriched_rows = await progress_repo.get_enriched_by_student_id(resolved_id)
 
         # Si no hay progreso, retornar datos vacíos (no es un error)
         if not enriched_rows:
@@ -81,6 +88,25 @@ class GetStudentProgressUseCase:
             level_performance=level_performance,
             activity_distribution=activity_distribution,
         )
+
+    async def _resolve_student_id(self, given_id: UUID) -> UUID:
+        """
+        Resuelve un user_id a student_id si corresponde.
+
+        El frontend envía users.id en la URL, pero la tabla progresses
+        referencia students.id. Este método consulta la tabla students
+        para obtener el student_id real si el ID dado es un user_id.
+
+        Args:
+            given_id: UUID que puede ser user_id o student_id
+
+        Returns:
+            UUID: El student_id real (resuelto o el mismo si ya lo era)
+        """
+        stmt = select(Student.id).where(Student.user_id == given_id)
+        result = await self.db.execute(stmt)
+        student_row = result.scalar_one_or_none()
+        return student_row if student_row is not None else given_id
 
     def _calculate_kpis(self, enriched_rows: list) -> StudentReportKPIs:
         """Calcula KPIs del estudiante a partir de datos enriquecidos."""

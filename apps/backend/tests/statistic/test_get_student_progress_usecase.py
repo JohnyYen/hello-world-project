@@ -45,7 +45,10 @@ class TestGetStudentProgressExecute:
         mock_db = MagicMock()
         with patch(
             "src.statistic.application.usecase.get_student_progress_usecase.ProgressRepository"
-        ) as MockRepo:
+        ) as MockRepo, patch.object(
+            GetStudentProgressUseCase, "_resolve_student_id",
+            new=AsyncMock(side_effect=lambda uid: uid),
+        ):
             mock_repo = MagicMock()
             mock_repo.get_enriched_by_student_id = AsyncMock(
                 return_value=sample_enriched_data
@@ -65,7 +68,10 @@ class TestGetStudentProgressExecute:
         mock_db = MagicMock()
         with patch(
             "src.statistic.application.usecase.get_student_progress_usecase.ProgressRepository"
-        ) as MockRepo:
+        ) as MockRepo, patch.object(
+            GetStudentProgressUseCase, "_resolve_student_id",
+            new=AsyncMock(side_effect=lambda uid: uid),
+        ):
             mock_repo = MagicMock()
             mock_repo.get_enriched_by_student_id = AsyncMock(return_value=[])
             MockRepo.return_value = mock_repo
@@ -90,6 +96,43 @@ class TestGetStudentProgressExecute:
         with pytest.raises(Exception) as exc_info:
             await use_case.execute("invalid-uuid")
         assert "400" in str(exc_info.value)
+
+
+class TestResolveStudentId:
+    """Test suite for user_id → student_id resolution."""
+
+    @pytest.mark.asyncio
+    async def test_resolves_user_id_to_student_id(self):
+        """Test that a user_id is resolved to the corresponding student_id."""
+        user_id = UUID("550e8400-e29b-41d4-a716-446655440000")
+        expected_student_id = UUID("660e8400-e29b-41d4-a716-446655440001")
+
+        mock_db = MagicMock()
+        mock_result = MagicMock()
+        mock_result.scalar_one_or_none.return_value = expected_student_id
+        mock_db.execute = AsyncMock(return_value=mock_result)
+
+        use_case = GetStudentProgressUseCase(db=mock_db)
+        result = await use_case._resolve_student_id(user_id)
+
+        assert result == expected_student_id
+        mock_db.execute.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_returns_same_id_when_not_a_user(self):
+        """Test that a non-user UUID returns unchanged (already a student_id)."""
+        student_id = UUID("550e8400-e29b-41d4-a716-446655440000")
+
+        mock_db = MagicMock()
+        mock_result = MagicMock()
+        mock_result.scalar_one_or_none.return_value = None
+        mock_db.execute = AsyncMock(return_value=mock_result)
+
+        use_case = GetStudentProgressUseCase(db=mock_db)
+        result = await use_case._resolve_student_id(student_id)
+
+        assert result == student_id  # Returns the same UUID
+        mock_db.execute.assert_awaited_once()
 
 
 class TestCalculateKPIs:
