@@ -1,9 +1,9 @@
 class_name DialogueDirector
 extends Node
 
-@export var next_scene_path: String = ""
 var hint_fade_delay := 4
 
+@onready var balloon = get_parent()
 @onready var dialogue_label: DialogueLabel = %DialogueLabel
 @onready var responses_menu: DialogueResponsesMenu = %ResponsesMenu
 @onready var skip_hint := $"../SkipHint"
@@ -12,9 +12,7 @@ var hint_fade_delay := 4
 
 func _ready() -> void:
 	_update_ui_hint_label()
-	#var ballon = await DialogueManager.show_dialogue_balloon(load("res://addons/dialogue_manager/assets/icon.svg"))
 
-	# El hint se desvanece suavemente después de unos segundos
 	if skip_hint and hint_fade_delay > 0:
 		await get_tree().create_timer(hint_fade_delay).timeout
 		var tween := create_tween()
@@ -24,13 +22,14 @@ func _update_ui_hint_label():
 	if not skip_hint:
 		push_warning("SkipHint node not found!")
 		return
-		
-	var esc := _get_key_name("dialogue_skip_scene")
-	var next := _get_key_name("dialogue_next_line")
-	var skip := _get_key_name("dialogue_skip_typing")
-	
-	#skip_hint.text = "%s Saltar escena  |  %s Siguiente línea  |  %s Texto instantáneo" % [esc, next, skip]
-	skip_hint.text = "[ESC] Saltar escena  |  [Z] Siguiente línea  |  [A] Texto instantáneo"
+
+	var os_name := OS.get_name()
+	var is_mobile := os_name in ["Android", "iOS"]
+
+	if is_mobile:
+		skip_hint.text = "Tocá para continuar  ·  Deslizá para saltar"
+	else:
+		skip_hint.text = "[ESC] Saltar  |  [Z] Siguiente  |  [A] Texto rápido"
 	
 
 func _get_key_name(key: String) -> String:
@@ -65,18 +64,14 @@ func _input(event: InputEvent) -> void:
 	# Z o Click derecho: Avanzar a la siguiente línea
 	if event.is_action_pressed("dialogue_next_line"):
 		print("Siguiente Linea del dialogo")
-		# Si hay respuestas visibles, no interferimos
 		if responses_menu.visible and responses_menu.get_child_count() > 0:
 			return
-		
-		# Si está escribiendo, primero lo terminamos
+
 		if dialogue_label.is_typing:
 			dialogue_label.skip_typing()
 		else:
-			# Esto depende de cómo Dialogue Manager maneje el avance en tu versión.
-			# Normalmente se hace llamando a la señal o al método del balloon:
-			#_on_balloon_gui_input(event)
-			pass
+			if balloon.dialogue_line and balloon.dialogue_line.next_id:
+				balloon.next(balloon.dialogue_line.next_id)
 		get_viewport().set_input_as_handled()
 		return
 	
@@ -91,9 +86,8 @@ func _skip_to_next_scene() -> void:
 		audio_music.stop()
 	if audio_sfx.is_playing():
 		audio_sfx.stop()
-	
-	if next_scene_path.is_empty():
-		push_warning("No se ha asignado 'next_scene_path' en el inspector.")
-		return
-	
-	get_tree().change_scene_to_file(next_scene_path)
+
+	if balloon:
+		balloon.queue_free()
+
+	_GameState.on_dialogue_finished()
