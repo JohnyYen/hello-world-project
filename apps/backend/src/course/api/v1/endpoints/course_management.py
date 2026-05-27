@@ -1,7 +1,8 @@
+import logging
 from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,8 +21,12 @@ from src.course.application.usecase.create_course_usecase import CreateCourseUse
 from src.course.application.usecase.manage_enrollment_usecase import ManageEnrollmentUseCase
 from src.course.application.usecase.update_course_usecase import UpdateCourseUseCase
 from src.course.infrastructure.course_repository import CourseRepository
+from src.notification.application.service.email_service import EmailService
 from src.shared.deps import get_current_user
+from src.shared.infrastructure.config import settings
 from src.shared.infrastructure.session import get_db
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/courses",
@@ -59,6 +64,10 @@ async def get_manage_enrollment_usecase(
     db: AsyncSession = Depends(get_db),
 ) -> ManageEnrollmentUseCase:
     return ManageEnrollmentUseCase(db, CourseRepository(db))
+
+
+async def get_email_service() -> EmailService:
+    return EmailService(settings)
 
 
 @router.get("/management", response_model=PaginatedCourseListResponse)
@@ -106,13 +115,65 @@ async def list_courses(
 @router.post("/management", response_model=CourseDetailResponse, status_code=201)
 async def create_course(
     request: CourseCreateRequest,
+    background_tasks: BackgroundTasks,
     usecase: CreateCourseUseCase = Depends(get_create_course_usecase),
+    email_service: EmailService = Depends(get_email_service),
 ):
     """
     Crea un nuevo curso con asignación de estudiantes y profesores.
     Valida que no exista duplicado de school_year + period_label.
+    Luego de crear, envía email de notificación a cada estudiante
+    si el curso tiene un juego asignado con download_link.
     """
-    return await usecase.execute(request)
+    result = await usecase.execute(request)
+
+    # ── Envío de emails de notificación ──
+    if not result.game or not result.game.download_link:
+        logger.info(
+            "Course %s created without game download_link — skipping enrollment emails",
+            result.id,
+        )
+        return result
+
+    if not result.students:
+        logger.info(
+            "Course %s created with no students — skipping enrollment emails",
+            result.id,
+        )
+        return result
+
+    professors_list = [
+        {"name": p.name, "email": p.email}
+        for p in result.professors
+    ]
+
+    for student in result.students:
+        student_name = f"{student.name} {student.lastname or ''}".strip()
+        email_service.send_email_async(
+            background_tasks=background_tasks,
+            to_email=student.email,
+            subject=f"Bienvenido al curso: {result.name}",
+            template_name="email/course_enrollment.html",
+            context={
+                "student_name": student_name,
+                "course_name": result.name,
+                "course_description": result.description or "",
+                "school_year": result.school_year,
+                "period_label": result.period_label,
+                "start_date": result.start_date.isoformat(),
+                "end_date": result.end_date.isoformat(),
+                "professors": professors_list,
+                "download_link": result.game.download_link,
+            },
+        )
+
+    logger.info(
+        "Queued %d enrollment emails for course %s",
+        len(result.students),
+        result.id,
+    )
+
+    return result
 
 
 @router.get("/{course_id}", response_model=CourseDetailResponse)

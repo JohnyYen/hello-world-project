@@ -92,6 +92,7 @@ class AvailableGameResponse(BaseModel):
     description: Optional[str] = None
     subject: Optional[str] = None
     creator: Optional[str] = None
+    download_link: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
@@ -112,6 +113,7 @@ class AssignedGameResponse(BaseModel):
     description: Optional[str] = None
     subject: Optional[str] = None
     creator: Optional[str] = None
+    download_link: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
