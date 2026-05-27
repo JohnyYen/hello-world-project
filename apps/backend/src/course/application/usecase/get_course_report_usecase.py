@@ -82,7 +82,7 @@ class GetCourseReportUseCase:
         # Calculate trends by comparing consecutive courses
         if len(results) > 1:
             # Sort by school_year and period for proper comparison
-            results_sorted = sorted(results, key=lambda x: (x["schoolYear"], x["period"]))
+            results_sorted = sorted(results, key=lambda x: (x["schoolYear"], x.get("periodLabel", "")))
             
             for i in range(1, len(results_sorted)):
                 current = results_sorted[i]
@@ -127,7 +127,7 @@ class GetCourseReportUseCase:
         batch_metrics = await self.progress_repo.aggregate_by_course_ids(all_course_ids)
         course_map = {c.id: c for c, _ in course_tuples}
 
-        # Build all_metrics with proper structure
+        # Build all_metrics with proper structure (include all fields for _build_metrics_response)
         all_metrics = []
         for course, _ in course_tuples:
             metrics = batch_metrics.get(course.id, {})
@@ -139,6 +139,12 @@ class GetCourseReportUseCase:
                 "average_progress": float(metrics.get("average_progress", 0)),
                 "average_grade": float(metrics.get("average_grade", 0)),
                 "completion_rate": float(metrics.get("completion_rate", 0)),
+                "students_completed": int(metrics.get("students_completed", 0)),
+                "average_active_time": float(metrics.get("average_active_time", 0)),
+                "average_sessions": float(metrics.get("average_sessions", 0)),
+                "high_performers": int(metrics.get("high_performers", 0)),
+                "medium_performers": int(metrics.get("medium_performers", 0)),
+                "low_performers": int(metrics.get("low_performers", 0)),
                 "total_students": int(metrics.get("total_students", 0)),
             })
 
@@ -165,7 +171,7 @@ class GetCourseReportUseCase:
         # Calculate trends for individual courses
         trends_by_course_id = {}
         if len(all_metrics) > 1:
-            all_metrics_sorted = sorted(all_metrics, key=lambda x: (x["school_year"], x.get("period", "")))
+            all_metrics_sorted = sorted(all_metrics, key=lambda x: (x["school_year"], x.get("period_label", "")))
             
             for i in range(1, len(all_metrics_sorted)):
                 current = all_metrics_sorted[i]
@@ -193,7 +199,7 @@ class GetCourseReportUseCase:
                     "engagement_trend": 0.0,
                 }
 
-        # Year over year trends
+        # Year over year trends - comparar primer año vs último año directamente
         by_year = {}
         for m in all_metrics:
             year = m["school_year"]
@@ -202,23 +208,23 @@ class GetCourseReportUseCase:
             by_year[year].append(m)
 
         sorted_years = sorted(by_year.keys())
-        progress_trends = []
-        grade_trends = []
-        
-        for i in range(1, len(sorted_years)):
-            prev_year = sorted_years[i - 1]
-            curr_year = sorted_years[i]
-            
-            prev_avg_progress = sum(m["average_progress"] for m in by_year[prev_year]) / len(by_year[prev_year])
-            curr_avg_progress = sum(m["average_progress"] for m in by_year[curr_year]) / len(by_year[curr_year])
-            
-            prev_avg_grade = sum(m["average_grade"] for m in by_year[prev_year]) / len(by_year[prev_year])
-            curr_avg_grade = sum(m["average_grade"] for m in by_year[curr_year]) / len(by_year[curr_year])
-            
-            if prev_avg_progress > 0:
-                progress_trends.append(((curr_avg_progress - prev_avg_progress) / prev_avg_progress) * 100)
-            if prev_avg_grade > 0:
-                grade_trends.append(((curr_avg_grade - prev_avg_grade) / prev_avg_grade) * 100)
+        yoy_progress = 0.0
+        yoy_grade = 0.0
+
+        if len(sorted_years) >= 2:
+            first_year = sorted_years[0]
+            last_year = sorted_years[-1]
+
+            first_avg_progress = sum(m["average_progress"] for m in by_year[first_year]) / len(by_year[first_year])
+            last_avg_progress = sum(m["average_progress"] for m in by_year[last_year]) / len(by_year[last_year])
+
+            first_avg_grade = sum(m["average_grade"] for m in by_year[first_year]) / len(by_year[first_year])
+            last_avg_grade = sum(m["average_grade"] for m in by_year[last_year]) / len(by_year[last_year])
+
+            if first_avg_progress > 0:
+                yoy_progress = ((last_avg_progress - first_avg_progress) / first_avg_progress) * 100
+            if first_avg_grade > 0:
+                yoy_grade = ((last_avg_grade - first_avg_grade) / first_avg_grade) * 100
 
         return {
             "totalCourses": len(all_metrics),
@@ -227,8 +233,8 @@ class GetCourseReportUseCase:
             "overallAverageGrade": round(avg_grade, 1),
             "topPerformingCourse": self._build_metrics_response(top_course, trends_by_course_id),
             "needsAttentionCourse": self._build_metrics_response(needs_attention, trends_by_course_id),
-            "yearOverYearProgress": round(sum(progress_trends) / max(len(progress_trends), 1), 1) if progress_trends else 0.0,
-            "yearOverYearGrade": round(sum(grade_trends) / max(len(grade_trends), 1), 1) if grade_trends else 0.0,
+            "yearOverYearProgress": round(yoy_progress, 1),
+            "yearOverYearGrade": round(yoy_grade, 1),
         }
 
     async def execute_progress_over_time(self, course_id: UUID) -> List[Dict]:
@@ -261,20 +267,20 @@ class GetCourseReportUseCase:
         
         return {
             "courseId": course_id,
-            "courseName": metrics.get("course_name", ""),  # From the dict
-            "period": metrics.get("period", ""),
+            "courseName": metrics.get("course_name", ""),
+            "periodLabel": metrics.get("period_label", ""),
             "schoolYear": metrics.get("school_year", ""),
             "averageProgress": round(float(metrics.get("average_progress", 0)), 1),
             "averageGrade": round(float(metrics.get("average_grade", 0)), 1),
             "completionRate": round(float(metrics.get("completion_rate", 0)), 1),
-            "studentsCompleted": 0,  # TODO: calculate properly
-            "averageActiveTime": 0.0,
-            "dailyActiveUsers": 0,
-            "weeklyActiveUsers": 0,
-            "averageSessionsPerStudent": 0.0,
-            "highPerformers": 0,
-            "mediumPerformers": 0,
-            "lowPerformers": 0,
+            "studentsCompleted": int(metrics.get("students_completed", 0)),
+            "averageActiveTime": round(float(metrics.get("average_active_time", 0)), 1),
+            "dailyActiveUsers": 0,  # TODO: requires separate activity log queries
+            "weeklyActiveUsers": 0,  # TODO: requires separate activity log queries
+            "averageSessionsPerStudent": round(float(metrics.get("average_sessions", 0)), 1),
+            "highPerformers": int(metrics.get("high_performers", 0)),
+            "mediumPerformers": int(metrics.get("medium_performers", 0)),
+            "lowPerformers": int(metrics.get("low_performers", 0)),
             "totalStudents": int(metrics.get("total_students", 0)),
             "progressTrend": progress_trend,
             "gradeTrend": grade_trend,
