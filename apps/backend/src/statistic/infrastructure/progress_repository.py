@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Any
 from uuid import UUID
-from datetime import date, timedelta
-from sqlalchemy import select, func, and_, text
+from datetime import date, timedelta, datetime
+from sqlalchemy import select, func, and_, text, cast, Date
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.statistic.domain.progress import Progress
@@ -149,6 +149,32 @@ class ProgressRepository(BaseRepository[Progress]):
         result = await self.db.execute(stmt)
         return result.scalar() or 0
 
+    async def get_active_students_in_range(
+        self, start_date: Optional[date] = None, end_date: Optional[date] = None
+    ) -> int:
+        """
+        Cuenta estudiantes únicos con actividad en un rango de fechas.
+
+        Args:
+            start_date: Fecha de inicio (opcional)
+            end_date: Fecha de fin (opcional)
+
+        Returns:
+            int: Número de estudiantes activos en el rango
+        """
+        conditions = []
+        if start_date:
+            conditions.append(cast(Progress.created_at, Date) >= start_date)
+        if end_date:
+            conditions.append(cast(Progress.created_at, Date) <= end_date)
+
+        stmt = select(func.count(func.distinct(Progress.student_id)))
+        if conditions:
+            stmt = stmt.where(and_(*conditions))
+
+        result = await self.db.execute(stmt)
+        return result.scalar() or 0
+
     async def aggregate_kpis(
         self, start_date: Optional[date] = None, end_date: Optional[date] = None
     ) -> Dict[str, Any]:
@@ -164,20 +190,20 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         conditions = []
         if start_date:
-            conditions.append(Progress.created_at >= start_date)
+            conditions.append(cast(Progress.created_at, Date) >= start_date)
         if end_date:
-            conditions.append(Progress.created_at <= end_date)
+            conditions.append(cast(Progress.created_at, Date) <= end_date)
 
-        # Total de niveles completados (efficiency_rating > 0 indica completado)
+        # Total de niveles completados (objectives_completed > 0 indica completado)
         stmt_completed = select(func.count(Progress.id)).where(
-            and_(*conditions, Progress.efficiency_rating > 0)
+            and_(*conditions, Progress.objectives_completed > 0)
             if conditions
-            else Progress.efficiency_rating > 0
+            else Progress.objectives_completed > 0
         )
         result = await self.db.execute(stmt_completed)
         total_levels_completed = result.scalar() or 0
 
-        # Tiempo total (suma de attempt_count como proxy de tiempo)
+        # Tiempo total (suma de attempt_count como proxy - sin multiplicadores arbitrarios)
         stmt_time = select(func.sum(Progress.attempt_count)).where(
             and_(*conditions) if conditions else True
         )
@@ -210,8 +236,6 @@ class ProgressRepository(BaseRepository[Progress]):
         Returns:
             List[dict]: Lista de actividad por fecha
         """
-        from sqlalchemy import cast, Date
-
         stmt = (
             select(
                 cast(Progress.created_at, Date).label("date"),
@@ -275,8 +299,7 @@ class ProgressRepository(BaseRepository[Progress]):
                 if row.total_attempts > 0
                 else 0.0,
                 "average_attempts": float(row.average_attempts or 0),
-                "average_time_minutes": float(row.average_attempts or 0)
-                * 5,  # Estimación: 5 min por intento
+                "average_time_minutes": float(row.average_attempts or 0),
             }
             for row in rows
         ]
@@ -404,7 +427,7 @@ class ProgressRepository(BaseRepository[Progress]):
                 "average_grade": round(float(row.average_progress), 1),  # Note: same source as progress since system only tracks efficiency_rating
                 "completion_rate": round(float(row.completion_rate), 1),
                 "students_completed": int(row.students_completed),
-                "average_active_time": round(float(row.total_attempts) * 5, 1),
+                "average_active_time": round(float(row.total_attempts), 1),
                 "average_sessions": round(float(row.avg_sessions), 1),
                 "high_performers": int(row.high_performers),
                 "medium_performers": int(row.medium_performers),
@@ -470,8 +493,8 @@ class ProgressRepository(BaseRepository[Progress]):
         return [
             {
                 "date": f"{month_names[int(r[0]) - 1]} {int(r[1])}",
-                "averageProgress": round(float(r[2]), 1),
-                "averageGrade": round(float(r[2]), 1),
+                "average_progress": round(float(r[2]), 1),
+                "average_grade": round(float(r[2]), 1),
             }
             for r in rows
         ]

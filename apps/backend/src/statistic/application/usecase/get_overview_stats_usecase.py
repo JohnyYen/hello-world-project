@@ -90,8 +90,16 @@ class GetOverviewStatsUseCase:
         if not start_date and not end_date:
             return today - timedelta(days=30), today
 
-        # Usar las fechas proporcionadas o默认值
-        return start_date or (today - timedelta(days=30)), end_date or today
+        # Si solo se proporciona una fecha, calcular la otra simétricamente
+        effective_start = start_date
+        effective_end = end_date
+
+        if effective_start and not effective_end:
+            effective_end = effective_start + timedelta(days=30)
+        elif effective_end and not effective_start:
+            effective_start = effective_end - timedelta(days=30)
+
+        return effective_start, effective_end
 
     async def calculate_kpis(
         self, start_date: Optional[datetime_date], end_date: Optional[datetime_date]
@@ -168,18 +176,13 @@ class GetOverviewStatsUseCase:
         # KPIs del período anterior
         prev_kpis = await self.progress_repo.aggregate_kpis(prev_start, prev_end)
 
-        # Estudiantes: usar activos del período vs período anterior
-        students_curr = await self.progress_repo.get_active_students(days_diff)
-        # Obtener estudiantes activos en el período anterior (antes del período actual)
-        prev_students = 0
-        if prev_start and prev_end:
-            # Agregar lógica para contar estudiantes del período anterior
-            # Por ahora, usamos una aproximación si hay datos previos
-            prev_activity = prev_kpis["total_levels_completed"]
-            if prev_activity > 0:
-                prev_students = max(students_curr - 1, 1)  # Estimación basada en actividad previa
-            else:
-                prev_students = 0
+        # Estudiantes activos en cada período (consultando datos reales)
+        students_curr = await self.progress_repo.get_active_students_in_range(
+            start_date, end_date
+        )
+        prev_students = await self.progress_repo.get_active_students_in_range(
+            prev_start, prev_end
+        ) if prev_start and prev_end else 0
 
         # Métricas del período actual y anterior
         activity_curr = current_kpis["total_levels_completed"]
@@ -189,7 +192,6 @@ class GetOverviewStatsUseCase:
         score_prev = prev_kpis["average_score"]
 
         # Solo calculamos cambio si hay datos previos reales
-        # De lo contrario, retornamos 0% (no hay forma de comparar)
         if prev_students > 0:
             students_change = ((students_curr - prev_students) / prev_students * 100)
         else:
