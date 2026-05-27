@@ -27,9 +27,15 @@ class CourseRepository(BaseRepository[Course]):
         self,
         skip: int = 0,
         limit: int = 100,
+        professor_id: Optional[UUIDType] = None,
     ) -> List[tuple[Course, int]]:
         """
         Obtiene todos los cursos con la cantidad de estudiantes inscritos.
+
+        Args:
+            skip: Número de registros a saltar.
+            limit: Máximo de registros a retornar.
+            professor_id: Si se provee, filtra solo los cursos asignados a ese profesor.
 
         Returns:
             Lista de tuplas (Course, student_count)
@@ -43,6 +49,17 @@ class CourseRepository(BaseRepository[Course]):
             .offset(skip)
             .limit(limit)
         )
+
+        if professor_id:
+            query = query.where(
+                Course.id.in_(
+                    select(CourseProfessor.course_id).where(
+                        CourseProfessor.professor_id == professor_id,
+                        CourseProfessor.deleted_at.is_(None),
+                    )
+                )
+            )
+
         result = await self.db.execute(query)
         return result.all()
 

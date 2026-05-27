@@ -1,8 +1,10 @@
+from typing import List, Optional
+
 from fastapi import APIRouter, Depends, Query, HTTPException
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List
 
+from src.shared.deps import get_current_user
 from src.shared.infrastructure.session import get_db
 from src.course.infrastructure.course_repository import CourseRepository
 from src.statistic.infrastructure.progress_repository import ProgressRepository
@@ -25,11 +27,21 @@ async def get_course_report_usecase(db: AsyncSession = Depends(get_db)) -> GetCo
 @router.get("/", response_model=List[schemas.CourseResponse])
 async def list_courses(
     usecase: GetCourseReportUseCase = Depends(get_course_report_usecase),
+    current_user = Depends(get_current_user),
 ):
     """
     Lista todos los cursos con conteo de estudiantes inscritos.
+
+    Si el usuario es profesor, solo retorna los cursos a los que está asignado.
     """
-    courses = await usecase.execute_list()
+    professor_id = None
+    if current_user.role.role_name == "professor":
+        professor_ids = await usecase.course_repo.get_professor_profile_ids(
+            [current_user.id]
+        )
+        professor_id = professor_ids.get(current_user.id)
+
+    courses = await usecase.execute_list(professor_id=professor_id)
     return [schemas.CourseResponse.model_validate(c) for c in courses]
 
 

@@ -19,11 +19,16 @@ class GetCourseReportUseCase:
         self.course_repo = course_repo
         self.progress_repo = progress_repo
 
-    async def execute_list(self) -> List[Dict]:
+    async def execute_list(
+        self,
+        professor_id: Optional[UUID] = None,
+    ) -> List[Dict]:
         """
         Obtiene lista de cursos con conteo de estudiantes.
         """
-        course_tuples = await self.course_repo.get_all_with_enrollment_counts()
+        course_tuples = await self.course_repo.get_all_with_enrollment_counts(
+            professor_id=professor_id,
+        )
         return [
             {
                 "id": course.id,
