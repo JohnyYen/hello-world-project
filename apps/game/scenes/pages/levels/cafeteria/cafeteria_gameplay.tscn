@@ -267,22 +267,24 @@ size = Vector2(56, 105.5)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bj6j8"]
 size = Vector2(74, 59)
 
-[node name="CafeteriaLevel" node_paths=PackedStringArray("hud", "drink_machine", "bread_station", "cash_register") instance=ExtResource("1_lxa08")]
+[node name="CafeteriaLevel" node_paths=PackedStringArray("code_space", "hud", "drink_machine", "bread_station", "cash_register") instance=ExtResource("1_lxa08")]
 script = ExtResource("2_krp0b")
-back_scene = "uid://f1phaldnojoi"
+back_scene = "uid://ce0a2mmdts12p"
+code_space = NodePath("MarginContainer/HBoxContainer/CodeArea/CodeSpace")
 hud = NodePath("MarginContainer/Hud")
 drink_machine = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/DrinkMachine")
 bread_station = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/BreadStation")
 cash_register = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/CashRegister")
 student_scenes = [ExtResource("9_c28ar"), ExtResource("10_f0h7g"), ExtResource("14_402hk"), ExtResource("15_1ngbw")]
 
-[node name="World" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport" index="0" node_paths=PackedStringArray("player_node", "drink_machine", "bread_storage")]
+[node name="World" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport" index="0" node_paths=PackedStringArray("player_node", "drink_machine", "bread_storage", "hud")]
 z_as_relative = false
 y_sort_enabled = true
 script = ExtResource("7_1ngbw")
 player_node = NodePath("PlayerZone/CharacterBody2D")
 drink_machine = NodePath("Stations/DrinkMachine")
 bread_storage = NodePath("Stations/BreadStation")
+hud = NodePath("../../../../../Hud")
 
 [node name="Background" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World" index="0"]
 
@@ -475,3 +477,5 @@ custom_minimum_size = Vector2(300, 150)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+horizontal_alignment = 1
+vertical_alignment = 1

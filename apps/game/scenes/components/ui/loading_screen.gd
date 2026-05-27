@@ -91,7 +91,7 @@ func _load_scene() -> void:
 	await scene_tree.process_frame
 	await scene_tree.process_frame
 	print("LOADING: Frames procesados, nueva escena activa")
-	
+	_SaveController.save_game()
 	_finish()
 
 func _finish() -> void:

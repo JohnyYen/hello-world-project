@@ -7,7 +7,7 @@ var controller : LevelOneController
 @export_file("*.tscn") var back_scene: String
 
 @onready var tween: Tween = Tween.new()
-@onready var code_space: CodeSpace = $MarginContainer/HBoxContainer/CodeArea/CodeSpace
+@export var code_space: CodeSpace
 @onready var queue_positions : Node2D = $MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer/QueuePositions
 
 @onready var customer_container = $MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer
@@ -63,11 +63,21 @@ func _ready() -> void:
 	_GameController.feedback_controller.hud_node = hud
 	
 func _on_back_level():
-	get_tree().change_scene_to_file(back_scene)
+	var scene_path := self.back_scene
+	if scene_path.begins_with("uid://"):
+		scene_path = ResourceUID.get_id_path(ResourceUID.text_to_id(scene_path))
+
+	self.hud.hide_hud()
+	self.code_space.hide_code_space()
+	LoadingScreen.change_scene(scene_path)
+	#get_tree().change_scene_to_file(back_scene)
 
 func _on_reset_level():
-	print("Nivel reiniciado")
-	get_tree().reload_current_scene()
+	self.hud.hide_hud()
+	self.code_space.hide_code_space()
+	
+	LoadingScreen.change_scene("res://scenes/pages/select level/select_level_one.tscn")
+	#get_tree().call_deferred("change_scene_to_file", scene_path)
 	
 func _on_execute_solution(blocks : Array[BaseBlock]):
 	print("DEBUG [Cafeteria Gameplay]: Execute solution with: ", blocks)
@@ -83,7 +93,9 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 			var scene_path := self.back_scene
 			if scene_path.begins_with("uid://"):
 				scene_path = ResourceUID.get_id_path(ResourceUID.text_to_id(scene_path))
-			
+				
+			self.hud.hide_hud()
+			self.code_space.hide_code_space()
 			LoadingScreen.change_scene(scene_path)
 			#get_tree().change_scene_to_file(back_scene)
 		else:

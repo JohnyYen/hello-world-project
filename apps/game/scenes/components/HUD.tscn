@@ -1,12 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://5bhqqnu1awir"]
+[gd_scene load_steps=5 format=3 uid="uid://5bhqqnu1awir"]
 
 [ext_resource type="Script" uid="uid://bk7a1xe24lul0" path="res://scenes/components/hud.gd" id="1_3g3a0"]
 [ext_resource type="Texture2D" uid="uid://dit158q6lsvlq" path="res://assets/shared/ui/menu_icon.png" id="3_astay"]
+[ext_resource type="Script" uid="uid://bdwadqwy7bt4w" path="res://scenes/components/inventory_hud.gd" id="4_7fcwq"]
 [ext_resource type="Texture2D" uid="uid://coe1tosqrkah7" path="res://assets/shared/ui/icon_back.png" id="6_jnqh5"]
 
-[node name="Hud" type="CanvasLayer"]
+[node name="Hud" type="CanvasLayer" node_paths=PackedStringArray("inventory")]
 layer = 0
 script = ExtResource("1_3g3a0")
+inventory = NodePath("Node")
+
+[node name="Node" type="Node" parent="." node_paths=PackedStringArray("inventory_container")]
+script = ExtResource("4_7fcwq")
+inventory_container = NodePath("../MarginContainer2/VBoxContainer/InventoryPanel/InventoryList")
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 y_sort_enabled = true
@@ -44,14 +50,16 @@ expand_icon = true
 [node name="TimerLabel" type="Label" parent="MarginContainer2/VBoxContainer/TopBar"]
 layout_mode = 2
 
+[node name="Timer" type="Timer" parent="MarginContainer2/VBoxContainer/TopBar"]
+
 [node name="InventoryPanel" type="HBoxContainer" parent="MarginContainer2/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="MarginContainer2/VBoxContainer/InventoryPanel"]
+[node name="InventoryList" type="HBoxContainer" parent="MarginContainer2/VBoxContainer/InventoryPanel"]
 layout_mode = 2
 
-[node name="InventoryList" type="HBoxContainer" parent="MarginContainer2/VBoxContainer/InventoryPanel"]
+[node name="Label" type="Label" parent="MarginContainer2/VBoxContainer/InventoryPanel"]
 layout_mode = 2
 
 [node name="MenuPanel" type="Panel" parent="."]
@@ -91,7 +99,7 @@ text = "Continuar"
 
 [node name="BtnResetLevel" type="Button" parent="MenuPanel/VBoxContainer"]
 layout_mode = 2
-text = "Reiniciar Nivel"
+text = "Volver atras"
 
 [node name="BtnExitToMain" type="Button" parent="MenuPanel/VBoxContainer"]
 layout_mode = 2
@@ -99,6 +107,7 @@ text = "Volver al menu"
 
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/TopBar/BtnBack" to="." method="_on_btn_back_pressed"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/TopBar/BtnMenu" to="." method="_on_btn_menu_pressed"]
+[connection signal="timeout" from="MarginContainer2/VBoxContainer/TopBar/Timer" to="." method="_on_timer_timeout"]
 [connection signal="pressed" from="MenuPanel/VBoxContainer/BtnResume" to="." method="_on_btn_resume_pressed"]
 [connection signal="pressed" from="MenuPanel/VBoxContainer/BtnResetLevel" to="." method="_on_btn_reset_level_pressed"]
 [connection signal="pressed" from="MenuPanel/VBoxContainer/BtnExitToMain" to="." method="_on_btn_exit_to_main_pressed"]

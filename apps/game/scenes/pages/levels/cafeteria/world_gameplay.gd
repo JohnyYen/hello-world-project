@@ -3,6 +3,7 @@ extends Node2D
 @export var player_node: CharacterBody2D
 @export var drink_machine: Node2D
 @export var bread_storage: Node2D
+@export var hud: HUD
 
 func _ready():
 	var setup = owner
@@ -57,8 +58,7 @@ func _on_prepare_bread(bread_type: String) -> void:
 
 func _on_get_bread() -> void:
 	print("DEBUG [Cafeteria Gameplay]: Obtener pan")
-	# 1️⃣ Localizar el nodo del jugador
-	#var player_node: CharacterBody2D = $World/PlayerZone/CharacterBody2D
+	
 	if player_node == null:
 		push_error("Jugador no encontrado en PlayerZone!")
 		return
@@ -90,7 +90,8 @@ func _on_get_bread() -> void:
 
 	# 5️⃣ Opcional: esperar un tiempo simulando que toma el pan
 	await get_tree().create_timer(1.0) # 1 segundo
-
+	
+	hud.add_inventory_item("Pan")
 	# 6️⃣ Confirmar acción completada
 	print("DEBUG: Pan obtenido del almacenamiento.")
 	# Si quieres, puedes emitir señal a controller o context

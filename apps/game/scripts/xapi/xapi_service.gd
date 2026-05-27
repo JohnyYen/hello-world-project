@@ -4,6 +4,9 @@
 class_name XAPIService
 extends Node
 
+## Señales
+signal segment_analytics_ready(analytics_dict: Dictionary)
+
 ## Servicios internos
 var _builder: XAPIBuilderService
 var _connection_detector: ConnectionDetector
@@ -15,11 +18,27 @@ var _api_client: ApiClient
 ## Referencia al SyncService existente (para compatibilidad)
 var _sync_service: SyncService
 
+## Analytics tracking para segmento actual
+var _current_segment_id := 0
+var _current_actor_id := ""
+var _segment_start_time := 0.0
+var _blocks_executed := []
+var _attempts_count := 0
+var _is_tracking := false
+
 func _init() -> void:
 	_builder = XAPIBuilderService.new()
 	_connection_detector = ConnectionDetector.new()
 	_batch_service = SyncBatchService.new()
-
+	
+	# Initialize analytics tracking variables
+	_current_segment_id = 0
+	_current_actor_id = ""
+	_segment_start_time = 0.0
+	_blocks_executed = []
+	_attempts_count = 0
+	_is_tracking = false
+	
 func _ready() -> void:
 	# Crear API client
 	_api_client = ApiClient.new()
@@ -101,6 +120,56 @@ func track_custom(
 	)
 	_notify_pending_update()
 	return statement
+
+## === Tracking de analytics para segmento ===
+func start_segment_tracking(segment_id: int, actor_id: String) -> void:
+	_current_segment_id = segment_id
+	_current_actor_id = actor_id
+	_segment_start_time = Time.get_ticks_msec()
+	_blocks_executed = []
+	_attempts_count = 0
+	_is_tracking = true
+
+func block_executed(block_name: String) -> void:
+	if _is_tracking:
+		_blocks_executed.append(block_name)
+
+func increment_attempt() -> void:
+	if _is_tracking:
+		_attempts_count += 1
+
+func end_segment_tracking(success: bool) -> Dictionary:
+	if not _is_tracking:
+		return {}
+	var elapsed_msec = Time.get_ticks_msec() - _segment_start_time
+	var elapsed_sec = elapsed_msec / 1000.0
+
+	# Compute score and errors based on attempts and success
+	var errors := _attempts_count
+	if success and _attempts_count > 0:
+		errors = _attempts_count - 1  # Last attempt was successful
+
+	var score := 1.0
+	if errors > 0:
+		score = max(0.1, 1.0 - (float(errors) * 0.25))
+	if not success:
+		score = 0.0
+
+	var analytics = {
+		"segment_id": _current_segment_id,
+		"actor_id": _current_actor_id,
+		"time": elapsed_sec,
+		"errors": errors,
+		"score": score,
+		"success": success,
+		"blocks_executed": _blocks_executed.duplicate(),
+		"blocks_count": _blocks_executed.size(),
+		"attempts": _attempts_count,
+		"timestamp": Time.get_datetime_string_from_system()
+	}
+	_is_tracking = false
+	emit_signal("segment_analytics_ready", analytics)
+	return analytics
 
 ## === Métodos de sincronización ===
 
