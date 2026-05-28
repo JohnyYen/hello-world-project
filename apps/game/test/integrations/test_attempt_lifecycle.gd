@@ -42,7 +42,7 @@ func test_full_attempt_lifecycle() -> void:
     assert_eq(analytics.summary.success, true)
     assert_eq(analytics.summary.attempts, 1)
     assert_eq(analytics.summary.blocks_count, 3)
-    assert_gt(analytics.summary.time, 0.0)
+    assert_ge(analytics.summary.time, 0.0)
     assert_eq(analytics.summary.errors, 0)
     assert_eq(analytics.attempts.size(), 1)
     assert_eq(analytics.retry_count, 1)

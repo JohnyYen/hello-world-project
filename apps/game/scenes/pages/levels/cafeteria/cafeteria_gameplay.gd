@@ -124,10 +124,23 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 			self.code_space.hide_code_space()
 			LoadingScreen.change_scene(scene_path)
 		else:
-			_GameController.record_attempt(block_names, false, elapsed)
+			# Failure path: send analytics to adaptive agent via complete_level
+			# The agent receives the attempt data and adapts the level config for retry
+			_GameController.complete_level({
+				"blocks": block_names,
+				"time": elapsed,
+				"success": false,
+				"attempt_number": _attempt_count
+			})
 			FeedbackBalloon.show_feedback("Perdiste el Juego")
 	else:
-		_GameController.record_attempt(block_names, false, elapsed)
+		# Failure path: send analytics to adaptive agent via complete_level
+		_GameController.complete_level({
+			"blocks": block_names,
+			"time": elapsed,
+			"success": false,
+			"attempt_number": _attempt_count
+		})
 		FeedbackBalloon.show_feedback("Solucion no valida")
 	
 
