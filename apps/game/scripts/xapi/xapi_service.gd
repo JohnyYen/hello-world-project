@@ -130,6 +130,7 @@ func track_custom(
 ## @param segment_id: ID del segmento a trackear
 ## @param actor_id: ID del jugador
 func start_segment_tracking(segment_id: int, actor_id: String) -> void:
+	print("[XAPIService | start_segment_tracking]: Iniciando tracking para segment_id=%d, actor_id=%s" % [segment_id, actor_id])
 	_current_segment_id = segment_id
 	_current_actor_id = actor_id
 	_segment_start_time = Time.get_ticks_msec()
@@ -146,14 +147,17 @@ func start_segment_tracking(segment_id: int, actor_id: String) -> void:
 func block_executed(block_name: String) -> void:
 	if _is_tracking:
 		if _is_new_attempt:
+			print("[XAPIService | block_executed]: Nuevo intento detectado, limpiando bloques anteriores")
 			_blocks_executed.clear()
 			_is_new_attempt = false
 		_blocks_executed.append(block_name)
+		print("[XAPIService | block_executed]: Bloque '%s' registrado (total=%d)" % [block_name, _blocks_executed.size()])
 
 ## Incrementa el contador de intentos del segmento actual.
 func increment_attempt() -> void:
 	if _is_tracking:
 		_attempts_count += 1
+		print("[XAPIService | increment_attempt]: Intentos acumulados=%d" % _attempts_count)
 
 ## Finaliza un intento registrando los datos de ejecución.
 ## @param blocks_executed: Bloques utilizados en el intento
@@ -161,9 +165,12 @@ func increment_attempt() -> void:
 ## @param execution_time: Tiempo de ejecución en segundos
 func end_attempt(blocks_executed: Array[String], success: bool, execution_time: float) -> void:
 	if not _is_tracking:
+		print("[XAPIService | end_attempt]: Tracking inactivo, ignorando end_attempt")
 		return
+	var attempt_number := _attempts_history.size() + 1
+	print("[XAPIService | end_attempt]: Registrando intento #%d - success=%s, blocks=%d, time=%.2fs" % [attempt_number, str(success), blocks_executed.size(), execution_time])
 	var attempt_data := {
-		"attempt_number": _attempts_history.size() + 1,
+		"attempt_number": attempt_number,
 		"blocks": blocks_executed,
 		"blocks_count": blocks_executed.size(),
 		"success": success,
@@ -178,7 +185,9 @@ func end_attempt(blocks_executed: Array[String], success: bool, execution_time: 
 ## @param event_data: Datos adicionales del evento
 func track_event(event_name: String, event_data: Dictionary = {}) -> void:
 	if not _is_tracking:
+		print("[XAPIService | track_event]: Tracking inactivo, ignorando evento '%s'" % event_name)
 		return
+	print("[XAPIService | track_event]: Evento '%s' registrado - data=%s" % [event_name, str(event_data)])
 	var event := {
 		"event_name": event_name,
 		"event_data": event_data,
@@ -189,25 +198,31 @@ func track_event(event_name: String, event_data: Dictionary = {}) -> void:
 ## Resetea el tracking del segmento actual.
 ## En modo retry (set_retry_mode), preserva el historial de intentos previos.
 func reset_tracking() -> void:
+	print("[XAPIService | reset_tracking]: Reset tracking - retry_mode=%s" % str(_is_retry_mode))
 	_is_tracking = true
 	_blocks_executed.clear()
 	_attempts_count = 0
 	_is_new_attempt = false
 	if not _is_retry_mode:
+		print("[XAPIService | reset_tracking]: Limpiando historial de intentos y eventos (modo normal)")
 		_attempts_history.clear()
 		_custom_events.clear()
+	else:
+		print("[XAPIService | reset_tracking]: Preservando historial de %d intentos (modo retry)" % _attempts_history.size())
 
 ## Activa/desactiva el modo retry.
 ## Cuando está activo, reset_tracking preserva el historial de intentos.
 ## @param enabled: true para activar modo retry
 func set_retry_mode(enabled: bool) -> void:
 	_is_retry_mode = enabled
+	print("[XAPIService | set_retry_mode]: Modo retry=%s" % str(enabled))
 
 ## Finaliza el tracking del segmento actual y emite segment_analytics_ready.
 ## @param success: Si el jugador completó el segmento exitosamente
 ## @return Dictionary con analytics del segmento (segment_id, summary, attempts, custom_events)
 func end_segment_tracking(success: bool) -> Dictionary:
 	if not _is_tracking:
+		print("[XAPIService | end_segment_tracking]: Tracking inactivo, devolviendo vacío")
 		return {}
 	var elapsed_msec = Time.get_ticks_msec() - _segment_start_time
 	var elapsed_sec = elapsed_msec / 1000.0
@@ -221,6 +236,9 @@ func end_segment_tracking(success: bool) -> Dictionary:
 		score = max(0.1, 1.0 - (float(errors) * 0.25))
 	if not success:
 		score = 0.0
+
+	print("[XAPIService | end_segment_tracking]: Finalizando segmento #%d - success=%s, tiempo=%.2fs, intentos=%d, errores=%d, score=%.2f" % [_current_segment_id, str(success), elapsed_sec, _attempts_count, errors, score])
+	print("[XAPIService | end_segment_tracking]: Historial: %d intentos, %d eventos custom" % [_attempts_history.size(), _custom_events.size()])
 
 	var analytics = {
 		"segment_id": _current_segment_id,
@@ -240,6 +258,7 @@ func end_segment_tracking(success: bool) -> Dictionary:
 	}
 	_is_tracking = false
 	emit_signal("segment_analytics_ready", analytics)
+	print("[XAPIService | end_segment_tracking]: Analytics emitido vía señal segment_analytics_ready")
 	return analytics
 
 ## === Métodos de sincronización ===

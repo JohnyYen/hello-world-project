@@ -46,6 +46,7 @@ func _ready() -> void:
 	controller.send_blocks_to_code_zone(allowed_blocks)
 	
 	var actor_id: String = _GameState.player_data.get("name", "player")
+	print("[CafeteriaGameplay | _ready]: Iniciando tracking de segmento - level_id=%d, actor=%s" % [self.segment_id, actor_id])
 	_GameController.begin_segment(self.segment_id, actor_id)
 	
 	controller.modifier.segment_id = self.segment_id
@@ -76,6 +77,7 @@ func _on_back_level():
 	#get_tree().change_scene_to_file(back_scene)
 
 func _on_reset_level():
+	print("[CafeteriaGameplay | _on_reset_level]: Reiniciando nivel - intentos acumulados=%d" % _attempt_count)
 	_GameController.add_tracking_event("level_reset", {"attempt_count": _attempt_count})
 	_GameController.reset_level_tracking()
 	_attempt_count = 0
@@ -86,7 +88,7 @@ func _on_reset_level():
 	#get_tree().call_deferred("change_scene_to_file", scene_path)
 	
 func _on_execute_solution(blocks : Array[BaseBlock]):
-	print("DEBUG [Cafeteria Gameplay]: Execute solution with: ", blocks)
+	print("[CafeteriaGameplay | _on_execute_solution]: Ejecutando solución con %d bloques (intento #%d)" % [blocks.size(), _attempt_count + 1])
 	
 	_attempt_count += 1
 	_GameController.begin_attempt()
@@ -94,6 +96,7 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 	var block_names: Array[String] = []
 	for block in blocks:
 		block_names.append(block.name)
+		print("[CafeteriaGameplay | _on_execute_solution]:   Bloque: %s" % block.name)
 	
 	_GameController.add_tracking_event("solution_evaluated", {"blocks_count": blocks.size(), "attempt": _attempt_count})
 	
@@ -103,6 +106,7 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 	
 	if final_context:
 		if final_context.is_solution_correct():
+			print("[CafeteriaGameplay | _on_execute_solution]: SOLUCIÓN CORRECTA - completando nivel con éxito")
 			_GameController.add_tracking_event("level_completed", {"success": true, "time": elapsed, "attempt": _attempt_count})
 			_GameController.complete_level({
 				"blocks": block_names,
@@ -124,6 +128,7 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 			self.code_space.hide_code_space()
 			LoadingScreen.change_scene(scene_path)
 		else:
+			print("[CafeteriaGameplay | _on_execute_solution]: SOLUCIÓN INCORRECTA - enviando analytics al agente adaptativo para reintento")
 			# Failure path: send analytics to adaptive agent via complete_level
 			# The agent receives the attempt data and adapts the level config for retry
 			_GameController.complete_level({
@@ -134,6 +139,7 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 			})
 			FeedbackBalloon.show_feedback("Perdiste el Juego")
 	else:
+		print("[CafeteriaGameplay | _on_execute_solution]: CONTEXTO INVÁLIDO (null) - enviando analytics al agente adaptativo")
 		# Failure path: send analytics to adaptive agent via complete_level
 		_GameController.complete_level({
 			"blocks": block_names,
@@ -145,6 +151,7 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 	
 
 func show_instructions(text: String) -> void:
+	print("[CafeteriaGameplay | show_instructions]: Mostrando instrucciones (text_length=%d)" % text.length())
 	_GameController.add_tracking_event("instruction_shown", {"text_length": text.length()})
 	var tween = instruction_panel.create_tween()
 	# Bloquear interacciones
@@ -174,6 +181,7 @@ func show_instructions(text: String) -> void:
 	).set_delay(2.0)  # 2 segundos de lectura antes de desbloquear
 
 func _on_instruction_displayed() -> void:
+	print("[CafeteriaGameplay | _on_instruction_displayed]: Instrucciones mostradas al jugador")
 	_GameController.add_tracking_event("instruction_displayed", {})
 	var tween = instruction_panel.create_tween()
 	# Fade out opcional
@@ -187,6 +195,7 @@ func _on_instruction_displayed() -> void:
 	).set_delay(0.5)  # esperar a que termine el fade out
 
 func _on_instruction_hidden() -> void:
+	print("[CafeteriaGameplay | _on_instruction_hidden]: Instrucciones ocultas, interacciones desbloqueadas")
 	_GameController.add_tracking_event("instruction_dismissed", {})
 	instruction_panel.visible = false
 
