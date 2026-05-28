@@ -47,6 +47,8 @@ func execute_solution(blocks : Array[BaseBlock], context : BaseProblemContext) -
 ## @param segment_id: ID del segmento a trackear
 ## @param actor_id: ID del jugador
 func begin_segment(segment_id: int, actor_id: String) -> void:
+	# Reset local state when beginning a new segment (singleton lifecycle)
+	_attempts_count = 0
 	print("[GameController | begin_segment]: Iniciando segmento level_id=%d, actor=%s" % [segment_id, actor_id])
 	_XAPIService.start_segment_tracking(segment_id, actor_id)
 	_current_level_id = segment_id

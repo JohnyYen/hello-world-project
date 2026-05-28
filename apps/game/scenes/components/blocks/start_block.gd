@@ -6,6 +6,7 @@ func _ready():
 	super() # llama al _ready() del bloque base
 	self.block_type = BlockTypesEnum.BlockTypesEnum.START
 	self.block = StartBlock.new()
+	self.block.name = "Inicio"
 	self.block_name = "Inicio"
 	self.description = "Bloque que marca el inicio de la ejecución"
 	$TextureRect.self_modulate = start_color
