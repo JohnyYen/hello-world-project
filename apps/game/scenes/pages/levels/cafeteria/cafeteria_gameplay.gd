@@ -28,6 +28,7 @@ var controller : LevelOneController
 
 # Mantener referencia a estudiantes instanciados para poder limpiarlos
 var spawned_students: Array = []
+var _attempt_count: int = 0
 
 func _ready() -> void:
 	self.controller = _GameController.create_level_controller(LevelEnum.Level.Level_One) as LevelOneController
@@ -44,6 +45,9 @@ func _ready() -> void:
 	var allowed_blocks = controller.get_avaible_blocks()
 	controller.send_blocks_to_code_zone(allowed_blocks)
 	
+	var actor_id: String = _GameState.player_data.get("name", "player")
+	_GameController.begin_segment(self.segment_id, actor_id)
+	
 	controller.modifier.segment_id = self.segment_id
 	controller.modifier.original_config = controller.level_configuration.json_data
 	
@@ -58,8 +62,7 @@ func _ready() -> void:
 	
 	hud.reset_level.connect(Callable(self, "_on_reset_level"))
 	hud.back_pressed.connect(Callable(self, "_on_back_level"))
-	#controller.finish_level({})
-	
+
 	_GameController.feedback_controller.hud_node = hud
 	
 func _on_back_level():
@@ -73,6 +76,9 @@ func _on_back_level():
 	#get_tree().change_scene_to_file(back_scene)
 
 func _on_reset_level():
+	_GameController.add_tracking_event("level_reset", {"attempt_count": _attempt_count})
+	_GameController.reset_level_tracking()
+	_attempt_count = 0
 	self.hud.hide_hud()
 	self.code_space.hide_code_space()
 	
@@ -81,12 +87,32 @@ func _on_reset_level():
 	
 func _on_execute_solution(blocks : Array[BaseBlock]):
 	print("DEBUG [Cafeteria Gameplay]: Execute solution with: ", blocks)
+	
+	_attempt_count += 1
+	_GameController.begin_attempt()
+	
+	var block_names: Array[String] = []
+	for block in blocks:
+		block_names.append(block.name)
+	
+	_GameController.add_tracking_event("solution_evaluated", {"blocks_count": blocks.size(), "attempt": _attempt_count})
+	
+	var start_time := Time.get_ticks_msec()
 	var final_context : CafeteriaProblemContext = _GameController.execute_solution(blocks, self.controller.context)
+	var elapsed := (Time.get_ticks_msec() - start_time) / 1000.0
+	
 	if final_context:
 		if final_context.is_solution_correct():
+			_GameController.add_tracking_event("level_completed", {"success": true, "time": elapsed, "attempt": _attempt_count})
+			_GameController.complete_level({
+				"blocks": block_names,
+				"time": elapsed,
+				"success": true,
+				"attempt_number": _attempt_count
+			})
+			
 			FeedbackBalloon.show_feedback("Ganaste")
 			
-			controller.finish_level({})
 			await get_tree().create_timer(1).timeout
 			if _GameState.flags.get("has_complete_one_level", false):
 				DialogueManager.show_dialogue_balloon( load("res://dialogue/C01/C01_E05_Primera_Vez_Cafeteria.dialogue"), "start")
@@ -97,20 +123,16 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 			self.hud.hide_hud()
 			self.code_space.hide_code_space()
 			LoadingScreen.change_scene(scene_path)
-			#get_tree().change_scene_to_file(back_scene)
 		else:
+			_GameController.record_attempt(block_names, false, elapsed)
 			FeedbackBalloon.show_feedback("Perdiste el Juego")
-			#_GameController.feedback_controller.show_feedback({
-				#"message": 'Perdiste el juego'
-			#})
 	else:
+		_GameController.record_attempt(block_names, false, elapsed)
 		FeedbackBalloon.show_feedback("Solucion no valida")
-		#_GameController.feedback_controller.show_feedback({
-				#"message": 'Solucion no valida'
-			#})
 	
 
 func show_instructions(text: String) -> void:
+	_GameController.add_tracking_event("instruction_shown", {"text_length": text.length()})
 	var tween = instruction_panel.create_tween()
 	# Bloquear interacciones
 	#code_space.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -139,6 +161,7 @@ func show_instructions(text: String) -> void:
 	).set_delay(2.0)  # 2 segundos de lectura antes de desbloquear
 
 func _on_instruction_displayed() -> void:
+	_GameController.add_tracking_event("instruction_displayed", {})
 	var tween = instruction_panel.create_tween()
 	# Fade out opcional
 	tween.tween_property(
@@ -151,6 +174,7 @@ func _on_instruction_displayed() -> void:
 	).set_delay(0.5)  # esperar a que termine el fade out
 
 func _on_instruction_hidden() -> void:
+	_GameController.add_tracking_event("instruction_dismissed", {})
 	instruction_panel.visible = false
 
 	# Desbloquear interacciones
