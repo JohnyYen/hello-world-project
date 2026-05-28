@@ -4,6 +4,9 @@
 ## engine to decide on appropriate actions for difficulty modification.
 class_name AdaptiveAgent
 
+## Número mínimo de intentos requeridos antes de comenzar a adaptar la dificultad
+const MIN_HISTORY_FOR_DECISION := 5
+
 ## Emitted when the agent decides on an action to adjust difficulty
 ## @param action: String representing the action taken ("increase", "decrease", or "keep")
 ## @param new_difficulty: Float representing the new difficulty level after the action
@@ -42,6 +45,13 @@ func _init() -> void:
 func analyze_and_decide(raw_data : Dictionary) -> void:
 	print("[AdaptiveAgent | analyze_and_decide]: Datos recibidos: ", raw_data)
 	print("[AdaptiveAgent | analyze_and_decide]: score=%s, errors=%s" % [raw_data.get("score", "MISSING"), raw_data.get("errors", "MISSING")])
+	
+	# NUEVO: Verificar si tenemos suficiente historial antes de decidir
+	if self.analyzer.scores.size() < MIN_HISTORY_FOR_DECISION:
+		print("[AdaptiveAgent | analyze_and_decide]: Historial insuficiente (%d/%d) - manteniendo dificultad actual" % 
+		      [self.analyzer.scores.size(), MIN_HISTORY_FOR_DECISION])
+		return  # Salimos sin cambiar dificultad
+	
 	# Normalize the raw performance data using the analyzer
 	var processed_data = analyzer.normalize(raw_data);
 	print("DEBUG: Normalized data to: ", processed_data)
