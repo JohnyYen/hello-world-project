@@ -76,7 +76,7 @@ func complete_level(result: Dictionary) -> void:
 	var analytics := _XAPIService.end_segment_tracking(result.success)
 	var enriched := _enrich_level_data(analytics)
 	if _level_controller:
-		print("[GameController | complete_level]: Enviando analytics enriquecidos a LevelController.finish_level()")
+		print("[GameController | complete_level]: Enviando analytics al AdaptiveAgent vía finish_level (score=%.2f, errors=%d)" % [enriched.get("score", 0.0), enriched.get("errors", 0)])
 		_level_controller.finish_level(enriched)
 	else:
 		push_error("GameController: No hay _level_controller asignado")
@@ -89,8 +89,14 @@ func _enrich_level_data(analytics: Dictionary) -> Dictionary:
 	enriched["level_id"] = _current_level_id
 	enriched["actor_id"] = _current_actor_id
 	if analytics.has("summary"):
-		enriched["total_time"] = analytics["summary"].get("time", 0.0)
-	print("[GameController | _enrich_level_data]: Datos enriquecidos con level_id=%d, actor_id=%s, total_time=%.2f" % [_current_level_id, _current_actor_id, enriched.get("total_time", 0.0)])
+		var s := analytics["summary"]
+		enriched["total_time"] = s.get("time", 0.0)
+		# Flatten score and errors to top level for AdaptiveAgent compatibility
+		enriched["score"] = s.get("score", 0.0)
+		enriched["errors"] = s.get("errors", 0)
+		enriched["time"] = s.get("time", 0.0)
+	print("[GameController | _enrich_level_data]: Datos enriquecidos - level_id=%d, actor_id=%s, score=%.2f, errors=%d, total_time=%.2f" % [_current_level_id, _current_actor_id, enriched.get("score", 0.0), enriched.get("errors", 0), enriched.get("total_time", 0.0)])
+	print("[GameController | _enrich_level_data]: Enviando a AdaptiveAgent: {score=%.2f, errors=%d, time=%.2f}" % [enriched.get("score", 0.0), enriched.get("errors", 0), enriched.get("time", 0.0)])
 	return enriched
 
 ## Agrega un evento de tracking personalizado.

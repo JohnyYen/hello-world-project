@@ -40,7 +40,8 @@ func _init() -> void:
 ##                  - "errors": integer number of errors made
 ##                  - "time": float representing time taken (optional)
 func analyze_and_decide(raw_data : Dictionary) -> void:
-	print("DEBUG: AdaptiveAgent.analyze_and_decide called with raw_data: ", raw_data)
+	print("[AdaptiveAgent | analyze_and_decide]: Datos recibidos: ", raw_data)
+	print("[AdaptiveAgent | analyze_and_decide]: score=%s, errors=%s" % [raw_data.get("score", "MISSING"), raw_data.get("errors", "MISSING")])
 	# Normalize the raw performance data using the analyzer
 	var processed_data = analyzer.normalize(raw_data);
 	print("DEBUG: Normalized data to: ", processed_data)

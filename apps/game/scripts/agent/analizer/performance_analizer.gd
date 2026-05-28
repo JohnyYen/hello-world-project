@@ -28,13 +28,14 @@ var smooth_alpha := 0.3
 ##          - "avg_score": the calculated average score with smoothing
 ##          - "time": the original time value (if provided)
 func normalize(raw: Dictionary) -> Dictionary:
-    print("DEBUG: PerformanceAnalyzer.normalize called with raw data: ", raw)
+    print("[PerformanceAnalyzer | normalize]: Datos recibidos - score=%s, errors=%s" % [raw.get("score", "MISSING"), raw.get("errors", "MISSING")])
+    print("[PerformanceAnalyzer | normalize]: Full raw data: ", raw)
     # Get and clamp the score between 0.0 and 1.0 to ensure valid range
     var score = clamp(raw.get("score", 0.0), 0.0, 1.0)
     # Get the number of errors, defaulting to 0 if not provided
     var errors = int(raw.get("errors", 0))
     
-    print("DEBUG: Normalized raw score: ", score, ", errors: ", errors)
+    print("[PerformanceAnalyzer | normalize]: Score normalizado: %.2f, Errores: %d" % [score, errors])
     
     # Add the current score to the historical scores array
     scores.append(score)
