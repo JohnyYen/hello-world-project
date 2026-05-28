@@ -1,14 +1,21 @@
-[gd_scene load_steps=12 format=3 uid="uid://b3ow8gwjncuug"]
+[gd_scene load_steps=15 format=3 uid="uid://b3ow8gwjncuug"]
 
 [ext_resource type="Script" uid="uid://c8628desp1qi3" path="res://scripts/controllers/menu_controller.gd" id="1_15f43"]
 [ext_resource type="Texture2D" uid="uid://cbucl153j28r2" path="res://assets/shared/backgrounds/bg_main_menu.png" id="2_qlvks"]
+[ext_resource type="Script" uid="uid://dh3243ndwvine" path="res://scenes/pages/title_screen_script.gd" id="3_046iq"]
 [ext_resource type="Script" uid="uid://bqhrevs7v82mm" path="res://scenes/pages/main_buttons.gd" id="3_aur8p"]
 [ext_resource type="Texture2D" uid="uid://cjlva1434fy7h" path="res://assets/background/title.png" id="3_vune5"]
 [ext_resource type="AudioStream" uid="uid://dtongse8kys1o" path="res://assets/anime/audio/music/codigos_en_la_sangre.mp3" id="4_7pm6w"]
+[ext_resource type="Shader" uid="uid://ck2bjfq4bqfub" path="res://scenes/pages/title_screen_black_bg.gdshader" id="4_82y7q"]
 [ext_resource type="Script" uid="uid://ccpitjh2fntee" path="res://scenes/pages/panel.gd" id="5_qlvks"]
 
 [sub_resource type="Theme" id="Theme_2o4iu"]
 RichTextLabel/colors/font_outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_046iq"]
+shader = ExtResource("4_82y7q")
+shader_parameter/progress = 0.0
+shader_parameter/from_center = true
 
 [sub_resource type="Theme" id="Theme_1ql4k"]
 
@@ -20,7 +27,7 @@ RichTextLabel/colors/font_outline_color = Color(0, 0, 0, 1)
 Button/font_sizes/font_size = 24
 Button/fonts/font = null
 
-[node name="menu" type="Control"]
+[node name="menu" type="Control" node_paths=PackedStringArray("title_screen")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,6 +35,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_15f43")
+title_screen = NodePath("TitleScreenScript")
 
 [node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
@@ -57,6 +65,49 @@ theme_override_font_sizes/bold_font_size = 10
 text = "Hello World!!!"
 fit_content = true
 tab_size = 8
+
+[node name="TitleScreenScript" type="Node" parent="." node_paths=PackedStringArray("menu_bg", "logo", "menu_buttons", "black_bg", "press_label")]
+script = ExtResource("3_046iq")
+menu_bg = NodePath("../Background")
+logo = NodePath("../Panel_Button/TextureRect")
+menu_buttons = NodePath("../Panel_Button/Main_Buttons")
+black_bg = NodePath("../TitleOverlay/ColorRect")
+press_label = NodePath("../TitleOverlay/Label")
+
+[node name="TitleOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="TitleOverlay"]
+z_index = 1
+material = SubResource("ShaderMaterial_046iq")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="TitleOverlay"]
+z_index = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -65.5
+offset_top = -11.5
+offset_right = 65.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press any button"
 
 [node name="Panel_Button" type="Control" parent="."]
 layout_mode = 1

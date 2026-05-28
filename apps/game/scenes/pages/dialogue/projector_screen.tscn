@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://88mscthuwidx"]
+
+[ext_resource type="Script" uid="uid://doafamq0nsbka" path="res://scenes/pages/dialogue/projector_screen.gd" id="1_jf0m5"]
+
+[node name="ProjectorScreen" type="CanvasLayer"]
+script = ExtResource("1_jf0m5")

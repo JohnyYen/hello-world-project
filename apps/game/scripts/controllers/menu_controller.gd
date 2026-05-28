@@ -6,8 +6,10 @@ extends Control
 @onready var language_options = $"Panel/Lang Options"
 @onready var audio = $Audio
 
+@export var title_screen: TitleScreen
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	title_screen.setup()
 	panel.visible = false
 	main_button.visible = true
 	

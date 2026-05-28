@@ -42,6 +42,10 @@ window/stretch/mode="canvas_items"
 
 enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/godot-sqlite/plugin.cfg", "res://addons/gut/plugin.cfg")
 
+[gui]
+
+theme/custom="res://theme/digicode_visual_theme.tres"
+
 [input]
 
 dialogue_skip_scene={

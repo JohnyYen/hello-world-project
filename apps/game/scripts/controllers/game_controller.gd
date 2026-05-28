@@ -89,7 +89,7 @@ func _enrich_level_data(analytics: Dictionary) -> Dictionary:
 	enriched["level_id"] = _current_level_id
 	enriched["actor_id"] = _current_actor_id
 	if analytics.has("summary"):
-		var s := analytics["summary"]
+		var s = analytics["summary"]
 		enriched["total_time"] = s.get("time", 0.0)
 		# Flatten score and errors to top level for AdaptiveAgent compatibility
 		enriched["score"] = s.get("score", 0.0)

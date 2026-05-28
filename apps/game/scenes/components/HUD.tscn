@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://5bhqqnu1awir"]
+[gd_scene load_steps=7 format=3 uid="uid://5bhqqnu1awir"]
 
 [ext_resource type="Script" uid="uid://bk7a1xe24lul0" path="res://scenes/components/hud.gd" id="1_3g3a0"]
+[ext_resource type="Script" uid="uid://bo38kurahoh2r" path="res://scenes/components/top_hud.gd" id="3_3g3a0"]
 [ext_resource type="Texture2D" uid="uid://dit158q6lsvlq" path="res://assets/shared/ui/menu_icon.png" id="3_astay"]
 [ext_resource type="Script" uid="uid://bdwadqwy7bt4w" path="res://scenes/components/inventory_hud.gd" id="4_7fcwq"]
+[ext_resource type="Texture2D" uid="uid://dl2dud4xwotwt" path="res://assets/shared/ui/fajo_billetes_pixel_art.png" id="6_h2lwm"]
 [ext_resource type="Texture2D" uid="uid://coe1tosqrkah7" path="res://assets/shared/ui/icon_back.png" id="6_jnqh5"]
 
 [node name="Hud" type="CanvasLayer" node_paths=PackedStringArray("inventory")]
@@ -13,6 +15,11 @@ inventory = NodePath("Node")
 [node name="Node" type="Node" parent="." node_paths=PackedStringArray("inventory_container")]
 script = ExtResource("4_7fcwq")
 inventory_container = NodePath("../MarginContainer2/VBoxContainer/InventoryPanel/InventoryList")
+
+[node name="Extra" type="Node" parent="." node_paths=PackedStringArray("coin_label", "attempts_label")]
+script = ExtResource("3_3g3a0")
+coin_label = NodePath("../MarginContainer2/VBoxContainer/TopBar/Cash/Coin")
+attempts_label = NodePath("../MarginContainer2/VBoxContainer/TopBar/AttempsLabel")
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 y_sort_enabled = true
@@ -51,6 +58,32 @@ expand_icon = true
 layout_mode = 2
 
 [node name="Timer" type="Timer" parent="MarginContainer2/VBoxContainer/TopBar"]
+
+[node name="Cash" type="HBoxContainer" parent="MarginContainer2/VBoxContainer/TopBar"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer2/VBoxContainer/TopBar/Cash"]
+clip_contents = true
+layout_direction = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_bottom = 15
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer2/VBoxContainer/TopBar/Cash/MarginContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("6_h2lwm")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Coin" type="Label" parent="MarginContainer2/VBoxContainer/TopBar/Cash"]
+layout_mode = 2
+
+[node name="AttempsLabel" type="Label" parent="MarginContainer2/VBoxContainer/TopBar"]
+layout_mode = 2
+text = "Intentos x 2"
 
 [node name="InventoryPanel" type="HBoxContainer" parent="MarginContainer2/VBoxContainer"]
 layout_mode = 2

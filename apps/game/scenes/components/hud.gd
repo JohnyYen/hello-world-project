@@ -13,11 +13,13 @@ signal add_item_inventory(item: String)
 @onready var timer : Timer = $MarginContainer2/VBoxContainer/TopBar/Timer
 
 @export var inventory: InventoryHUD
+@export var topbar: TopHUDController
 
 var seconds_passed := 0
 var timer_running := false
 var is_countdown = false
 var countdown_from := 60.0 
+
 
 
 func _ready():
@@ -113,3 +115,12 @@ func clear_inventory():
 
 func set_inventory(items: Array):
 	inventory.set_inventory(items)
+	
+func add_attempts():
+	self.topbar.add_attempts()
+
+func add_coin(coin: int):
+	self.topbar.add_coin(coin)
+
+func set_active_coin_label(active: bool):
+	self.topbar.set_active_coin(active)
