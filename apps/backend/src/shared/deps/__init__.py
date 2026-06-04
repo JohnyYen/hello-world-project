@@ -46,7 +46,7 @@ async def get_current_user(
     query = (
         select(User)
         .where(User.username == token_data.username)
-        .options(selectinload(User.role))
+        .options(selectinload(User.role), selectinload(User.professor))
     )
     result = await db.execute(query)
     user = result.scalar_one_or_none()
