@@ -32,10 +32,8 @@ var delta := 0.1
 
 ## Initializes the adaptive agent with required components
 func _init() -> void:
-	print("DEBUG: AdaptiveAgent initialized")
-	inference_engine = RuleBasedInference.new();
+	inference_engine = RuleBasedInference.new()
 	analyzer = PerformanceAnalyzer.new()
-	print("DEBUG: AdaptiveAgent components created - inference_engine: ", inference_engine, ", analyzer: ", analyzer)
 
 ## Analyzes raw performance data and decides on an action to adjust difficulty
 ## @param raw_data: Dictionary containing raw performance metrics with keys:
@@ -43,53 +41,47 @@ func _init() -> void:
 ##                  - "errors": integer number of errors made
 ##                  - "time": float representing time taken (optional)
 func analyze_and_decide(raw_data : Dictionary) -> void:
-	print("[AdaptiveAgent | analyze_and_decide]: Datos recibidos: ", raw_data)
-	print("[AdaptiveAgent | analyze_and_decide]: score=%s, errors=%s" % [raw_data.get("score", "MISSING"), raw_data.get("errors", "MISSING")])
+	# Convertir el Dictionary a AttemptData para mejor type checking
+	var attempt := AttemptData.from_dictionary(raw_data)
 	
-	# NUEVO: Verificar si tenemos suficiente historial antes de decidir
-	if self.analyzer.scores.size() < MIN_HISTORY_FOR_DECISION:
-		print("[AdaptiveAgent | analyze_and_decide]: Historial insuficiente (%d/%d) - manteniendo dificultad actual" % 
-		      [self.analyzer.scores.size(), MIN_HISTORY_FOR_DECISION])
-		return  # Salimos sin cambiar dificultad
+	# Registrar el intento en el historial enriquecido
+	analyzer.record_attempt(attempt)
+	
+	# Verificar si tenemos suficiente historial antes de decidir
+	if self.analyzer.get_attempt_count() < MIN_HISTORY_FOR_DECISION:
+		print("[AdaptiveAgent] Insuficientes intentos (%d/%d) - sin adaptación" % 
+			[self.analyzer.get_attempt_count(), MIN_HISTORY_FOR_DECISION])
+		return
 	
 	# Normalize the raw performance data using the analyzer
-	var processed_data = analyzer.normalize(raw_data);
-	print("DEBUG: Normalized data to: ", processed_data)
+	var processed_data = analyzer.normalize(raw_data)
 	# Determine the appropriate action based on the processed data
-	var action = inference_engine.decide_action(processed_data);
-	print("DEBUG: Inference engine decided action: ", action)
+	var action = inference_engine.decide_action(processed_data)
 	# Apply the decided action to adjust difficulty
-	_apply_action(action);
+	_apply_action(action)
 
 ## Applies the specified action to adjust the difficulty level
 ## @param action: String representing the action to take ("increase", "decrease", or "keep")
 func _apply_action(action: String) -> void:
-	print("DEBUG: Applying action: ", action, " to current difficulty: ", difficulty)
 	var old_difficulty = difficulty
 	# Apply the action to adjust difficulty accordingly
 	match action:
 		"increase":
 			# Increase difficulty, but ensure it doesn't exceed the maximum
 			difficulty = min(difficulty + delta, max_difficulty)
-			print("DEBUG: Increased difficulty from ", old_difficulty, " to ", difficulty)
 		"decrease":
 			# Decrease difficulty, but ensure it doesn't go below the minimum
 			difficulty = max(difficulty - delta, min_difficulty)
-			print("DEBUG: Decreased difficulty from ", old_difficulty, " to ", difficulty)
 		"keep":
 			# No change to difficulty
-			print("DEBUG: Kept difficulty at ", difficulty)
 			pass
 		_:
 			# Handle unexpected actions with a warning
 			push_warning("Unknown action: %s" % action)
-			print("DEBUG: Unknown action received: ", action)
 	
 	# Ensure difficulty is clamped between min and max values as an extra safety measure
 	difficulty = clamp(difficulty, min_difficulty, max_difficulty)
-	print("DEBUG: Final difficulty after clamping: ", difficulty, " (was: ", old_difficulty, ")")
 	
 	# Emit the signal to notify other parts of the system about the decision
 	emit_signal("action_decided", action, difficulty)
-	# Log the decision for debugging purposes
-	print("Agent decided action: %s, new difficulty: %f" % [action, difficulty])
+	print("[AdaptiveAgent] Acción %s aplicada - Dificultad %.2f → %.2f" % [action, old_difficulty, difficulty])

@@ -18,7 +18,7 @@ func _ready() -> void:
 	EventBus.level_loaded.connect(_on_level_loaded)
 
 func _on_level_loaded(segment_id: int, actor_id: String) -> void:
-	print("[GameController | _on_level_loaded]: Señal recibida - segment_id=%d, actor_id=%s" % [segment_id, actor_id])
+	print("[GameController] Nivel cargado - segment_id=%d, actor_id=%s" % [segment_id, actor_id])
 	begin_segment(segment_id, actor_id)
 
 static func create_level_controller(level) -> LevelController:
@@ -49,7 +49,7 @@ func execute_solution(blocks : Array[BaseBlock], context : BaseProblemContext) -
 func begin_segment(segment_id: int, actor_id: String) -> void:
 	# Reset local state when beginning a new segment (singleton lifecycle)
 	_attempts_count = 0
-	print("[GameController | begin_segment]: Iniciando segmento level_id=%d, actor=%s" % [segment_id, actor_id])
+	print("[GameController] Segmento iniciado - level_id=%d, actor=%s" % [segment_id, actor_id])
 	_XAPIService.start_segment_tracking(segment_id, actor_id)
 	_current_level_id = segment_id
 	_current_actor_id = actor_id
@@ -57,7 +57,6 @@ func begin_segment(segment_id: int, actor_id: String) -> void:
 ## Inicia un nuevo intento dentro del segmento actual.
 func begin_attempt() -> void:
 	_attempts_count += 1
-	print("[GameController | begin_attempt]: Iniciando intento #%d" % _attempts_count)
 	_XAPIService.increment_attempt()
 
 ## Registra un intento completado en el tracking.
@@ -65,18 +64,16 @@ func begin_attempt() -> void:
 ## @param success: Si el intento fue exitoso
 ## @param execution_time: Tiempo de ejecución en segundos
 func record_attempt(blocks_executed: Array[String], success: bool, execution_time: float) -> void:
-	print("[GameController | record_attempt]: Registrando intento - success=%s, blocks=%d, time=%.2fs" % [str(success), blocks_executed.size(), execution_time])
 	_XAPIService.end_attempt(blocks_executed, success, execution_time)
 
 ## Completa el nivel: registra intento, finaliza tracking y notifica al LevelController.
 ## @param result: Dictionary con keys "blocks", "success", "time"
 func complete_level(result: Dictionary) -> void:
-	print("[GameController | complete_level]: Completando nivel - success=%s, attempts=%d, blocks=%d, time=%.2fs" % [str(result.success), _attempts_count, result.blocks.size(), result.time])
 	record_attempt(result.blocks, result.success, result.time)
 	var analytics := _XAPIService.end_segment_tracking(result.success)
 	var enriched := _enrich_level_data(analytics)
 	if _level_controller:
-		print("[GameController | complete_level]: Enviando analytics al AdaptiveAgent vía finish_level (score=%.2f, errors=%d)" % [enriched.get("score", 0.0), enriched.get("errors", 0)])
+		print("[GameController] Enviando analytics al AdaptiveAgent - score=%.2f, errors=%d" % [enriched.get("score", 0.0), enriched.get("errors", 0)])
 		_level_controller.finish_level(enriched)
 	else:
 		push_error("GameController: No hay _level_controller asignado")
@@ -95,21 +92,17 @@ func _enrich_level_data(analytics: Dictionary) -> Dictionary:
 		enriched["score"] = s.get("score", 0.0)
 		enriched["errors"] = s.get("errors", 0)
 		enriched["time"] = s.get("time", 0.0)
-	print("[GameController | _enrich_level_data]: Datos enriquecidos - level_id=%d, actor_id=%s, score=%.2f, errors=%d, total_time=%.2f" % [_current_level_id, _current_actor_id, enriched.get("score", 0.0), enriched.get("errors", 0), enriched.get("total_time", 0.0)])
-	print("[GameController | _enrich_level_data]: Enviando a AdaptiveAgent: {score=%.2f, errors=%d, time=%.2f}" % [enriched.get("score", 0.0), enriched.get("errors", 0), enriched.get("time", 0.0)])
 	return enriched
 
 ## Agrega un evento de tracking personalizado.
 ## @param event_name: Nombre del evento
 ## @param event_data: Datos adicionales del evento
 func add_tracking_event(event_name: String, event_data: Dictionary = {}) -> void:
-	print("[GameController | add_tracking_event]: Evento '%s' delegado a XAPIService" % event_name)
 	_XAPIService.track_event(event_name, event_data)
 
 ## Resetea el tracking del nivel actual.
 ## Limpia contadores locales y delega a XAPIService.reset_tracking().
 func reset_level_tracking() -> void:
-	print("[GameController | reset_level_tracking]: Reseteando tracking del nivel")
 	_XAPIService.reset_tracking()
 	_attempts_count = 0
 	_is_retry_mode = false
