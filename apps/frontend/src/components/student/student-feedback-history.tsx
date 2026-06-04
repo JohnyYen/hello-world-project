@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LoadingState } from "@/components/ui/loading-state";
@@ -18,6 +17,23 @@ import type { FeedbackHistoryItem } from "@/types/student.interface";
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 10;
+
+// Spanish strings (hardcoded — this branch does not include the i18n layer).
+const STRINGS = {
+  title: "Historial de feedback",
+  loading: "Cargando historial de feedback...",
+  error: "Error al cargar el historial de feedback",
+  empty: "No hay feedback registrado para este estudiante",
+  total: (n: number): string => `Mostrando ${n} registro${n === 1 ? "" : "s"}`,
+  types: {
+    advice: "Consejo",
+    hint: "Pista",
+    tip: "Sugerencia",
+    message: "Mensaje",
+  },
+} as const;
+
+const LOCALE = "es-ES";
 
 const FEEDBACK_TYPE_VARIANTS: Record<string, string> = {
   advice: "bg-blue-100 text-blue-800 border-blue-200",
@@ -36,49 +52,48 @@ export function StudentFeedbackHistory({ studentId }: StudentFeedbackHistoryProp
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const t = useTranslations("students");
-  const locale = useLocale();
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  const feedbackTypeLabels: Record<string, string> = {
-    advice: t("feedbackHistory.types.advice"),
-    hint: t("feedbackHistory.types.hint"),
-    tip: t("feedbackHistory.types.tip"),
-    message: t("feedbackHistory.types.message"),
-  };
-
-  const fetchFeedback = useCallback(async (page: number) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const skip = (page - 1) * PAGE_SIZE;
-      const response = await statisticsService.getStudentFeedbackHistory(studentId, {
-        skip,
-        limit: PAGE_SIZE,
-      });
-      setFeedbackItems(response.items);
-      setTotal(response.total);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("feedbackHistory.error"));
-      setFeedbackItems([]);
-      setTotal(0);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [studentId, t]);
-
   useEffect(() => {
-    fetchFeedback(currentPage);
-  }, [currentPage, fetchFeedback]);
+    let cancelled = false;
 
-  const handlePageChange = (page: number) => {
+    const fetchFeedback = async (page: number): Promise<void> => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const skip = (page - 1) * PAGE_SIZE;
+        const response = await statisticsService.getStudentFeedbackHistory(studentId, {
+          skip,
+          limit: PAGE_SIZE,
+        });
+        if (cancelled) return;
+        setFeedbackItems(response.items);
+        setTotal(response.total);
+      } catch (err) {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : STRINGS.error);
+        setFeedbackItems([]);
+        setTotal(0);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+
+    void fetchFeedback(currentPage);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentPage, studentId]);
+
+  const handlePageChange = (page: number): void => {
     setCurrentPage(page);
   };
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString(locale, {
+  const formatDate = (dateStr: string): string => {
+    return new Date(dateStr).toLocaleDateString(LOCALE, {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -113,10 +128,10 @@ export function StudentFeedbackHistory({ studentId }: StudentFeedbackHistoryProp
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{t("feedbackHistory.title")}</CardTitle>
+          <CardTitle className="text-lg">{STRINGS.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <LoadingState message={t("feedbackHistory.loading")} />
+          <LoadingState message={STRINGS.loading} />
         </CardContent>
       </Card>
     );
@@ -126,7 +141,7 @@ export function StudentFeedbackHistory({ studentId }: StudentFeedbackHistoryProp
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{t("feedbackHistory.title")}</CardTitle>
+          <CardTitle className="text-lg">{STRINGS.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 text-red-600">
@@ -141,13 +156,13 @@ export function StudentFeedbackHistory({ studentId }: StudentFeedbackHistoryProp
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t("feedbackHistory.title")}</CardTitle>
+        <CardTitle className="text-lg">{STRINGS.title}</CardTitle>
       </CardHeader>
       <CardContent>
         {feedbackItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
             <MessageSquare className="h-12 w-12 mb-3 opacity-40" />
-            <p className="text-lg font-medium">{t("feedbackHistory.empty")}</p>
+            <p className="text-lg font-medium">{STRINGS.empty}</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -164,7 +179,7 @@ export function StudentFeedbackHistory({ studentId }: StudentFeedbackHistoryProp
                       FEEDBACK_TYPE_VARIANTS[item.feedback_type] || "bg-gray-100 text-gray-800"
                     )}
                   >
-                    {feedbackTypeLabels[item.feedback_type] || item.feedback_type}
+                    {STRINGS.types[item.feedback_type as keyof typeof STRINGS.types] || item.feedback_type}
                   </Badge>
                 </div>
 
@@ -192,7 +207,7 @@ export function StudentFeedbackHistory({ studentId }: StudentFeedbackHistoryProp
             )}
 
             <p className="text-xs text-muted-foreground text-center">
-              {t("feedbackHistory.total", { total })}
+              {STRINGS.total(total)}
             </p>
           </div>
         )}
