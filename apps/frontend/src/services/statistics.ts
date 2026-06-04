@@ -168,6 +168,7 @@ interface FeedbackCreatePayload {
   rating?: number | null;
   feedback_type?: "advice" | "hint" | "tip" | "message";
   display_in_game?: boolean;
+  course_id?: string;
 }
 
 interface FeedbackListResponse {
@@ -177,20 +178,20 @@ interface FeedbackListResponse {
   limit: number;
 }
 
-async function submitFeedback(feedback: unknown): Promise<unknown> {
-  return fetchApi<unknown>("/api/v1/statistic/feedback", {
+async function submitFeedback(feedback: FeedbackCreatePayload): Promise<FeedbackHistoryItem> {
+  return fetchApi<FeedbackHistoryItem>("/api/v1/statistic/feedback", {
     method: "POST",
     body: JSON.stringify(feedback),
   });
 }
 
-async function getStudentFeedbackHistory(studentId: number, params: GetStudentFeedbackHistoryParams = {}): Promise<unknown> {
+async function getStudentFeedbackHistory(studentId: string, params: GetStudentFeedbackHistoryParams = {}): Promise<FeedbackListResponse> {
   const queryParams = new URLSearchParams();
   if (params.skip !== undefined) queryParams.set("skip", String(params.skip));
   if (params.limit !== undefined) queryParams.set("limit", String(params.limit));
   
   const query = queryParams.toString();
-  return fetchApi<unknown>(`/api/v1/statistic/feedback/${studentId}${query ? `?${query}` : ""}`);
+  return fetchApi<FeedbackListResponse>(`/api/v1/statistic/feedback/${studentId}${query ? `?${query}` : ""}`);
 }
 
 export const statisticsService = {
