@@ -29,6 +29,8 @@ class FeedbackSchema(FeedbackBase):
     course_id: Optional[UUID] = None
     display_in_game: bool = False
     acknowledged_at: Optional[datetime] = None
+    game_id: Optional[UUID] = None
+    level_id: Optional[UUID] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 

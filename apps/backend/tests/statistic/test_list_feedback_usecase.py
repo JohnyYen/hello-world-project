@@ -118,6 +118,8 @@ class TestListFeedbackUseCaseExecute:
         mock_feedback1.display_in_game = False
         mock_feedback1.acknowledged_at = None
         mock_feedback1.updated_at = None
+        mock_feedback1.game_id = None
+        mock_feedback1.level_id = None
         mock_feedback1.created_at = datetime.now()
         
         mock_feedback2 = MagicMock()
@@ -131,6 +133,8 @@ class TestListFeedbackUseCaseExecute:
         mock_feedback2.display_in_game = True
         mock_feedback2.acknowledged_at = None
         mock_feedback2.updated_at = None
+        mock_feedback2.game_id = None
+        mock_feedback2.level_id = None
         mock_feedback2.created_at = datetime.now()
         
         mock_feedback_service.get_feedback_for_student = AsyncMock(
@@ -294,6 +298,8 @@ class TestListFeedbackUseCaseExecuteByCourse:
         mock_feedback1.display_in_game = False
         mock_feedback1.acknowledged_at = None
         mock_feedback1.updated_at = None
+        mock_feedback1.game_id = None
+        mock_feedback1.level_id = None
         mock_feedback1.created_at = datetime.now()
         
         mock_feedback_service.get_feedback_for_course = AsyncMock(

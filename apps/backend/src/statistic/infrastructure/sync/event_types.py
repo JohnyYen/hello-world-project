@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import UUID
 from datetime import datetime
 from pydantic import BaseModel
@@ -10,5 +11,7 @@ class FeedbackDeliveredEvent(BaseModel):
     professor_id: UUID
     course_id: UUID
     feedback_type: str
+    rating: Optional[int] = None
+    comments: str
     display_in_game: bool
     created_at: datetime
