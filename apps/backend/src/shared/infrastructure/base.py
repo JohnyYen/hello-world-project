@@ -36,4 +36,4 @@ class Base:
         return f"<{self.__class__.__name__}({params})>"
 
 
-from .models import *
+

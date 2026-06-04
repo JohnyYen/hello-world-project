@@ -1,3 +1,5 @@
+import type { FeedbackHistoryItem } from "@/types/student.interface";
+
 function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
     return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -160,6 +162,21 @@ async function sendStatements(batch: unknown): Promise<unknown> {
   });
 }
 
+interface FeedbackCreatePayload {
+  student_id: string;
+  comments: string;
+  rating?: number | null;
+  feedback_type?: "advice" | "hint" | "tip" | "message";
+  display_in_game?: boolean;
+}
+
+interface FeedbackListResponse {
+  items: FeedbackHistoryItem[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
 async function submitFeedback(feedback: unknown): Promise<unknown> {
   return fetchApi<unknown>("/api/v1/statistic/feedback", {
     method: "POST",
@@ -199,4 +216,6 @@ export type {
   GetMetricTypesParams,
   GetStatementsParams,
   GetStudentFeedbackHistoryParams,
+  FeedbackCreatePayload,
+  FeedbackListResponse,
 };
