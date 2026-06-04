@@ -1,42 +1,46 @@
-# app/services/feedback_service.py
+from typing import Optional
+from uuid import UUID
+
 from src.statistic.infrastructure.feedback_repository import FeedbackRepository
 from src.statistic.domain.feedback import Feedback
 from src.shared.application.usecase.base_service import BaseService
 
 
 class FeedbackService(BaseService):
-    """
-    Servicio para gestionar la lógica de negocio de feedback.
-
-    Proporciona una capa de abstracción sobre el repositorio de feedback,
-    manejando la lógica de negocio antes de interactuar con la base de datos.
-    """
-
     def __init__(self, repository: FeedbackRepository, model: type[Feedback]):
-        """
-        Inicializa el servicio con un repositorio y modelo.
-
-        Args:
-            repository: Instancia del repositorio de feedback
-            model: Clase del modelo Feedback
-        """
         super().__init__(repository, model)
 
     async def get_by_student_id(
         self,
-        student_id: int,
+        student_id: UUID,
         include_deleted: bool = False,
     ):
-        """
-        Obtiene feedback por ID de estudiante.
-
-        Args:
-            student_id: ID del estudiante
-            include_deleted: Si True, incluye feedback eliminados
-
-        Returns:
-            Lista de Feedback
-        """
         return await self.repository.get_by_student_id(
             student_id=student_id, include_deleted=include_deleted
+        )
+
+    async def get_feedback_for_student(
+        self,
+        student_id: UUID,
+        course_ids: list[UUID],
+        skip: int = 0,
+        limit: int = 100,
+    ):
+        return await self.repository.get_by_student_and_courses(
+            student_id=student_id,
+            course_ids=course_ids,
+            skip=skip,
+            limit=limit,
+        )
+
+    async def get_feedback_for_course(
+        self,
+        course_id: UUID,
+        skip: int = 0,
+        limit: int = 100,
+    ):
+        return await self.repository.get_by_course_id(
+            course_id=course_id,
+            skip=skip,
+            limit=limit,
         )

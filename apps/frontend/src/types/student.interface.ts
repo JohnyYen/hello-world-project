@@ -11,6 +11,7 @@ export interface Student {
   progress: number;
   achievements: string[];
   course?: string;
+  averageGrade?: string;
 }
 
 export interface CreateStudentDto {
