@@ -18,6 +18,9 @@ var inference_engine: BaseInference
 ## The performance analyzer that normalizes raw performance data
 var analyzer: PerformanceAnalyzer
 
+## The trend calculator for analyzing performance trends
+var trend_calculator: TrendCalculator
+
 ## Current difficulty level, ranging from min_difficulty to max_difficulty
 var difficulty := 1.0
 
@@ -34,6 +37,7 @@ var delta := 0.1
 func _init() -> void:
 	inference_engine = RuleBasedInference.new()
 	analyzer = PerformanceAnalyzer.new()
+	trend_calculator = TrendCalculator.new()
 
 ## Analyzes raw performance data and decides on an action to adjust difficulty
 ## @param raw_data: Dictionary containing raw performance metrics with keys:
@@ -55,6 +59,14 @@ func analyze_and_decide(raw_data : Dictionary) -> void:
 	
 	# Normalize the raw performance data using the analyzer
 	var processed_data = analyzer.normalize(raw_data)
+	
+	# Calcular tendencia usando el TrendCalculator
+	var attempts_history = analyzer.get_attempts_history()
+	var trend = trend_calculator.calculate(attempts_history, TrendCalculator.TrendMode.WEIGHTED)
+	
+	# Agregar tendencia a los datos procesados para que el inference engine la use
+	processed_data["trend"] = trend
+	
 	# Determine the appropriate action based on the processed data
 	var action = inference_engine.decide_action(processed_data)
 	# Apply the decided action to adjust difficulty
