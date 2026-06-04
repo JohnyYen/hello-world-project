@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 
-from src.shared.application.providers.statistic_providers import (
+from src.shared.application.providers.feedback_usecase_providers import (
     get_create_feedback_usecase,
     get_list_feedback_usecase,
 )
