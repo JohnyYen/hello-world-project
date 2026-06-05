@@ -98,15 +98,15 @@ func record_attempt(attempt: AttemptData) -> void:
 	if attempt == null:
 		push_warning("PerformanceAnalyzer.record_attempt: AttemptData es null")
 		return
-
+	
 	attempts_history.append(attempt)
-	print("[PerformanceAnalyzer | record_attempt]: Intento #%d registrado - score=%.2f, errors=%d, time=%.2fs" % [
-		attempts_history.size(), attempt.score, attempt.errors, attempt.time
-	])
 
 	# Mantener límite de historial
 	if attempts_history.size() > history_size:
 		attempts_history.pop_front()
+	
+	# Persistir en JSON
+	AttemptHistoryPersistence.append_attempt(attempt)
 
 ## Obtiene el historial completo de intentos
 ## @return Array de AttemptData objects
@@ -166,4 +166,18 @@ func get_average_time() -> float:
 ## Reseta completamente el historial de intentos
 func reset_attempts_history() -> void:
 	attempts_history.clear()
+	AttemptHistoryPersistence.clear_history()
+
+## Carga el historial desde el archivo JSON persistente
+## @return true si se cargó exitosamente
+func load_history_from_persistence() -> bool:
+	var loaded_history := AttemptHistoryPersistence.load_history()
+	if loaded_history.size() > 0:
+		# Limitar a history_size
+		if loaded_history.size() > history_size:
+			loaded_history = loaded_history.slice(-history_size)
+		attempts_history = loaded_history
+		print("[PerformanceAnalyzer] Historial cargado: %d intentos" % attempts_history.size())
+		return true
+	return false
 	print("[PerformanceAnalyzer | reset_attempts_history]: Historial de intentos reseteado")
