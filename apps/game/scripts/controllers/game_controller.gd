@@ -72,6 +72,22 @@ func complete_level(result: Dictionary) -> void:
 	record_attempt(result.blocks, result.success, result.time)
 	var analytics := _XAPIService.end_segment_tracking(result.success)
 	var enriched := _enrich_level_data(analytics)
+	
+	# Crear xAPI statement para sincronización con backend
+	# Captura el evento consolidado de nivel completado con score, errors, duration
+	var summary = analytics.get("summary", {})
+	var score := float(summary.get("score", 0.0))
+	var time_sec := float(summary.get("time", 0.0))
+	_XAPIService.track_level_completed(
+		str(_current_level_id),
+		"Level %d" % _current_level_id,
+		_current_actor_id,
+		score,
+		score,
+		result.success,
+		"PT%fS" % time_sec
+	)
+	
 	if _level_controller:
 		print("[GameController] Enviando analytics al AdaptiveAgent - score=%.2f, errors=%d" % [enriched.get("score", 0.0), enriched.get("errors", 0)])
 		_level_controller.finish_level(enriched)
