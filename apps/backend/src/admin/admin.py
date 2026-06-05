@@ -219,7 +219,8 @@ class GameAdminView(BaseAdminModelView):
     column_details_list = [Game.id, Game.title, Game.description, Game.creator, Game.subject, Game.publication_status]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [Game.levels, Game.instances, Game.feedbacks]
+    # Use string names to avoid issues with SQLAlchemy relationship objects
+    form_excluded_columns = ["levels", "instances", "feedbacks"]
     
     can_edit = True
     can_create = True
@@ -236,7 +237,7 @@ class GameInstanceAdminView(BaseAdminModelView):
     column_details_list = [GameInstance.id, GameInstance.game_id, GameInstance.student_id, GameInstance.started_at, GameInstance.ended_at, GameInstance.status]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [GameInstance.student, GameInstance.game, GameInstance.sync_sessions]
+    form_excluded_columns = ["student", "game", "sync_sessions"]
     
     can_edit = True
     can_create = True
@@ -253,7 +254,7 @@ class SegmentLevelAdminView(BaseAdminModelView):
     column_details_list = [SegmentLevel.id, SegmentLevel.level_number_id, SegmentLevel.configuration]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [SegmentLevel.level, SegmentLevel.progresses]
+    form_excluded_columns = ["level", "progresses"]
     
     can_edit = True
     can_create = True
@@ -270,7 +271,7 @@ class LevelAdminView(BaseAdminModelView):
     column_details_list = [Level.id, Level.title, Level.game_id, Level.level_number, Level.description, Level.goal]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [Level.game, Level.segments, Level.feedbacks]
+    form_excluded_columns = ["game", "segments", "feedbacks"]
     
     can_edit = True
     can_create = True
@@ -287,7 +288,7 @@ class CourseAdminView(BaseAdminModelView):
     column_details_list = [Course.id, Course.name, Course.description, Course.school_year, Course.period_label, Course.start_date, Course.end_date, Course.is_active]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [Course.enrollments, Course.course_professors]
+    form_excluded_columns = ["enrollments", "course_professors"]
     
     can_edit = True
     can_create = True
@@ -304,7 +305,7 @@ class CourseEnrollmentAdminView(BaseAdminModelView):
     column_details_list = [CourseEnrollment.id, CourseEnrollment.student_id, CourseEnrollment.course_id, CourseEnrollment.enrolled_at]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [CourseEnrollment.student, CourseEnrollment.course]
+    form_excluded_columns = ["student", "course"]
     
     can_edit = True
     can_create = True
@@ -325,7 +326,7 @@ class ProgressAdminView(BaseAdminModelView):
     ]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [Progress.student, Progress.segment_level]
+    form_excluded_columns = ["student", "segment_level"]
     
     can_edit = True
     can_create = True
@@ -347,7 +348,7 @@ class XAPIStatementAdminView(BaseAdminModelView):
     ]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [XAPIStatement.student]
+    form_excluded_columns = ["student"]
     
     can_edit = True
     can_create = True
@@ -367,7 +368,7 @@ class FeedbackAdminView(BaseAdminModelView):
     ]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [Feedback.student, Feedback.professor, Feedback.game, Feedback.level]
+    form_excluded_columns = ["student", "professor", "game", "level"]
     
     can_edit = True
     can_create = True
@@ -387,7 +388,7 @@ class SyncSessionAdminView(BaseAdminModelView):
     ]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [SyncSession.game_instance, SyncSession.events]
+    form_excluded_columns = ["game_instance", "events"]
     
     can_edit = True
     can_create = True
@@ -407,7 +408,7 @@ class SyncEventAdminView(BaseAdminModelView):
     ]
     
     # Exclude relationships from form - they should be created separately
-    form_excluded_columns = [SyncEvent.sync_session]
+    form_excluded_columns = ["sync_session"]
     
     can_edit = True
     can_create = True
