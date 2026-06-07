@@ -42,17 +42,29 @@ class UserAdminView(BaseAdminModelView, model=User):
     icon = "fa-solid fa-user"
     
     column_list = [
-        User.id, User.username, User.name, User.lastname, 
+        User.id, User.username, User.name, User.lastname,
         User.email, User.is_active, User.role_id
     ]
     column_details_list = [
-        User.id, User.username, User.name, User.lastname, 
-        User.email, User.avatar_url, User.is_active, 
+        User.id, User.username, User.name, User.lastname,
+        User.email, User.avatar_url, User.is_active,
         User.last_login, User.role_id, User.lms_id
     ]
     column_formatters = {User.hashed_password: lambda m, c: "***"}
-    form_excluded_columns = [User.hashed_password]
-    
+    # Exclude: hashed_password (sensitive) + all inverse relationships
+    # (children that have their own lifecycle and are managed via their
+    # own admin views, e.g. StudentAdminView, ProfessorAdminView).
+    # Owning-side relationships (role, lms_credential) stay in the form
+    # so the admin can pick a parent when creating a user.
+    form_excluded_columns = [
+        User.hashed_password,
+        User.student,
+        User.professor,
+        User.teacher_settings,
+        User.notifications,
+        User.activity_logs,
+    ]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -66,7 +78,13 @@ class RoleAdminView(BaseAdminModelView, model=Role):
     
     column_list = [Role.id, Role.role_name, Role.description]
     column_details_list = [Role.id, Role.role_name, Role.description]
-    
+
+    # `users` is the inverse side (FK `role_id` lives on User). Excluding
+    # it prevents SQLAdmin from rendering a `<select multiple>` of all
+    # users in the form. Users are assigned to roles when the user is
+    # created/edited in UserAdminView.
+    form_excluded_columns = [Role.users]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -80,7 +98,15 @@ class ProfessorAdminView(BaseAdminModelView, model=Professor):
     
     column_list = [Professor.id, Professor.user_id, Professor.department, Professor.contact_phone]
     column_details_list = [Professor.id, Professor.user_id, Professor.department, Professor.contact_phone]
-    
+
+    # Exclude inverse relationships (children that have their own admin
+    # views). The owning side (`user`) stays in the form so the admin can
+    # link the professor to its user account.
+    form_excluded_columns = [
+        Professor.feedbacks,
+        Professor.course_professors,
+    ]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -94,7 +120,19 @@ class StudentAdminView(BaseAdminModelView, model=Student):
     
     column_list = [Student.id, Student.user_id, Student.last_active_at, Student.current_streak_days, Student.active_today]
     column_details_list = [Student.id, Student.user_id, Student.last_active_at, Student.current_streak_days, Student.active_today]
-    
+
+    # Exclude all inverse relationships. Each child type has its own
+    # admin view (or is created by the system) and must not be assigned
+    # from the Student form. The owning `user` relationship stays so the
+    # admin can link the student to its user account.
+    form_excluded_columns = [
+        Student.game_instances,
+        Student.feedbacks,
+        Student.progresses,
+        Student.xapi_statements,
+        Student.course_enrollments,
+    ]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -130,10 +168,23 @@ class GameAdminView(BaseAdminModelView, model=Game):
     name = "Juego"
     name_plural = "Juegos"
     icon = "fa-solid fa-gamepad"
-    
+
     column_list = [Game.id, Game.title, Game.creator, Game.subject, Game.publication_status]
     column_details_list = [Game.id, Game.title, Game.description, Game.creator, Game.subject, Game.publication_status]
-    
+
+    # Exclude all inverse relationships. By default SQLAdmin auto-renders
+    # every SQLAlchemy relationship as a `<select multiple>` widget, which
+    # (a) triggers heavy SELECT queries on every form render and
+    # (b) lets the admin assign child rows that have their own lifecycle
+    # (Level, GameInstance, Feedback) or whose FK is the inverse (Course).
+    # Game has no owning-side relationships, so this list is exhaustive.
+    form_excluded_columns = [
+        Game.levels,
+        Game.instances,
+        Game.feedbacks,
+        Game.courses,
+    ]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -147,7 +198,12 @@ class GameInstanceAdminView(BaseAdminModelView, model=GameInstance):
     
     column_list = [GameInstance.id, GameInstance.game_id, GameInstance.student_id, GameInstance.status]
     column_details_list = [GameInstance.id, GameInstance.game_id, GameInstance.student_id, GameInstance.started_at, GameInstance.ended_at, GameInstance.status]
-    
+
+    # Exclude the inverse `sync_sessions` relationship. Owning-side
+    # relationships (`student`, `game`, `course`) stay so the admin can
+    # pick the relevant entities when creating a game instance.
+    form_excluded_columns = [GameInstance.sync_sessions]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -161,7 +217,12 @@ class SegmentLevelAdminView(BaseAdminModelView, model=SegmentLevel):
     
     column_list = [SegmentLevel.id, SegmentLevel.level_number_id, SegmentLevel.configuration]
     column_details_list = [SegmentLevel.id, SegmentLevel.level_number_id, SegmentLevel.configuration]
-    
+
+    # Exclude inverse `progresses` (children created as students play).
+    # The owning `level` relationship stays so the admin can attach the
+    # segment to a level.
+    form_excluded_columns = [SegmentLevel.progresses]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -175,7 +236,14 @@ class LevelAdminView(BaseAdminModelView, model=Level):
     
     column_list = [Level.id, Level.title, Level.game_id, Level.level_number]
     column_details_list = [Level.id, Level.title, Level.game_id, Level.level_number, Level.description, Level.goal]
-    
+
+    # Exclude inverse relationships. The owning `game` stays so the
+    # admin can pick which game this level belongs to.
+    form_excluded_columns = [
+        Level.segments,
+        Level.feedbacks,
+    ]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -189,7 +257,14 @@ class CourseAdminView(BaseAdminModelView, model=Course):
     
     column_list = [Course.id, Course.name, Course.school_year, Course.period_label, Course.is_active]
     column_details_list = [Course.id, Course.name, Course.description, Course.school_year, Course.period_label, Course.start_date, Course.end_date, Course.is_active]
-    
+
+    # Exclude inverse relationships. The owning `game` stays so the
+    # admin can optionally link a course to a game.
+    form_excluded_columns = [
+        Course.enrollments,
+        Course.course_professors,
+    ]
+
     can_edit = True
     can_create = True
     can_delete = True
@@ -274,7 +349,12 @@ class SyncSessionAdminView(BaseAdminModelView, model=SyncSession):
         SyncSession.id, SyncSession.instance_id, SyncSession.status,
         SyncSession.start_time, SyncSession.end_time
     ]
-    
+
+    # Exclude inverse `events` (children created as the sync progresses).
+    # The owning `game_instance` stays so the admin can link the session
+    # to a game instance.
+    form_excluded_columns = [SyncSession.events]
+
     can_edit = True
     can_create = True
     can_delete = True
