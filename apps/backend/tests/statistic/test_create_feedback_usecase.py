@@ -108,14 +108,14 @@ class TestCreateFeedbackUseCaseExecute:
         mock_professor = MagicMock()
         mock_professor.id = uuid4()
         mock_current_user.professor = mock_professor
-        
+
         # Mock db.execute to return course but not enrollment
         mock_course_result = MagicMock()
         mock_course_result.scalar_one_or_none.return_value = MagicMock()  # Course exists
-        
+
         mock_enrollment_result = MagicMock()
         mock_enrollment_result.scalar_one_or_none.return_value = None  # No enrollment
-        
+
         mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result])
         
         use_case = CreateFeedbackUseCase(
@@ -157,7 +157,7 @@ class TestCreateFeedbackUseCaseExecute:
         mock_course_prof_result = MagicMock()
         mock_course_prof_result.scalar_one_or_none.return_value = None  # No professor-course link
         
-        mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result])
+        mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result, mock_course_result])
         
         use_case = CreateFeedbackUseCase(
             db=mock_db,
@@ -198,7 +198,7 @@ class TestCreateFeedbackUseCaseExecute:
         mock_course_prof_result = MagicMock()
         mock_course_prof_result.scalar_one_or_none.return_value = MagicMock()  # Professor-course link exists
         
-        mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result])
+        mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result, mock_course_result])
         
         # Mock feedback_service.create to return a feedback object
         course_id = uuid4()
@@ -276,7 +276,7 @@ class TestCreateFeedbackUseCaseExecute:
         mock_course_prof_result = MagicMock()
         mock_course_prof_result.scalar_one_or_none.return_value = MagicMock()
         
-        mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result])
+        mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result, mock_course_result])
         
         # Mock feedback_service.create to return a feedback object
         mock_feedback = MagicMock()
@@ -350,19 +350,19 @@ class TestCreateFeedbackUseCaseExecute:
         mock_professor = MagicMock()
         mock_professor.id = uuid4()
         mock_current_user.professor = mock_professor
-        
+
         # Test case 1: Student enrolled and professor teaches course -> should succeed
         mock_course_result = MagicMock()
         mock_course_result.scalar_one_or_none.return_value = MagicMock()  # Course exists
-        
+
         mock_enrollment_result = MagicMock()
         mock_enrollment_result.scalar_one_or_none.return_value = MagicMock()  # Enrollment exists
-        
+
         mock_course_prof_result = MagicMock()
         mock_course_prof_result.scalar_one_or_none.return_value = MagicMock()  # Professor teaches course
-        
-        mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result])
-        
+
+        mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result, mock_course_result])
+
         # Mock feedback_service.create to return a feedback object
         mock_feedback = MagicMock()
         mock_feedback.id = uuid4()
@@ -378,15 +378,15 @@ class TestCreateFeedbackUseCaseExecute:
         mock_feedback.game_id = None
         mock_feedback.level_id = None
         mock_feedback.created_at = datetime.now()
-        
+
         mock_feedback_service.create = AsyncMock(return_value=mock_feedback)
-        
+
         use_case = CreateFeedbackUseCase(
             db=mock_db,
             feedback_service=mock_feedback_service,
             current_user=mock_current_user
         )
-        
+
         course_id_param = uuid4()
         feedback_data = FeedbackCreate(
             student_id=uuid4(),
@@ -394,31 +394,135 @@ class TestCreateFeedbackUseCaseExecute:
             rating=4,
             course_id=course_id_param
         )
-        
+
         # Should not raise exception
         result = await use_case.execute(feedback_data)
         assert result is not None
-        
+
         # Test case 2: Student NOT enrolled in course -> should raise 403
         mock_enrollment_result_none = MagicMock()
         mock_enrollment_result_none.scalar_one_or_none.return_value = None  # No enrollment
-        
+
         mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result_none])
-        
+
         with pytest.raises(HTTPException) as exc_info:
             await use_case.execute(feedback_data)
-        
+
         assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
         assert "Student is not enrolled in this course" in exc_info.value.detail
-        
+
         # Test case 3: Professor does NOT teach course -> should raise 403
         mock_course_prof_result_none = MagicMock()
         mock_course_prof_result_none.scalar_one_or_none.return_value = None  # No professor-course link
-        
+
         mock_db.execute = AsyncMock(side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result_none])
-        
+
         with pytest.raises(HTTPException) as exc_info:
             await use_case.execute(feedback_data)
-        
+
         assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
         assert "Professor does not teach this course" in exc_info.value.detail
+
+    @pytest.mark.asyncio
+    async def test_execute_raises_404_when_student_profile_not_found(self):
+        """
+        Regression test: when the student_id references a User that has no
+        Student profile row (the FK target), the use case must raise 404
+        BEFORE hitting the DB insert. Otherwise the FK violation produces
+        a misleading 'duplicate entry' 500 error.
+        """
+        mock_db = MagicMock()
+        mock_feedback_service = MagicMock()
+        mock_current_user = MagicMock()
+        mock_professor = MagicMock()
+        mock_professor.id = uuid4()
+        mock_current_user.professor = mock_professor
+
+        # db.execute returns nothing for the Student existence check
+        mock_student_result = MagicMock()
+        mock_student_result.scalar_one_or_none.return_value = None
+        mock_db.execute = AsyncMock(return_value=mock_student_result)
+
+        use_case = CreateFeedbackUseCase(
+            db=mock_db,
+            feedback_service=mock_feedback_service,
+            current_user=mock_current_user
+        )
+
+        feedback_data = FeedbackCreate(
+            student_id=uuid4(),
+            comments="Buen trabajo",
+            rating=4
+        )
+
+        with pytest.raises(HTTPException) as exc_info:
+            await use_case.execute(feedback_data)
+
+        # Must be a 4xx client error, never a 500
+        assert exc_info.value.status_code == status.HTTP_404_NOT_FOUND
+        assert "student" in exc_info.value.detail.lower() or "estudiante" in exc_info.value.detail.lower()
+
+        # The service.create must NOT be called when validation fails
+        mock_feedback_service.create.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_execute_does_not_check_student_when_course_validates_it(self):
+        """
+        If a course_id is provided, the existing course/enrollment/professor
+        checks already prove the student exists in the students table.
+        We must not require an extra Student check that duplicates work.
+        """
+        mock_db = MagicMock()
+        mock_feedback_service = MagicMock()
+        mock_current_user = MagicMock()
+        mock_professor = MagicMock()
+        mock_professor.id = uuid4()
+        mock_current_user.professor = mock_professor
+
+        # Course, enrollment and course_prof all exist (proves student profile exists)
+        mock_course_result = MagicMock()
+        mock_course_result.scalar_one_or_none.return_value = MagicMock()
+
+        mock_enrollment_result = MagicMock()
+        mock_enrollment_result.scalar_one_or_none.return_value = MagicMock()
+
+        mock_course_prof_result = MagicMock()
+        mock_course_prof_result.scalar_one_or_none.return_value = MagicMock()
+
+        mock_db.execute = AsyncMock(
+            side_effect=[mock_course_result, mock_enrollment_result, mock_course_prof_result, mock_course_result]
+        )
+
+        student_id = uuid4()
+        mock_feedback = MagicMock()
+        mock_feedback.id = uuid4()
+        mock_feedback.student_id = student_id
+        mock_feedback.professor_id = mock_professor.id
+        mock_feedback.course_id = uuid4()
+        mock_feedback.comments = "ok"
+        mock_feedback.rating = 4
+        mock_feedback.feedback_type = "advice"
+        mock_feedback.display_in_game = False
+        mock_feedback.acknowledged_at = None
+        mock_feedback.updated_at = None
+        mock_feedback.game_id = None
+        mock_feedback.level_id = None
+        mock_feedback.created_at = datetime.now()
+        mock_feedback_service.create = AsyncMock(return_value=mock_feedback)
+
+        use_case = CreateFeedbackUseCase(
+            db=mock_db,
+            feedback_service=mock_feedback_service,
+            current_user=mock_current_user
+        )
+
+        feedback_data = FeedbackCreate(
+            student_id=student_id,
+            comments="ok",
+            rating=4,
+            course_id=uuid4()
+        )
+
+        result = await use_case.execute(feedback_data)
+        assert result is not None
+        mock_feedback_service.create.assert_called_once()
