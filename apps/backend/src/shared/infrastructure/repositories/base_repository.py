@@ -7,7 +7,47 @@ from sqlalchemy import and_, or_, select, update, delete, func, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import DeclarativeBase
-from src.shared.domain.exceptions import NotFoundException, DuplicateEntryException
+from src.shared.domain.exceptions import (
+    NotFoundException,
+    DuplicateEntryException,
+    ForeignKeyViolationException,
+    DatabaseException,
+)
+
+# PostgreSQL SQLSTATE codes that surface as SQLAlchemy IntegrityError.
+# Without dispatching on these, every FK / NOT NULL / CHECK failure gets
+# misreported as a duplicate-entry 400 and, in unhandled flows, as 500.
+_INTEGRITY_UNIQUE_VIOLATION = "23505"
+_INTEGRITY_FOREIGN_KEY_VIOLATION = "23503"
+_INTEGRITY_NOT_NULL_VIOLATION = "23502"
+_INTEGRITY_CHECK_VIOLATION = "23514"
+
+
+def _integrity_error_to_domain(integrity_error: IntegrityError, operation: str) -> Exception:
+    """
+    Convert a SQLAlchemy IntegrityError into the most specific domain exception
+    we have, based on the underlying PostgreSQL SQLSTATE code. Falls back to
+    DatabaseException for codes we don't yet model explicitly.
+    """
+    orig = getattr(integrity_error, "orig", None)
+    pgcode = getattr(orig, "pgcode", None)
+
+    if pgcode == _INTEGRITY_UNIQUE_VIOLATION:
+        return DuplicateEntryException(
+            f"Duplicate value violates a unique constraint during {operation}"
+        )
+    if pgcode == _INTEGRITY_FOREIGN_KEY_VIOLATION:
+        return ForeignKeyViolationException(
+            f"Referenced resource does not exist ({operation})"
+        )
+    if pgcode in (_INTEGRITY_NOT_NULL_VIOLATION, _INTEGRITY_CHECK_VIOLATION):
+        return DatabaseException(
+            f"Constraint violation ({pgcode}) during {operation}"
+        )
+    # Unknown integrity error: keep as a database error so the caller can map it.
+    return DatabaseException(
+        f"Unhandled integrity error during {operation}: {integrity_error}"
+    )
 
 # Define the generic type variable for the model
 ModelType = TypeVar("ModelType", bound=DeclarativeBase)
@@ -47,6 +87,8 @@ class BaseRepository(ABC, Generic[ModelType]):
 
         Raises:
             DuplicateEntryException: Si hay una violación de unicidad
+            ForeignKeyViolationException: Si una FK apunta a un registro inexistente
+            DatabaseException: Para cualquier otro fallo de integridad
         """
         try:
             db_obj = self.model(**obj_in)
@@ -54,11 +96,9 @@ class BaseRepository(ABC, Generic[ModelType]):
             await self.db.commit()
             await self.db.refresh(db_obj)
             return db_obj
-        except IntegrityError:
+        except IntegrityError as e:
             await self.db.rollback()
-            raise DuplicateEntryException(
-                f"Ya existe una entrada con los mismos valores únicos para {self.model.__name__}"
-            )
+            raise _integrity_error_to_domain(e, f"create {self.model.__name__}") from e
 
     async def get_by_id(
         self, id: Union[int, UUID, str], include_deleted: bool = False
@@ -259,11 +299,9 @@ class BaseRepository(ABC, Generic[ModelType]):
             await self.db.refresh(existing)
             return existing
 
-        except IntegrityError:
+        except IntegrityError as e:
             await self.db.rollback()
-            raise DuplicateEntryException(
-                f"No se puede actualizar. Valores únicos duplicados para {self.model.__name__}"
-            )
+            raise _integrity_error_to_domain(e, f"update {self.model.__name__}") from e
 
     async def delete(self, id: Union[int, UUID, str]) -> bool:
         """

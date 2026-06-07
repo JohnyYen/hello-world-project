@@ -47,6 +47,14 @@ class UnauthorizedException(AppException):
             detail=detail
         )
 
+class ForeignKeyViolationException(AppException):
+    """Excepción cuando una FK apunta a un registro que no existe (PostgreSQL SQLSTATE 23503)"""
+    def __init__(self, detail: str = "Referenced resource does not exist"):
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=detail
+        )
+
 class DatabaseException(AppException):
     """Excepción para errores de base de datos"""
     def __init__(self, detail: str = "Error en la base de datos"):
