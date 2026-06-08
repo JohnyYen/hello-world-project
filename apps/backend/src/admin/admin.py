@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from src.shared.infrastructure.session import engine
-from src.admin.auth import admin_auth, verify_admin_role, get_session, load_user_with_session
+from src.admin.auth import admin_auth_backend, verify_admin_role, load_user_with_session
 
 
 class AdminAuthMiddleware(BaseHTTPMiddleware):
@@ -119,7 +119,7 @@ class BaseAdminModelView(ModelView):
         return await super().delete(request, pk)
 
 
-class UserAdminView(BaseAdminModelView):
+class UserAdminView(BaseAdminModelView, model=User):
     """AdminView para el modelo User."""
     name = "Usuario"
     name_plural = "Usuarios"
@@ -142,7 +142,7 @@ class UserAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class RoleAdminView(BaseAdminModelView):
+class RoleAdminView(BaseAdminModelView, model=Role):
     """AdminView para el modelo Role."""
     name = "Rol"
     name_plural = "Roles"
@@ -156,7 +156,7 @@ class RoleAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class ProfessorAdminView(BaseAdminModelView):
+class ProfessorAdminView(BaseAdminModelView, model=Professor):
     """AdminView para el modelo Professor."""
     name = "Profesor"
     name_plural = "Profesores"
@@ -170,7 +170,7 @@ class ProfessorAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class StudentAdminView(BaseAdminModelView):
+class StudentAdminView(BaseAdminModelView, model=Student):
     """AdminView para el modelo Student."""
     name = "Estudiante"
     name_plural = "Estudiantes"
@@ -184,7 +184,7 @@ class StudentAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class TeacherSettingsAdminView(BaseAdminModelView):
+class TeacherSettingsAdminView(BaseAdminModelView, model=TeacherSettings):
     """AdminView para el modelo TeacherSettings."""
     name = "Configuración de Profesor"
     name_plural = "Configuraciones de Profesor"
@@ -209,7 +209,7 @@ class TeacherSettingsAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class GameAdminView(BaseAdminModelView):
+class GameAdminView(BaseAdminModelView, model=Game):
     """AdminView para el modelo Game."""
     name = "Juego"
     name_plural = "Juegos"
@@ -227,7 +227,7 @@ class GameAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class GameInstanceAdminView(BaseAdminModelView):
+class GameInstanceAdminView(BaseAdminModelView, model=GameInstance):
     """AdminView para el modelo GameInstance."""
     name = "Instancia de Juego"
     name_plural = "Instancias de Juego"
@@ -244,7 +244,7 @@ class GameInstanceAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class SegmentLevelAdminView(BaseAdminModelView):
+class SegmentLevelAdminView(BaseAdminModelView, model=SegmentLevel):
     """AdminView para el modelo SegmentLevel."""
     name = "Nivel de Segmento"
     name_plural = "Niveles de Segmento"
@@ -261,7 +261,7 @@ class SegmentLevelAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class LevelAdminView(BaseAdminModelView):
+class LevelAdminView(BaseAdminModelView, model=Level):
     """AdminView para el modelo Level."""
     name = "Nivel"
     name_plural = "Niveles"
@@ -278,7 +278,7 @@ class LevelAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class CourseAdminView(BaseAdminModelView):
+class CourseAdminView(BaseAdminModelView, model=Course):
     """AdminView para el modelo Course."""
     name = "Curso"
     name_plural = "Cursos"
@@ -295,7 +295,7 @@ class CourseAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class CourseEnrollmentAdminView(BaseAdminModelView):
+class CourseEnrollmentAdminView(BaseAdminModelView, model=CourseEnrollment):
     """AdminView para el modelo CourseEnrollment."""
     name = "Inscripción"
     name_plural = "Inscripciones"
@@ -312,7 +312,7 @@ class CourseEnrollmentAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class ProgressAdminView(BaseAdminModelView):
+class ProgressAdminView(BaseAdminModelView, model=Progress):
     """AdminView para el modelo Progress."""
     name = "Progreso"
     name_plural = "Progresos"
@@ -333,7 +333,7 @@ class ProgressAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class XAPIStatementAdminView(BaseAdminModelView):
+class XAPIStatementAdminView(BaseAdminModelView, model=XAPIStatement):
     """AdminView para el modelo XAPIStatement."""
     name = "Declaración xAPI"
     name_plural = "Declaraciones xAPI"
@@ -355,7 +355,7 @@ class XAPIStatementAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class FeedbackAdminView(BaseAdminModelView):
+class FeedbackAdminView(BaseAdminModelView, model=Feedback):
     """AdminView para el modelo Feedback."""
     name = "Feedback"
     name_plural = "Feedbacks"
@@ -375,7 +375,7 @@ class FeedbackAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class SyncSessionAdminView(BaseAdminModelView):
+class SyncSessionAdminView(BaseAdminModelView, model=SyncSession):
     """AdminView para el modelo SyncSession."""
     name = "Sesión de Sincronización"
     name_plural = "Sesiones de Sincronización"
@@ -395,7 +395,7 @@ class SyncSessionAdminView(BaseAdminModelView):
     can_delete = True
 
 
-class SyncEventAdminView(BaseAdminModelView):
+class SyncEventAdminView(BaseAdminModelView, model=SyncEvent):
     """AdminView para el modelo SyncEvent."""
     name = "Evento de Sincronización"
     name_plural = "Eventos de Sincronización"
@@ -415,7 +415,7 @@ class SyncEventAdminView(BaseAdminModelView):
     can_delete = True
 
 
-async def setup_admin(app: Any) -> Admin:
+def setup_admin(app: Any) -> Admin:
     """
     Configura SQLAdmin con todos los modelos y autenticación.
     """
@@ -426,26 +426,26 @@ async def setup_admin(app: Any) -> Admin:
         base_url="/admin",
     )
 
-    # Agregar autenticación
-    admin.add_view(UserAdminView(User, name="Usuarios"))
-    admin.add_view(RoleAdminView(Role, name="Roles"))
-    admin.add_view(ProfessorAdminView(Professor, name="Profesores"))
-    admin.add_view(StudentAdminView(Student, name="Estudiantes"))
-    admin.add_view(TeacherSettingsAdminView(TeacherSettings, name="Configuración de Profesor"))
+    # Los modelos están definidos en cada clase vía `model=Modelo`
+    admin.add_view(UserAdminView)
+    admin.add_view(RoleAdminView)
+    admin.add_view(ProfessorAdminView)
+    admin.add_view(StudentAdminView)
+    admin.add_view(TeacherSettingsAdminView)
 
-    admin.add_view(GameAdminView(Game, name="Juegos"))
-    admin.add_view(GameInstanceAdminView(GameInstance, name="Instancias de Juego"))
-    admin.add_view(SegmentLevelAdminView(SegmentLevel, name="Niveles de Segmento"))
-    admin.add_view(LevelAdminView(Level, name="Niveles"))
+    admin.add_view(GameAdminView)
+    admin.add_view(GameInstanceAdminView)
+    admin.add_view(SegmentLevelAdminView)
+    admin.add_view(LevelAdminView)
 
-    admin.add_view(CourseAdminView(Course, name="Cursos"))
-    admin.add_view(CourseEnrollmentAdminView(CourseEnrollment, name="Inscripciones"))
+    admin.add_view(CourseAdminView)
+    admin.add_view(CourseEnrollmentAdminView)
 
-    admin.add_view(ProgressAdminView(Progress, name="Progresos"))
-    admin.add_view(XAPIStatementAdminView(XAPIStatement, name="Declaraciones xAPI"))
-    admin.add_view(FeedbackAdminView(Feedback, name="Feedbacks"))
+    admin.add_view(ProgressAdminView)
+    admin.add_view(XAPIStatementAdminView)
+    admin.add_view(FeedbackAdminView)
 
-    admin.add_view(SyncSessionAdminView(SyncSession, name="Sesiones de Sincronización"))
-    admin.add_view(SyncEventAdminView(SyncEvent, name="Eventos de Sincronización"))
+    admin.add_view(SyncSessionAdminView)
+    admin.add_view(SyncEventAdminView)
 
     return admin

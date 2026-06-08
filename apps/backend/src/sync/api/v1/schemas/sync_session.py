@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 
 class SyncSessionBase(BaseModel):
-    instance_id: int = Field(..., description="ID of the game instance")
+    instance_id: UUID = Field(..., description="ID of the game instance")
     is_active: bool = Field(True, description="Whether the session is active")
 
 
@@ -17,7 +18,7 @@ class SyncSessionUpdate(BaseModel):
 
 
 class SyncSessionSchema(SyncSessionBase):
-    id: int = Field(..., description="Session ID")
+    id: str | UUID = Field(..., description="Session ID")
     start_time: datetime = Field(..., description="Session start timestamp")
     end_time: Optional[datetime] = Field(None, description="Session end timestamp")
 

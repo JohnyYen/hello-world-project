@@ -17,6 +17,7 @@ class SyncEventType(str, Enum):
     LEVEL_COMPLETED = "level_completed"
     DIFFICULTY_CHANGED = "difficulty_changed"
     ADAPTATION = "adaptation"
+    XAPI_STATEMENT = "xapi_statement"
 
     # Complex events - require additional processing
     ERROR = "error"
@@ -37,6 +38,7 @@ class SyncEventType(str, Enum):
             cls.LEVEL_COMPLETED,
             cls.DIFFICULTY_CHANGED,
             cls.ADAPTATION,
+            cls.XAPI_STATEMENT,
         }
         return event_type in simple_types
 

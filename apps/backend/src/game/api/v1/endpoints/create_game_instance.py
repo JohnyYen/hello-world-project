@@ -12,7 +12,11 @@ from src.game.api.v1.schemas.game_instance import (
     GameInstanceCreateResponse,
     GameInstanceResponse,
 )
-from src.shared.domain.exceptions import DuplicateEntryException
+from src.shared.domain.exceptions import (
+    DuplicateEntryException,
+    ForeignKeyViolationException,
+)
+from src.users.infrastructure.student_repository import StudentRepository
 
 
 router = APIRouter(prefix="/game-instances")
@@ -45,11 +49,27 @@ async def create_game_instance(
         )
 
     instance_repo = GameInstanceRepository(db)
+    student_repo = StudentRepository(db)
+
+    # Auto-mapping: si el student_id no existe en students,
+    # buscar si es un user_id y mapearlo al student.id real
+    student = await student_repo.get_by_id(instance_data.student_id)
+    if not student:
+        student = await student_repo.get_by_user_id(instance_data.student_id)
+        if not student:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    f"Estudiante con ID {instance_data.student_id} no encontrado. "
+                    "Verificá que el estudiante exista en la base de datos."
+                ),
+            )
 
     try:
         # Preparar datos de la instancia
-        instance_dict = instance_data.model_dump(exclude={"game_id"})
+        instance_dict = instance_data.model_dump(exclude={"game_id", "student_id"})
         instance_dict["game_id"] = game_id
+        instance_dict["student_id"] = student.id  # student.id real (no user_id)
         instance_dict["started_at"] = datetime.now(timezone.utc)
 
         # Crear instancia
@@ -61,3 +81,8 @@ async def create_game_instance(
 
     except DuplicateEntryException as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except ForeignKeyViolationException as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )

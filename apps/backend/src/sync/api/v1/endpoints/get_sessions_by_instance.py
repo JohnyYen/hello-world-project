@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from typing import List
+from uuid import UUID
 
 from src.sync.api.v1.schemas.sync_session import SyncSessionSchema
 from src.sync.application.service.sync_session_service import SyncSessionService
@@ -11,7 +12,7 @@ router = APIRouter(prefix="/sync-sessions")
 
 @router.get("/{instance_id}", response_model=List[SyncSessionSchema])
 async def get_sessions_by_instance(
-    instance_id: int,
+    instance_id: UUID,
     service: SyncSessionService = Depends(get_sync_session_service),
 ):
     """

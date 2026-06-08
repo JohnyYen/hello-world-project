@@ -129,3 +129,58 @@ class HWPAdminAuth(AuthenticationBackend):
 
 # Instancia global del backend de autenticación para SQLAdmin
 admin_auth_backend = HWPAdminAuth(secret_key=settings.SECRET_KEY)
+
+
+async def load_user_with_session(request: Request) -> Optional[tuple[User, AsyncSession]]:
+    """
+    Carga el usuario y una sesión activa desde el token JWT.
+    Retorna (user, session) si el token es válido, None en caso contrario.
+    La session debe ser cerrada por el caller.
+    """
+    token = (
+        request.session.get("token")
+        or request.headers.get("authorization", "").replace("Bearer ", "")
+    )
+    if not token:
+        return None
+
+    try:
+        payload = decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
+        username = payload.get("sub")
+        if not username:
+            return None
+
+        session_factory = sessionmaker(
+            engine, class_=AsyncSession, expire_on_commit=False
+        )
+        session = session_factory()
+        try:
+            stmt = select(User).where(User.username == username)
+            result = await session.execute(stmt)
+            user = result.scalar_one_or_none()
+
+            if not user or not user.is_active:
+                await session.close()
+                return None
+
+            return (user, session)
+        except Exception:
+            await session.close()
+            return None
+
+    except InvalidTokenError:
+        return None
+    except Exception:
+        return None
+
+
+async def verify_admin_role(user: User, session: AsyncSession) -> bool:
+    """
+    Verifica que el usuario tenga el rol 'admin' en la base de datos.
+    """
+    role_stmt = select(Role).where(Role.id == user.role_id)
+    result = await session.execute(role_stmt)
+    role = result.scalar_one_or_none()
+    return bool(role and role.role_name == "admin")

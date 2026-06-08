@@ -9,7 +9,7 @@ class SyncEvent(Base):
 
     event_type = Column(String(255), nullable=False)
     payload = Column(JSON, nullable=True)
-    timestamp = Column(DateTime, nullable=False)
+    timestamp = Column(DateTime(timezone=True), nullable=False)
     status = Column(String(255), nullable=True)
     client_event_id = Column(UUID(as_uuid=True), unique=True, nullable=True)
 

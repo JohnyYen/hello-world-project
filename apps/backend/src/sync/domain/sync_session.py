@@ -7,8 +7,8 @@ from src.shared.infrastructure.base import Base
 class SyncSession(Base):
     __tablename__ = "sync_sessions"
 
-    start_time = Column(DateTime, nullable=False)
-    end_time = Column(DateTime, nullable=True)
+    start_time = Column(DateTime(timezone=True), nullable=False)
+    end_time = Column(DateTime(timezone=True), nullable=True)
     status = Column(String(255), nullable=True)
 
     instance_id = Column(

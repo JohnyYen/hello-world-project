@@ -1,4 +1,6 @@
 from typing import Optional
+from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.users.domain.student import Student
@@ -15,7 +17,7 @@ class StudentRepository(BaseRepository[Student]):
         super().__init__(db, Student)
 
     async def get_by_user_id(
-        self, user_id: int, include_deleted: bool = False
+        self, user_id: UUID, include_deleted: bool = False
     ) -> Optional[Student]:
         """
         Obtiene un estudiante por ID de usuario.
