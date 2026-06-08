@@ -179,14 +179,17 @@ func start_sync_session(instance_id: String) -> Dictionary:
 ## @param session_id: ID de la sesión de sync (UUID string)
 ## @param event_type: Tipo de evento (ej: "level_completed")
 ## @param payload: Datos del evento (Dictionary)
+## @param client_event_id: UUID del cliente para idempotencia (opcional)
 ## @return: Dictionary con el resultado
-func register_sync_event(session_id: String, event_type: String, payload: Dictionary) -> Dictionary:
+func register_sync_event(session_id: String, event_type: String, payload: Dictionary, client_event_id: String = "") -> Dictionary:
 	print("DEBUG [ApiClient]:register_sync_event() session_id=%s event_type=%s" % [session_id, event_type])
 	var body = {
 		"sync_session_id": session_id,
 		"event_type": event_type,
 		"payload": payload
 	}
+	if not client_event_id.is_empty():
+		body["client_event_id"] = client_event_id
 	var result = await _make_request("api/v1/sync/sync-events", HTTPClient.METHOD_POST, body)
 	print("DEBUG [ApiClient]:register_sync_event() result.OK=%s" % result.OK)
 	

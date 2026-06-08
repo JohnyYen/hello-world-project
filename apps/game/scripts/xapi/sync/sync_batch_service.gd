@@ -202,10 +202,12 @@ func _build_payload(statements: Array[Dictionary]) -> Dictionary:
 	var events: Array = []
 	
 	for stmt in statements:
+		var statement_id: String = stmt.get("id", "")
 		events.append({
 			"event_type": "xapi_statement",
+			"client_event_id": statement_id,
 			"payload": {
-				"statement_id": stmt.get("id", ""),
+				"statement_id": statement_id,
 				"verb_id": stmt.get("verb_id", ""),
 				"verb_display": stmt.get("verb_display", ""),
 				"object_type": stmt.get("object_type", ""),
@@ -270,12 +272,13 @@ func _send_to_backend(payload: Dictionary) -> bool:
 	var session_id = session_result.get("session_id", "")
 	print("DEBUG [SyncBatchService | _send_to_backend]: Sesión %s iniciada, enviando %d eventos..." % [session_id, events.size()])
 
-	# PASO 4: Enviar cada evento
+	# PASO 4: Enviar cada evento con client_event_id para idempotencia
 	for event in events:
 		var event_result := await _api_client.register_sync_event(
 			session_id,
 			event.get("event_type", "xapi_statement"),
-			event.get("payload", {})
+			event.get("payload", {}),
+			event.get("client_event_id", "")
 		)
 
 		if not event_result.get("OK", false):
