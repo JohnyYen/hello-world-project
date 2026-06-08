@@ -1,21 +1,17 @@
 from datetime import datetime, timedelta, timezone
 import jwt
-from passlib.context import CryptContext
 import bcrypt
 from src.shared.infrastructure.config import settings
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
 def get_password_hash(password: str) -> str:
-    """Genera un hash para la contraseña."""
-    return pwd_context.hash(password)
+    """Genera un hash para la contraseña usando bcrypt."""
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verifica la contraseña contra el hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    """Verifica la contraseña contra el hash usando bcrypt."""
+    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None):

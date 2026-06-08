@@ -28,5 +28,7 @@
     "url": "https://github.com/JohnyYen/hello-world-project/issues"
   },
   "homepage": "https://github.com/JohnyYen/hello-world-project#readme",
-
+  "dependencies": {
+    "next-intl": "4.13.0"
+  }
 }

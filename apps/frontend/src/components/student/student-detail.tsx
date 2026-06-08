@@ -1,10 +1,13 @@
 'use client';
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mail, MessageCircle, ChevronLeft, User } from "lucide-react";
 import Link from "next/link";
 import { Student } from "@/types/index";
+import { StudentFeedback } from "@/components/student/student-feedback";
+import { StudentFeedbackHistory } from "@/components/student/student-feedback-history";
 
 type StudentDetailProps = {
   student: Student;
@@ -12,6 +15,7 @@ type StudentDetailProps = {
 };
 
 export default function StudentDetail({ student, studentId }: StudentDetailProps) {
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
       {/* Grid Pattern Overlay */}
@@ -69,7 +73,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
               </Button>
               <Button
                 variant="outline"
-                onClick={() => alert(`Redirigiendo para enviar feedback a ${student.name}`)}
+                onClick={() => setIsFeedbackOpen(true)}
                 className="border-indigo-200 dark:border-indigo-800"
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
@@ -78,6 +82,13 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
             </div>
           </div>
         </div>
+
+      {isFeedbackOpen && (
+        <StudentFeedback
+          student={student}
+          onClose={() => setIsFeedbackOpen(false)}
+        />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Student Info Card */}
@@ -207,6 +218,11 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
             </CardContent>
           </Card>
         </div>
+        </div>
+
+        {/* Feedback History Section */}
+        <div className="mt-8">
+          <StudentFeedbackHistory studentId={studentId} />
         </div>
       </div>
     </div>

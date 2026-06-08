@@ -21,7 +21,7 @@ class ProgressOverTimeItem(BaseModel):
 
 class LevelPerformanceItem(BaseModel):
     level_name: str = Field(..., description="Nombre del nivel")
-    score: int = Field(..., description="Puntuación obtenida")
+    score: float = Field(..., description="Puntuación promedio obtenida")
     attempts: int = Field(..., description="Número de intentos")
     time_spent: int = Field(..., description="Tiempo invertido en minutos")
     completed: bool = Field(..., description="Si el nivel fue completado")

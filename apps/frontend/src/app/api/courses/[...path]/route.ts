@@ -6,7 +6,7 @@ function getBackendUrl(): string {
     return process.env.API_URL;
   }
   // Fallback: use NEXT_PUBLIC_API_URL or default
-  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010";
+  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 }
 
 export async function GET(request: NextRequest) {

@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { coursesApi } from "@/api/client";
 import { cookies } from "next/headers";
@@ -39,6 +39,9 @@ export default async function CursoDetailPage({
     if (status === 404 || err?.status === 404) {
       notFound();
     }
+    if (status === 401 || err?.status === 401) {
+      redirect("/login");
+    }
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
         <div className="text-center">
@@ -70,5 +73,11 @@ export default async function CursoDetailPage({
     allStudents = await coursesApi.listByRole("student", token);
   } catch {}
 
-  return <CourseDetailView course={course} allStudents={allStudents} />;
+  let availableGames: { id: string; title: string }[] = [];
+  try {
+    const games = await coursesApi.listGames(token);
+    availableGames = games.map((g) => ({ id: g.id, title: g.title }));
+  } catch {}
+
+  return <CourseDetailView course={course} allStudents={allStudents} availableGames={availableGames} />;
 }

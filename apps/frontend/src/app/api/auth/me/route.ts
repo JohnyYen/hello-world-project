@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL = process.env.API_URL || "http://hwp-backend:8000";
+const API_BASE_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("auth_token")?.value;
@@ -26,25 +26,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Fallback: decode JWT to get basic user info
-    const parts = token.split(".");
-    if (parts.length === 3) {
-      const payload = JSON.parse(
-        atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"))
-      );
-      return NextResponse.json({
-        authenticated: true,
-        user: {
-          id: payload.sub || "",
-          username: payload.sub || "",
-          email: payload.email || "",
-          name: payload.sub || "",
-          lastname: null,
-          is_active: true,
-        },
-      });
-    }
-
+    // Si el backend rechazó el token (expirado, inválido, etc.), no inventamos un usuario
     return NextResponse.json({ authenticated: false }, { status: 401 });
   } catch {
     return NextResponse.json({ authenticated: false }, { status: 500 });

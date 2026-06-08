@@ -21,7 +21,18 @@ class GameBase(BaseModel):
     )
     creator: Optional[str] = Field(None, max_length=255, example="Profesor García")
     subject: Optional[str] = Field(None, max_length=255, example="Matemáticas")
-    publication_status: Optional[str] = Field(None, max_length=255, example="published")
+    download_link: str = Field(
+        ..., min_length=1, max_length=500, example="https://games.helloworld.edu/math-game.zip"
+    )
+
+    @field_validator("download_link")
+    @classmethod
+    def validate_download_link(cls, v: str) -> str:
+        if not v.startswith(("http://", "https://")):
+            raise ValueError(
+                "download_link must be a valid URL starting with http:// or https://"
+            )
+        return v
 
 
 # ------------------------
@@ -46,7 +57,18 @@ class GameUpdate(BaseModel):
     )
     creator: Optional[str] = Field(None, max_length=255, example="Profesor García")
     subject: Optional[str] = Field(None, max_length=255, example="Matemáticas")
-    publication_status: Optional[str] = Field(None, max_length=255, example="published")
+    download_link: Optional[str] = Field(
+        None, max_length=500, example="https://games.helloworld.edu/math-game.zip"
+    )
+
+    @field_validator("download_link")
+    @classmethod
+    def validate_download_link(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None and not v.startswith(("http://", "https://")):
+            raise ValueError(
+                "download_link must be a valid URL starting with http:// or https://"
+            )
+        return v
 
 
 # ------------------------
@@ -59,6 +81,11 @@ class GameResponse(GameBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+    # Override: allow null/empty download_link for games created before this field existed
+    download_link: Optional[str] = Field(
+        None, max_length=500, example="https://games.helloworld.edu/math-game.zip"
+    )
+
     id: str | UUID
     created_at: datetime
     updated_at: Optional[datetime] = None
@@ -69,6 +96,17 @@ class GameResponse(GameBase):
     def convert_id_to_str(cls, v):
         if isinstance(v, UUID):
             return str(v)
+        return v
+
+    @field_validator("download_link")
+    @classmethod
+    def validate_download_link(cls, v: Optional[str]) -> Optional[str]:
+        if v is None or v == "":
+            return v
+        if not v.startswith(("http://", "https://")):
+            raise ValueError(
+                "download_link must be a valid URL starting with http:// or https://"
+            )
         return v
 
 

@@ -20,32 +20,44 @@ import type { CourseDetail } from "@/types/course.interface";
 import type { ActionState } from "@/lib/actions";
 import type { UserResponse } from "@/api/types";
 
-const MONTHS = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
-];
-
-const PERIODS = [
-  "Semestre 1",
-  "Semestre 2",
-  "Anual",
-  "Trimestre 1",
-  "Trimestre 2",
-  "Trimestre 3",
-];
+interface GameOption {
+  id: string;
+  title: string;
+}
 
 interface CourseFormProps {
   course?: CourseDetail;
   students: UserResponse[];
   professors: UserResponse[];
+  games?: GameOption[];
+  currentUserId?: string;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
+
+const PERIODS = [
+  "Primer Trimestre",
+  "Segundo Trimestre",
+  "Tercer Trimestre",
+  "Q1",
+  "Q2",
+  "Q3",
+  "Q4",
+  "Semestre 1",
+  "Semestre 2",
+];
+
+const MONTHS = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
+];
 
 export default function CourseForm({
   course,
   students,
   professors,
+  games,
+  currentUserId,
   onSuccess,
   onCancel,
 }: CourseFormProps) {
@@ -63,6 +75,9 @@ export default function CourseForm({
   const [periodLabel, setPeriodLabel] = useState(course?.periodLabel ?? "");
   const [startDate, setStartDate] = useState(course?.startDate ?? "");
   const [endDate, setEndDate] = useState(course?.endDate ?? "");
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(
+    course?.gameId ?? null
+  );
 
   // Update local state when course prop changes (for edit forms)
   useEffect(() => {
@@ -79,8 +94,8 @@ export default function CourseForm({
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>(
     course?.students?.map((s) => s.studentId) ?? []
   );
-  const [selectedProfessorIds, setSelectedProfessorIds] = useState<string[]>(
-    course?.professors?.map((p) => p.professorId) ?? []
+  const [selectedProfessorIds, setSelectedProfessorIds] = useState<string[]>(() =>
+    course?.professors?.map((p) => p.professorId) ?? (currentUserId ? [currentUserId] : [])
   );
 
   const [filterEnrollYear, setFilterEnrollYear] = useState("");
@@ -185,7 +200,6 @@ export default function CourseForm({
         <select
           id="periodLabel"
           name="periodLabel"
-          required
           value={periodLabel}
           onChange={(e) => setPeriodLabel(e.target.value)}
           disabled={isPending}
@@ -247,6 +261,11 @@ export default function CourseForm({
         name="professorIds"
         value={JSON.stringify(selectedProfessorIds)}
       />
+      <input
+        type="hidden"
+        name="gameId"
+        value={selectedGameId ?? ""}
+      />
 
       {enrollmentYears.length > 0 && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -303,15 +322,45 @@ export default function CourseForm({
         filterFn={enrollmentFilterFn}
       />
 
+      {/* Profesores: multi-select en creación y edición */}
       <UserMultiSelect
-        label="Profesores"
+        label={course ? "Profesores adicionales" : "Profesores"}
         options={professorOptions}
         selected={selectedProfessorIds}
         onChange={setSelectedProfessorIds}
-        placeholder="Seleccionar profesores..."
+        placeholder={course ? "Agregar profesores adicionales..." : "Seleccionar profesores..."}
         searchPlaceholder="Buscar profesores..."
         emptyMessage="No se encontraron profesores"
       />
+      {!course && currentUserId && (
+        <p className="text-xs text-muted-foreground -mt-2">
+          Tú estás preseleccionado como profesor titular. Puedes agregar más profesores si lo deseas.
+        </p>
+      )}
+
+      {/* Select de juegos */}
+      {games && games.length > 0 && (
+        <div className="space-y-2">
+          <Label htmlFor="gameId">Juego asociado</Label>
+          <Select
+            value={selectedGameId ?? "none"}
+            onValueChange={(v) => setSelectedGameId(v === "none" ? null : v)}
+            disabled={isPending}
+          >
+            <SelectTrigger id="gameId" className="w-full">
+              <SelectValue placeholder="Seleccionar juego (opcional)" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Sin juego</SelectItem>
+              {games.map((g) => (
+                <SelectItem key={g.id} value={g.id}>
+                  {g.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {state?.errors?._form && (
         <p className="text-sm text-destructive font-medium text-center">

@@ -1,3 +1,5 @@
+import type { FeedbackHistoryItem } from "@/types/student.interface";
+
 function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
     return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -160,20 +162,55 @@ async function sendStatements(batch: unknown): Promise<unknown> {
   });
 }
 
-async function submitFeedback(feedback: unknown): Promise<unknown> {
-  return fetchApi<unknown>("/api/v1/statistic/feedback", {
-    method: "POST",
-    body: JSON.stringify(feedback),
-  });
+interface FeedbackCreatePayload {
+  student_id: string;
+  comments: string;
+  rating?: number | null;
+  feedback_type?: "advice" | "hint" | "tip" | "message";
+  display_in_game?: boolean;
+  course_id?: string;
 }
 
-async function getStudentFeedbackHistory(studentId: number, params: GetStudentFeedbackHistoryParams = {}): Promise<unknown> {
+interface FeedbackListResponse {
+  items: FeedbackHistoryItem[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
+async function submitFeedback(feedback: FeedbackCreatePayload): Promise<FeedbackHistoryItem> {
+  const response = await fetch("/api/statistic/feedback", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(feedback),
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || `Error ${response.status}: ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+async function getStudentFeedbackHistory(studentId: string, params: GetStudentFeedbackHistoryParams = {}): Promise<FeedbackListResponse> {
   const queryParams = new URLSearchParams();
   if (params.skip !== undefined) queryParams.set("skip", String(params.skip));
   if (params.limit !== undefined) queryParams.set("limit", String(params.limit));
-  
+
   const query = queryParams.toString();
-  return fetchApi<unknown>(`/api/v1/statistic/feedback/${studentId}${query ? `?${query}` : ""}`);
+  const response = await fetch(
+    `/api/statistic/feedback/${studentId}${query ? `?${query}` : ""}`,
+    { credentials: "include" }
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || `Error ${response.status}: ${response.statusText}`);
+  }
+
+  return response.json();
 }
 
 export const statisticsService = {
@@ -199,4 +236,6 @@ export type {
   GetMetricTypesParams,
   GetStatementsParams,
   GetStudentFeedbackHistoryParams,
+  FeedbackCreatePayload,
+  FeedbackListResponse,
 };

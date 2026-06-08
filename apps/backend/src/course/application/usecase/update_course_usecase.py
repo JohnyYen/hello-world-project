@@ -27,10 +27,10 @@ class UpdateCourseUseCase:
     ) -> CourseDetailResponse:
         """
         Actualiza un curso y sincroniza estudiantes/profesores en una sola transacción.
-        Todo el flujo se ejecuta dentro de un único begin() para evitar que autobegin
-        abra una transacción implícita previa y se produzca el error de doble-begin.
+        Usa try/except + commit/rollback explícito en vez de async with self.db.begin()
+        para evitar conflictos con autobegin (ver create_course_usecase).
         """
-        async with self.db.begin():
+        try:
             course = await self.course_repo.get_by_id(course_id)
             if not course:
                 raise NotFoundException("Curso no encontrado")
@@ -69,6 +69,11 @@ class UpdateCourseUseCase:
                 await self.course_repo.sync_professors(
                     course_id, request.professor_ids
                 )
+
+            await self.db.commit()
+        except Exception:
+            await self.db.rollback()
+            raise
 
         await self.db.refresh(course)
         return await self._build_detail_response(course_id)

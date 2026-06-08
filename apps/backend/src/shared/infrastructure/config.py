@@ -33,6 +33,15 @@ class Settings(BaseSettings):
     ADMIN_USERNAME: str = "admin"  # Default admin username
     ADMIN_PASSWORD: str = ""  # Admin password - must be set via env var
 
+    # SMTP / Email Configuration
+    SMTP_HOST: str = "localhost"
+    SMTP_PORT: int = 1025
+    SMTP_USER: str = ""
+    SMTP_PASS: str = ""
+    SMTP_FROM_EMAIL: str = "noreply@helloworld.edu"
+    SMTP_FROM_NAME: str = "Hello World"
+    SMTP_USE_TLS: bool = False
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

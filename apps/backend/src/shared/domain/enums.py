@@ -22,3 +22,10 @@ class FeedbackRating(int, enum.Enum):
     THREE = 3
     FOUR = 4
     FIVE = 5
+
+
+class FeedbackType(str, enum.Enum):
+    ADVICE = "advice"
+    HINT = "hint"
+    TIP = "tip"
+    MESSAGE = "message"

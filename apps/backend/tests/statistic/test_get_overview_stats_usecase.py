@@ -19,6 +19,7 @@ class MockProgressRepository:
     def __init__(self):
         self.count_students = AsyncMock(return_value=100)
         self.get_active_students = AsyncMock(return_value=50)
+        self.get_active_students_in_range = AsyncMock(return_value=50)
         self.aggregate_kpis = AsyncMock(
             return_value={
                 "total_levels_completed": 500,
@@ -87,7 +88,7 @@ class TestGetOverviewStatsUseCase:
         )
 
         assert isinstance(result, type(result))
-        mock_repo.aggregate_kpis.assert_called_once()
+        mock_repo.aggregate_kpis.assert_called()
 
     @pytest.mark.asyncio
     async def test_calculate_kpis(self):
@@ -136,8 +137,30 @@ class TestGetOverviewStatsUseCase:
 
     @pytest.mark.asyncio
     async def test_calculate_trends(self):
-        """Test cálculo de tendencias."""
+        """Test cálculo de tendencias con datos reales."""
         mock_repo = MockProgressRepository()
+
+        # Configurar datos diferentes para período actual vs anterior
+        mock_repo.aggregate_kpis = AsyncMock(
+            side_effect=[
+                # Llamada 1: período actual
+                {
+                    "total_levels_completed": 600,
+                    "total_play_time_minutes": 12000,
+                    "average_score": 88.0,
+                },
+                # Llamada 2: período anterior
+                {
+                    "total_levels_completed": 400,
+                    "total_play_time_minutes": 8000,
+                    "average_score": 82.0,
+                },
+            ]
+        )
+        mock_repo.get_active_students_in_range = AsyncMock(
+            side_effect=[80, 60]  # 80 current, 60 previous
+        )
+
         use_case = GetOverviewStatsUseCase(mock_repo)
 
         trends = await use_case.calculate_trends(
@@ -145,8 +168,18 @@ class TestGetOverviewStatsUseCase:
         )
 
         assert isinstance(trends, OverviewTrends)
-        assert trends.students_change_percent is not None
-        assert trends.activity_change_percent is not None
+
+        # 80 - 60 / 60 * 100 = 33.3%
+        assert trends.students_change_percent == 33.3
+
+        # 600 - 400 / 400 * 100 = 50.0%
+        assert trends.activity_change_percent == 50.0
+
+        # 88 - 82 / 82 * 100 = 7.3%
+        assert trends.score_change_percent == 7.3
+
+        # Verificar que se llamó con los rangos correctos
+        assert mock_repo.get_active_students_in_range.call_count == 2
 
     def test_resolve_dates_with_period(self):
         """Test resolución de fechas con período."""
@@ -161,7 +194,7 @@ class TestGetOverviewStatsUseCase:
         assert diff == 7
 
     def test_resolve_dates_default(self):
-        """Test resolución de fechas por defecto."""
+        """Test resolución de fechas por defecto (30 días)."""
         mock_repo = MockProgressRepository()
         use_case = GetOverviewStatsUseCase(mock_repo)
 
@@ -171,15 +204,30 @@ class TestGetOverviewStatsUseCase:
         assert start is not None
         assert end is not None
         diff = (end - start).days
-        assert diff == 7
+        assert diff == 30
 
-    def test_resolve_dates_default(self):
-        """Test resolución de fechas por defecto."""
+    def test_resolve_dates_with_start_only(self):
+        """Test resolución con solo start_date."""
         mock_repo = MockProgressRepository()
         use_case = GetOverviewStatsUseCase(mock_repo)
 
-        start, end = use_case._resolve_dates(None, None, None)
+        start_date = datetime_date(2026, 1, 1)
+        start, end = use_case._resolve_dates(start_date, None, None)
 
-        # Por defecto debe usar 30 días
-        assert start is not None
-        assert end is not None
+        assert start == datetime_date(2026, 1, 1)
+        assert end == datetime_date(2026, 1, 31)
+        diff = (end - start).days
+        assert diff == 30
+
+    def test_resolve_dates_with_end_only(self):
+        """Test resolución con solo end_date."""
+        mock_repo = MockProgressRepository()
+        use_case = GetOverviewStatsUseCase(mock_repo)
+
+        end_date = datetime_date(2026, 3, 31)
+        start, end = use_case._resolve_dates(None, end_date, None)
+
+        assert end == datetime_date(2026, 3, 31)
+        assert start == datetime_date(2026, 3, 1)
+        diff = (end - start).days
+        assert diff == 30

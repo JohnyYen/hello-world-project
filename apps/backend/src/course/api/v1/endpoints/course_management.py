@@ -1,7 +1,8 @@
+import logging
 from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -20,7 +21,12 @@ from src.course.application.usecase.create_course_usecase import CreateCourseUse
 from src.course.application.usecase.manage_enrollment_usecase import ManageEnrollmentUseCase
 from src.course.application.usecase.update_course_usecase import UpdateCourseUseCase
 from src.course.infrastructure.course_repository import CourseRepository
+from src.notification.application.service.email_service import EmailService
+from src.shared.deps import get_current_user
+from src.shared.infrastructure.config import settings
 from src.shared.infrastructure.session import get_db
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/courses",
@@ -43,8 +49,9 @@ async def get_course_service(
 
 async def get_create_course_usecase(
     db: AsyncSession = Depends(get_db),
+    current_user = Depends(get_current_user),
 ) -> CreateCourseUseCase:
-    return CreateCourseUseCase(db, CourseRepository(db))
+    return CreateCourseUseCase(db, CourseRepository(db), current_user)
 
 
 async def get_update_course_usecase(
@@ -59,6 +66,10 @@ async def get_manage_enrollment_usecase(
     return ManageEnrollmentUseCase(db, CourseRepository(db))
 
 
+async def get_email_service() -> EmailService:
+    return EmailService(settings)
+
+
 @router.get("/management", response_model=PaginatedCourseListResponse)
 async def list_courses(
     skip: int = Query(0, ge=0, description="Número de registros a saltar"),
@@ -66,11 +77,20 @@ async def list_courses(
     professor_id: Optional[UUID] = Query(None, description="Filtrar por ID de profesor"),
     school_year: Optional[str] = Query(None, description="Filtrar por año escolar (ej: 2024-2025)"),
     service: CourseService = Depends(get_course_service),
+    current_user = Depends(get_current_user),
 ):
     """
     Lista cursos paginados con conteo de estudiantes y profesores.
     Filtros opcionales: professor_id, school_year.
+    Si el usuario es profesor, filtra automáticamente por su profesor_id.
     """
+    # Si es profesor y no se pasó professor_id explícito, usar el suyo
+    if current_user.role.role_name == "professor" and not professor_id:
+        professor_id_map = await service.repository.get_professor_profile_ids(
+            [current_user.id]
+        )
+        professor_id = professor_id_map.get(current_user.id)
+
     results, total = await service.list_courses_with_counts(
         professor_id=professor_id,
         school_year=school_year,
@@ -95,13 +115,65 @@ async def list_courses(
 @router.post("/management", response_model=CourseDetailResponse, status_code=201)
 async def create_course(
     request: CourseCreateRequest,
+    background_tasks: BackgroundTasks,
     usecase: CreateCourseUseCase = Depends(get_create_course_usecase),
+    email_service: EmailService = Depends(get_email_service),
 ):
     """
     Crea un nuevo curso con asignación de estudiantes y profesores.
     Valida que no exista duplicado de school_year + period_label.
+    Luego de crear, envía email de notificación a cada estudiante
+    si el curso tiene un juego asignado con download_link.
     """
-    return await usecase.execute(request)
+    result = await usecase.execute(request)
+
+    # ── Envío de emails de notificación ──
+    if not result.game or not result.game.download_link:
+        logger.info(
+            "Course %s created without game download_link — skipping enrollment emails",
+            result.id,
+        )
+        return result
+
+    if not result.students:
+        logger.info(
+            "Course %s created with no students — skipping enrollment emails",
+            result.id,
+        )
+        return result
+
+    professors_list = [
+        {"name": p.name, "email": p.email}
+        for p in result.professors
+    ]
+
+    for student in result.students:
+        student_name = f"{student.name} {student.lastname or ''}".strip()
+        email_service.send_email_async(
+            background_tasks=background_tasks,
+            to_email=student.email,
+            subject=f"Bienvenido al curso: {result.name}",
+            template_name="email/course_enrollment.html",
+            context={
+                "student_name": student_name,
+                "course_name": result.name,
+                "course_description": result.description or "",
+                "school_year": result.school_year,
+                "period_label": result.period_label,
+                "start_date": result.start_date.isoformat(),
+                "end_date": result.end_date.isoformat(),
+                "professors": professors_list,
+                "download_link": result.game.download_link,
+            },
+        )
+
+    logger.info(
+        "Queued %d enrollment emails for course %s",
+        len(result.students),
+        result.id,
+    )
+
+    return result
 
 
 @router.get("/{course_id}", response_model=CourseDetailResponse)
@@ -155,13 +227,80 @@ async def list_enrolled_students(
 async def enroll_students(
     course_id: UUID,
     request: EnrollmentRequest,
+    background_tasks: BackgroundTasks,
     usecase: ManageEnrollmentUseCase = Depends(get_manage_enrollment_usecase),
+    email_service: EmailService = Depends(get_email_service),
+    course_repo: CourseRepository = Depends(get_course_repository),
 ):
     """
     Inscribe uno o más estudiantes en un curso.
     Deduplica: no crea inscripciones duplicadas.
+    Si el curso tiene un juego asignado con download_link,
+    envía email de notificación a los nuevos estudiantes.
     """
-    return await usecase.enroll_students(course_id, request.student_ids)
+    # Capturar IDs existentes antes de inscribir (para detectar nuevos)
+    existing_ids = await course_repo.get_existing_enrollment_ids(course_id)
+
+    # Inscribir estudiantes
+    result = await usecase.enroll_students(course_id, request.student_ids)
+
+    # ── Envío de emails a nuevos estudiantes ──
+    if not result:
+        return result
+
+    course = await course_repo.get_course_with_game(course_id)
+    if not course or not course.game or not course.game.download_link:
+        logger.info(
+            "Course %s has no game download_link — skipping enrollment emails",
+            course_id,
+        )
+        return result
+
+    # Detectar estudiantes nuevos (los que no estaban inscritos antes)
+    new_enrollments = [
+        s for s in result if s.student_id not in existing_ids
+    ]
+
+    if not new_enrollments:
+        logger.info(
+            "No new enrollments for course %s — skipping emails",
+            course_id,
+        )
+        return result
+
+    professors_data = await course_repo.get_professors_for_course(course_id)
+    professors_list = [
+        {"name": p["name"], "email": p["email"]}
+        for p in professors_data
+    ]
+
+    for student in new_enrollments:
+        student_name = f"{student.name} {student.lastname or ''}".strip()
+        email_service.send_email_async(
+            background_tasks=background_tasks,
+            to_email=student.email,
+            subject=f"Bienvenido al curso: {course.name}",
+            template_name="email/course_enrollment.html",
+            context={
+                "student_name": student_name,
+                "course_name": course.name,
+                "course_description": course.description or "",
+                "school_year": course.school_year,
+                "period_label": course.period_label,
+                "start_date": course.start_date.isoformat(),
+                "end_date": course.end_date.isoformat(),
+                "professors": professors_list,
+                "download_link": course.game.download_link,
+            },
+        )
+
+    logger.info(
+        "Queued %d enrollment emails for course %s",
+        len(new_enrollments),
+        course_id,
+    )
+
+    return result
 
 
 @router.delete("/{course_id}/students/{student_id}", status_code=204)

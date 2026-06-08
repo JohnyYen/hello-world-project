@@ -19,6 +19,7 @@ async def seed_games(db: AsyncSession):
             "creator": "Dr. Juan Pérez",
             "subject": "Mathematics",
             "publication_status": "published",
+            "download_link": "https://games.helloworld.edu/matematicas-basicas.zip",
             "levels": [
                 {
                     "level_number": 1,
@@ -94,6 +95,7 @@ async def seed_games(db: AsyncSession):
             "creator": "Dra. María López",
             "subject": "Chemistry",
             "publication_status": "published",
+            "download_link": "https://games.helloworld.edu/quimica-introductoria.zip",
             "levels": [
                 {
                     "level_number": 1,
@@ -137,6 +139,7 @@ async def seed_games(db: AsyncSession):
             "creator": "Ing. Carlos García",
             "subject": "Physics",
             "publication_status": "published",
+            "download_link": "https://games.helloworld.edu/fisica-fundamental.zip",
             "levels": [
                 {
                     "level_number": 1,
@@ -177,6 +180,7 @@ async def seed_games(db: AsyncSession):
             "creator": "Mtro. Roberto Sánchez",
             "subject": "Biology",
             "publication_status": "published",
+            "download_link": "https://games.helloworld.edu/biologia-celular.zip",
             "levels": [
                 {
                     "level_number": 1,
@@ -225,6 +229,7 @@ async def seed_games(db: AsyncSession):
             "creator": "Lic. Ana Martínez",
             "subject": "Computer Science",
             "publication_status": "published",
+            "download_link": "https://games.helloworld.edu/python-programming.zip",
             "levels": [
                 {
                     "level_number": 1,
@@ -284,6 +289,7 @@ async def seed_games(db: AsyncSession):
             creator=game_data["creator"],
             subject=game_data["subject"],
             publication_status=game_data["publication_status"],
+            download_link=game_data["download_link"],
         )
         db.add(game)
         await db.flush()

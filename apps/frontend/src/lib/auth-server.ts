@@ -88,22 +88,10 @@ export async function getServerUser(): Promise<{
       }
     }
 
-    // Último recurso: devolver datos básicos del JWT
-    const basicUser: SimpleUser = {
-      id: 0,
-      username: decoded.sub,
-      email: "",
-      name: decoded.sub,
-      lastname: null,
-      is_active: true,
-      role: {
-        id: 2,
-        role_name: "professor",
-      },
-    };
-    
-    return { user: basicUser, token };
+    // Si el backend respondió pero no encontró el usuario, no inventamos datos
+    return { user: null, token: null };
   } catch {
+    // Error de red o backend caído — no podemos verificar, mejor sesión nula
     return { user: null, token: null };
   }
 }

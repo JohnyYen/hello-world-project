@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+.dockerignore
+
+# Dependencias
+node_modules/
+
+# Playwright
+playwright-report/
+test-results/
+.playwright-cli/
+.playwright/
+
+# OpenSpec / SDD
+openspec/
+docs/sdd/
+
+# AI Framework artifacts
+.opencode/
+.engram/
+
+# Build artifacts
+dist/
+build/
+.next/
+.turbo/
+
+# Entornos
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log

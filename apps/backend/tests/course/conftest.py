@@ -12,7 +12,10 @@ from src.shared.domain.exceptions import NotFoundException, DuplicateEntryExcept
 
 @pytest.fixture
 def mock_db():
-    return MagicMock()
+    db = MagicMock()
+    db.commit = AsyncMock()
+    db.rollback = AsyncMock()
+    return db
 
 
 @pytest.fixture

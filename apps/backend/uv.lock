@@ -568,6 +568,8 @@ dependencies = [
     { name = "email-validator" },
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "itsdangerous" },
+    { name = "jinja2" },
     { name = "passlib" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -605,6 +607,8 @@ requires-dist = [
     { name = "email-validator", specifier = ">=2.2.0" },
     { name = "fastapi", specifier = ">=0.136.0" },
     { name = "httpx", specifier = ">=0.28.0" },
+    { name = "itsdangerous", specifier = ">=2.2.0" },
+    { name = "jinja2", specifier = ">=3.1.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.13.0" },
     { name = "passlib", specifier = ">=1.7.4" },
     { name = "pip-audit", marker = "extra == 'dev'", specifier = ">=2.7.0" },
@@ -709,6 +713,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/72/34/14ca021ce8e5dfedc35312d08ba8bf51fdd999c576889fc2c24cb97f4f10/iniconfig-2.3.0.tar.gz", hash = "sha256:c76315c77db068650d49c5b56314774a7804df16fee4402c1f19d6d15d8c4730", size = 20503, upload-time = "2025-10-18T21:55:43.219Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/cb/b1/3846dd7f199d53cb17f49cba7e651e9ce294d8497c8c150530ed11865bb8/iniconfig-2.3.0-py3-none-any.whl", hash = "sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12", size = 7484, upload-time = "2025-10-18T21:55:41.639Z" },
+]
+
+[[package]]
+name = "itsdangerous"
+version = "2.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/cb/8ac0172223afbccb63986cc25049b154ecfb5e85932587206f42317be31d/itsdangerous-2.2.0.tar.gz", hash = "sha256:e0050c0b7da1eea53ffaf149c0cfbb5c6e2e2b69c4bef22c81fa6eb73e5f6173", size = 54410, upload-time = "2024-04-16T21:28:15.614Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/96/92447566d16df59b2a776c0fb82dbc4d9e07cd95062562af01e408583fc4/itsdangerous-2.2.0-py3-none-any.whl", hash = "sha256:c6242fc49e35958c8b15141343aa660db5fc54d4f13a1db01a3f5891b98700ef", size = 16234, upload-time = "2024-04-16T21:28:14.499Z" },
 ]
 
 [[package]]
@@ -1482,7 +1495,7 @@ wheels = [
 
 [[package]]
 name = "sqladmin"
-version = "0.27.1"
+version = "0.26.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2" },
@@ -1491,9 +1504,9 @@ dependencies = [
     { name = "starlette" },
     { name = "wtforms" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f2/00/28942e9c35c7126772aed500bcdbc1de0ec30601a5145f460e3c57477395/sqladmin-0.27.1.tar.gz", hash = "sha256:f3a20a1b2b991754b82bf1973131690c6eb48c94a191423fb886497355a9fcd9", size = 1442487, upload-time = "2026-06-05T09:06:44.271Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/21/1c/95642193903a542329bbcdb84ec14e2a6a9724be2797e90f39d2e9e5d5ed/sqladmin-0.26.0.tar.gz", hash = "sha256:2f77ab3e6da2e55bc4a86ebc7e867cbe3adff5dd604d0692790a14f89d7a4666", size = 1440407, upload-time = "2026-05-18T09:45:43.849Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/b9/eab9ff2d79defbd2bcdd80c68fabf57fc9b7a77af100a712d6029e6a9fe7/sqladmin-0.27.1-py3-none-any.whl", hash = "sha256:2cacdaf1b5457226c46d94e212be651c2c85d01c505e3520ddc1768689e496e1", size = 1459680, upload-time = "2026-06-05T09:06:42.548Z" },
+    { url = "https://files.pythonhosted.org/packages/64/b7/4811f6fc252149bec219de40e13f62fd604e1b90f853c21e312f40f00aa6/sqladmin-0.26.0-py3-none-any.whl", hash = "sha256:4fd155b35d7831eb32cc399bb7bf96638353fef4fc6d977338850931eed6c924", size = 1455984, upload-time = "2026-05-18T09:45:45.31Z" },
 ]
 
 [[package]]

@@ -5,8 +5,7 @@ from src.api.router import router
 from src.shared.infrastructure.config import settings
 from src.shared.seed.run_seed import run_all_seeds
 from src.shared.domain.exceptions import AppException
-from src.admin.admin import setup_admin, AdminAuthMiddleware
-from src.admin.auth import admin_auth_backend
+from src.admin.admin import setup_admin
 from alembic import command
 from alembic.config import Config as AlembicConfig
 import os
@@ -52,10 +51,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Admin middleware - must be added after CORS
-app.add_middleware(AdminAuthMiddleware)
-
 # Setup SQLAdmin - registers all models with authentication
+# SQLAdmin 0.20.0 maneja su propia autenticación via AuthenticationBackend
 setup_admin(app)
 
 
@@ -88,8 +85,11 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.on_event("startup")
 async def on_startup():
+    # Migrations and seeds are executed manually via Makefile targets.
+    # See `make help` for `migrate`, `seed`, `migrate-seed`, etc.
+    # Keeping them commented here to avoid blocking FastAPI startup.
     # run_migrations()
-    await run_all_seeds()
+    # await run_all_seeds()
     pass
 
 
