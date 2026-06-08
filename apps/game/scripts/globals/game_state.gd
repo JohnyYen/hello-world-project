@@ -39,13 +39,15 @@ func start_dialogue(dialogue_path: String, next_scene: String = "", is_overlay :
 	# Registrar el diálogo actual y la escena siguiente
 	current_dialogue_path = dialogue_path
 	next_scene_path = next_scene
-	
 	print("DEBUG [Game State]: Iniciando diálogo %s" % current_dialogue_path)
 	print("DEBUG [Game State]: Siguiente escena asignada %s" % next_scene_path)
 	#DialogueManager.show_dialogue_balloon(load(current_dialogue_path))
 	# Cambiar SIEMPRE a la escena de Visual Novel
-	get_tree().change_scene_to_file("res://scenes/pages/dialogue/visual_novel_scene.tscn")
+	LoadingScreen.change_scene("res://scenes/pages/dialogue/projector_screen.tscn")
 
+func show_current_balloon():
+	if current_dialogue_path != "":
+		DialogueManager.show_dialogue_balloon(load(current_dialogue_path))
 
 func on_dialogue_finished() -> void:
 	print("DEBUG [Game State]: Finalizó diálogo. next_scene_path = %s" % next_scene_path)
@@ -68,15 +70,12 @@ func on_dialogue_finished() -> void:
 		print("DEBUG [Game State]: Atendiendo diálogo en cola: %s" % current_dialogue_path)
 		print("DEBUG [Game State]: Nueva escena asignada en cola: %s" % next_scene_path)
 		DialogueManager.show_dialogue_balloon(load(current_dialogue_path))
-		
-		# Volvemos a la escena de VN para procesar ese diálogo
-		#get_tree().change_scene_to_file("res://scenes/pages/dialogue/visual_novel_scene.tscn")
 		return
 
 	# 4. Si hay escena destino → cargarla
 	if scene_to_load != "":
 		print("DEBUG [Game State]: Cambiando escena ahora: %s" % scene_to_load)
-		get_tree().change_scene_to_file(scene_to_load)
+		LoadingScreen.change_scene(scene_to_load)
 		return
 
 	# 5. Si no hay más nada → fin del flujo (volvería al mapa u otra pantalla)

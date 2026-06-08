@@ -58,6 +58,9 @@ func create_tables() -> void:
 	# Tabla: xAPI
 	on_create_xapi_tables();
 
+	# Tabla: Game Session Cache
+	on_create_game_session_table();
+
 	print("Tablas creadas correctamente.")
 	
 	
@@ -134,6 +137,20 @@ func on_create_segment_block_table():
 	}
 
 	db.create_table("Segment_Blocks", segment_blocks_table)
+
+func on_create_game_session_table() -> void:
+	# Tabla singleton para cachear game_id e instance_id del backend
+	# Usa id=1 como fila única (patrón singleton)
+	var game_session_table = {
+		"id": {"data_type": "INTEGER", "primary_key": true, "not_null": true},
+		"game_id": {"data_type": "TEXT", "not_null": true},
+		"instance_id": {"data_type": "TEXT", "not_null": true},
+		"student_id": {"data_type": "TEXT"},
+		"created_at": {"data_type": "TEXT", "not_null": true},
+		"updated_at": {"data_type": "TEXT", "not_null": true}
+	}
+
+	db.create_table("game_session", game_session_table)
 
 func on_create_xapi_tables() -> void:
 	var migration_script := load("res://scripts/database/migrations/001_create_xapi_tables.gd")

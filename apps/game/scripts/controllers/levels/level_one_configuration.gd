@@ -77,6 +77,11 @@ func get_customer_count() -> int:
 func get_ui_config() -> Dictionary:
 	return ui_config
 
+func get_environment():
+	print(json_data)
+	if json_data.has("environment_data") and typeof(json_data["environment_data"]) == TYPE_DICTIONARY:
+		return json_data.get("environment_data", {})
+	return {}
 
 ## ===============================================
 ## MÉTODO AUXILIAR PARA NAVEGAR VALORES ANIDADOS

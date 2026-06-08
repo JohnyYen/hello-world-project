@@ -4,6 +4,9 @@
 class_name XAPIService
 extends Node
 
+## Señales
+signal segment_analytics_ready(analytics_dict: Dictionary)
+
 ## Servicios internos
 var _builder: XAPIBuilderService
 var _connection_detector: ConnectionDetector
@@ -15,26 +18,46 @@ var _api_client: ApiClient
 ## Referencia al SyncService existente (para compatibilidad)
 var _sync_service: SyncService
 
+## Analytics tracking para segmento actual
+var _current_segment_id := 0
+var _current_actor_id := ""
+var _segment_start_time := 0.0
+var _blocks_executed := []
+var _attempts_count := 0
+var _is_tracking := false
+var _attempts_history: Array[Dictionary] = []
+var _custom_events: Array[Dictionary] = []
+var _is_new_attempt := false
+var _is_retry_mode := false
+
 func _init() -> void:
 	_builder = XAPIBuilderService.new()
 	_connection_detector = ConnectionDetector.new()
 	_batch_service = SyncBatchService.new()
-
+	
+	# Initialize analytics tracking variables
+	_current_segment_id = 0
+	_current_actor_id = ""
+	_segment_start_time = 0.0
+	_blocks_executed = []
+	_attempts_count = 0
+	_is_tracking = false
+	_attempts_history = []
+	_custom_events = []
+	_is_new_attempt = false
+	_is_retry_mode = false
+	
 func _ready() -> void:
-	# Crear API client
 	_api_client = ApiClient.new()
 	add_child(_api_client)
 	
-	# Agregar batch service como hijo (necesario para que _ready() corra y timer se cree)
+	add_child(_connection_detector)
 	add_child(_batch_service)
 	_batch_service.setup(_api_client, _connection_detector)
-	
-	print("DEBUG [XAPIService]: Inicializado")
 
 ## Configura el SyncService existente para mantener compatibilidad
 func set_sync_service(sync_service: SyncService) -> void:
 	_sync_service = sync_service
-	print("DEBUG [XAPIService]: SyncService conectado")
 
 ## === Métodos de tracking xAPI ===
 
@@ -101,6 +124,148 @@ func track_custom(
 	)
 	_notify_pending_update()
 	return statement
+
+## === Tracking de analytics para segmento ===
+
+## Placeholders rechazados por el guard de actor (REQ-P2-R3, S-P2-R3.1).
+## Coincidencia case-sensitive; cualquier otro string es aceptado.
+const _INVALID_ACTOR_PLACEHOLDERS: Array[String] = [
+	"player",
+	"Leo",
+	"estudiante1"
+]
+
+## Indica si el actor_id es vacío o es uno de los placeholders conocidos.
+## Comparación case-sensitive según REQ-P2-R3.
+func _is_invalid_actor(actor_id: String) -> bool:
+	if actor_id.is_empty():
+		return true
+	return actor_id in _INVALID_ACTOR_PLACEHOLDERS
+
+## Inicia tracking de un segmento/nivel.
+## @param segment_id: ID del segmento a trackear
+## @param actor_id: ID del jugador (debe ser el UUID del usuario autenticado)
+func start_segment_tracking(segment_id: int, actor_id: String) -> void:
+	if _is_invalid_actor(actor_id):
+		push_error(
+			"[XAPIService] start_segment_tracking rechazado: actor_id inválido ('%s'). Se esperaba el UUID del usuario autenticado desde _GameConfig.user.id." % actor_id
+		)
+		return
+	_current_segment_id = segment_id
+	_current_actor_id = actor_id
+	_segment_start_time = Time.get_ticks_msec()
+	_blocks_executed = []
+	_attempts_count = 0
+	_attempts_history = []
+	_custom_events = []
+	_is_new_attempt = false
+	_is_retry_mode = false
+	_is_tracking = true
+
+## Registra un bloque ejecutado en el intento actual.
+## @param block_name: Nombre del bloque ejecutado
+func block_executed(block_name: String) -> void:
+	if _is_tracking:
+		if _is_new_attempt:
+			_blocks_executed.clear()
+			_is_new_attempt = false
+		_blocks_executed.append(block_name)
+
+## Incrementa el contador de intentos del segmento actual.
+func increment_attempt() -> void:
+	if _is_tracking:
+		_attempts_count += 1
+
+## Finaliza un intento registrando los datos de ejecución.
+## @param blocks_executed: Bloques utilizados en el intento
+## @param success: Si el intento fue exitoso
+## @param execution_time: Tiempo de ejecución en segundos
+func end_attempt(blocks_executed: Array[String], success: bool, execution_time: float) -> void:
+	if not _is_tracking:
+		return
+	var attempt_number := _attempts_history.size() + 1
+	var attempt_data := {
+		"attempt_number": attempt_number,
+		"blocks": blocks_executed,
+		"blocks_count": blocks_executed.size(),
+		"success": success,
+		"time": execution_time,
+		"timestamp": Time.get_datetime_string_from_system()
+	}
+	_attempts_history.append(attempt_data)
+	_is_new_attempt = true
+
+## Registra un evento personalizado dentro del segmento actual.
+## @param event_name: Nombre del evento
+## @param event_data: Datos adicionales del evento
+func track_event(event_name: String, event_data: Dictionary = {}) -> void:
+	if not _is_tracking:
+		return
+	var event := {
+		"event_name": event_name,
+		"event_data": event_data,
+		"timestamp": Time.get_datetime_string_from_system()
+	}
+	_custom_events.append(event)
+
+## Resetea el tracking del segmento actual.
+## En modo retry (set_retry_mode), preserva el historial de intentos previos.
+func reset_tracking() -> void:
+	_is_tracking = true
+	_blocks_executed.clear()
+	_attempts_count = 0
+	_is_new_attempt = false
+	if not _is_retry_mode:
+		_attempts_history.clear()
+		_custom_events.clear()
+
+## Activa/desactiva el modo retry.
+## Cuando está activo, reset_tracking preserva el historial de intentos.
+## @param enabled: true para activar modo retry
+func set_retry_mode(enabled: bool) -> void:
+	_is_retry_mode = enabled
+
+## Finaliza el tracking del segmento actual y emite segment_analytics_ready.
+## @param success: Si el jugador completó el segmento exitosamente
+## @return Dictionary con analytics del segmento (segment_id, summary, attempts, custom_events)
+func end_segment_tracking(success: bool) -> Dictionary:
+	if not _is_tracking:
+		return {}
+	var elapsed_msec = Time.get_ticks_msec() - _segment_start_time
+	var elapsed_sec = elapsed_msec / 1000.0
+
+	var errors := _attempts_count
+	if success and _attempts_count > 0:
+		errors = _attempts_count - 1
+
+	var score := 1.0
+	if errors > 0:
+		score = max(0.1, 1.0 - (float(errors) * 0.25))
+	if not success:
+		score = 0.0
+
+	var analytics = {
+		"segment_id": _current_segment_id,
+		"actor_id": _current_actor_id,
+		"timestamp": Time.get_datetime_string_from_system(),
+		"summary": {
+			"time": elapsed_sec,
+			"errors": errors,
+			"score": score,
+			"success": success,
+			"attempts": _attempts_count,
+			"blocks_count": _blocks_executed.size()
+		},
+		"attempts": _attempts_history.duplicate(),
+		"custom_events": _custom_events.duplicate(),
+		"retry_count": _attempts_count
+	}
+	_is_tracking = false
+	print("[XAPIService] Segmento completado - segment_id=%d, score=%.2f, errors=%d, tiempo=%.2fs" % [
+		_current_segment_id, score, errors, elapsed_sec
+	])
+	emit_signal("segment_analytics_ready", analytics)
+	return analytics
 
 ## === Métodos de sincronización ===
 

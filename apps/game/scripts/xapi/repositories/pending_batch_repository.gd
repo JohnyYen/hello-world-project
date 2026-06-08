@@ -86,12 +86,71 @@ func increment_retry(batch_id: String) -> bool:
 	var query := "UPDATE pending_batch SET retry_count = retry_count + 1, last_attempt_at = ? WHERE id = ?"
 	return _db.query_with_bindings(query, [Time.get_datetime_string_from_system(), batch_id])
 
-## Limpia batches completados (opcional, para mantenimiento)
-func cleanup_completed(max_age_days: int = 7) -> int:
-	var query := "DELETE FROM pending_batch WHERE status = '%s'" % STATUS_COMPLETED
-	# Esta es una versión simple, en producción filtrar por fecha
+## Ejecuta migraciones de schema pendientes.
+## Delega en Migration002RecoverStuckBatches que maneja schema_version y meta table.
+## @return: Dictionary {applied: bool, recovered_sending: int, requeued_failed: int}
+func run_migrations() -> Dictionary:
+	return Migration002RecoverStuckBatches.run(_db)
+
+## Recupera batches 'sending' que quedaron trabados más tiempo del permitido.
+## Los pasa a 'pending' preservando last_attempt_at y retry_count para auditoría.
+## @param max_age_minutes: Edad máxima en minutos. Batches con last_attempt_at
+##   más viejo que esto se consideran stall y se recuperan.
+## @return: Cantidad de batches recuperados.
+func recover_sending(max_age_minutes: int) -> int:
+	var count_rows := _db.select_rows(
+		"pending_batch",
+		"status = 'sending' AND last_attempt_at IS NOT NULL AND datetime(last_attempt_at) <= datetime('now', '-%d minutes')" % max_age_minutes,
+		["COUNT(*) as c"]
+	)
+	var count: int = int(count_rows[0].get("c", 0)) if not count_rows.is_empty() else 0
+
+	if count == 0:
+		return 0
+
+	var query := "UPDATE pending_batch SET status = 'pending' WHERE status = 'sending' AND last_attempt_at IS NOT NULL AND datetime(last_attempt_at) <= datetime('now', '-%d minutes')" % max_age_minutes
 	_db.query(query)
-	return 0
+	return count
+
+## Re-encola batches 'failed' que agotaron sus reintentos (retry_count >= threshold).
+## Los pasa a 'pending' con retry_count=0 para que se reintenten desde cero.
+## Preserva payload y last_error para auditoría post-mortem.
+## @param threshold: retry_count mínimo para considerar el batch como agotado.
+## @return: Cantidad de batches re-encolados.
+func requeue_failed(threshold: int) -> int:
+	var count_rows := _db.select_rows(
+		"pending_batch",
+		"status = 'failed' AND retry_count >= %d" % threshold,
+		["COUNT(*) as c"]
+	)
+	var count: int = int(count_rows[0].get("c", 0)) if not count_rows.is_empty() else 0
+
+	if count == 0:
+		return 0
+
+	var query := "UPDATE pending_batch SET status = 'pending', retry_count = 0 WHERE status = 'failed' AND retry_count >= %d" % threshold
+	_db.query(query)
+	return count
+
+## Limpia batches terminales ('completed' y 'failed') más viejos que max_age_days.
+## No toca batches 'pending' ni 'sending'.
+## @param max_age_days: Edad máxima en días. Batches con last_attempt_at
+##   más viejo que esto se eliminan permanentemente.
+## @return: Cantidad de batches eliminados.
+func cleanup_terminal(max_age_days: int) -> int:
+	var count_rows := _db.select_rows(
+		"pending_batch",
+		"(status = 'completed' OR status = 'failed') AND last_attempt_at IS NOT NULL AND datetime(last_attempt_at) <= datetime('now', '-%d days')" % max_age_days,
+		["COUNT(*) as c"]
+	)
+	var count: int = int(count_rows[0].get("c", 0)) if not count_rows.is_empty() else 0
+
+	if count == 0:
+		return 0
+
+	var query := "DELETE FROM pending_batch WHERE (status = 'completed' OR status = 'failed') AND last_attempt_at IS NOT NULL AND datetime(last_attempt_at) <= datetime('now', '-%d days')" % max_age_days
+	_db.query(query)
+	return count
 
 ## Obtiene el conteo de batches por estado
 func get_stats() -> Dictionary:

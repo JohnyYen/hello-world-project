@@ -12,7 +12,7 @@ var jwt_token: String = ""
 
 # URL base para las peticiones API
 # IMPORTANTE: Usar el nombre del autoload (Env), NO instanciar
-var base_url: String = "http://localhost:8010"
+var base_url: String = ""
 
 # Datos del usuario autenticado
 var current_user: Dictionary = {}
@@ -27,59 +27,102 @@ func _ready() -> void:
 	add_child(http_request)
 	# En Godot 4, usamos await http_request.request_completed
 	# NO necesitamos conectar la señal manualmente
-	
+
+	# Configurar URL base desde Env (autoload)
+	base_url = Env.API_BASE_URL
+
 	# Cargar token desde el store global si existe
 	if Env.jwt_token != "":
 		jwt_token = Env.jwt_token
 		current_user = Env.current_user
 		print("DEBUG [ApiClient]: Token cargado desde Env")
+	else:
+		jwt_token = _GameConfig.jwt
+		current_user = _GameConfig.user
+		print(str(jwt_token) + " | " + str(current_user))
 
 ## Hace una petición HTTP al endpoint especificado
 ## @param endpoint: Ruta del API (ej: "/auth/login")
 ## @param method: Método HTTP (usar constantes HTTPClient.METHOD_*)
 ## @param body: Dictionary para enviar como JSON (opcional)
 ## @param auth_required: Si se debe incluir el token JWT en el header
-## @return: Dictionary con keys "OK", "status", "data", "error"
+## @return: Dictionary con keys "OK", "status", "data", "error" en éxito
+##          o keys "OK", "error", "error_message", "status_code", "body",
+##          "url", "method", "timestamp" en cualquier rama de fallo.
 func _make_request(endpoint: String, method: int, body: Dictionary = {}, auth_required: bool = true) -> Dictionary:
 	var headers := ["Content-Type: application/json"]
-	
+
 	if auth_required and jwt_token != "":
 		headers.append("Authorization: Bearer %s" % jwt_token)
-	
+
 	var json_body := ""
 	if not body.is_empty():
 		json_body = JSON.stringify(body)
-	
-	var url = base_url.rstrip("/") + "/" + endpoint.lstrip("/")
-	
+
+	var url: String = base_url.rstrip("/") + "/" + endpoint.lstrip("/")
+	var method_name: String = _http_method_name(method)
+	var timestamp: String = Time.get_datetime_string_from_system()
+
 	var err = http_request.request(url, headers, method, json_body)
 	if err != OK:
 		print(err)
 		var error_msg = "Error al iniciar request: %s" % err
-		return {"OK": false, "error": error_msg}
-	
+		return _build_error_dict(error_msg, null, "", url, method_name, timestamp)
+
 	# Esperar a que se complete la petición
 	var response = await http_request.request_completed
-	
+
 	print("REquest")
-	
+
 	var status = response[0]
 	var response_code = response[1]
 	var _headers = response[2]
 	var body_bytes = response[3]
-	
+
 	if status != OK:
 		var error_msg = "Error de red: %s" % status
 		print("BODY RAW: ", body_bytes.get_string_from_utf8())
-		return {"OK": false, "error": error_msg}
-	
+		return _build_error_dict(error_msg, null, body_bytes.get_string_from_utf8(), url, method_name, timestamp)
+
 	var body_text = body_bytes.get_string_from_utf8()
 	var json = JSON.parse_string(body_text)
-	
+
 	if response_code >= 200 and response_code < 300:
 		return {"OK": true, "status": response_code, "data": json}
 	else:
-		return {"OK": false, "status": response_code, "error": json}
+		return _build_error_dict(str(json), response_code, body_text, url, method_name, timestamp)
+
+## Construye un Dictionary de error estructurado, manteniendo compatibilidad
+## con callers que esperan las claves `OK`, `error` y `status`.
+static func _build_error_dict(error_message: String, status_code: Variant, body: String, url: String, method_name: String, timestamp: String) -> Dictionary:
+	var legacy_status: int = 0
+	if status_code is int:
+		legacy_status = status_code
+	return {
+		"OK": false,
+		"error": error_message,
+		"error_message": error_message,
+		"status_code": status_code,
+		"status": legacy_status,
+		"body": body,
+		"url": url,
+		"method": method_name,
+		"timestamp": timestamp
+	}
+
+## Convierte un HTTPClient.METHOD_* int a su nombre legible.
+static func _http_method_name(method: int) -> String:
+	match method:
+		HTTPClient.METHOD_GET: return "GET"
+		HTTPClient.METHOD_HEAD: return "HEAD"
+		HTTPClient.METHOD_POST: return "POST"
+		HTTPClient.METHOD_PUT: return "PUT"
+		HTTPClient.METHOD_DELETE: return "DELETE"
+		HTTPClient.METHOD_OPTIONS: return "OPTIONS"
+		HTTPClient.METHOD_TRACE: return "TRACE"
+		HTTPClient.METHOD_CONNECT: return "CONNECT"
+		HTTPClient.METHOD_PATCH: return "PATCH"
+		_: return "UNKNOWN"
 
 ## Inicia sesión y guarda el JWT token
 ## @param username: Nombre de usuario (opcional si se provee email)
@@ -139,14 +182,17 @@ func start_sync_session(instance_id: String) -> Dictionary:
 ## @param session_id: ID de la sesión de sync (UUID string)
 ## @param event_type: Tipo de evento (ej: "level_completed")
 ## @param payload: Datos del evento (Dictionary)
+## @param client_event_id: UUID del cliente para idempotencia (opcional)
 ## @return: Dictionary con el resultado
-func register_sync_event(session_id: String, event_type: String, payload: Dictionary) -> Dictionary:
+func register_sync_event(session_id: String, event_type: String, payload: Dictionary, client_event_id: String = "") -> Dictionary:
 	print("DEBUG [ApiClient]:register_sync_event() session_id=%s event_type=%s" % [session_id, event_type])
 	var body = {
 		"sync_session_id": session_id,
 		"event_type": event_type,
 		"payload": payload
 	}
+	if not client_event_id.is_empty():
+		body["client_event_id"] = client_event_id
 	var result = await _make_request("api/v1/sync/sync-events", HTTPClient.METHOD_POST, body)
 	print("DEBUG [ApiClient]:register_sync_event() result.OK=%s" % result.OK)
 	
@@ -237,7 +283,58 @@ func sync_all(instance_id: String, events: Array) -> Dictionary:
 func is_authenticated() -> bool:
 	return jwt_token != ""
 
+## Obtiene un juego por su título
+## @param game_title: Título del juego (ej: "Matemáticas Básicas")
+## @return: Dictionary con OK, game_id (str) o error
+func get_game_by_name(game_title: String) -> Dictionary:
+	print("DEBUG [ApiClient]:get_game_by_name() title=%s" % game_title)
+	var result = await _make_request("api/v1/games/by-name/" + game_title.uri_encode(), HTTPClient.METHOD_GET, {}, true)
+	print("DEBUG [ApiClient]:get_game_by_name() result.OK=%s" % result.OK)
+	
+	if result.OK:
+		var game_id = result.data.data.id if result.data.has("data") and result.data.data.has("id") else ""
+		print("DEBUG [ApiClient]:get_game_by_name() - SUCCESS game_id=%s" % game_id)
+		return {"OK": true, "game_id": game_id, "data": result.data}
+	else:
+		print("DEBUG [ApiClient]:get_game_by_name() - FALLO")
+		print(result)
+		return {"OK": false, "error": result.get("error", "Error"), "status": result.get("status", 0)}
+
+## Crea una instancia de juego para el estudiante actual
+## @param game_id: UUID del juego
+## @param student_id: UUID del estudiante (opcional, usa el usuario logueado)
+## @return: Dictionary con OK, instance_id (str) o error
+func create_game_instance(game_id: String, student_id: String = "") -> Dictionary:
+	print("DEBUG [ApiClient]:create_game_instance() game_id=%s" % game_id)
+	
+	var body: Dictionary = {}
+	if student_id.is_empty() and current_user.has("id"):
+		body["student_id"] = current_user.id
+	elif not student_id.is_empty():
+		body["student_id"] = student_id
+	
+	var result = await _make_request("api/v1/game-instances/" + game_id + "/instances", HTTPClient.METHOD_POST, body)
+	print("DEBUG [ApiClient]:create_game_instance() result.OK=%s" % result.OK)
+	
+	if result.OK:
+		var instance_id = ""
+		if result.data.has("data") and result.data.data.has("id"):
+			instance_id = result.data.data.id
+		print("DEBUG [ApiClient]:create_game_instance() - SUCCESS instance_id=%s" % instance_id)
+		return {"OK": true, "instance_id": instance_id, "data": result.data}
+	else:
+		print("DEBUG [ApiClient]:create_game_instance() - FALLO")
+		print(result)
+		return {"OK": false, "error": result.get("error", "Error"), "status": result.get("status", 0)}
+
 ## Cierra la sesión eliminando el token
+## También limpia el cache de session_id para forzar un nuevo game_instance en el próximo sync
 func logout() -> void:
 	jwt_token = ""
 	current_user = {}
+	# Limpiar cache de game_session para forzar nueva instancia en el próximo sync
+	var session_repo := GameSessionRepository.new()
+	if session_repo.has_session():
+		session_repo.clear_session()
+		print("DEBUG [ApiClient]: Cache de sesión limpiado tras logout")
+	session_repo.close()

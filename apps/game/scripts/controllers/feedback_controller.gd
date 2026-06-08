@@ -146,16 +146,14 @@ func _compare_feedback_priority(a: Dictionary, b: Dictionary) -> bool:
 func show_feedback(feedback_data: Dictionary):
 	print("DEBUG: Displaying feedback in UI")
 
-	var panel = feedback_panel_scene.instantiate()
+	var type_str := _convert_enum_to_string(feedback_data.get("type"))
+	var message = feedback_data.get("message", "")
 
-	# Set the text inside the panel
-	panel.show_feedback(feedback_data.message)
+	# Usar el método estático, ya no instanciamos el panel manualmente
+	FeedbackBalloon.show_feedback(message, type_str)
 
-	# Add it to the HUD
-	hud_node.add_child(panel)
-
-	# Emit the signal for other systems if needed
-	emit_signal("feedback_generated", feedback_data)
+	# La señal queda para otros sistemas, no para el balloon
+	feedback_generated.emit(feedback_data)
 
 
 ## Convert the feedback type enum to the corresponding string for the balloon

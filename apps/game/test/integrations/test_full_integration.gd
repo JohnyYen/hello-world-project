@@ -2,6 +2,12 @@
 # Test de integracion completo: 3 tiraderas de nivel → agente adaptativo → xAPI → login → sync
 extends Node
 
+# UUID canónico de fixture para actor_id (REQ-P2-R4).
+# Reemplaza el literal hardcodeado que vivía en este archivo y que era
+# rechazado por los guards de XAPIService/GameController (no representaba
+# un usuario autenticado real). El UUID fixture es reutilizable.
+const FIXTURE_USER_UUID: String = "00000000-0000-0000-0000-000000000001"
+
 # Variables globales compartidas entre fases
 var _test_instance_id: String = ""
 var _jwt_token: String = ""
@@ -141,7 +147,7 @@ func _run_single_level(
 	await get_tree().process_frame
 
 	if _has_token:
-		xapi.track_level_started("level_1", label, "estudiante1")
+		xapi.track_level_started("level_1", label, FIXTURE_USER_UUID)
 		print("Statement 'started' creado")
 	else:
 		print("Modo offline: xAPI tracking local (no se envia al backend)")
@@ -219,7 +225,7 @@ func _run_single_level(
 	if _has_token:
 		var duration_str := _format_duration(time)
 		xapi.track_level_completed(
-			"level_1", label, "estudiante1",
+			"level_1", label, FIXTURE_USER_UUID,
 			score * 100.0, score, success, duration_str
 		)
 		print("Statement 'completed' creado")
@@ -231,7 +237,7 @@ func _run_single_level(
 			print("  - %s: %s (%s)" % [stmt.get("id", "?"), stmt.get("verb_display", "?"), stmt.get("object_type", "?")])
 	else:
 		xapi.track_level_completed(
-			"level_1", label, "estudiante1",
+			"level_1", label, FIXTURE_USER_UUID,
 			score * 100.0, score, success, _format_duration(time)
 		)
 		var pending := xapi.get_pending_statements(50)

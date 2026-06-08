@@ -1,9 +1,32 @@
 from typing import Any, Sequence
 from sqladmin import Admin, ModelView
-
+from fastapi import Request, Response
+from fastapi.responses import RedirectResponse
+from starlette.middleware.base import BaseHTTPMiddleware
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from src.shared.infrastructure.session import engine
-from src.admin.auth import admin_auth_backend
+from src.admin.auth import admin_auth, verify_admin_role, get_session, load_user_with_session
+
+
+class AdminAuthMiddleware(BaseHTTPMiddleware):
+    """
+    Middleware que carga el usuario y sesión de DB para las request del admin.
+    Necesario para verificar el rol admin en cada request.
+    """
+
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path.startswith("/admin"):
+            result = await load_user_with_session(request)
+            if result:
+                user, session = result
+                request.state.admin_user = user
+                request.state.admin_session = session
+            else:
+                request.state.admin_user = None
+                request.state.admin_session = None
+        return await call_next(request)
 
 from src.users.domain.user import User
 from src.users.domain.professor import Professor
@@ -29,48 +52,97 @@ from src.sync.domain.sync_event import SyncEvent
 
 class BaseAdminModelView(ModelView):
     """
-    Base ModelView compartido.
-    La autenticación y verificación de rol admin la maneja
-    SQLAdmin 0.20.0 via AuthenticationBackend (login_required decorator).
+    Base ModelView que verifica el rol admin en cada request.
+    Solo permite acceso a usuarios con rol 'admin'.
     """
 
+    async def _check_admin_role(self, request: Request) -> bool:
+        """Verifica si el usuario actual tiene rol de admin."""
+        session = request.state.admin_session
+        if not session:
+            return False
+        
+        user = request.state.admin_user
+        if not user:
+            return False
 
-class UserAdminView(BaseAdminModelView, model=User):
+        return await verify_admin_role(user, session)
+
+    async def list(self, request: Request) -> Any:
+        """Override list para verificar rol admin."""
+        if not await self._check_admin_role(request):
+            from fastapi.responses import JSONResponse
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Acceso denegado. Se requiere rol de admin."}
+            )
+        return await super().list(request)
+
+    async def detail(self, request: Request, pk: Any) -> Any:
+        """Override detail para verificar rol admin."""
+        if not await self._check_admin_role(request):
+            from fastapi.responses import JSONResponse
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Acceso denegado. Se requiere rol de admin."}
+            )
+        return await super().detail(request, pk)
+
+    async def insert(self, request: Request) -> Any:
+        """Override insert para verificar rol admin."""
+        if not await self._check_admin_role(request):
+            from fastapi.responses import JSONResponse
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Acceso denegado. Se requiere rol de admin."}
+            )
+        return await super().insert(request)
+
+    async def edit(self, request: Request, pk: Any) -> Any:
+        """Override edit para verificar rol admin."""
+        if not await self._check_admin_role(request):
+            from fastapi.responses import JSONResponse
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Acceso denegado. Se requiere rol de admin."}
+            )
+        return await super().edit(request, pk)
+
+    async def delete(self, request: Request, pk: Any) -> Any:
+        """Override delete para verificar rol admin."""
+        if not await self._check_admin_role(request):
+            from fastapi.responses import JSONResponse
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "Acceso denegado. Se requiere rol de admin."}
+            )
+        return await super().delete(request, pk)
+
+
+class UserAdminView(BaseAdminModelView):
     """AdminView para el modelo User."""
     name = "Usuario"
     name_plural = "Usuarios"
     icon = "fa-solid fa-user"
     
     column_list = [
-        User.id, User.username, User.name, User.lastname,
+        User.id, User.username, User.name, User.lastname, 
         User.email, User.is_active, User.role_id
     ]
     column_details_list = [
-        User.id, User.username, User.name, User.lastname,
-        User.email, User.avatar_url, User.is_active,
+        User.id, User.username, User.name, User.lastname, 
+        User.email, User.avatar_url, User.is_active, 
         User.last_login, User.role_id, User.lms_id
     ]
     column_formatters = {User.hashed_password: lambda m, c: "***"}
-    # Exclude: hashed_password (sensitive) + all inverse relationships
-    # (children that have their own lifecycle and are managed via their
-    # own admin views, e.g. StudentAdminView, ProfessorAdminView).
-    # Owning-side relationships (role, lms_credential) stay in the form
-    # so the admin can pick a parent when creating a user.
-    form_excluded_columns = [
-        User.hashed_password,
-        User.student,
-        User.professor,
-        User.teacher_settings,
-        User.notifications,
-        User.activity_logs,
-    ]
-
+    form_excluded_columns = [User.hashed_password]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class RoleAdminView(BaseAdminModelView, model=Role):
+class RoleAdminView(BaseAdminModelView):
     """AdminView para el modelo Role."""
     name = "Rol"
     name_plural = "Roles"
@@ -78,19 +150,13 @@ class RoleAdminView(BaseAdminModelView, model=Role):
     
     column_list = [Role.id, Role.role_name, Role.description]
     column_details_list = [Role.id, Role.role_name, Role.description]
-
-    # `users` is the inverse side (FK `role_id` lives on User). Excluding
-    # it prevents SQLAdmin from rendering a `<select multiple>` of all
-    # users in the form. Users are assigned to roles when the user is
-    # created/edited in UserAdminView.
-    form_excluded_columns = [Role.users]
-
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class ProfessorAdminView(BaseAdminModelView, model=Professor):
+class ProfessorAdminView(BaseAdminModelView):
     """AdminView para el modelo Professor."""
     name = "Profesor"
     name_plural = "Profesores"
@@ -98,21 +164,13 @@ class ProfessorAdminView(BaseAdminModelView, model=Professor):
     
     column_list = [Professor.id, Professor.user_id, Professor.department, Professor.contact_phone]
     column_details_list = [Professor.id, Professor.user_id, Professor.department, Professor.contact_phone]
-
-    # Exclude inverse relationships (children that have their own admin
-    # views). The owning side (`user`) stays in the form so the admin can
-    # link the professor to its user account.
-    form_excluded_columns = [
-        Professor.feedbacks,
-        Professor.course_professors,
-    ]
-
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class StudentAdminView(BaseAdminModelView, model=Student):
+class StudentAdminView(BaseAdminModelView):
     """AdminView para el modelo Student."""
     name = "Estudiante"
     name_plural = "Estudiantes"
@@ -120,25 +178,13 @@ class StudentAdminView(BaseAdminModelView, model=Student):
     
     column_list = [Student.id, Student.user_id, Student.last_active_at, Student.current_streak_days, Student.active_today]
     column_details_list = [Student.id, Student.user_id, Student.last_active_at, Student.current_streak_days, Student.active_today]
-
-    # Exclude all inverse relationships. Each child type has its own
-    # admin view (or is created by the system) and must not be assigned
-    # from the Student form. The owning `user` relationship stays so the
-    # admin can link the student to its user account.
-    form_excluded_columns = [
-        Student.game_instances,
-        Student.feedbacks,
-        Student.progresses,
-        Student.xapi_statements,
-        Student.course_enrollments,
-    ]
-
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class TeacherSettingsAdminView(BaseAdminModelView, model=TeacherSettings):
+class TeacherSettingsAdminView(BaseAdminModelView):
     """AdminView para el modelo TeacherSettings."""
     name = "Configuración de Profesor"
     name_plural = "Configuraciones de Profesor"
@@ -163,34 +209,25 @@ class TeacherSettingsAdminView(BaseAdminModelView, model=TeacherSettings):
     can_delete = True
 
 
-class GameAdminView(BaseAdminModelView, model=Game):
+class GameAdminView(BaseAdminModelView):
     """AdminView para el modelo Game."""
     name = "Juego"
     name_plural = "Juegos"
     icon = "fa-solid fa-gamepad"
-
+    
     column_list = [Game.id, Game.title, Game.creator, Game.subject, Game.publication_status]
     column_details_list = [Game.id, Game.title, Game.description, Game.creator, Game.subject, Game.publication_status]
-
-    # Exclude all inverse relationships. By default SQLAdmin auto-renders
-    # every SQLAlchemy relationship as a `<select multiple>` widget, which
-    # (a) triggers heavy SELECT queries on every form render and
-    # (b) lets the admin assign child rows that have their own lifecycle
-    # (Level, GameInstance, Feedback) or whose FK is the inverse (Course).
-    # Game has no owning-side relationships, so this list is exhaustive.
-    form_excluded_columns = [
-        Game.levels,
-        Game.instances,
-        Game.feedbacks,
-        Game.courses,
-    ]
-
+    
+    # Exclude relationships from form - they should be created separately
+    # Use string names to avoid issues with SQLAlchemy relationship objects
+    form_excluded_columns = ["levels", "instances", "feedbacks"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class GameInstanceAdminView(BaseAdminModelView, model=GameInstance):
+class GameInstanceAdminView(BaseAdminModelView):
     """AdminView para el modelo GameInstance."""
     name = "Instancia de Juego"
     name_plural = "Instancias de Juego"
@@ -198,18 +235,16 @@ class GameInstanceAdminView(BaseAdminModelView, model=GameInstance):
     
     column_list = [GameInstance.id, GameInstance.game_id, GameInstance.student_id, GameInstance.status]
     column_details_list = [GameInstance.id, GameInstance.game_id, GameInstance.student_id, GameInstance.started_at, GameInstance.ended_at, GameInstance.status]
-
-    # Exclude the inverse `sync_sessions` relationship. Owning-side
-    # relationships (`student`, `game`, `course`) stay so the admin can
-    # pick the relevant entities when creating a game instance.
-    form_excluded_columns = [GameInstance.sync_sessions]
-
+    
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["student", "game", "sync_sessions"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class SegmentLevelAdminView(BaseAdminModelView, model=SegmentLevel):
+class SegmentLevelAdminView(BaseAdminModelView):
     """AdminView para el modelo SegmentLevel."""
     name = "Nivel de Segmento"
     name_plural = "Niveles de Segmento"
@@ -217,18 +252,16 @@ class SegmentLevelAdminView(BaseAdminModelView, model=SegmentLevel):
     
     column_list = [SegmentLevel.id, SegmentLevel.level_number_id, SegmentLevel.configuration]
     column_details_list = [SegmentLevel.id, SegmentLevel.level_number_id, SegmentLevel.configuration]
-
-    # Exclude inverse `progresses` (children created as students play).
-    # The owning `level` relationship stays so the admin can attach the
-    # segment to a level.
-    form_excluded_columns = [SegmentLevel.progresses]
-
+    
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["level", "progresses"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class LevelAdminView(BaseAdminModelView, model=Level):
+class LevelAdminView(BaseAdminModelView):
     """AdminView para el modelo Level."""
     name = "Nivel"
     name_plural = "Niveles"
@@ -236,20 +269,16 @@ class LevelAdminView(BaseAdminModelView, model=Level):
     
     column_list = [Level.id, Level.title, Level.game_id, Level.level_number]
     column_details_list = [Level.id, Level.title, Level.game_id, Level.level_number, Level.description, Level.goal]
-
-    # Exclude inverse relationships. The owning `game` stays so the
-    # admin can pick which game this level belongs to.
-    form_excluded_columns = [
-        Level.segments,
-        Level.feedbacks,
-    ]
-
+    
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["game", "segments", "feedbacks"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class CourseAdminView(BaseAdminModelView, model=Course):
+class CourseAdminView(BaseAdminModelView):
     """AdminView para el modelo Course."""
     name = "Curso"
     name_plural = "Cursos"
@@ -257,20 +286,16 @@ class CourseAdminView(BaseAdminModelView, model=Course):
     
     column_list = [Course.id, Course.name, Course.school_year, Course.period_label, Course.is_active]
     column_details_list = [Course.id, Course.name, Course.description, Course.school_year, Course.period_label, Course.start_date, Course.end_date, Course.is_active]
-
-    # Exclude inverse relationships. The owning `game` stays so the
-    # admin can optionally link a course to a game.
-    form_excluded_columns = [
-        Course.enrollments,
-        Course.course_professors,
-    ]
-
+    
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["enrollments", "course_professors"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class CourseEnrollmentAdminView(BaseAdminModelView, model=CourseEnrollment):
+class CourseEnrollmentAdminView(BaseAdminModelView):
     """AdminView para el modelo CourseEnrollment."""
     name = "Inscripción"
     name_plural = "Inscripciones"
@@ -279,12 +304,15 @@ class CourseEnrollmentAdminView(BaseAdminModelView, model=CourseEnrollment):
     column_list = [CourseEnrollment.id, CourseEnrollment.student_id, CourseEnrollment.course_id, CourseEnrollment.enrolled_at]
     column_details_list = [CourseEnrollment.id, CourseEnrollment.student_id, CourseEnrollment.course_id, CourseEnrollment.enrolled_at]
     
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["student", "course"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class ProgressAdminView(BaseAdminModelView, model=Progress):
+class ProgressAdminView(BaseAdminModelView):
     """AdminView para el modelo Progress."""
     name = "Progreso"
     name_plural = "Progresos"
@@ -297,12 +325,15 @@ class ProgressAdminView(BaseAdminModelView, model=Progress):
         Progress.errors_details, Progress.objectives_completed, Progress.efficiency_rating
     ]
     
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["student", "segment_level"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class XAPIStatementAdminView(BaseAdminModelView, model=XAPIStatement):
+class XAPIStatementAdminView(BaseAdminModelView):
     """AdminView para el modelo XAPIStatement."""
     name = "Declaración xAPI"
     name_plural = "Declaraciones xAPI"
@@ -316,12 +347,15 @@ class XAPIStatementAdminView(BaseAdminModelView, model=XAPIStatement):
         XAPIStatement.stored, XAPIStatement.statement
     ]
     
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["student"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class FeedbackAdminView(BaseAdminModelView, model=Feedback):
+class FeedbackAdminView(BaseAdminModelView):
     """AdminView para el modelo Feedback."""
     name = "Feedback"
     name_plural = "Feedbacks"
@@ -333,12 +367,15 @@ class FeedbackAdminView(BaseAdminModelView, model=Feedback):
         Feedback.level_id, Feedback.rating, Feedback.comments
     ]
     
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["student", "professor", "game", "level"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class SyncSessionAdminView(BaseAdminModelView, model=SyncSession):
+class SyncSessionAdminView(BaseAdminModelView):
     """AdminView para el modelo SyncSession."""
     name = "Sesión de Sincronización"
     name_plural = "Sesiones de Sincronización"
@@ -349,18 +386,16 @@ class SyncSessionAdminView(BaseAdminModelView, model=SyncSession):
         SyncSession.id, SyncSession.instance_id, SyncSession.status,
         SyncSession.start_time, SyncSession.end_time
     ]
-
-    # Exclude inverse `events` (children created as the sync progresses).
-    # The owning `game_instance` stays so the admin can link the session
-    # to a game instance.
-    form_excluded_columns = [SyncSession.events]
-
+    
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["game_instance", "events"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-class SyncEventAdminView(BaseAdminModelView, model=SyncEvent):
+class SyncEventAdminView(BaseAdminModelView):
     """AdminView para el modelo SyncEvent."""
     name = "Evento de Sincronización"
     name_plural = "Eventos de Sincronización"
@@ -372,12 +407,15 @@ class SyncEventAdminView(BaseAdminModelView, model=SyncEvent):
         SyncEvent.status, SyncEvent.timestamp
     ]
     
+    # Exclude relationships from form - they should be created separately
+    form_excluded_columns = ["sync_session"]
+    
     can_edit = True
     can_create = True
     can_delete = True
 
 
-def setup_admin(app: Any) -> Admin:
+async def setup_admin(app: Any) -> Admin:
     """
     Configura SQLAdmin con todos los modelos y autenticación.
     """
@@ -386,29 +424,28 @@ def setup_admin(app: Any) -> Admin:
         engine=engine,
         title="Admin - Hello World",
         base_url="/admin",
-        authentication_backend=admin_auth_backend,
     )
 
-    # Agregar vistas - el metaclass ModelViewMeta ya instancia la clase automáticamente
-    admin.add_view(UserAdminView)
-    admin.add_view(RoleAdminView)
-    admin.add_view(ProfessorAdminView)
-    admin.add_view(StudentAdminView)
-    admin.add_view(TeacherSettingsAdminView)
+    # Agregar autenticación
+    admin.add_view(UserAdminView(User, name="Usuarios"))
+    admin.add_view(RoleAdminView(Role, name="Roles"))
+    admin.add_view(ProfessorAdminView(Professor, name="Profesores"))
+    admin.add_view(StudentAdminView(Student, name="Estudiantes"))
+    admin.add_view(TeacherSettingsAdminView(TeacherSettings, name="Configuración de Profesor"))
 
-    admin.add_view(GameAdminView)
-    admin.add_view(GameInstanceAdminView)
-    admin.add_view(SegmentLevelAdminView)
-    admin.add_view(LevelAdminView)
+    admin.add_view(GameAdminView(Game, name="Juegos"))
+    admin.add_view(GameInstanceAdminView(GameInstance, name="Instancias de Juego"))
+    admin.add_view(SegmentLevelAdminView(SegmentLevel, name="Niveles de Segmento"))
+    admin.add_view(LevelAdminView(Level, name="Niveles"))
 
-    admin.add_view(CourseAdminView)
-    admin.add_view(CourseEnrollmentAdminView)
+    admin.add_view(CourseAdminView(Course, name="Cursos"))
+    admin.add_view(CourseEnrollmentAdminView(CourseEnrollment, name="Inscripciones"))
 
-    admin.add_view(ProgressAdminView)
-    admin.add_view(XAPIStatementAdminView)
-    admin.add_view(FeedbackAdminView)
+    admin.add_view(ProgressAdminView(Progress, name="Progresos"))
+    admin.add_view(XAPIStatementAdminView(XAPIStatement, name="Declaraciones xAPI"))
+    admin.add_view(FeedbackAdminView(Feedback, name="Feedbacks"))
 
-    admin.add_view(SyncSessionAdminView)
-    admin.add_view(SyncEventAdminView)
+    admin.add_view(SyncSessionAdminView(SyncSession, name="Sesiones de Sincronización"))
+    admin.add_view(SyncEventAdminView(SyncEvent, name="Eventos de Sincronización"))
 
     return admin

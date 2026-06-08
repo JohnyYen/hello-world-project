@@ -24,7 +24,11 @@ func seed_level_1(_db: SQLite) -> void:
 			],
 			"available_blocks": ["Start", "Execute", "End"],
 			"learning_objective": "Introducción a la secuencia de instrucciones",
-			"environment_data": {},
+			"environment_data": {
+				"bread_station": true,
+				"drink_machine": false,
+				"cash_register": false
+			},
 			"execution_rules": {
 				"max_blocks": 5
 			},
@@ -75,7 +79,11 @@ func seed_level_1(_db: SQLite) -> void:
 			],
 			"available_blocks": ["Start", "Execute", "End"],
 			"learning_objective": "Secuencia de múltiples acciones simples",
-			"environment_data": {},
+			"environment_data": {
+				"bread_station": true,
+				"drink_machine": false,
+				"cash_register": false
+			},
 			"execution_rules": {
 				"max_blocks": 6
 			},
@@ -129,7 +137,11 @@ func seed_level_1(_db: SQLite) -> void:
 			],
 			"available_blocks": ["Start", "Execute", "End"],
 			"learning_objective": "Atender al primer cliente",
-			"environment_data": {},
+			"environment_data": {
+				"bread_station": true,
+				"drink_machine": false,
+				"cash_register": true
+			},
 			"execution_rules": {
 				"max_blocks": 8
 			},
@@ -185,7 +197,11 @@ func seed_level_1(_db: SQLite) -> void:
 			],
 			"available_blocks": ["Start", "Execute", "End"],
 			"learning_objective": "Introducción a acciones con bebidas",
-			"environment_data": {},
+			"environment_data": {
+				"bread_station": false,
+				"drink_machine": true,
+				"cash_register": true
+			},
 			"execution_rules": {
 				"max_blocks": 8
 			},
@@ -245,9 +261,13 @@ func seed_level_1(_db: SQLite) -> void:
 			],
 			"available_blocks": ["Start", "Execute", "End"],
 			"learning_objective": "Secuencias más complejas con múltiples clientes",
-			"environment_data": {},
+			"environment_data": {
+				"bread_station": true,
+				"drink_machine": true,
+				"cash_register": true
+			},
 			"execution_rules": {
-				"max_blocks": 12
+				"max_blocks": 8
 			},
 			"validation_criteria": [
 				{

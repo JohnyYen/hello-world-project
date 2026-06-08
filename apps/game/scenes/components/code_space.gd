@@ -16,6 +16,13 @@ func _ready():
 	# This would be connected by the parent scene (cafeteria_gameplay.gd)
 	pass
 
+func hide_code_space():
+	clear_blocks_in_zone()
+	visible = false
+
+func show_code_space():
+	visible = true
+
 func set_level_configuration(config : LevelConfiguration):
 	level_config = config
 

@@ -30,12 +30,11 @@ func get_level_configuration(segment_id : int) -> LevelConfiguration:
 	return null
 
 func send_blocks_to_code_zone(blocks: Array[Block]) -> void:
-	print("DEBUG: LevelController sending ", blocks.size(), " blocks via signal")
 	for i in range(blocks.size()):
 		var block = blocks[i]
-		if block != null:
-			print("DEBUG: Sending block #", i, " name: ", block.name, ", ID: ", block.block_id)
-		else:
-			print("DEBUG: Found a null block at index ", i)
+		#if block != null:
+			#print("DEBUG: Sending block #", i, " name: ", block.name, ", ID: ", block.block_id)
+		#else:
+			#print("DEBUG: Found a null block at index ", i)
 	emit_signal("send_blocks_code_zone", blocks)
-	print("DEBUG: Signal emitted successfully")
+	#print("DEBUG: Signal emitted successfully")

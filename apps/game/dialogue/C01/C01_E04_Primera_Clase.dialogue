@@ -1,4 +1,5 @@
 ~ start
+do _DialogueUiController.set_flag.emit("has_first_time_faculty", true)
 # Escena: Clase de Introducción a la Programación – Versión Cinematográfica
 # Contexto: Los estudiantes están en el aula, Laura hace la primera pregunta y comienza la lección interactiva.
 
@@ -109,5 +110,4 @@ Orqui: *Si algo falla, te daré pistas y sugerencias para ajustar la secuencia.*
 Student3: ¿Y si mezclo los pasos de manera incorrecta?  
 Orqui: *Entonces obtendrás un resultado inesperado, como un huevo revuelto antes de tiempo… pero no te preocupes, siempre puedes reiniciar y mejorar.*  
 
-do _DialogueUiController.set_flag.emit("has_first_time_faculty", true)
 => END

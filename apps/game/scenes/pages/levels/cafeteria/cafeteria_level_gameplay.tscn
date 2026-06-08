@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dsli8nj736lgt"]
 
 [ext_resource type="PackedScene" uid="uid://bq46ma7jp7bh1" path="res://scenes/pages/levels/level_template.tscn" id="1_saegq"]
-[ext_resource type="Texture2D" uid="uid://crfbdqkermsd8" path="res://icon.svg" id="2_ky6eh"]
+[ext_resource type="Texture2D" uid="uid://bdfu2l5rvc32c" path="res://icon.svg" id="2_ky6eh"]
 
 [sub_resource type="Curve2D" id="Curve2D_saegq"]
 _data = {
