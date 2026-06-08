@@ -1,6 +1,8 @@
-from datetime import datetime, timezone
+import logging
+from datetime import datetime, timedelta, timezone
 from typing import Optional, List, Union
 from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.sync.infrastructure.repositories.sync_session_repository import (
@@ -8,6 +10,10 @@ from src.sync.infrastructure.repositories.sync_session_repository import (
 )
 from src.sync.domain.sync_session import SyncSession
 from src.shared.domain.exceptions import NotFoundException
+
+logger = logging.getLogger(__name__)
+
+STALE_SESSION_THRESHOLD = timedelta(hours=2)
 
 
 def _convert_to_uuid(value: Union[int, str, UUID]) -> UUID:
@@ -164,6 +170,14 @@ class SyncSessionService:
             limit=1,
         )
         return sessions[0] if sessions else None
+
+    async def end_stale_sessions(
+        self,
+        older_than: timedelta = STALE_SESSION_THRESHOLD,
+    ) -> int:
+        closed = await self.repository.end_stale(older_than)
+        logger.info(f"Closed {closed} stale sync session(s)")
+        return closed
 
     async def delete(
         self,

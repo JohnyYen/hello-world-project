@@ -1,6 +1,10 @@
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Union
 from uuid import UUID
+
+from sqlalchemy import and_, update
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.sync.domain.sync_session import SyncSession
 
@@ -85,3 +89,22 @@ class SyncSessionRepository(BaseRepository[SyncSession]):
             descending=True,
         )
         return sessions[0] if sessions else None
+
+    async def end_stale(self, older_than: timedelta) -> int:
+        cutoff = datetime.now(timezone.utc) - older_than
+        result = await self.db.execute(
+            update(self.model)
+            .where(
+                and_(
+                    self.model.status == "active",
+                    self.model.end_time.is_(None),
+                    self.model.start_time < cutoff,
+                )
+            )
+            .values(
+                end_time=datetime.now(timezone.utc),
+                status="completed",
+            )
+        )
+        await self.db.commit()
+        return result.rowcount

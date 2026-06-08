@@ -9,8 +9,8 @@ This test suite verifies:
 """
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock
-from datetime import datetime, timezone
+from unittest.mock import AsyncMock, MagicMock, patch
+from datetime import datetime, timedelta, timezone
 
 from src.sync.application.service.sync_session_service import SyncSessionService
 from src.sync.domain.sync_session import SyncSession
@@ -154,6 +154,73 @@ class TestSyncSessionServiceGetSession:
         await service.get_session(session_id=1, include_deleted=True)
 
         mock_repo.get_by_id.assert_called_once_with(1, include_deleted=True)
+
+
+class TestSyncSessionServiceEndStaleSessions:
+    """Test suite for end_stale_sessions method."""
+
+    @pytest.mark.asyncio
+    async def test_end_stale_sessions_with_default_threshold(self):
+        mock_db = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.end_stale = AsyncMock(return_value=3)
+
+        service = SyncSessionService(mock_db)
+        service.repository = mock_repo
+
+        count = await service.end_stale_sessions()
+
+        assert count == 3
+        mock_repo.end_stale.assert_called_once()
+        call_arg = mock_repo.end_stale.call_args[0][0]
+        assert call_arg.total_seconds() == 7200
+
+    @pytest.mark.asyncio
+    async def test_end_stale_sessions_with_custom_threshold(self):
+        mock_db = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.end_stale = AsyncMock(return_value=2)
+
+        service = SyncSessionService(mock_db)
+        service.repository = mock_repo
+
+        count = await service.end_stale_sessions(older_than=timedelta(hours=4))
+
+        assert count == 2
+        mock_repo.end_stale.assert_called_once_with(timedelta(hours=4))
+
+    @pytest.mark.asyncio
+    async def test_end_stale_sessions_logs_count(self):
+        mock_db = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.end_stale = AsyncMock(return_value=5)
+
+        service = SyncSessionService(mock_db)
+        service.repository = mock_repo
+
+        with patch(
+            "src.sync.application.service.sync_session_service.logger"
+        ) as mock_logger:
+            count = await service.end_stale_sessions()
+
+            assert count == 5
+            mock_logger.info.assert_called_once_with(
+                "Closed 5 stale sync session(s)"
+            )
+
+    @pytest.mark.asyncio
+    async def test_end_stale_sessions_zero_count(self):
+        mock_db = MagicMock()
+        mock_repo = MagicMock()
+        mock_repo.end_stale = AsyncMock(return_value=0)
+
+        service = SyncSessionService(mock_db)
+        service.repository = mock_repo
+
+        count = await service.end_stale_sessions()
+
+        assert count == 0
+        mock_repo.end_stale.assert_called_once()
 
 
 class TestSyncSessionServiceGetByInstance:
