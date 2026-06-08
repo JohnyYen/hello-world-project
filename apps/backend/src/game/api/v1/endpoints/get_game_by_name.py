@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.shared.infrastructure.session import get_db
@@ -7,7 +6,7 @@ from src.game.infrastructure.game_repository import GameRepository
 from src.game.api.v1.schemas.game import SingleGameResponse, GameDetailResponse
 
 
-router = APIRouter(prefix="/games", dependencies=[])  # No auth required for public game lookup
+router = APIRouter(prefix="/games", dependencies=[])  # Auth heredado del router padre (HTTPBearer)
 
 
 @router.get("/by-name/{game_title}", response_model=SingleGameResponse)
@@ -22,7 +21,7 @@ async def get_game_by_name(
     """
     game_repo = GameRepository(db)
 
-    game = await game_repo.get_by_title(game_title)
+    game = await game_repo.get_by_name(game_title)
 
     if not game:
         raise HTTPException(
