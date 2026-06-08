@@ -332,8 +332,12 @@ func _get_or_create_instance_id(game_id: String) -> String:
 	# Intentar usar el cache primero
 	var cached := _session_repository.get_session()
 	if cached != null and cached.instance_id != "" and cached.game_id == game_id:
-		print("DEBUG [SyncBatchService | _get_or_create_instance_id]: Usando instance_id del cache: %s" % cached.instance_id)
-		return cached.instance_id
+		if cached.student_id != str(_GameConfig.user.get("id", "")):
+			_session_repository.clear_session()
+			print("DEBUG [SyncBatchService | _get_or_create_instance_id]: student_id cache mismatch, recreating instance")
+		else:
+			print("DEBUG [SyncBatchService | _get_or_create_instance_id]: Usando instance_id del cache: %s" % cached.instance_id)
+			return cached.instance_id
 
 	# No hay cache válido, crear nueva instancia en el backend
 	print("DEBUG [SyncBatchService | _get_or_create_instance_id]: No hay cache válido, creando instancia para game_id=%s..." % game_id)
@@ -349,9 +353,7 @@ func _get_or_create_instance_id(game_id: String) -> String:
 		return ""
 
 	# Cachear TANTO game_id como instance_id
-	var student_id := ""
-	if _api_client.current_user != null and _api_client.current_user.has("id"):
-		student_id = str(_api_client.current_user.id)
+	var student_id := str(_GameConfig.user.get("id", ""))
 
 	_session_repository.save_session(game_id, instance_id, student_id)
 	print("DEBUG [SyncBatchService | _get_or_create_instance_id]: instance_id=%s creado y cacheado" % instance_id)

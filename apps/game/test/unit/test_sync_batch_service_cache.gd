@@ -10,6 +10,7 @@ var _mock_api: ApiClient
 var _mock_connection: ConnectionDetector
 var _session_repo: GameSessionRepository
 var _db: SQLite
+var _original_game_config_user: Dictionary
 
 
 # Mock ApiClient to track calls
@@ -19,6 +20,7 @@ class FakeApiClient extends ApiClient:
 	var start_sync_session_calls: int = 0
 	var end_sync_session_calls: int = 0
 	var register_event_calls: int = 0
+	var last_create_student_id: String = ""
 
 	# Pre-configured responses
 	var game_id_response: String = ""
@@ -31,6 +33,7 @@ class FakeApiClient extends ApiClient:
 
 	func create_game_instance(game_id: String, student_id: String = "") -> Dictionary:
 		create_game_instance_calls += 1
+		last_create_student_id = student_id
 		return {"OK": true, "instance_id": instance_id_response, "data": {}}
 
 	func start_sync_session(instance_id: String) -> Dictionary:
@@ -57,6 +60,9 @@ class FakeConnectionDetector extends ConnectionDetector:
 
 
 func before_each():
+	# Save GameConfig user state to restore after test
+	_original_game_config_user = _GameConfig.user.duplicate(true)
+
 	# Create fresh test DB
 	_db = SQLite.new()
 	_db.open(TEST_DB_PATH)
@@ -83,6 +89,7 @@ func before_each():
 
 
 func after_each():
+	_GameConfig.user = _original_game_config_user
 	_db.close_db()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_DB_PATH))
 
@@ -188,3 +195,28 @@ func test_full_sync_flow_uses_cache_on_subsequent_calls():
 	var session2 := _session_repo.get_session()
 	assert_eq(session2.instance_id, "instance-1", "Should reuse cached instance")
 	assert_eq(session2.game_id, "game-1", "Should reuse cached game")
+
+
+# ==================== Tests for student_id guard ====================
+
+func test_student_id_mismatch_recreates_instance():
+	# Arrange - cache with stale student_id
+	_session_repo.save_session("game-uuid-123", "instance-uuid-456", "stale-user-id")
+	assert_true(_session_repo.has_session(), "Pre-condition: cache exists with stale student_id")
+
+	# Set current user in GameConfig (autoload) to a DIFFERENT id
+	_GameConfig.user = {"id": "current-user-id"}
+
+	# Act - call _get_or_create_instance_id (async, needs await)
+	var instance_id := await _service._get_or_create_instance_id("game-uuid-123")
+
+	# Assert - new instance was created (cache mismatch triggered recreation)
+	assert_eq(instance_id, "instance-uuid-456", "Should return the new instance_id")
+	assert_eq(_mock_api.create_game_instance_calls, 1, "Should have called API to create new instance")
+
+	# Verify new cache entry has the correct student_id
+	var session := _session_repo.get_session()
+	assert_not_null(session, "New session should be cached after recreation")
+	assert_eq(session.student_id, "current-user-id", "Cache should have the current student_id from _GameConfig")
+	assert_eq(session.game_id, "game-uuid-123", "Cache should preserve game_id")
+	assert_eq(session.instance_id, "instance-uuid-456", "Cache should have the new instance_id")
