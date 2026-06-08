@@ -1,0 +1,101 @@
+networks:
+  hwp-network:
+    driver: bridge
+    name: hwp-network
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+          gateway: 172.30.0.1
+
+services:
+  postgresql_db:
+    image: postgres:15
+    container_name: hwp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - hwp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../../apps/backend
+      dockerfile: Dockerfile.dev
+    container_name: hwp-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8010:8000"
+    volumes:
+      - ../../apps/backend:/app
+      - /app/__pycache__
+      - /app/.venv
+    environment:
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+    depends_on:
+      postgresql_db:
+        condition: service_healthy
+    networks:
+      - hwp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ../..
+      dockerfile: apps/frontend/Dockerfile.dev
+    container_name: hwp-frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+      - ../../apps/frontend/.env
+    environment:
+      API_URL: http://hwp-backend:8000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../apps/frontend:/app/apps/frontend
+      - /app/apps/frontend/node_modules
+      - /app/apps/frontend/.next
+    depends_on:
+      - backend
+    networks:
+      - hwp-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: hwp-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    networks:
+      - hwp-network
+
+volumes:
+  postgresql_data:

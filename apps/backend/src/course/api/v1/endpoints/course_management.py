@@ -227,13 +227,80 @@ async def list_enrolled_students(
 async def enroll_students(
     course_id: UUID,
     request: EnrollmentRequest,
+    background_tasks: BackgroundTasks,
     usecase: ManageEnrollmentUseCase = Depends(get_manage_enrollment_usecase),
+    email_service: EmailService = Depends(get_email_service),
+    course_repo: CourseRepository = Depends(get_course_repository),
 ):
     """
     Inscribe uno o más estudiantes en un curso.
     Deduplica: no crea inscripciones duplicadas.
+    Si el curso tiene un juego asignado con download_link,
+    envía email de notificación a los nuevos estudiantes.
     """
-    return await usecase.enroll_students(course_id, request.student_ids)
+    # Capturar IDs existentes antes de inscribir (para detectar nuevos)
+    existing_ids = await course_repo.get_existing_enrollment_ids(course_id)
+
+    # Inscribir estudiantes
+    result = await usecase.enroll_students(course_id, request.student_ids)
+
+    # ── Envío de emails a nuevos estudiantes ──
+    if not result:
+        return result
+
+    course = await course_repo.get_course_with_game(course_id)
+    if not course or not course.game or not course.game.download_link:
+        logger.info(
+            "Course %s has no game download_link — skipping enrollment emails",
+            course_id,
+        )
+        return result
+
+    # Detectar estudiantes nuevos (los que no estaban inscritos antes)
+    new_enrollments = [
+        s for s in result if s.student_id not in existing_ids
+    ]
+
+    if not new_enrollments:
+        logger.info(
+            "No new enrollments for course %s — skipping emails",
+            course_id,
+        )
+        return result
+
+    professors_data = await course_repo.get_professors_for_course(course_id)
+    professors_list = [
+        {"name": p["name"], "email": p["email"]}
+        for p in professors_data
+    ]
+
+    for student in new_enrollments:
+        student_name = f"{student.name} {student.lastname or ''}".strip()
+        email_service.send_email_async(
+            background_tasks=background_tasks,
+            to_email=student.email,
+            subject=f"Bienvenido al curso: {course.name}",
+            template_name="email/course_enrollment.html",
+            context={
+                "student_name": student_name,
+                "course_name": course.name,
+                "course_description": course.description or "",
+                "school_year": course.school_year,
+                "period_label": course.period_label,
+                "start_date": course.start_date.isoformat(),
+                "end_date": course.end_date.isoformat(),
+                "professors": professors_list,
+                "download_link": course.game.download_link,
+            },
+        )
+
+    logger.info(
+        "Queued %d enrollment emails for course %s",
+        len(new_enrollments),
+        course_id,
+    )
+
+    return result
 
 
 @router.delete("/{course_id}/students/{student_id}", status_code=204)

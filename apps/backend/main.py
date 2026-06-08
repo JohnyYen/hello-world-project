@@ -85,8 +85,11 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.on_event("startup")
 async def on_startup():
+    # Migrations and seeds are executed manually via Makefile targets.
+    # See `make help` for `migrate`, `seed`, `migrate-seed`, etc.
+    # Keeping them commented here to avoid blocking FastAPI startup.
     # run_migrations()
-    await run_all_seeds()
+    # await run_all_seeds()
     pass
 
 

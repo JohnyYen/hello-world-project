@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useNotifications } from "@/hooks/use-notifications";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -12,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Mail, MessageCircle, ChevronLeft, ChevronRight, Users, BookOpen, Search } from "lucide-react";
+import { Mail, ChevronLeft, ChevronRight, Users, BookOpen, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -41,7 +40,6 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const notifications = useNotifications();
 
   // Set default course filter to the most recent course (first in the sorted list)
   const [courseFilter, setCourseFilter] = useState<string>("all");
@@ -289,7 +287,6 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
               <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Nivel</TableHead>
               <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Curso</TableHead>
               <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Correo</TableHead>
-              <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -362,45 +359,12 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                       <span className="text-slate-600 dark:text-slate-400">{student.email}</span>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.location.href = `mailto:${student.email}`;
-                        }}
-                      >
-                        <Mail className="h-3.5 w-3.5 mr-1" />
-                        Correo
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-indigo-300 dark:hover:border-indigo-700"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          notifications.success(
-                            `Redirigiendo para enviar feedback a ${student.name}`,
-                            {
-                              description: "Serás redirigido a la página de feedback del estudiante."
-                            }
-                          );
-                        }}
-                      >
-                        <MessageCircle className="h-3.5 w-3.5 mr-1" />
-                        Feedback
-                      </Button>
-                    </div>
-                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={6}
                   className="text-center py-12 text-slate-500 dark:text-slate-400"
                 >
                   <div className="flex flex-col items-center gap-2">

@@ -162,7 +162,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.levelName} />,
+    cell: ({ row }) => <DragHandle id={row.id} />,
     size: 40,
   },
   {
@@ -272,7 +272,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.levelName,
+    id: row.id,
   })
 
   return (
@@ -323,7 +323,7 @@ export function DataTable({
     useSensor(KeyboardSensor, {})
   )
 
-  const dataIds = data?.map(({ levelName }) => levelName) || []
+  const dataIds = data?.map((item, index) => `${item.levelName}-${index}`) || []
 
   const table = useReactTable({
     data: data || [],
@@ -336,7 +336,7 @@ export function DataTable({
       pagination,
       globalFilter,
     },
-    getRowId: (row) => row.levelName,
+    getRowId: (row, index) => `${row.levelName}-${index}`,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
