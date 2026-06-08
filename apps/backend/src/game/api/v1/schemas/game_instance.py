@@ -13,8 +13,8 @@ from uuid import UUID
 class GameInstanceCreate(BaseModel):
     """Esquema para crear una nueva instancia de juego"""
 
-    game_id: Optional[int] = None
-    student_id: int
+    game_id: Optional[UUID] = None
+    student_id: UUID
     status: Optional[str] = "active"  # active, completed, abandoned
 
 
@@ -41,8 +41,8 @@ class GameInstanceResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: str | UUID
-    game_id: int
-    student_id: int
+    game_id: UUID
+    student_id: UUID
     status: str
     started_at: datetime
     ended_at: Optional[datetime] = None

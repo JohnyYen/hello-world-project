@@ -61,21 +61,45 @@ class GameRepository(BaseRepository[Game]):
         result = await self.db.execute(query)
         return result.scalars().all()
 
-    async def get_by_name(
-        self, name: str, include_deleted: bool = False
+    async def get_by_title(
+        self, title: str, include_deleted: bool = False
     ) -> Optional[Game]:
         """
-        Obtiene un juego por nombre.
+        Obtiene un juego por título.
 
         Args:
-            name: Nombre del juego
+            title: Título del juego
             include_deleted: Si True, incluye juegos marcados como eliminados
 
         Returns:
             Game: Instancia del modelo Game si se encuentra, None en caso contrario
         """
-        filters = {"name": name}
+        filters = {"title": title}
         return await self.get_one_by_filters(filters, include_deleted=include_deleted)
+
+    async def get_by_title_with_levels(
+        self, title: str, include_deleted: bool = False
+    ) -> Optional[Game]:
+        """
+        Obtiene un juego por título con sus niveles cargados (eager loading).
+
+        Args:
+            title: Título del juego
+            include_deleted: Si True, incluye juegos marcados como eliminados
+
+        Returns:
+            Game: Instancia del modelo Game con niveles cargados
+        """
+        query = (
+            select(Game)
+            .options(selectinload(Game.levels))
+            .where(Game.title == title)
+        )
+        if not include_deleted:
+            query = query.where(Game.deleted_at.is_(None))
+
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()
 
     async def get_by_slug(
         self, slug: str, include_deleted: bool = False

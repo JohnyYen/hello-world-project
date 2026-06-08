@@ -1,4 +1,6 @@
 from datetime import datetime
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,7 +18,7 @@ router = APIRouter(prefix="/game-instances")
 
 @router.get("/{game_id}/instances", response_model=GameInstanceListResponse)
 async def list_game_instances(
-    game_id: int,
+    game_id: UUID,
     skip: int = Query(0, ge=0, description="Número de registros a saltar"),
     limit: int = Query(10, ge=1, le=100, description="Número de registros a devolver"),
     status_filter: str = Query(

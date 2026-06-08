@@ -15,13 +15,13 @@ async def get_game_by_name(
     db: AsyncSession = Depends(get_db),
 ):
     """
-    Obtiene un juego por su título.
+    Obtiene un juego por su título (no por nombre interno).
 
-    - **game_title**: Título del juego a buscar
+    - **game_title**: Título del juego a buscar (ej: "Hello World")
     """
     game_repo = GameRepository(db)
 
-    game = await game_repo.get_by_name(game_title)
+    game = await game_repo.get_by_title_with_levels(game_title)
 
     if not game:
         raise HTTPException(
@@ -29,7 +29,7 @@ async def get_game_by_name(
             detail=f"Juego con título '{game_title}' no encontrado",
         )
 
-    # Calcular cantidad de niveles
+    # Calcular cantidad de niveles (niveles ya cargados con eager loading)
     levels_count = len(game.levels) if game.levels else 0
 
     # Crear respuesta detallada

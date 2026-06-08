@@ -1,4 +1,6 @@
 from datetime import datetime, timezone
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,7 +24,7 @@ router = APIRouter(prefix="/game-instances")
     status_code=status.HTTP_201_CREATED,
 )
 async def create_game_instance(
-    game_id: int,
+    game_id: UUID,
     instance_data: GameInstanceCreate,
     db: AsyncSession = Depends(get_db),
 ):

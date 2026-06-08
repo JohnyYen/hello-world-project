@@ -60,7 +60,7 @@ class CreateGameUseCase:
         Raises:
             DuplicateEntryException: Si ya existe un juego con el mismo nombre.
         """
-        existing = await self.repo.get_by_name(request.title)
+        existing = await self.repo.get_by_title(request.title)
         if existing:
             raise DuplicateEntryException(
                 f"Ya existe un juego con el nombre '{request.title}'."

@@ -1,4 +1,6 @@
 from datetime import datetime, timezone
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,7 +19,7 @@ router = APIRouter(prefix="/game-instances")
 
 @router.put("/{instance_id}/end", response_model=GameInstanceEndResponse)
 async def end_instance(
-    instance_id: int,
+    instance_id: UUID,
     end_data: GameInstanceEnd = None,
     db: AsyncSession = Depends(get_db),
 ):

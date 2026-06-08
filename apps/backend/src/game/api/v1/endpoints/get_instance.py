@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,7 +16,7 @@ router = APIRouter(prefix="/game-instances")
 
 @router.get("/{instance_id}", response_model=SingleGameInstanceResponse)
 async def get_instance(
-    instance_id: int,
+    instance_id: UUID,
     db: AsyncSession = Depends(get_db),
 ):
     """
