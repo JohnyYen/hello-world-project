@@ -45,7 +45,11 @@ func _ready() -> void:
 	var allowed_blocks = controller.get_avaible_blocks()
 	controller.send_blocks_to_code_zone(allowed_blocks)
 	
-	var actor_id: String = _GameState.player_data.get("name", "player")
+	var actor_id: String = str(_GameConfig.user.get("id", ""))
+	if actor_id.is_empty():
+		push_error("No authenticated user; cannot start level tracking")
+		LoadingScreen.change_scene("res://scenes/pages/menu.tscn")
+		return
 	print("[CafeteriaGameplay | _ready]: Iniciando tracking de segmento - level_id=%d, actor=%s" % [self.segment_id, actor_id])
 	_GameController.begin_segment(self.segment_id, actor_id)
 	
@@ -210,7 +214,7 @@ func modify_level_by_config(config : LevelOneConfiguration):
 		push_error("CONFIG_IS_NULL")
 		return
 	
-	print("DEBUG [Cafeteria Gameplay]: Modificando nivel con config:", config.title)
+	
 	
 	# 1) LIMPIAR lo anterior
 	_clear_spawned_students()
@@ -237,7 +241,7 @@ func modify_level_by_config(config : LevelOneConfiguration):
 	# 6) Reglas de ejecución: límite de bloques, tiempo, etc.
 	_apply_rules_from_config(config.rules)
 	
-	print("DEBUG [Cafeteria Gameplay]: Nivel configurado.")
+	
 	
 func _set_environment_data(config : LevelOneConfiguration) -> void:
 	var environment_data = config.get_environment()
@@ -254,14 +258,10 @@ func _clear_spawned_students() -> void:
 
 # Queue es un Array de diccionarios: [{"nombre": "...", "pedido": "..."}]
 func _spawn_students_from_queue(queue : Array) -> void:
-	print("DEBUG [Cafeteria Gameplay]: Spawn Student in process... %s " % queue)
-	
 	if queue.is_empty():
-		print("DEBUG [Cafeteria Gameplay]: Student Queue Empty")
 		return
 	
 	for i in range(queue.size()):
-		print("DEBUG [Cafeteria Gameplay]: Spawn Student %s" % i)
 	
 		var data = queue[i]
 		var spawn_pos_node = queue_positions.get_child(i) if i < queue_positions.get_child_count() else null
@@ -291,13 +291,10 @@ func _spawn_students_from_queue(queue : Array) -> void:
 		
 		spawned_students.append(inst)
 		
-	print("DEBUG [Cafeteria Gameplay]: Spawn Student Completed")
-	
 func _apply_ui_from_config(config : LevelOneConfiguration) -> void:
 	# Ejemplo: mostrar texto del reto en un Label/HUD
 	var display_text := config.get_display_text()
 	var hud_label := $MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel if has_node("$MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel") else null
-	print("DEBUG [Cafeteria Gameplay]: UI Config Setup")
 	
 	if hud_label:
 		hud_label.text = display_text
@@ -310,13 +307,9 @@ func _apply_ui_from_config(config : LevelOneConfiguration) -> void:
 		if hint_label:
 			hint_label.text = hints[0]
 			
-	print("DEBUG [Cafeteria Gameplay]: UI Config Setup Completed")
-	
 func _apply_rules_from_config(rules: Dictionary) -> void:
 	if typeof(rules) != TYPE_DICTIONARY:
 		return
-	
-	print("DEBUG [Cafeteria Gameplay]: Setup Rules %s" % rules)
 	# ejemplo: limitar número de bloques
 	var max_blocks = rules.get("max_blocks", 999)
 	# enviar al controller o code_space
@@ -329,5 +322,3 @@ func _apply_rules_from_config(rules: Dictionary) -> void:
 		if has_node("Timer"):
 			$Timer.wait_time = time_limit
 			$Timer.start()
-			
-	print("DEBUG [Cafeteria Gameplay]: Setup Rules Completed")

@@ -51,6 +51,7 @@ func _ready() -> void:
 	_api_client = ApiClient.new()
 	add_child(_api_client)
 	
+	add_child(_connection_detector)
 	add_child(_batch_service)
 	_batch_service.setup(_api_client, _connection_detector)
 
@@ -126,10 +127,30 @@ func track_custom(
 
 ## === Tracking de analytics para segmento ===
 
+## Placeholders rechazados por el guard de actor (REQ-P2-R3, S-P2-R3.1).
+## Coincidencia case-sensitive; cualquier otro string es aceptado.
+const _INVALID_ACTOR_PLACEHOLDERS: Array[String] = [
+	"player",
+	"Leo",
+	"estudiante1"
+]
+
+## Indica si el actor_id es vacío o es uno de los placeholders conocidos.
+## Comparación case-sensitive según REQ-P2-R3.
+func _is_invalid_actor(actor_id: String) -> bool:
+	if actor_id.is_empty():
+		return true
+	return actor_id in _INVALID_ACTOR_PLACEHOLDERS
+
 ## Inicia tracking de un segmento/nivel.
 ## @param segment_id: ID del segmento a trackear
-## @param actor_id: ID del jugador
+## @param actor_id: ID del jugador (debe ser el UUID del usuario autenticado)
 func start_segment_tracking(segment_id: int, actor_id: String) -> void:
+	if _is_invalid_actor(actor_id):
+		push_error(
+			"[XAPIService] start_segment_tracking rechazado: actor_id inválido ('%s'). Se esperaba el UUID del usuario autenticado desde _GameConfig.user.id." % actor_id
+		)
+		return
 	_current_segment_id = segment_id
 	_current_actor_id = actor_id
 	_segment_start_time = Time.get_ticks_msec()

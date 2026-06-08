@@ -43,10 +43,30 @@ func _init():
 func execute_solution(blocks : Array[BaseBlock], context : BaseProblemContext) -> BaseProblemContext:
 	return self.engine.execute(blocks, context)
 
+## Placeholders rechazados por el guard de actor (REQ-P2-R3).
+## Coincide con _XAPIService para que ambos límites fallen consistentemente.
+const _INVALID_ACTOR_PLACEHOLDERS: Array[String] = [
+	"player",
+	"Leo",
+	"estudiante1"
+]
+
+## Indica si el actor_id es vacío o es uno de los placeholders conocidos.
+## Comparación case-sensitive según REQ-P2-R3.
+func _is_invalid_actor(actor_id: String) -> bool:
+	if actor_id.is_empty():
+		return true
+	return actor_id in _INVALID_ACTOR_PLACEHOLDERS
+
 ## Inicia tracking de segmento/nivel.
 ## @param segment_id: ID del segmento a trackear
-## @param actor_id: ID del jugador
+## @param actor_id: ID del jugador (debe ser el UUID del usuario autenticado)
 func begin_segment(segment_id: int, actor_id: String) -> void:
+	if _is_invalid_actor(actor_id):
+		push_error(
+			"[GameController] begin_segment rechazado: actor_id inválido ('%s'). Se esperaba el UUID del usuario autenticado desde _GameConfig.user.id." % actor_id
+		)
+		return
 	# Reset local state when beginning a new segment (singleton lifecycle)
 	_attempts_count = 0
 	print("[GameController] Segmento iniciado - level_id=%d, actor=%s" % [segment_id, actor_id])
