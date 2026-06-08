@@ -31,16 +31,30 @@ class SyncEventService:
         """
         Crea un nuevo evento de sincronización.
 
+        Si `client_event_id` está presente y ya existe un evento con ese ID,
+        devuelve el evento existente sin crear uno nuevo (idempotencia).
+
         Args:
             event_data: Datos del evento a crear
 
         Returns:
-            SyncEvent: El evento creado
+            SyncEvent: El evento creado o existente
 
         Raises:
             NotFoundException: Si la sesión no existe
         """
         await self._validate_session_exists(event_data.sync_session_id)
+
+        if event_data.client_event_id is not None:
+            existing = await self.repository.get_by_client_event_id(
+                event_data.client_event_id
+            )
+            if existing is not None:
+                logger.info(
+                    "Evento con client_event_id=%s ya existe, retornando evento existente",
+                    event_data.client_event_id,
+                )
+                return existing
 
         event_dict = event_data.model_dump()
         event_dict["timestamp"] = datetime.now(timezone.utc)

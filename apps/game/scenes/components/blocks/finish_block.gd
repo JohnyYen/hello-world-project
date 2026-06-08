@@ -5,6 +5,7 @@ extends CodeBlockComponent
 func _ready():
 	super() # llama al _ready() del bloque base
 	self.block = EndBlock.new()
+	self.block.name = "Finalizar"
 	block_type = BlockTypesEnum.BlockTypesEnum.END
 	block_name = "Finalizar"
 	description = "Bloque que marca el inicio de la ejecución"

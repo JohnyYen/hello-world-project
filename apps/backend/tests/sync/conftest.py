@@ -116,6 +116,7 @@ def mock_sync_event(sample_event_data):
     event.payload = sample_event_data["payload"]
     event.timestamp = datetime.now(timezone.utc)
     event.status = "pending"
+    event.client_event_id = None
     event.is_deleted = False
     event.deleted_at = None
     return event

@@ -28,6 +28,7 @@ var controller : LevelOneController
 
 # Mantener referencia a estudiantes instanciados para poder limpiarlos
 var spawned_students: Array = []
+var _attempt_count: int = 0
 
 func _ready() -> void:
 	self.controller = _GameController.create_level_controller(LevelEnum.Level.Level_One) as LevelOneController
@@ -44,6 +45,14 @@ func _ready() -> void:
 	var allowed_blocks = controller.get_avaible_blocks()
 	controller.send_blocks_to_code_zone(allowed_blocks)
 	
+	var actor_id: String = str(_GameConfig.user.get("id", ""))
+	if actor_id.is_empty():
+		push_error("No authenticated user; cannot start level tracking")
+		LoadingScreen.change_scene("res://scenes/pages/menu.tscn")
+		return
+	print("[CafeteriaGameplay | _ready]: Iniciando tracking de segmento - level_id=%d, actor=%s" % [self.segment_id, actor_id])
+	_GameController.begin_segment(self.segment_id, actor_id)
+	
 	controller.modifier.segment_id = self.segment_id
 	controller.modifier.original_config = controller.level_configuration.json_data
 	
@@ -58,8 +67,7 @@ func _ready() -> void:
 	
 	hud.reset_level.connect(Callable(self, "_on_reset_level"))
 	hud.back_pressed.connect(Callable(self, "_on_back_level"))
-	#controller.finish_level({})
-	
+
 	_GameController.feedback_controller.hud_node = hud
 	
 func _on_back_level():
@@ -73,6 +81,10 @@ func _on_back_level():
 	#get_tree().change_scene_to_file(back_scene)
 
 func _on_reset_level():
+	print("[CafeteriaGameplay | _on_reset_level]: Reiniciando nivel - intentos acumulados=%d" % _attempt_count)
+	_GameController.add_tracking_event("level_reset", {"attempt_count": _attempt_count})
+	_GameController.reset_level_tracking()
+	_attempt_count = 0
 	self.hud.hide_hud()
 	self.code_space.hide_code_space()
 	
@@ -80,13 +92,35 @@ func _on_reset_level():
 	#get_tree().call_deferred("change_scene_to_file", scene_path)
 	
 func _on_execute_solution(blocks : Array[BaseBlock]):
-	print("DEBUG [Cafeteria Gameplay]: Execute solution with: ", blocks)
+	print("[CafeteriaGameplay | _on_execute_solution]: Ejecutando solución con %d bloques (intento #%d)" % [blocks.size(), _attempt_count + 1])
+	
+	_attempt_count += 1
+	_GameController.begin_attempt()
+	
+	var block_names: Array[String] = []
+	for block in blocks:
+		block_names.append(block.name)
+		print("[CafeteriaGameplay | _on_execute_solution]:   Bloque: %s" % block.name)
+	
+	_GameController.add_tracking_event("solution_evaluated", {"blocks_count": blocks.size(), "attempt": _attempt_count})
+	
+	var start_time := Time.get_ticks_msec()
 	var final_context : CafeteriaProblemContext = _GameController.execute_solution(blocks, self.controller.context)
+	var elapsed := (Time.get_ticks_msec() - start_time) / 1000.0
+	
 	if final_context:
 		if final_context.is_solution_correct():
+			print("[CafeteriaGameplay | _on_execute_solution]: SOLUCIÓN CORRECTA - completando nivel con éxito")
+			_GameController.add_tracking_event("level_completed", {"success": true, "time": elapsed, "attempt": _attempt_count})
+			_GameController.complete_level({
+				"blocks": block_names,
+				"time": elapsed,
+				"success": true,
+				"attempt_number": _attempt_count
+			})
+			
 			FeedbackBalloon.show_feedback("Ganaste")
 			
-			controller.finish_level({})
 			await get_tree().create_timer(1).timeout
 			if _GameState.flags.get("has_complete_one_level", false):
 				DialogueManager.show_dialogue_balloon( load("res://dialogue/C01/C01_E05_Primera_Vez_Cafeteria.dialogue"), "start")
@@ -97,20 +131,32 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 			self.hud.hide_hud()
 			self.code_space.hide_code_space()
 			LoadingScreen.change_scene(scene_path)
-			#get_tree().change_scene_to_file(back_scene)
 		else:
+			print("[CafeteriaGameplay | _on_execute_solution]: SOLUCIÓN INCORRECTA - enviando analytics al agente adaptativo para reintento")
+			# Failure path: send analytics to adaptive agent via complete_level
+			# The agent receives the attempt data and adapts the level config for retry
+			_GameController.complete_level({
+				"blocks": block_names,
+				"time": elapsed,
+				"success": false,
+				"attempt_number": _attempt_count
+			})
 			FeedbackBalloon.show_feedback("Perdiste el Juego")
-			#_GameController.feedback_controller.show_feedback({
-				#"message": 'Perdiste el juego'
-			#})
 	else:
+		print("[CafeteriaGameplay | _on_execute_solution]: CONTEXTO INVÁLIDO (null) - enviando analytics al agente adaptativo")
+		# Failure path: send analytics to adaptive agent via complete_level
+		_GameController.complete_level({
+			"blocks": block_names,
+			"time": elapsed,
+			"success": false,
+			"attempt_number": _attempt_count
+		})
 		FeedbackBalloon.show_feedback("Solucion no valida")
-		#_GameController.feedback_controller.show_feedback({
-				#"message": 'Solucion no valida'
-			#})
 	
 
 func show_instructions(text: String) -> void:
+	print("[CafeteriaGameplay | show_instructions]: Mostrando instrucciones (text_length=%d)" % text.length())
+	_GameController.add_tracking_event("instruction_shown", {"text_length": text.length()})
 	var tween = instruction_panel.create_tween()
 	# Bloquear interacciones
 	#code_space.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -139,6 +185,8 @@ func show_instructions(text: String) -> void:
 	).set_delay(2.0)  # 2 segundos de lectura antes de desbloquear
 
 func _on_instruction_displayed() -> void:
+	print("[CafeteriaGameplay | _on_instruction_displayed]: Instrucciones mostradas al jugador")
+	_GameController.add_tracking_event("instruction_displayed", {})
 	var tween = instruction_panel.create_tween()
 	# Fade out opcional
 	tween.tween_property(
@@ -151,6 +199,8 @@ func _on_instruction_displayed() -> void:
 	).set_delay(0.5)  # esperar a que termine el fade out
 
 func _on_instruction_hidden() -> void:
+	print("[CafeteriaGameplay | _on_instruction_hidden]: Instrucciones ocultas, interacciones desbloqueadas")
+	_GameController.add_tracking_event("instruction_dismissed", {})
 	instruction_panel.visible = false
 
 	# Desbloquear interacciones
@@ -164,7 +214,7 @@ func modify_level_by_config(config : LevelOneConfiguration):
 		push_error("CONFIG_IS_NULL")
 		return
 	
-	print("DEBUG [Cafeteria Gameplay]: Modificando nivel con config:", config.title)
+	
 	
 	# 1) LIMPIAR lo anterior
 	_clear_spawned_students()
@@ -191,7 +241,7 @@ func modify_level_by_config(config : LevelOneConfiguration):
 	# 6) Reglas de ejecución: límite de bloques, tiempo, etc.
 	_apply_rules_from_config(config.rules)
 	
-	print("DEBUG [Cafeteria Gameplay]: Nivel configurado.")
+	
 	
 func _set_environment_data(config : LevelOneConfiguration) -> void:
 	var environment_data = config.get_environment()
@@ -208,14 +258,10 @@ func _clear_spawned_students() -> void:
 
 # Queue es un Array de diccionarios: [{"nombre": "...", "pedido": "..."}]
 func _spawn_students_from_queue(queue : Array) -> void:
-	print("DEBUG [Cafeteria Gameplay]: Spawn Student in process... %s " % queue)
-	
 	if queue.is_empty():
-		print("DEBUG [Cafeteria Gameplay]: Student Queue Empty")
 		return
 	
 	for i in range(queue.size()):
-		print("DEBUG [Cafeteria Gameplay]: Spawn Student %s" % i)
 	
 		var data = queue[i]
 		var spawn_pos_node = queue_positions.get_child(i) if i < queue_positions.get_child_count() else null
@@ -245,13 +291,10 @@ func _spawn_students_from_queue(queue : Array) -> void:
 		
 		spawned_students.append(inst)
 		
-	print("DEBUG [Cafeteria Gameplay]: Spawn Student Completed")
-	
 func _apply_ui_from_config(config : LevelOneConfiguration) -> void:
 	# Ejemplo: mostrar texto del reto en un Label/HUD
 	var display_text := config.get_display_text()
 	var hud_label := $MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel if has_node("$MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel") else null
-	print("DEBUG [Cafeteria Gameplay]: UI Config Setup")
 	
 	if hud_label:
 		hud_label.text = display_text
@@ -264,13 +307,9 @@ func _apply_ui_from_config(config : LevelOneConfiguration) -> void:
 		if hint_label:
 			hint_label.text = hints[0]
 			
-	print("DEBUG [Cafeteria Gameplay]: UI Config Setup Completed")
-	
 func _apply_rules_from_config(rules: Dictionary) -> void:
 	if typeof(rules) != TYPE_DICTIONARY:
 		return
-	
-	print("DEBUG [Cafeteria Gameplay]: Setup Rules %s" % rules)
 	# ejemplo: limitar número de bloques
 	var max_blocks = rules.get("max_blocks", 999)
 	# enviar al controller o code_space
@@ -283,5 +322,3 @@ func _apply_rules_from_config(rules: Dictionary) -> void:
 		if has_node("Timer"):
 			$Timer.wait_time = time_limit
 			$Timer.start()
-			
-	print("DEBUG [Cafeteria Gameplay]: Setup Rules Completed")

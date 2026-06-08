@@ -3,7 +3,7 @@ class_name XAPIConfig
 extends Node
 
 const BATCH_SIZE: int = 50
-const MAX_RETRIES: int = 5
+const MAX_RETRIES: int = 10
 const POLL_INTERVAL_SECONDS: float = 30.0
 const BASE_RETRY_DELAY_SECONDS: float = 1.0
 const MAX_RETRY_DELAY_SECONDS: float = 16.0

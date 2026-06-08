@@ -16,6 +16,7 @@ func _ready():
 	#action_slot.size = rect.size
 	
 	self.block = ExecutionBlock.new(action_selected)
+	self.block.name = "Ejecutar"
 	self.block_type = BlockTypesEnum.BlockTypesEnum.ACTION
 	self.block_name = "Ejecutar"
 	self.description = "Bloque que marca el inicio de la ejecución"

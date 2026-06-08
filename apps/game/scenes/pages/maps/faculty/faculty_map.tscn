@@ -1,0 +1,103 @@
+[gd_scene load_steps=5 format=3 uid="uid://by7hnfck7sf5r"]
+
+[ext_resource type="Script" uid="uid://ci0ulms6ctt18" path="res://scenes/pages/maps/faculty/faculty__map.gd" id="1_c4uxn"]
+[ext_resource type="Texture2D" uid="uid://eg011ornrg81" path="res://assets/anime/backgrounds/map/faculty/faculty_entrance_map.png" id="2_rky3y"]
+[ext_resource type="Script" uid="uid://cng1iatevsf6q" path="res://scenes/pages/maps/faculty/hotspot_pulse.gd" id="3_8hf4w"]
+[ext_resource type="Script" uid="uid://cd67dommqviv2" path="res://scenes/pages/maps/faculty/hotspot_scene_change.gd" id="4_ldl66"]
+
+[node name="FacultyMap" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c4uxn")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_rky3y")
+expand_mode = 2
+
+[node name="Door" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -238.0
+offset_top = -327.0
+offset_right = -130.0
+offset_bottom = -73.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="HotspotPulse" type="Node" parent="Door"]
+script = ExtResource("3_8hf4w")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Door"]
+script = ExtResource("4_ldl66")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://du77u3pc87sah"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Door2" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 75.0
+offset_top = 34.0
+offset_right = 183.0
+offset_bottom = 288.0
+grow_vertical = 2
+
+[node name="HotspotPulse" type="Node" parent="Door2"]
+script = ExtResource("3_8hf4w")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Door2"]
+script = ExtResource("4_ldl66")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://d4ch8kxa0nv3d"
+metadata/_custom_type_script = "uid://cd67dommqviv2"
+
+[node name="Exit" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -123.0
+offset_right = 101.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HotspotPulse" type="Node" parent="Exit"]
+script = ExtResource("3_8hf4w")
+hotspot_node_path = NodePath("..")
+min_alpha = 0.2
+max_alpha = 0.7
+metadata/_custom_type_script = "uid://cng1iatevsf6q"
+
+[node name="HotspotSceneChange" type="Node" parent="Exit"]
+script = ExtResource("4_ldl66")
+hotspot_node_path = NodePath("..")
+scene_to_load = "uid://dmtgohahqsgav"
+metadata/_custom_type_script = "uid://cd67dommqviv2"

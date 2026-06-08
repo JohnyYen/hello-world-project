@@ -88,8 +88,8 @@ func _on_continue_pressed() -> void:
 				#"path": "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue", "next_scene": "res://scenes/pages/menu.tscn"
 			#}
 		]
-		
 		_GameState.start_dialogue("res://dialogue/C00/C00_E01_Entrada_Facultad.dialogue")
+		#self.queue_free()
 		#_GameState.start_dialogue("res://dialogue/C00/C00_E02_Bienvenida_Orqui.dialogue")
 		#_GameState.start_dialogue("res://dialogue/C00/C00_E03_Teatro_Facultad.dialogue")
 		#_GameState.start_dialogue("res://dialogue/C00/C00_E01_Entrada_Facultad.dialogue")

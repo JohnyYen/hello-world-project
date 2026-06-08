@@ -234,3 +234,68 @@ class TestSyncEventServiceGetEventsBySession:
 
         call_kwargs = mock_repo.get_by_filters.call_args[1]
         assert "event_type" not in call_kwargs["filters"]
+
+
+class TestSyncEventServiceIdempotency:
+    """Test suite for idempotent create via client_event_id (REQ-P5-R3)."""
+
+    @pytest.mark.asyncio
+    async def test_create_idempotent_nine_calls_returns_one_event(
+        self, mock_sync_event, sample_event_data
+    ):
+        """Calling create() 9 times with the same client_event_id yields 1 row.
+
+        REQ-P5-R3: If client_event_id is present and already exists,
+        the service MUST return the existing event without creating a new one.
+        """
+        import uuid
+
+        client_event_id = uuid.uuid4()
+
+        mock_db = MagicMock()
+        mock_db.refresh = AsyncMock()
+        mock_repo = MagicMock()
+
+        # First call: get_by_client_event_id returns None (not yet created)
+        # Subsequent calls: returns the existing event
+        existing_event = MagicMock(spec=SyncEvent)
+        existing_event.id = uuid.uuid4()
+        existing_event.client_event_id = client_event_id
+        existing_event.event_type = sample_event_data["event_type"]
+        existing_event.payload = sample_event_data["payload"]
+        existing_event.sync_session_id = sample_event_data["sync_session_id"]
+        existing_event.timestamp = datetime.now(timezone.utc)
+        existing_event.status = "pending"
+        existing_event.is_deleted = False
+        existing_event.deleted_at = None
+
+        mock_repo.get_by_client_event_id = AsyncMock(
+            side_effect=[None] + [existing_event] * 8
+        )
+        mock_repo.create = AsyncMock(return_value=existing_event)
+
+        mock_session_repo = MagicMock()
+        mock_session_repo.exists = AsyncMock(return_value=True)
+
+        service = SyncEventService(mock_db)
+        service.repository = mock_repo
+        service.session_repository = mock_session_repo
+
+        event_data = SyncEventCreate(
+            **{**sample_event_data, "client_event_id": client_event_id}
+        )
+
+        results = []
+        for _ in range(9):
+            result = await service.create(event_data=event_data)
+            results.append(result)
+
+        # All 9 calls return the same event
+        for r in results:
+            assert r is existing_event
+
+        # get_by_client_event_id was called 9 times (once per call)
+        assert mock_repo.get_by_client_event_id.call_count == 9
+
+        # create was called ONLY once (first call; subsequent ones short-circuit)
+        mock_repo.create.assert_called_once()

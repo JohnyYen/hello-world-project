@@ -11,6 +11,7 @@ class SyncEvent(Base):
     payload = Column(JSON, nullable=True)
     timestamp = Column(DateTime, nullable=False)
     status = Column(String(255), nullable=True)
+    client_event_id = Column(UUID(as_uuid=True), unique=True, nullable=True)
 
     sync_session_id = Column(
         UUID(as_uuid=True), ForeignKey("sync_sessions.id"), nullable=False
