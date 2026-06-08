@@ -88,7 +88,7 @@ static func _apply_recovery(db: SQLite) -> Dictionary:
 
 	# 3) Bump schema_version a '2'
 	var q_bump := "INSERT OR REPLACE INTO %s (key, value) VALUES (?, ?)" % META_TABLE
-	if not db.query_with_values(q_bump, [SCHEMA_VERSION_KEY, TARGET_VERSION]):
+	if not db.query_with_bindings(q_bump, [SCHEMA_VERSION_KEY, TARGET_VERSION]):
 		db.query("ROLLBACK")
 		push_error("Migration002: fallo bump schema_version")
 		return {"applied": false, "recovered_sending": recovered_sending, "requeued_failed": requeued_failed}

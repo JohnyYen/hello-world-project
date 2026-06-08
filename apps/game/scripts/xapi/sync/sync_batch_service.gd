@@ -44,13 +44,13 @@ func setup(api_client: ApiClient, connection_detector: ConnectionDetector) -> vo
 	_connection_detector = connection_detector
 
 	# Migraciones locales (idempotente, corre una vez por versión de schema).
-	var migration_result := _batch_repository.run_migrations()
+	var migration_result = _batch_repository.run_migrations()
 	print("DEBUG [SyncBatchService | setup]: Migraciones ejecutadas - applied=%s" % str(migration_result.get("applied", false)))
 
 	# Re-encolar batches 'failed' con retry_count >= threshold (one-shot deliberado).
 	# Solo corre acá, NO en sync_all(): llamarlo en cada sync enmascararía fallos persistentes
 	# reseteando retry_count antes de que llegue al threshold.
-	var requeued := _batch_repository.requeue_failed(5)
+	var requeued = _batch_repository.requeue_failed(5)
 	if requeued > 0:
 		print("DEBUG [SyncBatchService | setup]: Re-encolados %d batches previously failed" % requeued)
 
@@ -158,7 +158,7 @@ func sync_all() -> void:
 	# Guard defensivo: recupera batches 'sending' stale (proceso crasheado después de setup()).
 	# NO llama requeue_failed() — eso es one-shot en setup() y resetearía retry_count=0
 	# enmascarando fallos persistentes en cada sync.
-	var recovered := _batch_repository.recover_sending(5)
+	var recovered = _batch_repository.recover_sending(5)
 	if recovered > 0:
 		print("DEBUG [SyncBatchService | sync_all]: Recuperados %d sending batches stale" % recovered)
 
@@ -376,11 +376,11 @@ func _handle_batch_failure(batch_id: String, error: Dictionary) -> void:
 	var error_message: String = str(error.get("error_message", str(error)))
 
 	if retry_count >= _config.MAX_RETRIES:
-		_batch_repository.update_status(batch_id, PendingBatchRepository.STATUS_FAILED, error)
+		_batch_repository.update_status(batch_id, PendingBatchRepository.STATUS_FAILED, error_message)
 		sync_failed.emit("Batch %s falló después de %d reintentos: %s" % [batch_id, retry_count, error_message])
 		print("DEBUG [SyncBatchService | _handle_batch_failure]: Batch %s FALLÓ DEFINITIVAMENTE tras %d reintentos" % [batch_id, retry_count])
 	else:
-		_batch_repository.update_status(batch_id, PendingBatchRepository.STATUS_PENDING, error)
+		_batch_repository.update_status(batch_id, PendingBatchRepository.STATUS_PENDING, error_message)
 		print("DEBUG [SyncBatchService | _handle_batch_failure]: Batch %s falló, reintento %d/%d programado" % [batch_id, retry_count, _config.MAX_RETRIES])
 		_schedule_retry(batch_id, retry_count)
 

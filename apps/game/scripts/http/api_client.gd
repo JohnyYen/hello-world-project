@@ -12,7 +12,7 @@ var jwt_token: String = ""
 
 # URL base para las peticiones API
 # IMPORTANTE: Usar el nombre del autoload (Env), NO instanciar
-var base_url: String = "http://localhost:8010"
+var base_url: String = ""
 
 # Datos del usuario autenticado
 var current_user: Dictionary = {}
@@ -27,7 +27,10 @@ func _ready() -> void:
 	add_child(http_request)
 	# En Godot 4, usamos await http_request.request_completed
 	# NO necesitamos conectar la señal manualmente
-	
+
+	# Configurar URL base desde Env (autoload)
+	base_url = Env.API_BASE_URL
+
 	# Cargar token desde el store global si existe
 	if Env.jwt_token != "":
 		jwt_token = Env.jwt_token
@@ -294,6 +297,7 @@ func get_game_by_name(game_title: String) -> Dictionary:
 		return {"OK": true, "game_id": game_id, "data": result.data}
 	else:
 		print("DEBUG [ApiClient]:get_game_by_name() - FALLO")
+		print(result)
 		return {"OK": false, "error": result.get("error", "Error"), "status": result.get("status", 0)}
 
 ## Crea una instancia de juego para el estudiante actual
@@ -320,6 +324,7 @@ func create_game_instance(game_id: String, student_id: String = "") -> Dictionar
 		return {"OK": true, "instance_id": instance_id, "data": result.data}
 	else:
 		print("DEBUG [ApiClient]:create_game_instance() - FALLO")
+		print(result)
 		return {"OK": false, "error": result.get("error", "Error"), "status": result.get("status", 0)}
 
 ## Cierra la sesión eliminando el token

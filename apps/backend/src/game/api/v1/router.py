@@ -29,6 +29,7 @@ from src.game.api.v1.endpoints.create_level_segment import (
 )
 from src.game.api.v1.endpoints.update_segment import router as update_segment_router
 from src.game.api.v1.endpoints.delete_segment import router as delete_segment_router
+from src.game.api.v1.endpoints.get_game_by_name import router as get_game_by_name_router
 
 
 router = APIRouter(prefix="", tags=["Games"], dependencies=[Depends(HTTPBearer())])
@@ -52,3 +53,4 @@ router.include_router(get_level_segments_router)
 router.include_router(create_level_segment_router)
 router.include_router(update_segment_router)
 router.include_router(delete_segment_router)
+router.include_router(get_game_by_name_router)

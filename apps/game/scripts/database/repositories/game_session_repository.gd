@@ -19,6 +19,30 @@ func _init() -> void:
 	_db.path = Env.DATABASE_URL
 	if !_db.open_db():
 		push_error("No se pudo abrir la base de datos.")
+	else:
+		_ensure_table_exists()
+
+
+## Verifica que la tabla game_session exista y la crea si no.
+## Cubre el caso de bases de datos creadas antes de que se agregara
+## on_create_game_session_table() en connect.gd.
+func _ensure_table_exists() -> void:
+	var rows := _db.select_rows("sqlite_master", "type = 'table' AND name = '%s'" % TABLE_NAME, ["name"])
+	if rows.is_empty():
+		var create_sql := """
+			CREATE TABLE IF NOT EXISTS game_session (
+				id INTEGER PRIMARY KEY NOT NULL,
+				game_id TEXT NOT NULL,
+				instance_id TEXT NOT NULL,
+				student_id TEXT,
+				created_at TEXT NOT NULL,
+				updated_at TEXT NOT NULL
+			)
+		"""
+		if _db.query(create_sql):
+			print("DEBUG [GameSessionRepository]: Tabla 'game_session' creada (migración automática)")
+		else:
+			push_error("GameSessionRepository: No se pudo crear la tabla 'game_session'")
 
 # Obtener todas las sesiones (singleton: 0 o 1 resultado)
 func get_all_sessions() -> Array:
