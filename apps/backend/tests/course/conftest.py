@@ -7,7 +7,7 @@ from src.course.domain.course import Course
 from src.course.domain.course_enrollment import CourseEnrollment
 from src.course.domain.course_professor import CourseProfessor
 from src.course.infrastructure.course_repository import CourseRepository
-from src.shared.domain.exceptions import NotFoundException, DuplicateEntryException
+from src.shared.domain.exceptions import NotFoundException
 
 
 @pytest.fixture

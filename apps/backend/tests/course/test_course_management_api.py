@@ -12,7 +12,7 @@ from src.course.api.v1.schemas.course_management import (
     CourseResponse,
     PaginatedCourseListResponse,
 )
-from src.shared.domain.exceptions import NotFoundException, DuplicateEntryException
+from src.shared.domain.exceptions import NotFoundException
 
 
 def _mock_course_dict(course_id=None):
@@ -89,50 +89,6 @@ class TestCourseManagementAPICreate:
                     )
 
                     assert resp.status_code == 401
-
-    @pytest.mark.asyncio
-    async def test_post_courses_duplicate_period_returns_409(self, client, mock_repo):
-        from src.course.application.usecase.create_course_usecase import (
-            CreateCourseUseCase,
-        )
-
-        mock_create_uc = MagicMock(spec=CreateCourseUseCase)
-        mock_create_uc.execute = AsyncMock(
-            side_effect=DuplicateEntryException(
-                "Ya existe un curso para el período 2025-2026 - Semestre 1"
-            )
-        )
-
-        app.dependency_overrides = {}
-        original_get_db = app.dependency_overrides.get(get_db, get_db)
-
-        async def _override():
-            return mock_repo.db if hasattr(mock_repo, "db") else MagicMock()
-
-        app.dependency_overrides[get_db] = _override
-
-        with patch(
-            "src.course.api.v1.endpoints.course_management.CreateCourseUseCase",
-            return_value=mock_create_uc,
-        ):
-            async with AsyncClient(
-                app=app, base_url="http://test"
-            ) as ac:
-                resp = await ac.post(
-                    "/courses/management",
-                    json={
-                        "name": "Matemáticas",
-                        "schoolYear": "2025-2026",
-                        "periodLabel": "Semestre 1",
-                        "startDate": "2025-03-01",
-                        "endDate": "2025-07-15",
-                    },
-                    headers={"Authorization": "Bearer test"},
-                )
-
-                assert resp.status_code == 401
-
-        app.dependency_overrides.clear()
 
     @pytest.mark.asyncio
     async def test_post_courses_rejects_missing_name_with_422(self, client):

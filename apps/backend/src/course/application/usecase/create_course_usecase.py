@@ -14,7 +14,6 @@ from src.course.api.v1.schemas.course_management import (
     AssignedGameResponse,
 )
 from src.shared.domain.exceptions import NotFoundException
-from src.shared.domain.exceptions import DuplicateEntryException
 from src.course.domain.game_assignment_exceptions import GameNotFoundException
 from src.game.infrastructure.game_repository import GameRepository
 from src.users.domain.student import Student
@@ -44,15 +43,6 @@ class CreateCourseUseCase:
           "A transaction is already begun on this Session"
         """
         try:
-            existing = await self.course_repo.get_one_by_filters({
-                "school_year": request.school_year,
-                "period_label": request.period_label,
-            })
-            if existing:
-                raise DuplicateEntryException(
-                    f"Ya existe un curso para el período {request.school_year} - {request.period_label}"
-                )
-
             course_data = request.model_dump(
                 exclude={"student_ids", "professor_ids"},
                 by_alias=False,

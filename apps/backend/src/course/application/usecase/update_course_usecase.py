@@ -10,7 +10,7 @@ from src.course.api.v1.schemas.course_management import (
     StudentEnrollmentResponse,
     ProfessorAssignmentResponse,
 )
-from src.shared.domain.exceptions import NotFoundException, DuplicateEntryException
+from src.shared.domain.exceptions import NotFoundException
 
 
 class UpdateCourseUseCase:
@@ -42,23 +42,6 @@ class UpdateCourseUseCase:
             )
 
             if update_data:
-                if "school_year" in update_data or "period_label" in update_data:
-                    filters = {}
-                    if "school_year" in update_data:
-                        filters["school_year"] = update_data["school_year"]
-                    else:
-                        filters["school_year"] = course.school_year
-                    if "period_label" in update_data:
-                        filters["period_label"] = update_data["period_label"]
-                    else:
-                        filters["period_label"] = course.period_label
-
-                    existing = await self.course_repo.get_one_by_filters(filters)
-                    if existing and existing.id != course_id:
-                        raise DuplicateEntryException(
-                            f"Ya existe otro curso para el período {filters['school_year']} - {filters['period_label']}"
-                        )
-
                 for field, value in update_data.items():
                     setattr(course, field, value)
 
