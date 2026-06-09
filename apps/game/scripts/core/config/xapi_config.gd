@@ -7,6 +7,7 @@ const MAX_RETRIES: int = 10
 const POLL_INTERVAL_SECONDS: float = 30.0
 const BASE_RETRY_DELAY_SECONDS: float = 1.0
 const MAX_RETRY_DELAY_SECONDS: float = 16.0
+const PERIODIC_SYNC_INTERVAL_SECONDS: float = 60.0
 
 var base_url: String = ""
 var health_endpoint: String = "/health"

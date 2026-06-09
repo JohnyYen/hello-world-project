@@ -22,6 +22,9 @@ var _session_repository: GameSessionRepository  # Cache local de game_id e insta
 var _is_syncing: bool = false
 var _is_processing_batch: bool = false  # Lock interno para process_batch
 var _retry_timer: Timer
+var _periodic_timer: Timer
+var _debounce_timer: Timer
+var _debounce_guard: bool = false
 var _pending_retry_batches: Array = []
 
 func _init() -> void:
@@ -35,6 +38,19 @@ func _ready() -> void:
 	_retry_timer = Timer.new()
 	add_child(_retry_timer)
 	_retry_timer.timeout.connect(_on_retry_timeout)
+
+	# Timer periódico para sync de respaldo (60s)
+	_periodic_timer = Timer.new()
+	add_child(_periodic_timer)
+	_periodic_timer.wait_time = _config.PERIODIC_SYNC_INTERVAL_SECONDS
+	_periodic_timer.one_shot = false
+	_periodic_timer.timeout.connect(_on_periodic_timeout)
+
+	# Timer para debounce de señal pending_count_updated
+	_debounce_timer = Timer.new()
+	add_child(_debounce_timer)
+	_debounce_timer.one_shot = true
+	_debounce_timer.timeout.connect(_on_debounce_timeout)
 
 	print("DEBUG [SyncBatchService | _ready]: Inicializado - batch_size=%d, max_retries=%d" % [_config.BATCH_SIZE, _config.MAX_RETRIES])
 
@@ -57,6 +73,19 @@ func setup(api_client: ApiClient, connection_detector: ConnectionDetector) -> vo
 	# Conectar señales del detector de conexión
 	_connection_detector.connection_restored.connect(_on_connection_restored)
 	_connection_detector.connection_lost.connect(_on_connection_lost)
+
+	# Si ya estamos online, disparar sync inmediatamente.
+	# El signal connection_restored pudo haberse emitido ANTES de conectar,
+	# por lo que _on_connection_restored() no se habría ejecutado.
+	if _connection_detector.is_online():
+		print("DEBUG [SyncBatchService | setup]: Ya online, disparando sync_all()")
+		sync_all()
+
+	# Conectar señal de auto-batch ante nuevos statements
+	pending_count_updated.connect(_on_pending_statements_changed)
+
+	# Iniciar timer periódico de sync como fallback
+	_periodic_timer.start()
 
 	print("DEBUG [SyncBatchService | setup]: Dependencias conectadas - ApiClient y ConnectionDetector listos")
 
@@ -418,6 +447,33 @@ func _on_connection_restored() -> void:
 
 func _on_connection_lost() -> void:
 	print("DEBUG [SyncBatchService | _on_connection_lost]: ⚠️ Señal recibida - conexión perdida, sync en pausa")
+
+## Handler para pending_count_updated: crea batch y dispara sync si hay conexión.
+## Usa debounce de 300ms para evitar duplicados por emisiones rápidas consecutivas.
+func _on_pending_statements_changed(count: int) -> void:
+	if _debounce_guard:
+		return
+	_debounce_guard = true
+	_debounce_timer.start(0.3)  # 300ms debounce
+
+	# Crear batch con los statements pendientes (ya están en SQLite)
+	var batch_id := create_batch()
+	if batch_id.is_empty():
+		_debounce_guard = false
+		return
+
+	# Si hay conexión y no estamos ya sincronizando, disparar sync
+	if _connection_detector.is_online() and not _is_syncing:
+		sync_all()
+
+## Timer periódico: sync de respaldo cada 60s (solo si hay conexión).
+func _on_periodic_timeout() -> void:
+	if _connection_detector.is_online():
+		sync_all()
+
+## Libera el guard de debounce después de 300ms.
+func _on_debounce_timeout() -> void:
+	_debounce_guard = false
 
 ## Obtiene estadísticas de sync
 func get_stats() -> Dictionary:
