@@ -16,6 +16,9 @@ from src.statistic.infrastructure.xapi_statement_repository import (
 from src.sync.infrastructure.mapper.sync_event_to_xapi_mapper import (
     SyncEventToXAPIMapper,
 )
+from src.sync.infrastructure.mapper.sync_event_to_xapi_statement_mapper import (
+    SyncEventToXAPIStatementMapper,
+)
 from src.sync.application.handler.progress_updater import ProgressUpdater
 
 
@@ -43,9 +46,14 @@ async def register_sync_event(
 
         # Process events through xAPI pipeline (complex events only)
         if classification == SyncEventType.COMPLEX:
-            mapper = SyncEventToXAPIMapper(db)
             xapi_repository = XAPIStatementRepository(db)
             xapi_service = XAPIStatementService(xapi_repository)
+
+            # Use the appropriate mapper based on event type
+            if event.event_type == SyncEventType.XAPI_STATEMENT:
+                mapper = SyncEventToXAPIStatementMapper(db)
+            else:
+                mapper = SyncEventToXAPIMapper(db)
 
             xapi_statement = await mapper.map(event)
             await xapi_service.save_statement(xapi_statement)
