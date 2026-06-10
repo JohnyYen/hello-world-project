@@ -10,19 +10,19 @@ class SyncEventType(str, Enum):
     - Complex: Eventos que requieren procesamiento adicional, transformación o validación
     """
 
-    # Simple events - direct processing
+    # Simple events - direct processing (only progress update)
     LEVEL_TIME = "level_time"
     ATTEMPT = "attempt"
     SCORE = "score"
     LEVEL_COMPLETED = "level_completed"
     DIFFICULTY_CHANGED = "difficulty_changed"
     ADAPTATION = "adaptation"
-    XAPI_STATEMENT = "xapi_statement"
 
-    # Complex events - require additional processing
+    # Complex events - require additional processing (xAPI + progress)
     ERROR = "error"
     INTERACTION = "interaction"
     HINT_USED = "hint_used"
+    XAPI_STATEMENT = "xapi_statement"
 
     # Classification constants
     SIMPLE = "simple"
@@ -30,7 +30,7 @@ class SyncEventType(str, Enum):
 
     @classmethod
     def is_simple(cls, event_type: str) -> bool:
-        """Verifica si un tipo de evento es simple."""
+        """Verifica si un tipo de evento es simple (solo actualiza progreso)."""
         simple_types = {
             cls.LEVEL_TIME,
             cls.ATTEMPT,
@@ -38,14 +38,18 @@ class SyncEventType(str, Enum):
             cls.LEVEL_COMPLETED,
             cls.DIFFICULTY_CHANGED,
             cls.ADAPTATION,
-            cls.XAPI_STATEMENT,
         }
         return event_type in simple_types
 
     @classmethod
     def is_complex(cls, event_type: str) -> bool:
-        """Verifica si un tipo de evento es complejo."""
-        complex_types = {cls.ERROR, cls.INTERACTION, cls.HINT_USED}
+        """Verifica si un tipo de evento es complejo (genera xAPI + progreso)."""
+        complex_types = {
+            cls.ERROR,
+            cls.INTERACTION,
+            cls.HINT_USED,
+            cls.XAPI_STATEMENT,
+        }
         return event_type in complex_types
 
     @classmethod
