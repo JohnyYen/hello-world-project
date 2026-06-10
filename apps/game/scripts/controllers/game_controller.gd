@@ -71,6 +71,8 @@ func begin_segment(segment_id: int, actor_id: String) -> void:
 	_attempts_count = 0
 	print("[GameController] Segmento iniciado - level_id=%d, actor=%s" % [segment_id, actor_id])
 	_XAPIService.start_segment_tracking(segment_id, actor_id)
+	# Crear statement xAPI 'attempted' para tracking de sincronización
+	_XAPIService.track_level_started(str(segment_id), "Level %d" % segment_id, actor_id)
 	_current_level_id = segment_id
 	_current_actor_id = actor_id
 

@@ -278,7 +278,7 @@ cash_register = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportCont
 student_scenes = [ExtResource("9_c28ar"), ExtResource("10_f0h7g"), ExtResource("14_402hk"), ExtResource("15_1ngbw")]
 
 [node name="SubViewport" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer" index="0"]
-size = Vector2i(2, 2)
+size = Vector2i(688, 648)
 
 [node name="World" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport" index="0" node_paths=PackedStringArray("player_node", "drink_machine", "bread_storage", "hud")]
 z_as_relative = false
@@ -293,8 +293,8 @@ hud = NodePath("../../../../../Hud")
 
 [node name="Floor" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Background" index="0"]
 texture_filter = 1
-position = Vector2(337, 502)
-scale = Vector2(0.671875, 0.281)
+position = Vector2(340.5, 502)
+scale = Vector2(0.678711, 0.281)
 texture = ExtResource("3_3busp")
 
 [node name="Walls" type="Sprite2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Background" index="1"]
@@ -471,6 +471,7 @@ offset_right = 186.0
 offset_bottom = 67.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"ModalPanel"
 
 [node name="CenterContainer" type="CenterContainer" parent="MarginContainer/Hud/PanelContainer" index="0"]
 layout_mode = 2
@@ -480,5 +481,6 @@ custom_minimum_size = Vector2(300, 150)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_type_variation = &"DialogTextLabel"
 horizontal_alignment = 1
 vertical_alignment = 1

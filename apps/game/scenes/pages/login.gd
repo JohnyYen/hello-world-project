@@ -1,9 +1,9 @@
 class_name LoginPage
 extends Control
 
-@onready var username_input := $Panel/VBoxContainer/NameContainer/Username
-@onready var password_input := $Panel/VBoxContainer/PassContainer/Password
-@onready var email_input := $Panel/VBoxContainer/EmailContainer/Email
+@export var username_input : TextEdit
+@export var password_input : TextEdit
+@export var email_input : TextEdit
 
 @onready var api_client: ApiClient
 
@@ -16,8 +16,12 @@ func _on_enter_pressed() -> void:
 	var username = self.username_input.get("text")
 	var password = self.password_input.get("text")
 	var email = email_input.get("text")
-		
-	var result = await self.api_client.login(username, email, password)
+	
+	var result
+	if username:
+		result = await self.api_client.login(username, password)
+	elif password:
+		result = await self.api_client.login("", email, password)
 	
 	
 	if result.OK:

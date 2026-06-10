@@ -29,6 +29,7 @@ offset_left = 172.0
 offset_top = 46.0
 offset_right = 354.0
 offset_bottom = 525.0
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Library"]
 script = ExtResource("2_um364")
@@ -56,6 +57,7 @@ offset_right = -118.0
 offset_bottom = 157.0
 grow_horizontal = 0
 grow_vertical = 2
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Garden"]
 script = ExtResource("2_um364")

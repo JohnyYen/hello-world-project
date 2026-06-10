@@ -81,10 +81,10 @@ func save_session(game_id: String, instance_id: String, student_id: String = "")
 	# 2) Si existe, UPDATE; si no, INSERT
 	if existing.is_empty():
 		var insert_query: String = "INSERT INTO %s (id, game_id, instance_id, student_id, created_at, updated_at) VALUES (1, ?, ?, ?, ?, ?)" % TABLE_NAME
-		_db.query_with_values(insert_query, [game_id, instance_id, student_id, now, now])
+		_db.query_with_bindings(insert_query, [game_id, instance_id, student_id, now, now])
 	else:
 		var update_query: String = "UPDATE %s SET game_id = ?, instance_id = ?, student_id = ?, updated_at = ? WHERE id = 1" % TABLE_NAME
-		_db.query_with_values(update_query, [game_id, instance_id, student_id, now])
+		_db.query_with_bindings(update_query, [game_id, instance_id, student_id, now])
 
 # Eliminar la sesión cacheada
 func clear_session() -> void:

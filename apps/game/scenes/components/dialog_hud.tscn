@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://cg6vey24yp3t4"]
+
+[ext_resource type="Script" uid="uid://kuj7pi0n36sm" path="res://scenes/components/dialog_hud.gd" id="1_8eda8"]
+[ext_resource type="Theme" uid="uid://bqowiegrcovax" path="res://theme/hello_world_theme.tres" id="1_cpojj"]
+
+[node name="HudGame" type="CanvasLayer" node_paths=PackedStringArray("chapter_label")]
+script = ExtResource("1_8eda8")
+chapter_label = NodePath("Control/Label")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 1
+offset_right = 103.0
+offset_bottom = 23.0
+theme = ExtResource("1_cpojj")
+theme_type_variation = &"ChapterLabel"
+text = "ChapterLevel"
+
+[node name="MenuButton" type="Button" parent="Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -81.0
+offset_top = 12.0
+offset_right = -25.0
+offset_bottom = 59.0
+grow_horizontal = 0
+theme = ExtResource("1_cpojj")
+theme_type_variation = &"DialogMenuButton"
+text = "☰"

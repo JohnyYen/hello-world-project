@@ -6,6 +6,7 @@ const COMPLETED: String = "completed"
 const ANSWERED: String = "answered"
 const INITIALIZED: String = "initialized"
 const TERMINATED: String = "terminated"
+const INTERACTED: String = "interacted"
 const PASSED: String = "passed"
 const FAILED: String = "failed"
 
@@ -43,6 +44,13 @@ const VERBS := {
 		"display": {
 			"en-US": "terminated",
 			"es-ES": "terminó"
+		}
+	},
+	INTERACTED: {
+		"id": "http://adlnet.gov/expapi/verbs/interacted",
+		"display": {
+			"en-US": "interacted",
+			"es-ES": "interactuó"
 		}
 	},
 	PASSED: {

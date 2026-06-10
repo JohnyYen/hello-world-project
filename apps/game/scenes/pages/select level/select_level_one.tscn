@@ -1,15 +1,43 @@
-[gd_scene load_steps=4 format=3 uid="uid://ce0a2mmdts12p"]
+[gd_scene load_steps=6 format=3 uid="uid://ce0a2mmdts12p"]
 
 [ext_resource type="PackedScene" uid="uid://dhxdg3jmuprqq" path="res://scenes/pages/select level/select_level_template.tscn" id="1_upx5k"]
 [ext_resource type="Texture2D" uid="uid://cttrtr2406fx5" path="res://assets/anime/backgrounds/chapter_2/bg_select_level.png" id="2_mhmft"]
+[ext_resource type="Shader" uid="uid://bgg3fnk5b317c" path="res://scenes/pages/select level/blur_effect.gdshader" id="3_1iuov"]
 [ext_resource type="Texture2D" uid="uid://b2pm0dewldbxa" path="res://assets/anime/ui/btn_cafeteria.png" id="3_t17kn"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l7efj"]
+shader = ExtResource("3_1iuov")
+shader_parameter/blur_amount = 2.0
+shader_parameter/mix_amount = 0.3
+shader_parameter/tint_color = Color(0.06, 0.06, 0.1, 1)
+
 [node name="SelectLevelOne" instance=ExtResource("1_upx5k")]
+theme = null
 previous_scene = "uid://f1phaldnojoi"
 gameplay_scene = "uid://6gr1ei4kgnc8"
 
 [node name="Background" parent="." index="0"]
 texture = ExtResource("2_mhmft")
+
+[node name="ColorRect" type="ColorRect" parent="." index="1"]
+material = SubResource("ShaderMaterial_l7efj")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -261.0
+offset_top = -163.0
+offset_right = 240.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0588235, 0.0588235, 0.101961, 0.192157)
+
+[node name="BlurEffect" parent="." index="3"]
+visible = false
+theme_type_variation = &"ScreenPanel"
 
 [node name="Level1" parent="LevelContainer" index="0"]
 level_number = 0

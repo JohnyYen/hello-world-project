@@ -21,10 +21,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -35,6 +35,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.5
 mouse_filter = 1
+theme_type_variation = &"GameplayBorder"
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer/HBoxContainer/GameArea"]
 layout_mode = 2
@@ -43,7 +44,7 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer"]
 disable_3d = true
 handle_input_locally = false
-size = Vector2i(679, 632)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="ColorRect" type="ColorRect" parent="MarginContainer/HBoxContainer/GameArea"]
@@ -56,6 +57,7 @@ custom_minimum_size = Vector2(280, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
+theme_type_variation = &"CodePanel"
 
 [node name="CodeSpace" parent="MarginContainer/HBoxContainer/CodeArea" instance=ExtResource("1_uotcd")]
 layout_direction = 4
