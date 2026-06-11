@@ -25,20 +25,26 @@ class TestOverviewEndpoint:
 
         with patch(
             "src.statistic.application.usecase.get_overview_stats_usecase.ProgressRepository"
-        ) as MockRepo:
-            mock_repo = MagicMock()
-            mock_repo.count_students = AsyncMock(return_value=100)
-            mock_repo.get_active_students = AsyncMock(return_value=50)
-            mock_repo.aggregate_kpis = AsyncMock(
+        ) as MockProgressRepo, patch(
+            "src.statistic.application.usecase.get_overview_stats_usecase.StudentRepository"
+        ) as MockStudentRepo:
+            mock_progress_repo = MagicMock()
+            mock_progress_repo.count_students = AsyncMock(return_value=100)
+            mock_progress_repo.get_active_students = AsyncMock(return_value=50)
+            mock_progress_repo.aggregate_kpis = AsyncMock(
                 return_value={
                     "total_levels_completed": 500,
                     "total_play_time_minutes": 10000,
                     "average_score": 85.5,
                 }
             )
-            mock_repo.aggregate_activity_by_date = AsyncMock(return_value=[])
-            mock_repo.aggregate_level_performance = AsyncMock(return_value=[])
-            MockRepo.return_value = mock_repo
+            mock_progress_repo.aggregate_activity_by_date = AsyncMock(return_value=[])
+            mock_progress_repo.aggregate_level_performance = AsyncMock(return_value=[])
+            MockProgressRepo.return_value = mock_progress_repo
+
+            mock_student_repo = MagicMock()
+            mock_student_repo.count_students = AsyncMock(return_value=150)
+            MockStudentRepo.return_value = mock_student_repo
 
             transport = ASGITransport(app=app)
             async with AsyncClient(
@@ -55,20 +61,26 @@ class TestOverviewEndpoint:
 
         with patch(
             "src.statistic.application.usecase.get_overview_stats_usecase.ProgressRepository"
-        ) as MockRepo:
-            mock_repo = MagicMock()
-            mock_repo.count_students = AsyncMock(return_value=100)
-            mock_repo.get_active_students = AsyncMock(return_value=50)
-            mock_repo.aggregate_kpis = AsyncMock(
+        ) as MockProgressRepo, patch(
+            "src.statistic.application.usecase.get_overview_stats_usecase.StudentRepository"
+        ) as MockStudentRepo:
+            mock_progress_repo = MagicMock()
+            mock_progress_repo.count_students = AsyncMock(return_value=100)
+            mock_progress_repo.get_active_students = AsyncMock(return_value=50)
+            mock_progress_repo.aggregate_kpis = AsyncMock(
                 return_value={
                     "total_levels_completed": 500,
                     "total_play_time_minutes": 10000,
                     "average_score": 85.5,
                 }
             )
-            mock_repo.aggregate_activity_by_date = AsyncMock(return_value=[])
-            mock_repo.aggregate_level_performance = AsyncMock(return_value=[])
-            MockRepo.return_value = mock_repo
+            mock_progress_repo.aggregate_activity_by_date = AsyncMock(return_value=[])
+            mock_progress_repo.aggregate_level_performance = AsyncMock(return_value=[])
+            MockProgressRepo.return_value = mock_progress_repo
+
+            mock_student_repo = MagicMock()
+            mock_student_repo.count_students = AsyncMock(return_value=150)
+            MockStudentRepo.return_value = mock_student_repo
 
             transport = ASGITransport(app=app)
             async with AsyncClient(
@@ -113,18 +125,20 @@ class TestOverviewEndpointResponseStructure:
 
         with patch(
             "src.statistic.application.usecase.get_overview_stats_usecase.ProgressRepository"
-        ) as MockRepo:
-            mock_repo = MagicMock()
-            mock_repo.count_students = AsyncMock(return_value=100)
-            mock_repo.get_active_students = AsyncMock(return_value=50)
-            mock_repo.aggregate_kpis = AsyncMock(
+        ) as MockProgressRepo, patch(
+            "src.statistic.application.usecase.get_overview_stats_usecase.StudentRepository"
+        ) as MockStudentRepo:
+            mock_progress_repo = MagicMock()
+            mock_progress_repo.count_students = AsyncMock(return_value=100)
+            mock_progress_repo.get_active_students = AsyncMock(return_value=50)
+            mock_progress_repo.aggregate_kpis = AsyncMock(
                 return_value={
                     "total_levels_completed": 500,
                     "total_play_time_minutes": 10000,
                     "average_score": 85.5,
                 }
             )
-            mock_repo.aggregate_activity_by_date = AsyncMock(
+            mock_progress_repo.aggregate_activity_by_date = AsyncMock(
                 return_value=[
                     {
                         "date": datetime_date(2026, 4, 1),
@@ -134,7 +148,7 @@ class TestOverviewEndpointResponseStructure:
                     }
                 ]
             )
-            mock_repo.aggregate_level_performance = AsyncMock(
+            mock_progress_repo.aggregate_level_performance = AsyncMock(
                 return_value=[
                     {
                         "level_name": "Nivel 1",
@@ -144,7 +158,11 @@ class TestOverviewEndpointResponseStructure:
                     }
                 ]
             )
-            MockRepo.return_value = mock_repo
+            MockProgressRepo.return_value = mock_progress_repo
+
+            mock_student_repo = MagicMock()
+            mock_student_repo.count_students = AsyncMock(return_value=150)
+            MockStudentRepo.return_value = mock_student_repo
 
             transport = ASGITransport(app=app)
             async with AsyncClient(
@@ -172,20 +190,26 @@ class TestOverviewEndpointResponseStructure:
 
         with patch(
             "src.statistic.application.usecase.get_overview_stats_usecase.ProgressRepository"
-        ) as MockRepo:
-            mock_repo = MagicMock()
-            mock_repo.count_students = AsyncMock(return_value=150)
-            mock_repo.get_active_students = AsyncMock(return_value=75)
-            mock_repo.aggregate_kpis = AsyncMock(
+        ) as MockProgressRepo, patch(
+            "src.statistic.application.usecase.get_overview_stats_usecase.StudentRepository"
+        ) as MockStudentRepo:
+            mock_progress_repo = MagicMock()
+            mock_progress_repo.count_students = AsyncMock(return_value=150)
+            mock_progress_repo.get_active_students = AsyncMock(return_value=75)
+            mock_progress_repo.aggregate_kpis = AsyncMock(
                 return_value={
                     "total_levels_completed": 750,
                     "total_play_time_minutes": 15000,
                     "average_score": 90.0,
                 }
             )
-            mock_repo.aggregate_activity_by_date = AsyncMock(return_value=[])
-            mock_repo.aggregate_level_performance = AsyncMock(return_value=[])
-            MockRepo.return_value = mock_repo
+            mock_progress_repo.aggregate_activity_by_date = AsyncMock(return_value=[])
+            mock_progress_repo.aggregate_level_performance = AsyncMock(return_value=[])
+            MockProgressRepo.return_value = mock_progress_repo
+
+            mock_student_repo = MagicMock()
+            mock_student_repo.count_students = AsyncMock(return_value=150)
+            MockStudentRepo.return_value = mock_student_repo
 
             transport = ASGITransport(app=app)
             async with AsyncClient(

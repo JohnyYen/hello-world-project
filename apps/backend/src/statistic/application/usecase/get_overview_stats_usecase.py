@@ -2,6 +2,7 @@ from datetime import date as datetime_date, timedelta
 from typing import Optional, List, Dict, Any
 
 from src.statistic.infrastructure.progress_repository import ProgressRepository
+from src.users.infrastructure.student_repository import StudentRepository
 from src.statistic.api.v1.schemas.overview import (
     OverviewResponse,
     OverviewKPIs,
@@ -17,14 +18,15 @@ class GetOverviewStatsUseCase:
     Caso de uso para obtener estadísticas globales del sistema.
 
     Responsabilidades:
-    - Calcular KPIs globales desde ProgressRepository
+    - Calcular KPIs globales desde ProgressRepository y StudentRepository
     - Calcular evolución temporal de actividad
     - Calcular rendimiento por nivel
     - Calcular tendencias vs período anterior
     """
 
-    def __init__(self, progress_repo: ProgressRepository):
+    def __init__(self, progress_repo: ProgressRepository, student_repo: StudentRepository):
         self.progress_repo = progress_repo
+        self.student_repo = student_repo
 
     async def execute(
         self,
@@ -105,13 +107,13 @@ class GetOverviewStatsUseCase:
         self, start_date: Optional[datetime_date], end_date: Optional[datetime_date]
     ) -> OverviewKPIs:
         """Calcula los KPIs globales."""
-        # Total de estudiantes
-        total_students = await self.progress_repo.count_students()
+        # Total de estudiantes (contar desde la tabla de estudiantes, no desde progresos)
+        total_students = await self.student_repo.count_students()
 
-        # Estudiantes activos esta semana
+        # Estudiantes activos esta semana (contar desde progresos en los últimos 7 días)
         active_this_week = await self.progress_repo.get_active_students(7)
 
-        # Estudiantes activos este mes
+        # Estudiantes activos este mes (contar desde progresos en los últimos 30 días)
         active_this_month = await self.progress_repo.get_active_students(30)
 
         # KPIs agregados

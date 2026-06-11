@@ -1,13 +1,57 @@
-from typing import Any, Sequence
+from __future__ import annotations
+
+from typing import Any, Sequence, Optional
 from sqladmin import Admin, ModelView
 from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import sessionmaker
 
 from src.shared.infrastructure.session import engine
 from src.admin.auth import admin_auth_backend, verify_admin_role, load_user_with_session
+
+
+async def load_user_with_token(token: Optional[str]) -> Optional[tuple[User, AsyncSession]]:
+    """
+    Loads user and DB session from JWT token directly.
+    No dependency on request.session (avoids SessionMiddleware ordering issues).
+    """
+    if not token:
+        return None
+
+    try:
+        from src.users.domain.user import User
+        from src.users.domain.role import Role
+        from src.shared.infrastructure.config import settings
+        from jwt import decode, InvalidTokenError
+
+        payload = decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        username = payload.get("sub")
+        if not username:
+            return None
+
+        session_factory = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        session = session_factory()
+        try:
+            stmt = select(User).where(User.username == username)
+            result = await session.execute(stmt)
+            user = result.scalar_one_or_none()
+
+            if not user or not user.is_active:
+                await session.close()
+                return None
+
+            return (user, session)
+        except Exception:
+            await session.close()
+            return None
+
+    except InvalidTokenError:
+        return None
+    except Exception:
+        return None
 
 
 class AdminAuthMiddleware(BaseHTTPMiddleware):
@@ -18,11 +62,24 @@ class AdminAuthMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         if request.url.path.startswith("/admin"):
-            result = await load_user_with_session(request)
+            # Extraer token - primero de session (si existe), luego de headers
+            # Chequeamos el scope directamente para no fallar si SessionMiddleware no está arriba
+            session_data = request.scope.get("session", {})
+            token = (
+                session_data.get("token")
+                if session_data
+                else None
+            )
+            if not token:
+                auth_header = request.headers.get("authorization", "")
+                if auth_header.startswith("Bearer "):
+                    token = auth_header[7:]
+
+            result = await load_user_with_token(token)
             if result:
-                user, session = result
+                user, db_session = result
                 request.state.admin_user = user
-                request.state.admin_session = session
+                request.state.admin_session = db_session
             else:
                 request.state.admin_user = None
                 request.state.admin_session = None
@@ -56,26 +113,20 @@ class BaseAdminModelView(ModelView):
     Solo permite acceso a usuarios con rol 'admin'.
     """
 
-    async def _check_admin_role(self, request: Request) -> bool:
-        """Verifica si el usuario actual tiene rol de admin."""
-        session = request.state.admin_session
-        if not session:
-            return False
-        
-        user = request.state.admin_user
-        if not user:
-            return False
-
-        return await verify_admin_role(user, session)
-
     async def list(self, request: Request) -> Any:
         """Override list para verificar rol admin."""
-        if not await self._check_admin_role(request):
-            from fastapi.responses import JSONResponse
-            return JSONResponse(
-                status_code=403,
-                content={"detail": "Acceso denegado. Se requiere rol de admin."}
-            )
+        # Si no hay usuario en el state, dejar que SQLAdmin maneje la autenticación
+        user = getattr(request.state, 'admin_user', None)
+        session = getattr(request.state, 'admin_session', None)
+
+        if user and session:
+            if not await verify_admin_role(user, session):
+                from fastapi.responses import JSONResponse
+                return JSONResponse(
+                    status_code=403,
+                    content={"detail": "Acceso denegado. Se requiere rol de admin."}
+                )
+
         return await super().list(request)
 
     async def detail(self, request: Request, pk: Any) -> Any:
@@ -424,6 +475,7 @@ def setup_admin(app: Any) -> Admin:
         engine=engine,
         title="Admin - Hello World",
         base_url="/admin",
+        authentication_backend=admin_auth_backend,
     )
 
     # Los modelos están definidos en cada clase vía `model=Modelo`

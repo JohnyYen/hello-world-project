@@ -9,6 +9,7 @@ from src.users.domain.user import User
 from src.users.infrastructure.user_repository import UserRepository
 from src.users.infrastructure.student_repository import StudentRepository
 from src.game.infrastructure.game_instance_repository import GameInstanceRepository
+from src.statistic.infrastructure.progress_repository import ProgressRepository
 from src.users.api.v1.schemas.student import StudentResponse
 
 
@@ -74,7 +75,7 @@ class GetStudentDetailUseCase:
                 detail="El usuario no es un estudiante",
             )
 
-        # Calcular last_activity desde game_instances
+        # Calcular last_activity desde game_instances y progress
         last_activity = None
         try:
             game_instance_repo = GameInstanceRepository(self.db)
@@ -86,6 +87,21 @@ class GetStudentDetailUseCase:
                 )
         except Exception:
             # Si falla, continuamos sin last_activity
+            pass
+
+        # También considerar Progress.updated_at (xAPI pipeline actualiza Progress,
+        # no game_instances)
+        try:
+            progress_repo = ProgressRepository(self.db)
+            progress_records = await progress_repo.get_by_student_id(student.id)
+            if progress_records:
+                progress_activity = max(
+                    (p.updated_at for p in progress_records if p.updated_at),
+                    default=None
+                )
+                if progress_activity and (not last_activity or progress_activity > last_activity):
+                    last_activity = progress_activity
+        except Exception:
             pass
 
         # Construir respuesta

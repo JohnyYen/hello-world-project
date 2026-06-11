@@ -16,6 +16,15 @@ class StudentRepository(BaseRepository[Student]):
     def __init__(self, db: AsyncSession):
         super().__init__(db, Student)
 
+    async def count_students(self, include_deleted: bool = False) -> int:
+        """
+        Cuenta el número total de estudiantes únicos en el sistema.
+
+        Returns:
+            int: Número total de estudiantes
+        """
+        return await self.count(filters=None, include_deleted=include_deleted)
+
     async def get_by_user_id(
         self, user_id: UUID, include_deleted: bool = False
     ) -> Optional[Student]:

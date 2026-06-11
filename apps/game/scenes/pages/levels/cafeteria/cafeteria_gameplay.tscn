@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://6gr1ei4kgnc8"]
+[gd_scene load_steps=53 format=3 uid="uid://6gr1ei4kgnc8"]
 
 [ext_resource type="PackedScene" uid="uid://bm5lwl4uv5x07" path="res://scenes/pages/levels/template_level.tscn" id="1_lxa08"]
 [ext_resource type="Script" uid="uid://g33a1ssjrn0p" path="res://scenes/pages/levels/cafeteria/cafeteria_gameplay.gd" id="2_krp0b"]
@@ -15,7 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://dn51spf7wjded" path="res://scenes/characters/level_one/student_2.tscn" id="10_f0h7g"]
 [ext_resource type="PackedScene" uid="uid://bkdoo1tod213m" path="res://scenes/characters/level_one/student_3.tscn" id="14_402hk"]
 [ext_resource type="PackedScene" uid="uid://cy2yutf7syrox" path="res://scenes/characters/level_one/student_4.tscn" id="15_1ngbw"]
-[ext_resource type="Texture2D" uid="uid://dn2w571sq4h4p" path="res://assets/anime/sprites/level_1/pan_station.png" id="16_bj6j8"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_402hk"]
 radius = 20.0
@@ -277,9 +276,6 @@ bread_station = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportCont
 cash_register = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/CashRegister")
 student_scenes = [ExtResource("9_c28ar"), ExtResource("10_f0h7g"), ExtResource("14_402hk"), ExtResource("15_1ngbw")]
 
-[node name="SubViewport" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer" index="0"]
-size = Vector2i(2, 2)
-
 [node name="World" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport" index="0" node_paths=PackedStringArray("player_node", "drink_machine", "bread_storage", "hud")]
 z_as_relative = false
 y_sort_enabled = true
@@ -384,7 +380,6 @@ position = Vector2(-153, 194)
 z_index = 2
 position = Vector2(-16, -21)
 scale = Vector2(0.169118, 0.179714)
-texture = ExtResource("16_bj6j8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/BreadStation" index="1"]
 z_index = 2

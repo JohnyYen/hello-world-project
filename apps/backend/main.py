@@ -1,11 +1,12 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from src.api.router import router
 from src.shared.infrastructure.config import settings
 from src.shared.seed.run_seed import run_all_seeds
 from src.shared.domain.exceptions import AppException
-from src.admin.admin import setup_admin
+from src.admin.admin import setup_admin, AdminAuthMiddleware
 from alembic import command
 from alembic.config import Config as AlembicConfig
 import os
@@ -42,7 +43,7 @@ app = FastAPI(
     },
 )
 
-# CORS middleware
+# CORS middleware - agregado último, se ejecuta primero
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -50,6 +51,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Session middleware - agregado segundo, se ejecuta después del AdminAuthMiddleware
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
+
+# Admin authentication middleware - TEMPORARILY DISABLED for debugging
+# app.add_middleware(AdminAuthMiddleware)
 
 # Setup SQLAdmin - registers all models with authentication
 # SQLAdmin 0.20.0 maneja su propia autenticación via AuthenticationBackend

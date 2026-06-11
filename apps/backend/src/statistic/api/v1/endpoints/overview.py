@@ -6,6 +6,7 @@ from src.statistic.application.usecase.get_overview_stats_usecase import (
     GetOverviewStatsUseCase,
 )
 from src.statistic.infrastructure.progress_repository import ProgressRepository
+from src.users.infrastructure.student_repository import StudentRepository
 from src.statistic.api.v1.schemas.overview import (
     OverviewResponse,
     OverviewQueryParams,
@@ -72,7 +73,8 @@ async def get_overview_stats(
 
     # Ejecutar caso de uso
     progress_repo = ProgressRepository(db)
-    use_case = GetOverviewStatsUseCase(progress_repo)
+    student_repo = StudentRepository(db)
+    use_case = GetOverviewStatsUseCase(progress_repo, student_repo)
 
     result = await use_case.execute(
         start_date=start_date, end_date=end_date, period=period

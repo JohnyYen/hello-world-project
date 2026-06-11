@@ -60,18 +60,26 @@ class MockProgressRepository:
             ]
         )
 
+class MockStudentRepository:
+    """Mock de StudentRepository para testing."""
+
+    def __init__(self):
+        self.count_students = AsyncMock(return_value=150)
+
 
 class TestGetOverviewStatsUseCase:
     @pytest.mark.asyncio
     async def test_execute_with_period(self):
         """Test ejecución con período predefinido."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         result = await use_case.execute(period="7d")
 
         assert isinstance(result.kpis, OverviewKPIs)
-        assert result.kpis.total_students == 100
+        # Now total_students comes from StudentRepository mock (150)
+        assert result.kpis.total_students == 150
         assert result.kpis.active_students_this_week == 50
         assert len(result.activity_over_time) == 2
         assert len(result.level_performance) == 2
@@ -80,27 +88,30 @@ class TestGetOverviewStatsUseCase:
     @pytest.mark.asyncio
     async def test_execute_with_date_range(self):
         """Test ejecución con rango de fechas."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         result = await use_case.execute(
             start_date=datetime_date(2026, 1, 1), end_date=datetime_date(2026, 3, 31)
         )
 
         assert isinstance(result, type(result))
-        mock_repo.aggregate_kpis.assert_called()
+        mock_progress_repo.aggregate_kpis.assert_called()
 
     @pytest.mark.asyncio
     async def test_calculate_kpis(self):
         """Test cálculo de KPIs."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         kpis = await use_case.calculate_kpis(
             start_date=datetime_date(2026, 1, 1), end_date=datetime_date(2026, 3, 31)
         )
 
-        assert kpis.total_students == 100
+        # Now counts students from StudentRepository (not ProgressRepository)
+        assert kpis.total_students == 150
         assert kpis.active_students_this_week == 50
         assert kpis.active_students_this_month == 50
         assert kpis.total_levels_completed == 500
@@ -110,8 +121,9 @@ class TestGetOverviewStatsUseCase:
     @pytest.mark.asyncio
     async def test_calculate_activity_over_time(self):
         """Test cálculo de actividad temporal."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         activity = await use_case.calculate_activity_over_time(
             start_date=datetime_date(2026, 4, 1), end_date=datetime_date(2026, 4, 30)
@@ -125,8 +137,9 @@ class TestGetOverviewStatsUseCase:
     @pytest.mark.asyncio
     async def test_calculate_level_performance(self):
         """Test cálculo de rendimiento por nivel."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         levels = await use_case.calculate_level_performance()
 
@@ -138,10 +151,11 @@ class TestGetOverviewStatsUseCase:
     @pytest.mark.asyncio
     async def test_calculate_trends(self):
         """Test cálculo de tendencias con datos reales."""
-        mock_repo = MockProgressRepository()
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
 
         # Configurar datos diferentes para período actual vs anterior
-        mock_repo.aggregate_kpis = AsyncMock(
+        mock_progress_repo.aggregate_kpis = AsyncMock(
             side_effect=[
                 # Llamada 1: período actual
                 {
@@ -157,11 +171,11 @@ class TestGetOverviewStatsUseCase:
                 },
             ]
         )
-        mock_repo.get_active_students_in_range = AsyncMock(
+        mock_progress_repo.get_active_students_in_range = AsyncMock(
             side_effect=[80, 60]  # 80 current, 60 previous
         )
 
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         trends = await use_case.calculate_trends(
             start_date=datetime_date(2026, 1, 1), end_date=datetime_date(2026, 3, 31)
@@ -179,12 +193,13 @@ class TestGetOverviewStatsUseCase:
         assert trends.score_change_percent == 7.3
 
         # Verificar que se llamó con los rangos correctos
-        assert mock_repo.get_active_students_in_range.call_count == 2
+        assert mock_progress_repo.get_active_students_in_range.call_count == 2
 
     def test_resolve_dates_with_period(self):
         """Test resolución de fechas con período."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         start, end = use_case._resolve_dates(None, None, "7d")
 
@@ -195,8 +210,9 @@ class TestGetOverviewStatsUseCase:
 
     def test_resolve_dates_default(self):
         """Test resolución de fechas por defecto (30 días)."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         start, end = use_case._resolve_dates(None, None, None)
 
@@ -208,8 +224,9 @@ class TestGetOverviewStatsUseCase:
 
     def test_resolve_dates_with_start_only(self):
         """Test resolución con solo start_date."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         start_date = datetime_date(2026, 1, 1)
         start, end = use_case._resolve_dates(start_date, None, None)
@@ -221,8 +238,9 @@ class TestGetOverviewStatsUseCase:
 
     def test_resolve_dates_with_end_only(self):
         """Test resolución con solo end_date."""
-        mock_repo = MockProgressRepository()
-        use_case = GetOverviewStatsUseCase(mock_repo)
+        mock_progress_repo = MockProgressRepository()
+        mock_student_repo = MockStudentRepository()
+        use_case = GetOverviewStatsUseCase(mock_progress_repo, mock_student_repo)
 
         end_date = datetime_date(2026, 3, 31)
         start, end = use_case._resolve_dates(None, end_date, None)
