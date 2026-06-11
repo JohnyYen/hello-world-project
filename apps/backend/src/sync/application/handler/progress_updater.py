@@ -48,9 +48,13 @@ class ProgressUpdater:
         """
         payload = event.payload or {}
 
-        # Fall back to actor_id when student_id is not present
-        # (xapi_statement events from the game send actor_id)
-        student_id = payload.get("student_id") or payload.get("actor_id")
+        # Resolve student_id from the sync session chain (most reliable).
+        # The game sends actor_id=user_id in the payload, but progresses
+        # FK references students.id — the chain resolves the correct one.
+        student_id = await self._resolve_student_id(event)
+        if not student_id:
+            # Fall back to payload values if chain resolution fails
+            student_id = payload.get("student_id") or payload.get("actor_id")
 
         # Resolve segment_level_id from payload or via sync session chain
         segment_level_id = payload.get("segment_level_id")
@@ -168,6 +172,58 @@ class ProgressUpdater:
             pass
 
         return update_data
+
+    async def _resolve_student_id(self, event: SyncEvent) -> Optional[UUID]:
+        """
+        Resolve student_id from the sync session chain.
+
+        The game sends actor_id (user_id) in xapi_statement payloads, but
+        progresses.student_id is a FK to students.id — which is different
+        from users.id. This method traverses:
+            SyncEvent → SyncSession → GameInstance → student_id
+        to get the correct students.id UUID.
+
+        Args:
+            event: The sync event to resolve student_id for
+
+        Returns:
+            UUID of the Student, or None if it cannot be resolved
+        """
+        # 1. Get SyncSession
+        session_result = await self.db.execute(
+            select(SyncSession).where(
+                SyncSession.id == event.sync_session_id,
+                SyncSession.deleted_at.is_(None),
+            )
+        )
+        sync_session = session_result.scalar_one_or_none()
+        if not sync_session:
+            logger.warning(
+                f"SyncSession {event.sync_session_id} not found "
+                f"for event {event.id}"
+            )
+            return None
+
+        # 2. Get GameInstance (which has student_id = students.id)
+        instance_result = await self.db.execute(
+            select(GameInstance).where(
+                GameInstance.id == sync_session.instance_id,
+                GameInstance.deleted_at.is_(None),
+            )
+        )
+        game_instance = instance_result.scalar_one_or_none()
+        if not game_instance:
+            logger.warning(
+                f"GameInstance {sync_session.instance_id} not found "
+                f"for sync session {sync_session.id}"
+            )
+            return None
+
+        logger.info(
+            f"Resolved student_id={game_instance.student_id} from "
+            f"game_instance {game_instance.id}"
+        )
+        return game_instance.student_id
 
     async def _resolve_segment_level_id(self, event: SyncEvent) -> Optional[UUID]:
         """
