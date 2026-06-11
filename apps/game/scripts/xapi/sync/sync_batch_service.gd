@@ -17,11 +17,15 @@ var _connection_detector: ConnectionDetector
 var _api_client: ApiClient
 var _config: XAPIConfig
 var _session_repository: GameSessionRepository  # Cache local de game_id e instance_id
+var _raw_stats_repository: RawStatsRepository  # Offline-first raw stats persistence
 
 ## Estado
 var _is_syncing: bool = false
 var _is_processing_batch: bool = false  # Lock interno para process_batch
 var _retry_timer: Timer
+var _periodic_timer: Timer
+var _debounce_timer: Timer
+var _debounce_guard: bool = false
 var _pending_retry_batches: Array = []
 
 func _init() -> void:
@@ -29,12 +33,26 @@ func _init() -> void:
 	_batch_repository = PendingBatchRepository.new()
 	_config = XAPIConfig.new()
 	_session_repository = GameSessionRepository.new()
+	_raw_stats_repository = RawStatsRepository.new()
 
 func _ready() -> void:
 	# Crear timer para reintentos
 	_retry_timer = Timer.new()
 	add_child(_retry_timer)
 	_retry_timer.timeout.connect(_on_retry_timeout)
+
+	# Timer periódico para sync de respaldo (60s)
+	_periodic_timer = Timer.new()
+	add_child(_periodic_timer)
+	_periodic_timer.wait_time = _config.PERIODIC_SYNC_INTERVAL_SECONDS
+	_periodic_timer.one_shot = false
+	_periodic_timer.timeout.connect(_on_periodic_timeout)
+
+	# Timer para debounce de señal pending_count_updated
+	_debounce_timer = Timer.new()
+	add_child(_debounce_timer)
+	_debounce_timer.one_shot = true
+	_debounce_timer.timeout.connect(_on_debounce_timeout)
 
 	print("DEBUG [SyncBatchService | _ready]: Inicializado - batch_size=%d, max_retries=%d" % [_config.BATCH_SIZE, _config.MAX_RETRIES])
 
@@ -57,6 +75,19 @@ func setup(api_client: ApiClient, connection_detector: ConnectionDetector) -> vo
 	# Conectar señales del detector de conexión
 	_connection_detector.connection_restored.connect(_on_connection_restored)
 	_connection_detector.connection_lost.connect(_on_connection_lost)
+
+	# Si ya estamos online, disparar sync inmediatamente.
+	# El signal connection_restored pudo haberse emitido ANTES de conectar,
+	# por lo que _on_connection_restored() no se habría ejecutado.
+	if _connection_detector.is_online():
+		print("DEBUG [SyncBatchService | setup]: Ya online, disparando sync_all()")
+		sync_all()
+
+	# Conectar señal de auto-batch ante nuevos statements
+	pending_count_updated.connect(_on_pending_statements_changed)
+
+	# Iniciar timer periódico de sync como fallback
+	_periodic_timer.start()
 
 	print("DEBUG [SyncBatchService | setup]: Dependencias conectadas - ApiClient y ConnectionDetector listos")
 
@@ -419,11 +450,105 @@ func _on_connection_restored() -> void:
 func _on_connection_lost() -> void:
 	print("DEBUG [SyncBatchService | _on_connection_lost]: ⚠️ Señal recibida - conexión perdida, sync en pausa")
 
+## Handler para pending_count_updated: crea batch y dispara sync si hay conexión.
+## Usa debounce de 300ms para evitar duplicados por emisiones rápidas consecutivas.
+func _on_pending_statements_changed(count: int) -> void:
+	if _debounce_guard:
+		return
+	_debounce_guard = true
+	_debounce_timer.start(0.3)  # 300ms debounce
+
+	# Crear batch con los statements pendientes (ya están en SQLite)
+	var batch_id := create_batch()
+	if batch_id.is_empty():
+		_debounce_guard = false
+		return
+
+	# Si hay conexión y no estamos ya sincronizando, disparar sync
+	if _connection_detector.is_online() and not _is_syncing:
+		sync_all()
+
+## Timer periódico: sync de respaldo cada 60s (solo si hay conexión).
+func _on_periodic_timeout() -> void:
+	if _connection_detector.is_online():
+		sync_all()
+
+## Libera el guard de debounce después de 300ms.
+func _on_debounce_timeout() -> void:
+	_debounce_guard = false
+
 ## Obtiene estadísticas de sync
 func get_stats() -> Dictionary:
 	return {
 		"pending_batches": _batch_repository.get_stats(),
 		"unbatched_statements": _xapi_repository.count_unbatched(),
 		"is_syncing": _is_syncing,
-		"is_connected": _connection_detector.is_online() if _connection_detector else false
+		"is_connected": _connection_detector.is_online() if _connection_detector else false,
+		"raw_stats": _raw_stats_repository.get_stats()
 	}
+
+## Sincroniza los raw stats pendientes al backend
+## Usa una única sesión de sync para todos los registros
+func sync_raw_stats() -> void:
+	if not _connection_detector.is_online():
+		print("DEBUG [SyncBatchService | sync_raw_stats]: Sin conexión, saltando sync de raw stats")
+		return
+	
+	var pending: Array[Dictionary] = _raw_stats_repository.get_pending_all(50)
+	if pending.is_empty():
+		print("DEBUG [SyncBatchService | sync_raw_stats]: No hay raw stats pendientes")
+		return
+	
+	print("DEBUG [SyncBatchService | sync_raw_stats]: Sincronizando %d raw stats..." % pending.size())
+	
+	# Marcar todos como sending antes de iniciar sync
+	for record in pending:
+		_raw_stats_repository.update_status(record.get("id", ""), "sending")
+	
+	# Usar sesión única para todos los raw stats
+	var game_id: String = await _get_or_fetch_game_id()
+	var instance_id: String = await _get_or_create_instance_id(game_id)
+	var session_result: Dictionary = await _api_client.start_sync_session(instance_id)
+	var session_id: String = session_result.get("session_id", "")
+	
+	if session_id.is_empty():
+		push_error("SyncBatchService: No se pudo iniciar sesión para raw stats")
+		for record in pending:
+			_raw_stats_repository.mark_failed(record.get("id", ""), 5)
+		return
+	
+	# Enviar cada raw stat como evento
+	for record in pending:
+		var stats_id: String = record.get("id", "")
+		
+		# Construir payload con game_id para resolver segment_level_id en el backend
+		var payload: Dictionary = {
+			"segment_id": record.get("segment_id", 0),
+			"actor_id": record.get("actor_id", ""),
+			"game_id": game_id,
+			"attempt_count": record.get("attempt_count", 0),
+			"error_count": record.get("error_count", 0),
+			"hints_used_count": record.get("hints_used_count", 0),
+			"errors_details": JSON.parse_string(record.get("errors_details", "{}")),
+			"efficiency_rating": record.get("efficiency_rating", 0),
+			"objectives_completed": record.get("objectives_completed", 0),
+			"timestamp": record.get("created_at", "")
+		}
+		
+		var event_result: Dictionary = await _api_client.register_sync_event(
+			session_id,
+			"raw_stats",
+			payload,
+			stats_id
+		)
+		
+		if event_result.get("OK", false):
+			_raw_stats_repository.mark_completed(stats_id)
+			print("DEBUG [SyncBatchService | sync_raw_stats]: Raw stats %s sincronizado OK" % stats_id)
+		else:
+			_raw_stats_repository.mark_failed(stats_id, 5)
+			print("DEBUG [SyncBatchService | sync_raw_stats]: Raw stats %s falló: %s" % [stats_id, event_result.get("error", "")])
+	
+	# Cerrar sesión
+	await _api_client.end_sync_session(session_id)
+	print("DEBUG [SyncBatchService | sync_raw_stats]: Sync completado - %d registros procesados" % pending.size())

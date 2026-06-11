@@ -151,19 +151,23 @@ script = ExtResource("3_aur8p")
 [node name="Play" type="Button" parent="Panel_Button/Main_Buttons"]
 layout_mode = 2
 theme = SubResource("Theme_0g4mo")
+theme_type_variation = &"ScreenButton"
 text = "Play"
 
 [node name="Option" type="Button" parent="Panel_Button/Main_Buttons"]
 layout_mode = 2
+theme_type_variation = &"ScreenButton"
 text = "Option
 "
 
 [node name="Gallery" type="Button" parent="Panel_Button/Main_Buttons"]
 layout_mode = 2
+theme_type_variation = &"ScreenButton"
 text = "Gallery"
 
 [node name="Quit" type="Button" parent="Panel_Button/Main_Buttons"]
 layout_mode = 2
+theme_type_variation = &"ScreenButton"
 text = "Quit"
 
 [node name="TextureRect" type="TextureRect" parent="Panel_Button"]

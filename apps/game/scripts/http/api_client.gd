@@ -202,6 +202,7 @@ func register_sync_event(session_id: String, event_type: String, payload: Dictio
 		var error_msg = result.get("error", "Error")
 		var status_code = result.get("status", 0)
 		print("DEBUG [ApiClient]:register_sync_event() - FALLO status=%d" % status_code)
+		print(error_msg)
 		return {"OK": false, "error": error_msg, "status": status_code}
 
 ## Finaliza una sesión de sincronización

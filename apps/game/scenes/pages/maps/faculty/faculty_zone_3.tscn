@@ -36,6 +36,7 @@ offset_right = -225.0
 offset_bottom = -25.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Aula_101"]
 script = ExtResource("2_cef41")
@@ -63,6 +64,7 @@ offset_right = 384.0
 offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Aula_102"]
 script = ExtResource("2_cef41")
@@ -91,6 +93,7 @@ offset_bottom = -63.0
 grow_horizontal = 2
 grow_vertical = 2
 rotation = 0.0500542
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Aula_103"]
 script = ExtResource("2_cef41")
@@ -118,6 +121,7 @@ offset_right = 532.0
 offset_bottom = 102.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Aula_104"]
 script = ExtResource("2_cef41")
@@ -142,6 +146,7 @@ offset_top = 3.0
 offset_right = 200.0
 offset_bottom = 250.0
 grow_horizontal = 2
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Back"]
 script = ExtResource("2_cef41")
@@ -165,6 +170,7 @@ offset_left = 10.0
 offset_top = -156.0
 offset_right = 200.0
 grow_vertical = 0
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Back2"]
 script = ExtResource("2_cef41")
@@ -189,6 +195,7 @@ offset_top = -157.0
 offset_bottom = 4.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_type_variation = &"ChangueZone"
 
 [node name="HotspotPulse" type="Node" parent="Back3"]
 script = ExtResource("2_cef41")

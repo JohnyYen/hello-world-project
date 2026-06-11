@@ -17,6 +17,7 @@ class SyncEventType(str, Enum):
     LEVEL_COMPLETED = "level_completed"
     DIFFICULTY_CHANGED = "difficulty_changed"
     ADAPTATION = "adaptation"
+    RAW_STATS = "raw_stats"  # Bulk stats from game segments
 
     # Complex events - require additional processing (xAPI + progress)
     ERROR = "error"
@@ -38,6 +39,7 @@ class SyncEventType(str, Enum):
             cls.LEVEL_COMPLETED,
             cls.DIFFICULTY_CHANGED,
             cls.ADAPTATION,
+            cls.RAW_STATS,
         }
         return event_type in simple_types
 

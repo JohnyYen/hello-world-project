@@ -1,12 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://dgefg11r6npfo"]
+[gd_scene load_steps=5 format=3 uid="uid://dgefg11r6npfo"]
 
 [ext_resource type="PackedScene" uid="uid://bbycuw5jt88uj" path="res://scenes/components/blocks/code_block.tscn" id="1_488ik"]
 [ext_resource type="Script" uid="uid://d3jba1dyofn2g" path="res://scenes/components/blocks/execution_block.gd" id="2_03e8h"]
+[ext_resource type="Theme" uid="uid://qj1lo16wl22a" path="res://theme/motion_popup_theme.tres" id="3_v2wv4"]
 
-[node name="ExecutionBlock" node_paths=PackedStringArray("action_slot") instance=ExtResource("1_488ik")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v2wv4"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="ExecutionBlock" node_paths=PackedStringArray("action_slot", "block_body", "value_label", "popup", "delete_button") instance=ExtResource("1_488ik")]
+offset_right = 163.0
+offset_bottom = 50.0
 script = ExtResource("2_03e8h")
 color = Color(0.9, 0.8, 0.3, 1)
-action_slot = NodePath("ActionBlock/VBoxContainer/PanelContainer/VBoxContainer/OptionButton")
+action_slot = NodePath("ActionSlot")
+popup_theme = ExtResource("3_v2wv4")
+block_body = NodePath("PanelContainer")
+value_label = NodePath("PanelContainer/HBoxContainer/ValueLabel")
+popup = NodePath("PopupMenu")
+delete_button = NodePath("PanelContainer/HBoxContainer/DeleteButton")
 
 [node name="TextureRect" parent="." index="0"]
 anchors_preset = 8
@@ -20,6 +31,7 @@ offset_right = 64.0
 offset_bottom = 64.0
 
 [node name="ActionBlock" type="Control" parent="." index="2"]
+visible = false
 z_index = -1
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 1
@@ -69,15 +81,58 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="TextureButton" parent="." index="3"]
+visible = false
 z_index = 2
 custom_minimum_size = Vector2(30, 30)
-anchors_preset = -1
-anchor_right = 1.248
-anchor_bottom = 0.231
-offset_right = 0.00799561
-offset_bottom = -0.0300007
 pivot_offset = Vector2(-28, 0)
-texture_normal = null
-stretch_mode = 5
+theme = ExtResource("3_v2wv4")
+theme_type_variation = &"ChangueZone"
+theme_override_styles/normal = SubResource("StyleBoxFlat_v2wv4")
+
+[node name="ActionSlot" type="OptionButton" parent="." index="4"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"BlockMotion"
+
+[node name="PanelContainer" type="PanelContainer" parent="." index="5"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 1.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"BlockMotionBody"
+
+[node name="HBoxContainer" type="VBoxContainer" parent="PanelContainer" index="0"]
+layout_mode = 2
+
+[node name="DeleteButton" type="Button" parent="PanelContainer/HBoxContainer" index="0"]
+custom_minimum_size = Vector2(10, 20)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "X"
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer" index="1"]
+layout_mode = 2
+text = "Execution"
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/HBoxContainer" index="2"]
+layout_mode = 2
+
+[node name="ValueLabel" type="Label" parent="PanelContainer/HBoxContainer" index="3"]
+layout_mode = 2
+
+[node name="PopupMenu" type="PopupMenu" parent="." index="6"]
+theme = ExtResource("3_v2wv4")
 
 [connection signal="item_selected" from="ActionBlock/VBoxContainer/PanelContainer/VBoxContainer/OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="gui_input" from="PanelContainer" to="." method="_gui_input"]
+[connection signal="pressed" from="PanelContainer/HBoxContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
+[connection signal="gui_input" from="PanelContainer/HBoxContainer/Label" to="." method="_on_label_gui_input"]

@@ -1,12 +1,44 @@
-[gd_scene load_steps=5 format=3 uid="uid://d3r4kra52iqi7"]
+[gd_scene load_steps=12 format=3 uid="uid://d3r4kra52iqi7"]
 
 [ext_resource type="Texture2D" uid="uid://dqmx5f86bxsm7" path="res://assets/character/main/Emocionado-Photoroom.png" id="1_7dq1d"]
 [ext_resource type="Script" uid="uid://p3iocy727agi" path="res://scenes/pages/custom_character_page.gd" id="1_kun06"]
 [ext_resource type="Texture2D" uid="uid://xe8b2e23wc0a" path="res://assets/anime/backgrounds/scenes/select_character_bg.png" id="2_cctg3"]
 [ext_resource type="Texture2D" uid="uid://r1narxbkj6hi" path="res://assets/anime/characters/main_characters/female_main/excited.png" id="4_cctg3"]
+[ext_resource type="Script" uid="uid://btd2an3ui8tl8" path="res://scripts/effects/HoverTransparencyEffect.gd" id="5_rqt5v"]
+[ext_resource type="Theme" uid="uid://bqowiegrcovax" path="res://theme/hello_world_theme.tres" id="8_a6fae"]
 
-[node name="CustomCharacterPage" type="CanvasLayer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3x2e"]
+bg_color = Color(0.6, 0.6, 0.6, 0.423529)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+corner_detail = 20
+shadow_size = 2
+
+[sub_resource type="Theme" id="Theme_a6fae"]
+Label/colors/font_color = Color(0.185725, 0.147138, 0.0296976, 1)
+Label/font_sizes/font_size = 16
+Label/styles/normal = SubResource("StyleBoxFlat_l3x2e")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x4wpa"]
+bg_color = Color(0.6, 0.6, 0.6, 0.32549)
+
+[sub_resource type="Theme" id="Theme_rqt5v"]
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_x4wpa")
+
+[sub_resource type="Theme" id="Theme_yd56y"]
+
+[node name="CustomCharacterPage" type="CanvasLayer" node_paths=PackedStringArray("male_node", "male_node_panel", "female_node", "female_node_panel", "name_input", "continue_button", "label", "edit_container")]
 script = ExtResource("1_kun06")
+male_node = NodePath("HBoxContainer/MarginContainer/Male")
+male_node_panel = NodePath("HBoxContainer/MarginContainer/CharacterMale")
+female_node = NodePath("HBoxContainer/MarginContainer2/Control")
+female_node_panel = NodePath("HBoxContainer/MarginContainer2/CharacterFemale")
+name_input = NodePath("PanelContainer/VBoxContainer/LineEdit")
+continue_button = NodePath("PanelContainer/VBoxContainer/Continue")
+label = NodePath("Label")
+edit_container = NodePath("PanelContainer")
 
 [node name="Background" type="TextureRect" parent="."]
 anchors_preset = 15
@@ -19,17 +51,19 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Label" type="Label" parent="."]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -128.0
-offset_top = -11.5
-offset_right = 128.0
-offset_bottom = 11.5
+offset_left = -81.0
+offset_top = -11.0
+offset_right = 225.0
+offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_a6fae")
 text = "“¿Quién eres tú en esta historia?”"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -43,24 +77,41 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="CharacterMale" type="Control" parent="HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
 
-[node name="CharacterMale" type="TextureButton" parent="HBoxContainer/CharacterMale"]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 471.0
+[node name="CharacterMale" type="PanelContainer" parent="HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_rqt5v")
+
+[node name="Male" type="Control" parent="HBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="CharacterMale2" type="TextureButton" parent="HBoxContainer/MarginContainer/Male"]
+layout_mode = 2
+offset_right = 524.0
+offset_bottom = 618.0
 grow_vertical = 2
+theme = SubResource("Theme_yd56y")
 texture_normal = ExtResource("1_7dq1d")
 ignore_texture_size = true
 stretch_mode = 6
 
-[node name="NameMale" type="TextEdit" parent="HBoxContainer/CharacterMale"]
+[node name="HoverTransparencyEffect" type="Node" parent="HBoxContainer/MarginContainer/Male/CharacterMale2"]
+script = ExtResource("5_rqt5v")
+normal_alpha = 0.6
+hover_alpha = 1.0
+metadata/_custom_type_script = "uid://btd2an3ui8tl8"
+
+[node name="NameMale" type="TextEdit" parent="HBoxContainer/MarginContainer/Male"]
 visible = false
-layout_mode = 1
-anchors_preset = 2
+layout_mode = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 47.0
@@ -70,28 +121,50 @@ offset_bottom = -64.0
 grow_vertical = 0
 placeholder_text = "Escribe tu nombre"
 
-[node name="CharacterFemale" type="Control" parent="HBoxContainer"]
+[node name="MaleDescription" type="RichTextLabel" parent="HBoxContainer/MarginContainer/Male"]
+custom_minimum_size = Vector2(50, 30)
+layout_mode = 2
+offset_top = 588.0
+offset_right = 524.0
+offset_bottom = 618.0
+size_flags_vertical = 8
+text = "Curioso, decidido. Le apasiona la tecnologia y los desafios"
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 30
 
-[node name="CharacterFemale" type="TextureButton" parent="HBoxContainer/CharacterFemale"]
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -348.0
-offset_bottom = 3.0
+[node name="CharacterFemale" type="PanelContainer" parent="HBoxContainer/MarginContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_rqt5v")
+
+[node name="Control" type="Control" parent="HBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="CharacterFemale" type="TextureButton" parent="HBoxContainer/MarginContainer2/Control"]
+layout_mode = 2
+offset_right = 524.0
+offset_bottom = 618.0
 grow_horizontal = 0
 grow_vertical = 2
+theme = SubResource("Theme_yd56y")
 texture_normal = ExtResource("4_cctg3")
 ignore_texture_size = true
 stretch_mode = 6
 
-[node name="NameFemale" type="TextEdit" parent="HBoxContainer/CharacterFemale"]
+[node name="HoverTransparencyEffect2" type="Node" parent="HBoxContainer/MarginContainer2/Control/CharacterFemale"]
+script = ExtResource("5_rqt5v")
+normal_alpha = 0.6
+hover_alpha = 1.0
+metadata/_custom_type_script = "uid://btd2an3ui8tl8"
+
+[node name="NameFemale" type="TextEdit" parent="HBoxContainer/MarginContainer2/Control"]
 visible = false
-layout_mode = 1
-anchors_preset = 3
+layout_mode = 2
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -104,34 +177,48 @@ grow_horizontal = 0
 grow_vertical = 0
 placeholder_text = "Escribe tu nombre"
 
-[node name="LineEdit" type="LineEdit" parent="."]
-anchors_preset = 7
-anchor_left = 0.5
+[node name="RichTextLabel" type="RichTextLabel" parent="HBoxContainer/MarginContainer2/Control"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+offset_top = 588.0
+offset_right = 524.0
+offset_bottom = 618.0
+size_flags_vertical = 8
+text = "Observadora, curiosa. Le apasiona los chismes y el mani molido"
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 12
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -90.0
-offset_top = -186.0
-offset_right = 106.0
-offset_bottom = -155.0
+offset_left = 301.0
+offset_top = -84.0
+offset_right = -267.0
 grow_horizontal = 2
 grow_vertical = 0
+size_flags_vertical = 8
+theme = ExtResource("8_a6fae")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_a6fae")
+text = "Elije un nombre que te represente...."
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_a6fae")
 placeholder_text = "Escribe tu nombre"
 
-[node name="Continue" type="Button" parent="."]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -41.0
-offset_top = -104.0
-offset_right = 45.0
-offset_bottom = -73.0
-grow_horizontal = 2
-grow_vertical = 0
+[node name="Continue" type="Button" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme = ExtResource("8_a6fae")
 text = "Continuar"
 
-[connection signal="pressed" from="HBoxContainer/CharacterMale/CharacterMale" to="." method="_on_character_male_pressed"]
-[connection signal="pressed" from="HBoxContainer/CharacterFemale/CharacterFemale" to="." method="_on_character_female_pressed"]
-[connection signal="pressed" from="Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="HBoxContainer/MarginContainer/Male/CharacterMale2" to="." method="_on_character_male_pressed"]
+[connection signal="pressed" from="HBoxContainer/MarginContainer2/Control/CharacterFemale" to="." method="_on_character_female_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Continue" to="." method="_on_continue_pressed"]

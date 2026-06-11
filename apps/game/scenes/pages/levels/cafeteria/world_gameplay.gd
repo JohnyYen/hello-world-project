@@ -17,7 +17,35 @@ func _on_context_ready(context: CafeteriaProblemContext):
 	context.no_students_left.connect(Callable(self, "_on_no_students_left"))
 	context.player_move_to.connect(Callable(self, "_on_player_move_to"))
 	context.money_added.connect(Callable(self, "_on_money_added"))
-	
+
+# =============================================================================
+# Tracking de acciones del jugador como eventos xAPI
+# =============================================================================
+
+## Registra una interacción del jugador como statement xAPI con verbo INTERACTED.
+## @param action_value: Identificador único de la acción (ej: "get_bread")
+## @param action_name: Nombre legible en español (ej: "Tomar pan")
+## @param result: Diccionario opcional con datos de resultado
+## @param context: Diccionario opcional con contexto adicional
+func _track_game_action(
+	action_value: String,
+	action_name: String,
+	result: Dictionary = {},
+	context: Dictionary = {}
+) -> void:
+	var actor_id: String = str(_GameConfig.user.get("id", ""))
+	if actor_id.is_empty():
+		return
+	_XAPIService.track_custom(
+		Verbs.INTERACTED,
+		"game_action",
+		action_value,
+		action_name,
+		actor_id,
+		result,
+		context
+	)
+
 func _on_attend_student(student: Dictionary) -> void:
 	# student puede tener keys como: "id", "position", "node"
 	var student_node: Node2D = student.get("node", null)
@@ -26,6 +54,7 @@ func _on_attend_student(student: Dictionary) -> void:
 		return
 
 	print("DEBUG: Atendiendo al estudiante: ", student.get("id", "unknown"))
+	_track_game_action("attend_student", "Atender estudiante", {}, {"student_id": student.get("id", "unknown")})
 
 	# 1️⃣ Mover al jugador frente al estudiante
 	var player_node: CharacterBody2D = $World/PlayerZone/CharacterBody2D
@@ -55,9 +84,11 @@ func _on_attend_student(student: Dictionary) -> void:
 
 func _on_prepare_bread(bread_type: String) -> void:
 	print("Preparando pan de tipo: ", bread_type)
+	_track_game_action("prepare_bread", "Preparar pan", {}, {"bread_type": bread_type})
 
 func _on_get_bread() -> void:
 	print("DEBUG [Cafeteria Gameplay]: Obtener pan")
+	_track_game_action("get_bread", "Tomar pan")
 	
 	if player_node == null:
 		push_error("Jugador no encontrado en PlayerZone!")
@@ -100,12 +131,16 @@ func _on_get_bread() -> void:
 
 func _on_serve_bread(student: Dictionary) -> void:
 	print("Sirviendo pan al estudiante: ", student)
+	_track_game_action("serve_bread", "Servir pan", {}, {"student_id": student.get("id", "unknown")})
 
 func _on_no_students_left() -> void:
 	print("No hay más estudiantes en la cola.")
+	_track_game_action("no_students_left", "Sin estudiantes en cola")
 
 func _on_player_move_to(position: Vector2) -> void:
 	print("El jugador se mueve a la posición: ", position)
+	_track_game_action("player_move_to", "Mover jugador", {}, {"x": position.x, "y": position.y})
 
 func _on_money_added(amount: int) -> void:
 	print("Se ha añadido dinero: ", amount)
+	_track_game_action("money_added", "Añadir dinero", {}, {"amount": amount})

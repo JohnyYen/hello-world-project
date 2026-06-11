@@ -33,6 +33,21 @@ func test_begin_segment_delegates_to_xapi() -> void:
     assert_eq(_XAPIService._current_segment_id, 10)
     assert_eq(_XAPIService._current_actor_id, "test_actor")
 
+func test_begin_segment_creates_attempted_xapi_statement() -> void:
+    _XAPIService.start_segment_tracking(0, "")
+    var initial_pending := _XAPIService.get_pending_statements(100).size()
+
+    controller.begin_segment(7, "actor_for_test")
+
+    var pending := _XAPIService.get_pending_statements(100)
+    var attempted_found := false
+    for stmt in pending:
+        if stmt.object_id == "7" and stmt.verb_display == "intentó":
+            attempted_found = true
+            break
+    assert_eq(attempted_found, true,
+        "begin_segment debe crear un statement 'intentó' para el segmento")
+
 # =============================================================================
 # begin_attempt tests
 # =============================================================================

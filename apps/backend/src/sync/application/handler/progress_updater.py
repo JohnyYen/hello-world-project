@@ -4,6 +4,8 @@ from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from src.sync.domain.sync_event import SyncEvent
 from src.sync.domain.sync_session import SyncSession
@@ -12,6 +14,7 @@ from src.game.domain.level import Level
 from src.game.domain.segment_level import SegmentLevel
 from src.statistic.infrastructure.progress_repository import ProgressRepository
 from src.statistic.domain.progress import Progress
+
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +96,79 @@ class ProgressUpdater:
             await self.db.commit()
             logger.info(f"Updated progress {progress.id} for event {event.id}")
 
+
+
+    def _build_update_data(self, event: SyncEvent) -> dict[str, Any]:
+        """
+        Build update data based on event type.
+
+        Args:
+            event: The sync event
+
+        Returns:
+            dict: The update data
+        """
+        payload = event.payload or {}
+        update_data = {}
+
+        event_type = event.event_type
+
+        if event_type == "attempt":
+            update_data["attempt_count"] = payload.get("count", 1)
+
+        elif event_type == "error":
+            current_errors = payload.get("count", 1)
+            update_data["error_count"] = current_errors
+            update_data["errors_details"] = payload.get("details")
+
+        elif event_type == "hint_used":
+            hints_count = payload.get("count", 1)
+            update_data["hints_used_count"] = hints_count
+
+        elif event_type == "score":
+            update_data["efficiency_rating"] = payload.get("rating", 0)
+
+        elif event_type == "level_completed":
+            update_data["objectives_completed"] = payload.get("count", 1)
+
+        elif event_type == "xapi_statement":
+            # Extract progress data from xAPI statement payload
+            result = payload.get("result", {})
+            verb_id = payload.get("verb_id", "")
+
+            # Level completed/attempted: update based on result
+            if "completed" in verb_id or "attempted" in verb_id:
+                if result.get("completion") or result.get("success"):
+                    update_data["objectives_completed"] = 1
+
+                # Map score to efficiency_rating (0-100 scale)
+                score = result.get("score_scaled") or result.get("score_raw")
+                if score is not None:
+                    if isinstance(score, float) and score <= 1.0:
+                        update_data["efficiency_rating"] = int(score * 100)
+                    else:
+                        update_data["efficiency_rating"] = int(score)
+
+        elif event_type == "raw_stats":
+            # Bulk stats update - includes all metrics in one event
+            update_data["attempt_count"] = payload.get("attempt_count", 0)
+            update_data["error_count"] = payload.get("error_count", 0)
+            update_data["hints_used_count"] = payload.get("hints_used_count", 0)
+            update_data["errors_details"] = payload.get("errors_details")
+            update_data["efficiency_rating"] = payload.get("efficiency_rating", 0)
+            update_data["objectives_completed"] = payload.get("objectives_completed", 0)
+
+        elif event_type == "level_time":
+            pass
+
+        elif event_type == "difficulty_changed":
+            pass
+
+        elif event_type == "adaptation":
+            pass
+
+        return update_data
+
     async def _resolve_segment_level_id(self, event: SyncEvent) -> Optional[UUID]:
         """
         Resolve segment_level_id from the sync session chain.
@@ -111,8 +187,9 @@ class ProgressUpdater:
         object_type = payload.get("object_type")
         object_id = payload.get("object_id")
 
-        # Only resolve for level-type objects
-        if object_type != "level" or not object_id:
+        # Only resolve for level-type or activity-type objects
+        # The game sends object_type="activity" for xapi_statement events
+        if object_type not in ("level", "activity") or not object_id:
             return None
 
         try:
@@ -184,68 +261,6 @@ class ProgressUpdater:
             f"level_number={level_number}, game={game_instance.game_id}"
         )
         return segment_level.id
-
-    def _build_update_data(self, event: SyncEvent) -> dict[str, Any]:
-        """
-        Build update data based on event type.
-
-        Args:
-            event: The sync event
-
-        Returns:
-            dict: The update data
-        """
-        payload = event.payload or {}
-        update_data = {}
-
-        event_type = event.event_type
-
-        if event_type == "attempt":
-            update_data["attempt_count"] = payload.get("count", 1)
-
-        elif event_type == "error":
-            current_errors = payload.get("count", 1)
-            update_data["error_count"] = current_errors
-            update_data["errors_details"] = payload.get("details")
-
-        elif event_type == "hint_used":
-            hints_count = payload.get("count", 1)
-            update_data["hints_used_count"] = hints_count
-
-        elif event_type == "score":
-            update_data["efficiency_rating"] = payload.get("rating", 0)
-
-        elif event_type == "level_completed":
-            update_data["objectives_completed"] = payload.get("count", 1)
-
-        elif event_type == "xapi_statement":
-            # Extract progress data from xAPI statement payload
-            result = payload.get("result", {})
-            verb_id = payload.get("verb_id", "")
-
-            # Level completed/attempted: update based on result
-            if "completed" in verb_id or "attempted" in verb_id:
-                if result.get("completion") or result.get("success"):
-                    update_data["objectives_completed"] = 1
-
-                # Map score to efficiency_rating (0-100 scale)
-                score = result.get("score_scaled") or result.get("score_raw")
-                if score is not None:
-                    if isinstance(score, float) and score <= 1.0:
-                        update_data["efficiency_rating"] = int(score * 100)
-                    else:
-                        update_data["efficiency_rating"] = int(score)
-
-        elif event_type == "level_time":
-            pass
-
-        elif event_type == "difficulty_changed":
-            pass
-
-        elif event_type == "adaptation":
-            pass
-
-        return update_data
 
     async def _create_progress(
         self, student_id: UUID, segment_level_id: UUID

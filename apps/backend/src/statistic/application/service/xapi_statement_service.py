@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from pydantic import BaseModel
 
@@ -131,14 +131,16 @@ class XAPIStatementService:
         level_id = None
         segment_id = None
 
-        # Try to extract from actor account name (usually student_id)
+        # Extract student_id from actor account name (already a UUID string from sync pipeline)
         if actor_account_name:
             try:
-                student_id = int(actor_account_name)
+                student_id = UUID(actor_account_name)
             except (ValueError, TypeError):
                 pass
 
         # Try to extract from context extensions
+        # NOTE: These extensions may contain UUIDs or other identifiers.
+        # We pass raw values without int() conversion — SQLAlchemy handles UUID coercion.
         if context_extensions:
             # Extract game_id from extensions
             game_ext = context_extensions.get(
@@ -146,7 +148,7 @@ class XAPIStatementService:
             )
             if game_ext:
                 try:
-                    game_id = int(game_ext)
+                    game_id = UUID(str(game_ext))
                 except (ValueError, TypeError):
                     pass
 
@@ -156,7 +158,7 @@ class XAPIStatementService:
             )
             if level_ext:
                 try:
-                    level_id = int(level_ext)
+                    level_id = UUID(str(level_ext))
                 except (ValueError, TypeError):
                     pass
 
@@ -166,12 +168,16 @@ class XAPIStatementService:
             )
             if segment_ext:
                 try:
-                    segment_id = int(segment_ext)
+                    segment_id = UUID(str(segment_ext))
                 except (ValueError, TypeError):
                     pass
 
-        # Also try to parse from object ID if it's in hello-world format
-        # Format: hello-world://segment/level_X_seg_Y or hello-world://level/X
+        # Object ID parsing — NOTE: this extracts LEVEL NUMBER and SEGMENT POSITION
+        # from the game's IRI format (e.g., "hello-world://level/1" means level_number=1).
+        # These are SEMANTIC identifiers, NOT DB primary keys (UUIDs).
+        # We do NOT assign them to level_id/segment_id (UUID columns) — that
+        # resolution happens in the sync pipeline (ProgressUpdater).
+        # The raw object_id string is already stored in its own column.
         if object_id.startswith("hello-world://"):
             parts = object_id.replace("hello-world://", "").split("/")
             if len(parts) >= 2:
@@ -180,19 +186,15 @@ class XAPIStatementService:
                     segment_part = parts[1]
                     if "seg_" in segment_part:
                         try:
-                            segment_id = int(segment_part.split("_")[-1])
-                            # Also try to extract level from segment name
+                            # segment_position = int(segment_part.split("_")[-1])
                             if "level_" in segment_part:
-                                level_str = segment_part.split("_")[1]
-                                level_id = int(level_str)
+                                level_number = segment_part.split("_")[1]
+                                # level_number is an int, NOT level_id UUID
                         except (ValueError, IndexError):
                             pass
                 elif parts[0] == "level" and len(parts) >= 2:
-                    # hello-world://level/1
-                    try:
-                        level_id = int(parts[1])
-                    except ValueError:
-                        pass
+                    # hello-world://level/1 — level_number, NOT level_id UUID
+                    pass
 
         # Build the full statement JSON
         statement_json = statement.model_dump(mode="json")
