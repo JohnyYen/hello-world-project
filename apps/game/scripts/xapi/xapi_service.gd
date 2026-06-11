@@ -68,7 +68,7 @@ func _ready() -> void:
 	
 	add_child(_connection_detector)
 	add_child(_batch_service)
-	_batch_service.setup(_api_client, _connection_detector)
+	_batch_service.setup(_api_client, _connection_detector, self)
 
 ## Configura el SyncService existente para mantener compatibilidad
 func set_sync_service(sync_service: SyncService) -> void:
@@ -318,6 +318,13 @@ func _collect_raw_stats(success: bool) -> Dictionary:
 ## Guarda los raw stats en SQLite localmente
 ## Estos stats se sincronizarán con el backend cuando haya conexión
 func _save_raw_stats(success: bool) -> Dictionary:
+	# Validation: reject invalid actor IDs (Phase 4.2 - defense in depth)
+	if _is_invalid_actor(_current_actor_id):
+		push_error(
+			"[XAPIService] _save_raw_stats rechazado: actor_id inválido ('%s'). Los raw stats no se guardarán." % _current_actor_id
+		)
+		return {}
+	
 	# Calculate efficiency rating using new helper method (Task 2.7)
 	var elapsed_msec = Time.get_ticks_msec() - _segment_start_time
 	var elapsed_sec = elapsed_msec / 1000.0

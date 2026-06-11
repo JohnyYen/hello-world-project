@@ -108,15 +108,17 @@ class TestSyncEventTypeHelpers:
         """Test that get_all_simple() returns a list of simple event types."""
         result = SyncEventType.get_all_simple()
         assert isinstance(result, list)
-        assert len(result) == 6
+        assert len(result) == 7
         assert "level_time" in result
         assert "attempt" in result
+        assert "raw_stats" in result
 
     def test_get_all_complex_returns_list(self):
         """Test that get_all_complex() returns a list of complex event types."""
         result = SyncEventType.get_all_complex()
         assert isinstance(result, list)
-        assert len(result) == 3
+        assert len(result) == 4
         assert "error" in result
         assert "interaction" in result
         assert "hint_used" in result
+        assert "xapi_statement" in result

@@ -52,11 +52,12 @@ async def register_sync_event(
             # Use the appropriate mapper based on event type
             if event.event_type == SyncEventType.XAPI_STATEMENT:
                 mapper = SyncEventToXAPIStatementMapper(db)
+                xapi_statement = await mapper.map(event)
+                await xapi_service.save_statement(xapi_statement)
             else:
                 mapper = SyncEventToXAPIMapper(db)
-
-            xapi_statement = await mapper.map(event)
-            await xapi_service.save_statement(xapi_statement)
+                xapi_statement = await mapper.map(event)
+                await xapi_service.save_statement(xapi_statement)
 
         # Update progress for ALL events (both simple and complex)
         progress_updater = ProgressUpdater(db)

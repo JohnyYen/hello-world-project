@@ -173,6 +173,37 @@ func test_xapi_service_start_segment_tracking_accepts_non_placeholder_string() -
     )
 
 
+func test_xapi_service_save_raw_stats_rejects_invalid_actor() -> void:
+    # Phase 4.2 - _save_raw_stats must reject invalid actor IDs
+    # Setup with invalid actor
+    _service._current_actor_id = ""
+    _service._segment_start_time = Time.get_ticks_msec()
+    
+    # Call _save_raw_stats without valid actor (should be rejected)
+    var result := _service._save_raw_stats(true)
+    
+    assert_true(result.is_empty(), "_save_raw_stats should return empty dict for invalid actor")
+    assert_eq(
+        _service._current_actor_id, "",
+        "Invalid actor guard in _save_raw_stats should not mutate state"
+    )
+
+
+func test_xapi_service_save_raw_stats_rejects_placeholder_actor() -> void:
+    # Phase 4.2 - _save_raw_stats must reject placeholder actor IDs like "player"
+    _service._current_actor_id = "player"
+    _service._segment_start_time = Time.get_ticks_msec()
+    _service._attempts_count = 1
+    
+    var result := _service._save_raw_stats(true)
+    
+    assert_true(result.is_empty(), "_save_raw_stats should return empty dict for placeholder actor")
+    assert_eq(
+        _service._current_actor_id, "player",
+        "Placeholder actor guard in _save_raw_stats should not mutate state"
+    )
+
+
 # ============================================================================
 # GameController.begin_segment guards (REQ-P2-R3)
 # ============================================================================

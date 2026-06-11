@@ -49,13 +49,13 @@ class ProgressUpdater:
         """
         payload = event.payload or {}
 
-        # Resolve student_id from the sync session chain (most reliable).
-        # The game sends actor_id=user_id in the payload, but progresses
-        # FK references students.id — the chain resolves the correct one.
-        student_id = await self._resolve_student_id(event)
+        # Use student_id from payload if already resolved (to avoid double resolution)
+        student_id = payload.get("student_id") or payload.get("actor_id")
         if not student_id:
-            # Fall back to payload values if chain resolution fails
-            student_id = payload.get("student_id") or payload.get("actor_id")
+            # Resolve student_id from the sync session chain (most reliable).
+            # The game sends actor_id=user_id in the payload, but progresses
+            # FK references students.id — the chain resolves the correct one.
+            student_id = await self._resolve_student_id(event)
 
         # Resolve segment_level_id from payload or via sync session chain
         segment_level_id = payload.get("segment_level_id")
@@ -138,21 +138,54 @@ class ProgressUpdater:
 
         elif event_type == "xapi_statement":
             # Extract progress data from xAPI statement payload
-            result = payload.get("result", {})
-            verb_id = payload.get("verb_id", "")
+            # Handle both complete xAPI statement format and legacy format
+            xapi_payload = payload
+
+            # Detect if this is a complete xAPI statement (game format)
+            # A complete xAPI statement has actor, verb, object, result at the top level
+            is_complete_xapi = (
+                "actor" in xapi_payload
+                and "verb" in xapi_payload
+                and "object" in xapi_payload
+            )
+
+            if is_complete_xapi:
+                # Complete xAPI statement format (game sends standard xAPI 1.0)
+                result = xapi_payload.get("result", {})
+                verb_id = xapi_payload.get("verb", {}).get("id", "")
+            else:
+                # Legacy format - flattened fields
+                result = payload.get("result", {})
+                verb_id = payload.get("verb_id", "")
 
             # Level completed/attempted: update based on result
             if "completed" in verb_id or "attempted" in verb_id:
                 if result.get("completion") or result.get("success"):
                     update_data["objectives_completed"] = 1
+            elif result.get("completion") or result.get("success"):
+                # Also set objectives_completed if completion/success is true even without verb
+                update_data["objectives_completed"] = 1
 
-                # Map score to efficiency_rating (0-100 scale)
-                score = result.get("score_scaled") or result.get("score_raw")
-                if score is not None:
-                    if isinstance(score, float) and score <= 1.0:
-                        update_data["efficiency_rating"] = int(score * 100)
-                    else:
-                        update_data["efficiency_rating"] = int(score)
+            # Map score to efficiency_rating (0-100 scale) - anytime score is present
+            # Handle both standard xAPI format (result.score.scaled/raw) and legacy format (result.score_scaled/raw)
+            score = None
+            if is_complete_xapi:
+                # Standard xAPI 1.0 format: result.score.scaled or result.score.raw
+                score_obj = result.get("score") if result else None
+                if score_obj:
+                    score = score_obj.get("scaled") or score_obj.get("raw")
+            else:
+                # Legacy format: result has score_raw/score_scaled nested (game format)
+                # The game sends result.score_raw and result.score_scaled (nested in result)
+                score_raw = result.get("score_raw") if result else None
+                score_scaled = result.get("score_scaled") if result else None
+                score = score_scaled or score_raw
+
+            if score is not None:
+                if isinstance(score, float) and score <= 1.0:
+                    update_data["efficiency_rating"] = int(score * 100)
+                else:
+                    update_data["efficiency_rating"] = int(score)
 
         elif event_type == "raw_stats":
             # Bulk stats update - includes all metrics in one event
@@ -207,20 +240,25 @@ class ProgressUpdater:
         """
         payload = event.payload or {}
 
+        # Handle both complete xAPI statement format and legacy format
+        # Check if this is a complete xAPI statement (game format)
+        xapi_payload = payload
+        if "actor" in xapi_payload and "verb" in xapi_payload and "object" in xapi_payload:
+            # Complete xAPI statement format - extract object_id from object.id
+            object_data = xapi_payload.get("object", {})
+            object_id = object_data.get("id", "")
+        else:
+            # Legacy format - flattened fields
+            object_id = payload.get("object_id")
+
         # Path 1: xapi_statement with object_type/object_id
-        object_type = payload.get("object_type")
-        object_id = payload.get("object_id")
-        if object_type in ("level", "activity") and object_id:
-            try:
-                level_number = int(object_id)
-            except (ValueError, TypeError):
-                logger.warning(
-                    f"Cannot parse object_id '{object_id}' as level number in event {event.id}"
+        if object_id:
+            # Extract level number from hello-world://level/2 or hello-world://segment/level_1_seg_3
+            level_number = self._extract_level_number_from_object_id(object_id)
+            if level_number is not None:
+                return await self._resolution_service.resolve_segment_level_id_from_object(
+                    event.sync_session_id, level_number
                 )
-                return None
-            return await self._resolution_service.resolve_segment_level_id_from_object(
-                event.sync_session_id, level_number
-            )
 
         # Path 2: raw_stats with segment_id (maps to Level.level_number)
         segment_id = payload.get("segment_id")
@@ -236,6 +274,62 @@ class ProgressUpdater:
                 event.sync_session_id, level_number
             )
 
+        return None
+
+    def _extract_level_number_from_object_id(self, object_id: str) -> Optional[int]:
+        """
+        Extract level number from xAPI object_id.
+
+        Handles:
+        - hello-world://level/2 -> level_number=2
+        - hello-world://segment/level_1_seg_3 -> level_number=1 (extracted from segment part)
+        - hello-world://activity/course_1 -> level_number=1
+        - Plain integer strings (e.g., "5" -> level_number=5)
+
+        Args:
+            object_id: xAPI object ID (e.g., "hello-world://level/2")
+
+        Returns:
+            Level number as int, or None if cannot extract
+        """
+        if not object_id:
+            return None
+
+        # Handle plain integer strings (legacy format)
+        try:
+            return int(object_id)
+        except (ValueError, TypeError):
+            pass
+
+        # Handle hello-world://level/2 format
+        if object_id.startswith("hello-world://level/"):
+            try:
+                return int(object_id.replace("hello-world://level/", ""))
+            except (ValueError, TypeError):
+                return None
+        
+        # Handle hello-world://segment/level_1_seg_3 format
+        if object_id.startswith("hello-world://segment/"):
+            try:
+                # Extract level_1 from "level_1_seg_3"
+                segment_part = object_id.replace("hello-world://segment/", "")
+                if "level_" in segment_part and "seg_" in segment_part:
+                    level_part = segment_part.split("_")[1]  # "1_seg_3"
+                    level_number = int(level_part.split("_")[0])  # "1"
+                    return level_number
+            except (ValueError, IndexError, TypeError):
+                pass
+        
+        # Handle hello-world://activity/course_1 format
+        if object_id.startswith("hello-world://activity/"):
+            try:
+                activity_part = object_id.replace("hello-world://activity/", "")
+                if "_" in activity_part:
+                    level_number = int(activity_part.split("_")[1])  # "course_1" -> 1
+                    return level_number
+            except (ValueError, IndexError, TypeError):
+                pass
+        
         return None
 
     async def _create_progress(

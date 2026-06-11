@@ -16,6 +16,10 @@ func _init() -> void:
 	_db.path = Env.DATABASE_URL
 	if not _db.open_db():
 		push_error("No se pudo abrir la base de datos para raw stats")
+		return
+	
+	if not create_table():
+		push_error("No se pudo crear la tabla raw_stats (migración automática falló)")
 
 ## Crea la tabla raw_stats si no existe (idempotente)
 func create_table() -> bool:

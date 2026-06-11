@@ -24,6 +24,22 @@ func test_create_table_executes_idempotently() -> void:
 	var result_2 := repo.create_table()
 	assert_eq(result_2, true, "Second create_table should also succeed (idempotent)")
 
+func test_init_creates_table_automatically() -> void:
+	# After _init(), save should work without explicit create_table() call
+	# This verifies T1.1: create_table() is called in _init()
+	var stats := {
+		"segment_id": 1,
+		"actor_id": "test_auto_table_actor",
+		"attempt_count": 1,
+		"error_count": 0
+	}
+	
+	var record_id := repo.save(stats)
+	assert_false(record_id.is_empty(), "save should succeed without explicit create_table() after _init()")
+	
+	var record := repo.get_by_id(record_id)
+	assert_eq(record.segment_id, 1, "Record should be retrievable after save")
+
 # =============================================================================
 # save tests
 # =============================================================================

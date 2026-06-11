@@ -57,10 +57,10 @@ func _ready() -> void:
 	print("DEBUG [SyncBatchService | _ready]: Inicializado - batch_size=%d, max_retries=%d" % [_config.BATCH_SIZE, _config.MAX_RETRIES])
 
 ## Inicializa con las dependencias (llamar después de crear el nodo)
-func setup(api_client: ApiClient, connection_detector: ConnectionDetector) -> void:
+func setup(api_client: ApiClient, connection_detector: ConnectionDetector, xapi_service: XAPIService = null) -> void:
 	_api_client = api_client
 	_connection_detector = connection_detector
-
+	
 	# Migraciones locales (idempotente, corre una vez por versión de schema).
 	var migration_result = _batch_repository.run_migrations()
 	print("DEBUG [SyncBatchService | setup]: Migraciones ejecutadas - applied=%s" % str(migration_result.get("applied", false)))
@@ -85,7 +85,12 @@ func setup(api_client: ApiClient, connection_detector: ConnectionDetector) -> vo
 
 	# Conectar señal de auto-batch ante nuevos statements
 	pending_count_updated.connect(_on_pending_statements_changed)
-
+	
+	# Conectar raw_stats_ready signal para sync automático (Phase 2.1)
+	if xapi_service != null:
+		xapi_service.raw_stats_ready.connect(sync_raw_stats)
+		print("DEBUG [SyncBatchService | setup]: Conectado raw_stats_ready -> sync_raw_stats")
+	
 	# Iniciar timer periódico de sync como fallback
 	_periodic_timer.start()
 

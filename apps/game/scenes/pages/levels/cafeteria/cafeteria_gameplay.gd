@@ -50,8 +50,10 @@ func _ready() -> void:
 		push_error("No authenticated user; cannot start level tracking")
 		LoadingScreen.change_scene("res://scenes/pages/menu.tscn")
 		return
-	print("[CafeteriaGameplay | _ready]: Iniciando tracking de segmento - level_id=%d, actor=%s" % [self.segment_id, actor_id])
-	_GameController.begin_segment(self.segment_id, actor_id)
+	
+	# Emit level_loaded signal for signal-based architecture (Phase 3.1)
+	EventBus.level_loaded.emit(self.segment_id, actor_id)
+	print("[CafeteriaGameplay | _ready]: level_loaded signal emit - level_id=%d, actor=%s" % [self.segment_id, actor_id])
 	
 	controller.modifier.segment_id = self.segment_id
 	controller.modifier.original_config = controller.level_configuration.json_data

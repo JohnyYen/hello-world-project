@@ -1,11 +1,13 @@
 """
 Mapper for xapi_statement sync events from the game client.
 
-The game client pre-builds xAPI statements and sends them as sync events
-with event_type="xapi_statement". This mapper transforms those pre-built
-statements into the XAPIStatementCreate format expected by the xAPI service.
+The game client builds xAPI statements and sends them as sync events
+with event_type="xapi_statement". This mapper handles two input formats:
 
-Game payload structure:
+1. Complete xAPI statement (game format) - Full xAPI 1.0 structure
+2. Legacy simplified payload (legacy format) - Flattened game format
+
+Game payload structure (legacy):
 {
     "statement_id": "<uuid>",
     "verb_id": "http://adlnet.gov/expapi/verbs/completed",
@@ -23,6 +25,17 @@ Game payload structure:
     },
     "timestamp": "<ISO datetime>"
 }
+
+Complete xAPI statement structure (new):
+{
+    "id": "<uuid>",
+    "actor": {"account": {"homePage": "hello-world-game", "name": "<user_id>"}},
+    "verb": {"id": "<verb_iri>", "display": {"es": "<display_text>"}},
+    "object": {"id": "<object_id>", "definition": {"type": "<activity_type>", "name": {"es": "<object_name>"}}},
+    "result": {"success": <bool>, "completion": <bool>, "score": {"raw": <num>, "scaled": <num>}},
+    "context": {"platform": "Hello World Game", "language": "es", "extensions": {}},
+    "timestamp": "<iso_datetime>"
+}
 """
 
 from datetime import datetime, timezone
@@ -30,6 +43,7 @@ from uuid import uuid4
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+from typing import Any
 
 from src.sync.domain.sync_event import SyncEvent
 from src.statistic.api.v1.schemas.xapi_statement import (
@@ -252,6 +266,10 @@ class SyncEventToXAPIStatementMapper:
         """
         Map a SyncEvent with event_type='xapi_statement' to XAPIStatementCreate.
 
+        This mapper handles two input formats:
+        1. Complete xAPI statement (game format) - wrapped in sync event payload
+        2. Simplified sync event payload (legacy format)
+
         Args:
             event: The sync event with xAPI statement data in payload
 
@@ -266,6 +284,106 @@ class SyncEventToXAPIStatementMapper:
         if not payload:
             raise ValueError("xapi_statement event has no payload")
 
+        # Check if this is a complete xAPI statement (game format)
+        # A complete xAPI statement will have fields like actor, verb, object, result at the top level
+        if "actor" in payload and "verb" in payload and "object" in payload:
+            # This is a complete xAPI statement - use it directly
+            return self._map_complete_xapi_statement(payload)
+        else:
+            # This is the legacy simplified payload format
+            return await self._map_legacy_payload(payload, event)
+
+    def _map_complete_xapi_statement(self, statement_data: dict) -> XAPIStatementCreate:
+        """
+        Map a complete xAPI statement (game format) to XAPIStatementCreate.
+        
+        Args:
+            statement_data: Complete xAPI statement data with actor, verb, object, result, etc.
+            
+        Returns:
+            XAPIStatementCreate: The mapped xAPI statement
+        """
+        # Get student_id from relationship chain
+        # The actor should contain the account with student_id
+        actor_name = statement_data.get("actor", {}).get("account", {}).get("name", "")
+        
+        # Parse timestamp
+        timestamp = statement_data.get("timestamp")
+        if timestamp:
+            try:
+                timestamp = datetime.fromisoformat(timestamp)
+            except (ValueError, TypeError):
+                # Use current time if timestamp is invalid
+                timestamp = datetime.now(timezone.utc)
+        else:
+            timestamp = datetime.now(timezone.utc)
+
+        return XAPIStatementCreate(
+            id=statement_data.get("id", str(uuid4())),
+            actor=XAPIActor(
+                mbox=statement_data.get("actor", {}).get("mbox"),
+                mbox_sha1sum=statement_data.get("actor", {}).get("mbox_sha1sum"),
+                account={
+                    "homePage": statement_data.get("actor", {}).get("account", {}).get("homePage", "hello-world-game"),
+                    "name": actor_name
+                },
+                name=statement_data.get("actor", {}).get("name"),
+                object_type=statement_data.get("actor", {}).get("object_type")
+            ),
+            verb=XAPIVerb(
+                id=statement_data.get("verb", {}).get("id", XAPIVerbs.EXPERIENCED),
+                display={"es": statement_data.get("verb", {}).get("display", {}).get("es", "")}
+            ),
+            object=XAPIActivity(
+                id=statement_data.get("object", {}).get("id", ""),
+                object_type=statement_data.get("object", {}).get("object_type", "Activity"),
+                definition=XAPIActivityDefinition(
+                    type=statement_data.get("object", {}).get("definition", {}).get("type", ""),
+                    name=statement_data.get("object", {}).get("definition", {}).get("name", {}),
+                    description=statement_data.get("object", {}).get("definition", {}).get("description"),
+                    extensions=statement_data.get("object", {}).get("definition", {}).get("extensions")
+                )
+            ),
+            result=XAPIResult(
+                score=XAPIScore(
+                    raw=statement_data.get("result", {}).get("score", {}).get("raw"),
+                    scaled=statement_data.get("result", {}).get("score", {}).get("scaled"),
+                    min=statement_data.get("result", {}).get("score", {}).get("min"),
+                    max=statement_data.get("result", {}).get("score", {}).get("max")
+                ) if statement_data.get("result", {}).get("score") else None,
+                success=statement_data.get("result", {}).get("success"),
+                completion=statement_data.get("result", {}).get("completion"),
+                response=statement_data.get("result", {}).get("response"),
+                duration=statement_data.get("result", {}).get("duration"),
+                extensions=statement_data.get("result", {}).get("extensions")
+            ) if statement_data.get("result") else None,
+            context=XAPIContext(
+                registration=statement_data.get("context", {}).get("registration"),
+                platform=statement_data.get("context", {}).get("platform", "Hello World Game"),
+                language=statement_data.get("context", {}).get("language", "es"),
+                instructor=statement_data.get("context", {}).get("instructor"),
+                team=statement_data.get("context", {}).get("team"),
+                context_activities=statement_data.get("context", {}).get("context_activities"),
+                extensions=statement_data.get("context", {}).get("extensions")
+            ),
+            timestamp=timestamp,
+            stored=datetime.now(timezone.utc),
+            authority=statement_data.get("authority"),
+            version=statement_data.get("version"),
+            attachments=statement_data.get("attachments")
+        )
+
+    async def _map_legacy_payload(self, payload: dict, event: SyncEvent) -> XAPIStatementCreate:
+        """
+        Map legacy simplified payload (backward compatibility).
+
+        Args:
+            payload: Legacy payload format with flattened fields
+            event: The sync event
+
+        Returns:
+            XAPIStatementCreate: The mapped xAPI statement
+        """
         # Get student_id from relationship chain, fallback to actor_id in payload
         student_id = await self._get_student_id(event)
 
