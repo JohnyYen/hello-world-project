@@ -19,64 +19,7 @@ var _batch_ids: Array = []
 # _ready() — Entry point principal
 # =============================================================================
 func _ready() -> void:
-	print("\n========================================")
-	print("=== FULL INTEGRATION TEST ===")
-	print("========================================")
-	print("Inicio: %s" % Time.get_datetime_string_from_system())
-
-	_test_instance_id = "integration-test-%d" % Time.get_ticks_msec()
-	print("Instance ID: %s" % _test_instance_id)
-
-	# Fase 1: Login
-	print("\n--- FASE 1: Login ---")
-	var login_data := await _login()
-	_has_token = login_data.get("OK", false)
-	_jwt_token = login_data.get("token", "")
-	_user_data = login_data.get("user_data", {})
-	if _has_token:
-		print("Token obtenido: %s..." % _jwt_token.substr(0, 20))
-		print("User data: %s" % str(_user_data))
-	else:
-		print("Modo offline - continuando sin token")
-
-	# Fase 2: Run 1 — Nivel completado alto rendimiento
-	print("\n--- FASE 2: Run 1 - Nivel Completado Alto Rendimiento ---")
-	var r1 := await _run_single_level(
-		"Run 1 - Alto Rendimiento",
-		0.85, 2, 90.0, true, "increase"
-	)
-	print("Resultado: %s" % ("PASS" if r1.get("test_passed", false) else "FAIL"))
-
-	# Fase 3: Run 2 — Nivel fallido bajo rendimiento
-	print("\n--- FASE 3: Run 2 - Nivel Fallido Bajo Rendimiento ---")
-	var r2 := await _run_single_level(
-		"Run 2 - Bajo Rendimiento",
-		0.20, 15, 200.0, false, "decrease"
-	)
-	print("Resultado: %s" % ("PASS" if r2.get("test_passed", false) else "FAIL"))
-
-	# Fase 4: Run 3 — Nivel completado con mucho tiempo
-	print("\n--- FASE 4: Run 3 - Nivel Lento ---")
-	var r3 := await _run_single_level(
-		"Run 3 - Lento",
-		0.70, 3, 300.0, true, "keep"
-	)
-	print("Resultado: %s" % ("PASS" if r3.get("test_passed", false) else "FAIL"))
-
-	# Fase 5: Sync al backend
-	print("\n--- FASE 5: Sync ---")
-	var sync_data := await _sync_flow()
-	if sync_data.get("OK", false):
-		print("Sync completado: %s" % str(sync_data.get("results", {})))
-	else:
-		print("Sync skip: %s" % sync_data.get("reason", "desconocido"))
-
-	# Resumen final
-	_print_summary([r1, r2, r3], sync_data)
-
-	print("\n========================================")
-	print("=== FIN DEL TEST ===")
-	print("========================================")
+	get_tree().change_scene_to_file("res://scenes/pages/menu.tscn")
 
 
 # =============================================================================
