@@ -9,9 +9,11 @@ Tests verify:
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 from datetime import datetime, timezone
+from uuid import UUID, uuid4
 
 from src.sync.application.handler.simple_event_handler import SimpleEventHandler
 from src.sync.domain.sync_event import SyncEvent
+from src.sync.domain.service.sync_resolution_service import SyncResolutionService
 
 
 class TestSimpleEventHandler:
@@ -180,3 +182,109 @@ class TestSimpleEventHandler:
 
         with pytest.raises(ValueError, match="not a simple event type"):
             await handler.handle(event)
+
+
+class TestSimpleEventHandlerRefactor:
+    """Test suite for SimpleEventHandler refactoring with SyncResolutionService."""
+
+    def test_backward_compatibility(self):
+        """SimpleEventHandler(db) works without resolution_service parameter."""
+        mock_db = MagicMock()
+        handler = SimpleEventHandler(mock_db)
+        assert handler._resolution_service is not None
+        assert isinstance(handler._resolution_service, SyncResolutionService)
+
+    @pytest.mark.asyncio
+    async def test_with_injected_resolution_service(self):
+        """SimpleEventHandler uses injected resolution_service."""
+        mock_db = MagicMock()
+        mock_resolution_service = AsyncMock(spec=SyncResolutionService)
+        mock_resolution_service.resolve_student_id = AsyncMock(return_value=uuid4())
+
+        handler = SimpleEventHandler(mock_db, resolution_service=mock_resolution_service)
+        assert handler._resolution_service is mock_resolution_service
+
+        # Create a test event
+        event = MagicMock(spec=SyncEvent)
+        event.id = 1
+        event.event_type = "attempt"
+        event.sync_session_id = uuid4()
+        event.payload = {}
+        event.timestamp = datetime.now(timezone.utc)
+
+        await handler.handle(event)
+
+        # Verify the injected service was used
+        mock_resolution_service.resolve_student_id.assert_called_once_with(event.sync_session_id)
+
+    @pytest.mark.asyncio
+    async def test_get_student_id_from_event_delegation(self):
+        """_get_student_id_from_event delegates to SyncResolutionService."""
+        mock_db = MagicMock()
+        mock_resolution_service = AsyncMock(spec=SyncResolutionService)
+        mock_student_id = uuid4()
+        mock_resolution_service.resolve_student_id = AsyncMock(return_value=mock_student_id)
+
+        handler = SimpleEventHandler(mock_db, resolution_service=mock_resolution_service)
+
+        event = MagicMock(spec=SyncEvent)
+        event.sync_session_id = uuid4()
+
+        result = await handler._get_student_id_from_event(event)
+
+        assert result == mock_student_id
+        mock_resolution_service.resolve_student_id.assert_called_once_with(event.sync_session_id)
+
+    @pytest.mark.asyncio
+    async def test_get_student_id_from_event_returns_none(self):
+        """_get_student_id_from_event returns None when resolution fails."""
+        mock_db = MagicMock()
+        mock_resolution_service = AsyncMock(spec=SyncResolutionService)
+        mock_resolution_service.resolve_student_id = AsyncMock(return_value=None)
+
+        handler = SimpleEventHandler(mock_db, resolution_service=mock_resolution_service)
+
+        event = MagicMock(spec=SyncEvent)
+        event.sync_session_id = uuid4()
+
+        result = await handler._get_student_id_from_event(event)
+
+        assert result is None
+        mock_resolution_service.resolve_student_id.assert_called_once_with(event.sync_session_id)
+
+    @pytest.mark.asyncio
+    async def test_handle_with_injected_resolution_service(self):
+        """Full handle() flow uses injected resolution_service."""
+        mock_db = MagicMock()
+        mock_db.commit = AsyncMock()
+
+        mock_resolution_service = AsyncMock(spec=SyncResolutionService)
+        mock_student_id = uuid4()
+        mock_resolution_service.resolve_student_id = AsyncMock(return_value=mock_student_id)
+
+        mock_progress_updater = AsyncMock()
+        mock_progress_updater.update = AsyncMock()
+
+        # Create handler with injected resolution_service
+        handler = SimpleEventHandler(
+            mock_db, resolution_service=mock_resolution_service
+        )
+        handler.progress_updater = mock_progress_updater
+
+        event = MagicMock(spec=SyncEvent)
+        event.id = 1
+        event.event_type = "attempt"
+        event.sync_session_id = uuid4()
+        event.payload = {}
+        event.timestamp = datetime.now(timezone.utc)
+
+        await handler.handle(event)
+
+        # Verify resolution_service was used
+        mock_resolution_service.resolve_student_id.assert_called_once_with(event.sync_session_id)
+
+        # Verify payload was enriched with student_id
+        assert event.payload["student_id"] == mock_student_id
+
+        # Verify progress_updater.update was called with enriched event
+        mock_progress_updater.update.assert_called_once_with(event)

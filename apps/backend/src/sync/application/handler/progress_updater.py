@@ -2,16 +2,10 @@ import logging
 from typing import Any, Optional
 from uuid import UUID
 
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 
 from src.sync.domain.sync_event import SyncEvent
-from src.sync.domain.sync_session import SyncSession
-from src.game.domain.game_instance import GameInstance
-from src.game.domain.level import Level
-from src.game.domain.segment_level import SegmentLevel
+from src.sync.domain.service.sync_resolution_service import SyncResolutionService
 from src.statistic.infrastructure.progress_repository import ProgressRepository
 from src.statistic.domain.progress import Progress
 
@@ -29,15 +23,22 @@ class ProgressUpdater:
     session chain rather than expected directly in the payload.
     """
 
-    def __init__(self, db: AsyncSession):
+    def __init__(
+        self,
+        db: AsyncSession,
+        resolution_service: Optional[SyncResolutionService] = None,
+    ):
         """
         Initialize the progress updater.
 
         Args:
             db: AsyncSession for database operations
+            resolution_service: Optional SyncResolutionService for entity resolution chain.
+                If not provided, a default instance is created.
         """
         self.db = db
         self.repository = ProgressRepository(db)
+        self._resolution_service = resolution_service or SyncResolutionService(db)
 
     async def update(self, event: SyncEvent) -> None:
         """
@@ -159,7 +160,7 @@ class ProgressUpdater:
             update_data["error_count"] = payload.get("error_count", 0)
             update_data["hints_used_count"] = payload.get("hints_used_count", 0)
             update_data["errors_details"] = payload.get("errors_details")
-            update_data["efficiency_rating"] = payload.get("efficiency_rating", 0)
+            update_data["efficiency_rating"] = int(payload.get("efficiency_rating") or 0)
             update_data["objectives_completed"] = payload.get("objectives_completed", 0)
 
         elif event_type == "level_time":
@@ -175,13 +176,9 @@ class ProgressUpdater:
 
     async def _resolve_student_id(self, event: SyncEvent) -> Optional[UUID]:
         """
-        Resolve student_id from the sync session chain.
+        Resolve student_id from the sync session chain via SyncResolutionService.
 
-        The game sends actor_id (user_id) in xapi_statement payloads, but
-        progresses.student_id is a FK to students.id — which is different
-        from users.id. This method traverses:
-            SyncEvent → SyncSession → GameInstance → student_id
-        to get the correct students.id UUID.
+        Traverses: SyncEvent → SyncSession → GameInstance → student_id
 
         Args:
             event: The sync event to resolve student_id for
@@ -189,49 +186,18 @@ class ProgressUpdater:
         Returns:
             UUID of the Student, or None if it cannot be resolved
         """
-        # 1. Get SyncSession
-        session_result = await self.db.execute(
-            select(SyncSession).where(
-                SyncSession.id == event.sync_session_id,
-                SyncSession.deleted_at.is_(None),
-            )
-        )
-        sync_session = session_result.scalar_one_or_none()
-        if not sync_session:
-            logger.warning(
-                f"SyncSession {event.sync_session_id} not found "
-                f"for event {event.id}"
-            )
-            return None
-
-        # 2. Get GameInstance (which has student_id = students.id)
-        instance_result = await self.db.execute(
-            select(GameInstance).where(
-                GameInstance.id == sync_session.instance_id,
-                GameInstance.deleted_at.is_(None),
-            )
-        )
-        game_instance = instance_result.scalar_one_or_none()
-        if not game_instance:
-            logger.warning(
-                f"GameInstance {sync_session.instance_id} not found "
-                f"for sync session {sync_session.id}"
-            )
-            return None
-
-        logger.info(
-            f"Resolved student_id={game_instance.student_id} from "
-            f"game_instance {game_instance.id}"
-        )
-        return game_instance.student_id
+        return await self._resolution_service.resolve_student_id(event.sync_session_id)
 
     async def _resolve_segment_level_id(self, event: SyncEvent) -> Optional[UUID]:
         """
-        Resolve segment_level_id from the sync session chain.
+        Resolve segment_level_id from payload or sync session chain.
 
-        For xapi_statement events, the payload contains object_id (level number)
-        and object_type instead of a direct segment_level_id. This method
-        traverses: SyncEvent → SyncSession → GameInstance → Level → SegmentLevel
+        Two resolution paths:
+          Path 1: xapi_statement events with object_type/object_id
+          Path 2: raw_stats events with segment_id (int)
+
+        Both delegate to SyncResolutionService for the chain traversal:
+          SyncEvent → SyncSession → GameInstance → Level → SegmentLevel
 
         Args:
             event: The sync event to resolve segment_level_id for
@@ -240,83 +206,37 @@ class ProgressUpdater:
             UUID of the SegmentLevel, or None if it cannot be resolved
         """
         payload = event.payload or {}
+
+        # Path 1: xapi_statement with object_type/object_id
         object_type = payload.get("object_type")
         object_id = payload.get("object_id")
-
-        # Only resolve for level-type or activity-type objects
-        # The game sends object_type="activity" for xapi_statement events
-        if object_type not in ("level", "activity") or not object_id:
-            return None
-
-        try:
-            level_number = int(object_id)
-        except (ValueError, TypeError):
-            logger.warning(
-                f"Cannot parse object_id '{object_id}' as level number in event {event.id}"
+        if object_type in ("level", "activity") and object_id:
+            try:
+                level_number = int(object_id)
+            except (ValueError, TypeError):
+                logger.warning(
+                    f"Cannot parse object_id '{object_id}' as level number in event {event.id}"
+                )
+                return None
+            return await self._resolution_service.resolve_segment_level_id_from_object(
+                event.sync_session_id, level_number
             )
-            return None
 
-        # 1. Get SyncSession
-        session_result = await self.db.execute(
-            select(SyncSession).where(
-                SyncSession.id == event.sync_session_id,
-                SyncSession.deleted_at.is_(None),
+        # Path 2: raw_stats with segment_id (maps to Level.level_number)
+        segment_id = payload.get("segment_id")
+        if segment_id is not None:
+            try:
+                level_number = int(segment_id)
+            except (ValueError, TypeError):
+                logger.warning(
+                    f"Cannot parse segment_id '{segment_id}' as level number in event {event.id}"
+                )
+                return None
+            return await self._resolution_service.resolve_segment_level_id_from_segment(
+                event.sync_session_id, level_number
             )
-        )
-        sync_session = session_result.scalar_one_or_none()
-        if not sync_session:
-            logger.warning(f"SyncSession {event.sync_session_id} not found for event {event.id}")
-            return None
 
-        # 2. Get GameInstance (which has student_id and game_id)
-        instance_result = await self.db.execute(
-            select(GameInstance).where(
-                GameInstance.id == sync_session.instance_id,
-                GameInstance.deleted_at.is_(None),
-            )
-        )
-        game_instance = instance_result.scalar_one_or_none()
-        if not game_instance:
-            logger.warning(
-                f"GameInstance {sync_session.instance_id} not found for sync session {sync_session.id}"
-            )
-            return None
-
-        # 3. Find Level by game_id and level_number
-        level_result = await self.db.execute(
-            select(Level).where(
-                Level.game_id == game_instance.game_id,
-                Level.level_number == level_number,
-                Level.deleted_at.is_(None),
-            )
-        )
-        level = level_result.scalar_one_or_none()
-        if not level:
-            logger.warning(
-                f"Level not found for game {game_instance.game_id}, number {level_number}"
-            )
-            return None
-
-        # 4. Find the first SegmentLevel for this Level
-        # (a Level can have multiple SegmentLevels; use the first one)
-        segment_result = await self.db.execute(
-            select(SegmentLevel)
-            .where(
-                SegmentLevel.level_number_id == level.id,
-                SegmentLevel.deleted_at.is_(None),
-            )
-            .limit(1)
-        )
-        segment_level = segment_result.scalar_one_or_none()
-        if not segment_level:
-            logger.warning(f"No SegmentLevel found for level {level.id}")
-            return None
-
-        logger.info(
-            f"Resolved segment_level_id={segment_level.id} from "
-            f"level_number={level_number}, game={game_instance.game_id}"
-        )
-        return segment_level.id
+        return None
 
     async def _create_progress(
         self, student_id: UUID, segment_level_id: UUID

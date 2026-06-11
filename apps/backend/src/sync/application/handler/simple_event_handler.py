@@ -1,9 +1,12 @@
 import logging
+from typing import Optional
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from src.sync.domain.sync_event import SyncEvent
 from src.sync.application.handler.progress_updater import ProgressUpdater
+from src.sync.domain.service.sync_resolution_service import SyncResolutionService
 
 logger = logging.getLogger(__name__)
 
@@ -16,39 +19,26 @@ class SimpleEventHandler:
     can update the Progress table directly.
     """
 
-    def __init__(self, db: AsyncSession):
+    def __init__(
+        self,
+        db: AsyncSession,
+        resolution_service: Optional[SyncResolutionService] = None,
+    ):
         """
         Initialize the simple event handler.
 
         Args:
             db: AsyncSession for database operations
+            resolution_service: Optional SyncResolutionService for student ID resolution.
+                If not provided, one will be created internally.
         """
         self.db = db
-        self.progress_updater = ProgressUpdater(db)
+        self.progress_updater = ProgressUpdater(db, resolution_service)
+        self._resolution_service = resolution_service or SyncResolutionService(db)
 
-    async def _get_student_id_from_event(self, event: SyncEvent) -> int | None:
+    async def _get_student_id_from_event(self, event: SyncEvent) -> Optional[UUID]:
         """Get student_id from sync_session -> game_instance chain."""
-        # Get sync_session
-        from src.sync.domain.sync_session import SyncSession
-
-        result = await self.db.execute(
-            select(SyncSession).where(SyncSession.id == event.sync_session_id)
-        )
-        sync_session = result.scalar_one_or_none()
-        if not sync_session:
-            return None
-
-        # Get game_instance
-        from src.game.domain.game_instance import GameInstance
-
-        result = await self.db.execute(
-            select(GameInstance).where(GameInstance.id == sync_session.instance_id)
-        )
-        game_instance = result.scalar_one_or_none()
-        if not game_instance:
-            return None
-
-        return game_instance.student_id
+        return await self._resolution_service.resolve_student_id(event.sync_session_id)
 
     async def handle(self, event: SyncEvent) -> None:
         """
