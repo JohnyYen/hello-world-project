@@ -3,14 +3,16 @@
 # Punto de entrada principal para tracking de learning events
 class_name XAPIService
 extends Node
-
 ## Señales
+
 signal segment_analytics_ready(analytics_dict: Dictionary)
+signal raw_stats_ready(raw_stats_dict: Dictionary)
 
 ## Servicios internos
 var _builder: XAPIBuilderService
 var _connection_detector: ConnectionDetector
 var _batch_service: SyncBatchService
+var _raw_stats_repository: RawStatsRepository
 
 ## API Client compartida
 var _api_client: ApiClient
@@ -30,10 +32,17 @@ var _custom_events: Array[Dictionary] = []
 var _is_new_attempt := false
 var _is_retry_mode := false
 
+## Campos adicionales para raw stats tracking (Task 2.1)
+var _hints_used_count := 0
+var _errors_details: Dictionary = {}
+var _objectives_completed := 0
+var _efficiency_rating := 0.0
+
 func _init() -> void:
 	_builder = XAPIBuilderService.new()
 	_connection_detector = ConnectionDetector.new()
 	_batch_service = SyncBatchService.new()
+	_raw_stats_repository = RawStatsRepository.new()
 	
 	# Initialize analytics tracking variables
 	_current_segment_id = 0
@@ -46,6 +55,12 @@ func _init() -> void:
 	_custom_events = []
 	_is_new_attempt = false
 	_is_retry_mode = false
+	
+	# Initialize raw stats tracking variables (Task 2.1)
+	_hints_used_count = 0
+	_errors_details = {}
+	_objectives_completed = 0
+	_efficiency_rating = 0.0
 	
 func _ready() -> void:
 	_api_client = ApiClient.new()
@@ -136,12 +151,12 @@ const _INVALID_ACTOR_PLACEHOLDERS: Array[String] = [
 ]
 
 ## Indica si el actor_id es vacío o es uno de los placeholders conocidos.
-## Comparación case-sensitive según REQ-P2-R3.
+	## Comparación case-sensitive según REQ-P2-R3.
 func _is_invalid_actor(actor_id: String) -> bool:
 	if actor_id.is_empty():
 		return true
 	return actor_id in _INVALID_ACTOR_PLACEHOLDERS
-
+	
 ## Inicia tracking de un segmento/nivel.
 ## @param segment_id: ID del segmento a trackear
 ## @param actor_id: ID del jugador (debe ser el UUID del usuario autenticado)
@@ -161,6 +176,12 @@ func start_segment_tracking(segment_id: int, actor_id: String) -> void:
 	_is_new_attempt = false
 	_is_retry_mode = false
 	_is_tracking = true
+	
+	# Initialize raw stats tracking fields (Task 2.5)
+	_hints_used_count = 0
+	_errors_details = {}
+	_objectives_completed = 0
+	_efficiency_rating = 0.0
 
 ## Registra un bloque ejecutado en el intento actual.
 ## @param block_name: Nombre del bloque ejecutado
@@ -207,6 +228,10 @@ func track_event(event_name: String, event_data: Dictionary = {}) -> void:
 		"timestamp": Time.get_datetime_string_from_system()
 	}
 	_custom_events.append(event)
+	
+	# Update hints used count for hint_used events (Task 2.1)
+	if event_name == "hint_used":
+		_hints_used_count += 1
 
 ## Resetea el tracking del segmento actual.
 ## En modo retry (set_retry_mode), preserva el historial de intentos previos.
@@ -231,19 +256,28 @@ func set_retry_mode(enabled: bool) -> void:
 func end_segment_tracking(success: bool) -> Dictionary:
 	if not _is_tracking:
 		return {}
+	# Recopilar raw stats usando _collect_raw_stats() (Task 2.6)
+	
+	var raw_stats: Dictionary = _collect_raw_stats(success)
+	# Save raw stats to local SQLite before returning
+	var saved_raw_stats = _save_raw_stats(success)
+	if not saved_raw_stats.is_empty():
+		# Emit both segment_analytics_ready and raw_stats_ready (Task 2.6)
+		emit_signal("raw_stats_ready", saved_raw_stats)
+	
 	var elapsed_msec = Time.get_ticks_msec() - _segment_start_time
 	var elapsed_sec = elapsed_msec / 1000.0
-
+	
 	var errors := _attempts_count
 	if success and _attempts_count > 0:
 		errors = _attempts_count - 1
-
+	
 	var score := 1.0
 	if errors > 0:
 		score = max(0.1, 1.0 - (float(errors) * 0.25))
 	if not success:
 		score = 0.0
-
+	
 	var analytics = {
 		"segment_id": _current_segment_id,
 		"actor_id": _current_actor_id,
@@ -262,10 +296,102 @@ func end_segment_tracking(success: bool) -> Dictionary:
 	}
 	_is_tracking = false
 	print("[XAPIService] Segmento completado - segment_id=%d, score=%.2f, errors=%d, tiempo=%.2fs" % [
-		_current_segment_id, score, errors, elapsed_sec
+	_current_segment_id, score, errors, elapsed_sec
 	])
 	emit_signal("segment_analytics_ready", analytics)
 	return analytics
+
+## Recopila datos de raw stats desde variables de tracking (Task 2.3)
+func _collect_raw_stats(success: bool) -> Dictionary:
+	var raw_stats: Dictionary = {
+	"segment_id": _current_segment_id,
+	"actor_id": _current_actor_id,
+	"attempt_count": _attempts_count,
+	"error_count": _attempts_count if not success else max(0, _attempts_count - 1),
+	"hints_used_count": _hints_used_count,
+	"errors_details": _errors_details.duplicate(),
+	"efficiency_rating": _efficiency_rating,
+	"objectives_completed": _objectives_completed
+	}
+	return raw_stats
+	
+## Guarda los raw stats en SQLite localmente
+## Estos stats se sincronizarán con el backend cuando haya conexión
+func _save_raw_stats(success: bool) -> Dictionary:
+	# Calculate efficiency rating using new helper method (Task 2.7)
+	var elapsed_msec = Time.get_ticks_msec() - _segment_start_time
+	var elapsed_sec = elapsed_msec / 1000.0
+	_efficiency_rating = _calculate_efficiency_rating(success, elapsed_sec)
+	
+	var raw_stats := {
+		"segment_id": _current_segment_id,
+		"actor_id": _current_actor_id,
+		"attempt_count": _attempts_count,
+		"error_count": _attempts_count if not success else max(0, _attempts_count - 1),
+		"hints_used_count": _hints_used_count,
+		"errors_details": _errors_details.duplicate(),
+		"efficiency_rating": _efficiency_rating,
+		"objectives_completed": _objectives_completed
+	}
+	
+	var record_id := _raw_stats_repository.save(raw_stats)
+	if record_id.is_empty():
+		push_error("[XAPIService] No se pudo guardar raw stats localmente")
+		return {}
+	else:
+		print("[XAPIService] Raw stats guardados localmente - id=%s" % record_id)
+		return raw_stats.duplicate()
+
+## Cuenta hints usados en custom events y actualiza _hints_used_count (Task 2.1)
+func _count_hints_used() -> int:
+	var count := 0
+	for event in _custom_events:
+		if event.get("event_name", "") == "hint_used":
+			count += 1
+	_hints_used_count = count
+	return count
+	
+## Construye un diccionario con detalles de errores y actualiza _errors_details (Task 2.1)
+func _build_errors_details() -> Dictionary:
+	var details := {}
+	for i in range(_attempts_history.size()):
+		var attempt := _attempts_history[i]
+		if not attempt.get("success", true):
+			details["attempt_%d" % (i + 1)] = {
+				"timestamp": attempt.get("timestamp", ""),
+				"blocks_count": attempt.get("blocks_count", 0)
+			}
+	_errors_details = details.duplicate()
+	return details
+
+## Calcula eficiencia basada en intentos y tiempo
+func _calculate_efficiency(success: bool) -> float:
+	if not success:
+		return 0.0
+	var base := 100.0
+	var errors = max(0, _attempts_count - 1)
+	var efficiency = max(0.0, base - (errors * 15.0))
+	return efficiency
+
+## Calcula rating de eficiencia basado en éxito y tiempo (Task 2.7)
+func _calculate_efficiency_rating(success: bool, elapsed_sec: float) -> float:
+	if not success:
+		return 0.0
+	
+	var base_rating := 100.0
+	var error_penalty = max(0, _attempts_count - 1) * 15.0
+	var time_penalty = max(0.0, elapsed_sec - 60.0) * 2.0
+	
+	var efficiency = base_rating - error_penalty - time_penalty
+	return max(0.0, efficiency)
+
+## Obtiene los raw stats pendientes de sincronizar
+func get_pending_raw_stats(limit: int = 50) -> Array[Dictionary]:
+	return _raw_stats_repository.get_pending_all(limit)
+
+## Obtiene estadísticas de raw stats
+func get_raw_stats_summary() -> Dictionary:
+	return _raw_stats_repository.get_stats()
 
 ## === Métodos de sincronización ===
 

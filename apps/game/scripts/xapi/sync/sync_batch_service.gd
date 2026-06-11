@@ -17,6 +17,7 @@ var _connection_detector: ConnectionDetector
 var _api_client: ApiClient
 var _config: XAPIConfig
 var _session_repository: GameSessionRepository  # Cache local de game_id e instance_id
+var _raw_stats_repository: RawStatsRepository  # Offline-first raw stats persistence
 
 ## Estado
 var _is_syncing: bool = false
@@ -32,6 +33,7 @@ func _init() -> void:
 	_batch_repository = PendingBatchRepository.new()
 	_config = XAPIConfig.new()
 	_session_repository = GameSessionRepository.new()
+	_raw_stats_repository = RawStatsRepository.new()
 
 func _ready() -> void:
 	# Crear timer para reintentos
@@ -481,5 +483,72 @@ func get_stats() -> Dictionary:
 		"pending_batches": _batch_repository.get_stats(),
 		"unbatched_statements": _xapi_repository.count_unbatched(),
 		"is_syncing": _is_syncing,
-		"is_connected": _connection_detector.is_online() if _connection_detector else false
+		"is_connected": _connection_detector.is_online() if _connection_detector else false,
+		"raw_stats": _raw_stats_repository.get_stats()
 	}
+
+## Sincroniza los raw stats pendientes al backend
+## Usa una única sesión de sync para todos los registros
+func sync_raw_stats() -> void:
+	if not _connection_detector.is_online():
+		print("DEBUG [SyncBatchService | sync_raw_stats]: Sin conexión, saltando sync de raw stats")
+		return
+	
+	var pending: Array[Dictionary] = _raw_stats_repository.get_pending_all(50)
+	if pending.is_empty():
+		print("DEBUG [SyncBatchService | sync_raw_stats]: No hay raw stats pendientes")
+		return
+	
+	print("DEBUG [SyncBatchService | sync_raw_stats]: Sincronizando %d raw stats..." % pending.size())
+	
+	# Marcar todos como sending antes de iniciar sync
+	for record in pending:
+		_raw_stats_repository.update_status(record.get("id", ""), "sending")
+	
+	# Usar sesión única para todos los raw stats
+	var game_id: String = await _get_or_fetch_game_id()
+	var instance_id: String = await _get_or_create_instance_id(game_id)
+	var session_result: Dictionary = await _api_client.start_sync_session(instance_id)
+	var session_id: String = session_result.get("session_id", "")
+	
+	if session_id.is_empty():
+		push_error("SyncBatchService: No se pudo iniciar sesión para raw stats")
+		for record in pending:
+			_raw_stats_repository.mark_failed(record.get("id", ""), 5)
+		return
+	
+	# Enviar cada raw stat como evento
+	for record in pending:
+		var stats_id: String = record.get("id", "")
+		
+		# Construir payload con game_id para resolver segment_level_id en el backend
+		var payload: Dictionary = {
+			"segment_id": record.get("segment_id", 0),
+			"actor_id": record.get("actor_id", ""),
+			"game_id": game_id,
+			"attempt_count": record.get("attempt_count", 0),
+			"error_count": record.get("error_count", 0),
+			"hints_used_count": record.get("hints_used_count", 0),
+			"errors_details": JSON.parse_string(record.get("errors_details", "{}")),
+			"efficiency_rating": record.get("efficiency_rating", 0),
+			"objectives_completed": record.get("objectives_completed", 0),
+			"timestamp": record.get("created_at", "")
+		}
+		
+		var event_result: Dictionary = await _api_client.register_sync_event(
+			session_id,
+			"raw_stats",
+			payload,
+			stats_id
+		)
+		
+		if event_result.get("OK", false):
+			_raw_stats_repository.mark_completed(stats_id)
+			print("DEBUG [SyncBatchService | sync_raw_stats]: Raw stats %s sincronizado OK" % stats_id)
+		else:
+			_raw_stats_repository.mark_failed(stats_id, 5)
+			print("DEBUG [SyncBatchService | sync_raw_stats]: Raw stats %s falló: %s" % [stats_id, event_result.get("error", "")])
+	
+	# Cerrar sesión
+	await _api_client.end_sync_session(session_id)
+	print("DEBUG [SyncBatchService | sync_raw_stats]: Sync completado - %d registros procesados" % pending.size())

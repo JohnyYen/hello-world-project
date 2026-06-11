@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Any
 from uuid import UUID
 from datetime import date, timedelta, datetime
-from sqlalchemy import select, func, and_, text, cast, Date
+from sqlalchemy import select, func, and_, text, cast, Date, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.statistic.domain.progress import Progress
@@ -208,8 +208,8 @@ class ProgressRepository(BaseRepository[Progress]):
         Cuenta estudiantes únicos con actividad en un rango de fechas.
 
         Args:
-            start_date: Fecha de inicio (opcional)
-            end_date: Fecha de fin (opcional)
+            start_date: Fecha de inicio opcional
+            end_date: Fecha de fin opcional
 
         Returns:
             int: Número de estudiantes activos en el rango
@@ -226,6 +226,115 @@ class ProgressRepository(BaseRepository[Progress]):
 
         result = await self.db.execute(stmt)
         return result.scalar() or 0
+
+    async def bulk_upsert_progress(
+        self, records: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """
+        Inserta o actualiza múltiples registros de progreso en una sola transacción.
+
+        Args:
+            records: Lista de registros de progreso para upsertar
+
+        Returns:
+            Dict con resultados de la operación
+        """
+        if not records:
+            return {"inserted": 0, "updated": 0, "errors": 0}
+
+        inserted = 0
+        updated = 0
+        errors = 0
+
+        for record in records:
+            try:
+                # Verificar si el progreso existe
+                stmt = select(Progress).where(
+                    and_(
+                        Progress.student_id == UUID(record["student_id"]),
+                        Progress.segment_level_id == record["segment_level_id"]
+                    )
+                )
+                result = await self.db.execute(stmt)
+                existing = result.scalar_one_or_none()
+
+                if existing:
+                    # Actualizar
+                    await self.db.execute(
+                        update(Progress)
+                        .where(
+                            and_(
+                                Progress.student_id == UUID(record["student_id"]),
+                                Progress.segment_level_id == record["segment_level_id"]
+                            )
+                        )
+                        .values(
+                            attempt_count=record.get("attempt_count", 0),
+                            error_count=record.get("error_count", 0),
+                            hints_used_count=record.get("hints_used_count", 0),
+                            errors_details=record.get("errors_details"),
+                            objectives_completed=record.get("objectives_completed", 0),
+                            efficiency_rating=record.get("efficiency_rating", 0),
+                            updated_at=datetime.utcnow()
+                        )
+                    )
+                    updated += 1
+                else:
+                    # Insertar nuevo
+                    new_progress = Progress(
+                        student_id=UUID(record["student_id"]),
+                        segment_level_id=record["segment_level_id"],
+                        attempt_count=record.get("attempt_count", 0),
+                        error_count=record.get("error_count", 0),
+                        hints_used_count=record.get("hints_used_count", 0),
+                        errors_details=record.get("errors_details"),
+                        objectives_completed=record.get("objectives_completed", 0),
+                        efficiency_rating=record.get("efficiency_rating", 0),
+                        created_at=datetime.utcnow(),
+                        updated_at=datetime.utcnow(),
+                    )
+                    self.db.add(new_progress)
+                    inserted += 1
+
+            except Exception:
+                errors += 1
+                continue
+
+        try:
+            await self.db.flush()
+            return {
+                "inserted": inserted,
+                "updated": updated,
+                "errors": errors
+            }
+        except Exception:
+            await self.db.rollback()
+            raise
+
+    async def get_existing_progress_ids(
+        self, student_ids: List[UUID], segment_level_ids: List[int]
+    ) -> List[UUID]:
+        """
+        Obtiene los IDs de progreso existentes para un conjunto de student_ids y segment_level_ids.
+
+        Args:
+            student_ids: Lista de UUIDs de estudiantes
+            segment_level_ids: Lista de IDs de segmentos de nivel
+
+        Returns:
+            List[UUID]: Lista de IDs de progreso existentes
+        """
+        if not student_ids or not segment_level_ids:
+            return []
+
+        stmt = select(Progress.id).where(
+            and_(
+                Progress.student_id.in_(student_ids),
+                Progress.segment_level_id.in_(segment_level_ids)
+            )
+        )
+        result = await self.db.execute(stmt)
+        return [row.id for row in result.fetchall()]
 
     async def aggregate_kpis(
         self, start_date: Optional[date] = None, end_date: Optional[date] = None
