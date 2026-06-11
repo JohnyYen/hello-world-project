@@ -88,26 +88,29 @@ func _on_continue_pressed() -> void:
 	if name_input.text != "":
 		player_data["name"] = name_input.text
 		_GameState.player_data = player_data
-		_GameState.dialogue_queue = [
-			{
-				"path" : "res://dialogue/C00/C00_E02_Bienvenida_Orqui.dialogue",
-			},
-			{
-				"path": "res://dialogue/C00/C00_E03_Teatro_Facultad.dialogue",
-			},
-			{
-				"path": "res://dialogue/C00/C00_E04_Tour_Facultad.dialogue",
-			},
-			{
-				"path": "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue",
-			},
-			{
+		_GameState.queue_dialogues(["res://dialogue/C00/C00_E02_Bienvenida_Orqui.dialogue", "res://dialogue/C00/C00_E03_Teatro_Facultad.dialogue", "res://dialogue/C00/C00_E04_Tour_Facultad.dialogue", "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue", {
 				"path": "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue", "next_scene": "res://scenes/pages/maps/dormitory/player_room.tscn"
-			},
+			}])
+		#_GameState.dialogue_queue = [
 			#{
-				#"path": "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue", "next_scene": "res://scenes/pages/menu.tscn"
-			#}
-		]
+				#"path" : "res://dialogue/C00/C00_E02_Bienvenida_Orqui.dialogue",
+			#},
+			#{
+				#"path": "res://dialogue/C00/C00_E03_Teatro_Facultad.dialogue",
+			#},
+			#{
+				#"path": "res://dialogue/C00/C00_E04_Tour_Facultad.dialogue",
+			#},
+			#{
+				#"path": "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue",
+			#},
+			#{
+				#"path": "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue", "next_scene": "res://scenes/pages/maps/dormitory/player_room.tscn"
+			#},
+			##{
+				##"path": "res://dialogue/C00/C00_E05_Llegada_Dormitorio.dialogue", "next_scene": "res://scenes/pages/menu.tscn"
+			##}
+		#]
 		_GameState.start_dialogue("res://dialogue/C00/C00_E01_Entrada_Facultad.dialogue")
 		#self.queue_free()
 		#_GameState.start_dialogue("res://dialogue/C00/C00_E02_Bienvenida_Orqui.dialogue")
