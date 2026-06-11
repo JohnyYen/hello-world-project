@@ -40,9 +40,14 @@ func receive_allowed_blocks(blocks: Array[Block]) -> void:
 			
 			block_list.add_child(code_block)
 			code_block.btn.pressed.connect(Callable(code_block, "_on_texture_button_pressed"))
-			if code_block is ExecutionCodeBlock and level_config != null:
-				(code_block as ExecutionCodeBlock).set_actions(level_config.defined_actions)
-
+			if code_block is ExecutionCodeBlock:
+				var exec_block = code_block as ExecutionCodeBlock
+				exec_block.set_state(ExecutionCodeBlock.BlockState.IN_PALETTE)
+				# Configurar acciones
+				if level_config != null:
+					exec_block.set_actions(level_config.defined_actions)
+					
+				exec_block.block_spawned.connect(_on_block_selected_from_palette)
 				
 			# code_block.configure(block)
 			code_block.connect("block_clicked", Callable(self, "_on_block_clicked"))
@@ -50,7 +55,17 @@ func receive_allowed_blocks(blocks: Array[Block]) -> void:
 			# block_list.add_child(code_block)
 		else:
 			print("DEBUG: Received a null block at index ", i)
-			
+
+func _on_block_selected_from_palette(original_block: ExecutionCodeBlock, spawn_position: Vector2):
+	# Crear diccionario con datos del bloque para reutilizar _on_block_selected
+	var block_data = {
+		"type": original_block.block_type,
+		"name": original_block.block_name,
+		"description": original_block.description
+	}
+	
+	# Llamar al método existente que crea la copia en workspace
+	_on_block_selected(block_data)
 func _on_block_selected(block_data : Dictionary):
 	print("Bloque seleccionado: ", block_data)
 
@@ -60,7 +75,22 @@ func _on_block_selected(block_data : Dictionary):
 	# Configurar datos en el nuevo bloque
 	new_block.block_name = block_data["name"]
 	new_block.description = block_data["description"]
-
+	
+	# IMPORTANTE: Configurar como bloque de workspace
+	if new_block is ExecutionCodeBlock:
+		var exec_block = new_block as ExecutionCodeBlock
+		exec_block.set_state(ExecutionCodeBlock.BlockState.IN_WORKSPACE)
+		
+		# Configurar acciones si hay nivel configurado
+		if level_config != null:
+			exec_block.set_actions(level_config.defined_actions)
+		
+		# Conectar señal de eliminación
+		exec_block.block_deleted.connect(_on_workspace_block_deleted)
+		
+		# Conectar señal de acción elegida (opcional)
+		exec_block.action_chosen.connect(_on_action_chosen)
+		
 	# --- DESACTIVAR TODAS LAS SEÑALES DEL BLOQUE ---
 	# Esto incluye todas las señales declaradas en CodeBlockComponent
 	for signal_name in new_block.get_signal_list():
@@ -80,8 +110,13 @@ func _on_block_selected(block_data : Dictionary):
 	if new_block is ExecutionCodeBlock and level_config != null:
 		(new_block as ExecutionCodeBlock).set_actions(level_config.defined_actions)
 	new_block.btn.pressed.connect(_on_block_dropped.bind(new_block))
-	
 
+func _on_workspace_block_deleted(block: ExecutionCodeBlock):
+	# Eliminar del workspace
+	block.queue_free()
+
+func _on_action_chosen(action_name: String):
+	print("Acción elegida: ", action_name)
 
 
 func _on_click():

@@ -92,8 +92,8 @@ func record_attempt(blocks_executed: Array[String], success: bool, execution_tim
 ## @param result: Dictionary con keys "blocks", "success", "time"
 func complete_level(result: Dictionary) -> void:
 	record_attempt(result.blocks, result.success, result.time)
-	var analytics := _XAPIService.end_segment_tracking(result.success)
-	var enriched := _enrich_level_data(analytics)
+	var analytics = _XAPIService.end_segment_tracking(result.success)
+	var enriched = _enrich_level_data(analytics)
 	
 	# Crear xAPI statement para sincronización con backend
 	# Captura el evento consolidado de nivel completado con score, errors, duration

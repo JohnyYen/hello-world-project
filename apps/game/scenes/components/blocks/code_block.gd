@@ -6,7 +6,7 @@ class_name CodeBlockComponent
 @export var description: String = "Bloque base para construir código"
 @export var block_color: Color = Color(0.8, 0.8, 0.8, 1.0)
 @onready var block: BaseBlock
-@onready var btn : TextureButton = $TextureButton
+@onready var btn : Button = $TextureButton
 
 
 signal block_selected(block_data: Dictionary)

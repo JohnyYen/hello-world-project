@@ -156,6 +156,14 @@ func on_create_xapi_tables() -> void:
 	var migration_script := load("res://scripts/database/migrations/001_create_xapi_tables.gd")
 	var migration := migration_script.new()
 	migration.run(db)
+	
+	# Tabla: Raw Stats (for offline-first stats tracking)
+	on_create_raw_stats_table()
+
+func on_create_raw_stats_table() -> void:
+	var migration_script := load("res://scripts/database/migrations/002_create_raw_stats_table.gd")
+	var migration := migration_script.new()
+	migration.run(db)
 
 	
 	
