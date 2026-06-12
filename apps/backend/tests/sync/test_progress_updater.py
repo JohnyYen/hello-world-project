@@ -541,6 +541,122 @@ class TestProgressUpdaterXapiStatement:
         mock_repo.update.assert_called_once()
 
 
+class TestResolveLevelAndSegmentFromObjectId:
+    """Tests for ProgressUpdater._resolve_level_and_segment_from_object_id()."""
+
+    @pytest.mark.parametrize("object_id,expected", [
+        ("hello-world://level/1/segment/2", (1, 2)),
+        ("hello-world://level/5/segment/3", (5, 3)),
+        ("5", (5, None)),
+        ("hello-world://level/2", (2, None)),
+        ("hello-world://segment/level_1_seg_3", (1, None)),
+        ("hello-world://activity/course_1", (1, None)),
+    ])
+    def test_resolves_various_formats(self, object_id, expected):
+        mock_db = MagicMock()
+        updater = ProgressUpdater(mock_db)
+        result = updater._resolve_level_and_segment_from_object_id(object_id)
+        assert result == expected
+
+    @pytest.mark.parametrize("object_id", [
+        "",
+        "hello-world://level/abc/segment/xyz",
+        "abc",
+        None,
+    ])
+    def test_returns_none_for_invalid(self, object_id):
+        mock_db = MagicMock()
+        updater = ProgressUpdater(mock_db)
+        result = updater._resolve_level_and_segment_from_object_id(object_id)
+        assert result is None
+
+
+class TestProgressUpdaterXapiStatementCompoundURI:
+    """Tests that xapi_statement events resolve compound URIs correctly."""
+
+    @pytest.mark.asyncio
+    async def test_xapi_statement_with_compound_uri(self):
+        segment_level_id = uuid4()
+        student_id = uuid4()
+        sync_session_id = uuid4()
+
+        mock_svc = AsyncMock(spec=SyncResolutionService)
+        mock_svc.resolve_student_id = AsyncMock(return_value=student_id)
+        mock_svc.resolve_segment_level_id_from_object = AsyncMock(
+            return_value=segment_level_id
+        )
+
+        mock_db = MagicMock()
+        mock_db.commit = AsyncMock()
+
+        mock_repo = MagicMock()
+        mock_progress = MagicMock(spec=Progress)
+        mock_progress.id = 1
+        mock_repo.get_by_student_and_segment = AsyncMock(return_value=mock_progress)
+        mock_repo.update = AsyncMock()
+
+        updater = ProgressUpdater(mock_db, resolution_service=mock_svc)
+        updater.repository = mock_repo
+
+        event = MagicMock(spec=SyncEvent)
+        event.id = 1
+        event.event_type = "xapi_statement"
+        event.sync_session_id = sync_session_id
+        event.payload = {
+            "object_type": "activity",
+            "object_id": "hello-world://level/3/segment/7",
+            "result": {"score_scaled": 0.9},
+        }
+
+        await updater.update(event)
+
+        mock_svc.resolve_segment_level_id_from_object.assert_called_once_with(
+            sync_session_id, 3, 7
+        )
+        mock_repo.update.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_xapi_statement_legacy_object_id_falls_back(self):
+        segment_level_id = uuid4()
+        student_id = uuid4()
+        sync_session_id = uuid4()
+
+        mock_svc = AsyncMock(spec=SyncResolutionService)
+        mock_svc.resolve_student_id = AsyncMock(return_value=student_id)
+        mock_svc.resolve_segment_level_id_from_object = AsyncMock(
+            return_value=segment_level_id
+        )
+
+        mock_db = MagicMock()
+        mock_db.commit = AsyncMock()
+
+        mock_repo = MagicMock()
+        mock_progress = MagicMock(spec=Progress)
+        mock_progress.id = 1
+        mock_repo.get_by_student_and_segment = AsyncMock(return_value=mock_progress)
+        mock_repo.update = AsyncMock()
+
+        updater = ProgressUpdater(mock_db, resolution_service=mock_svc)
+        updater.repository = mock_repo
+
+        event = MagicMock(spec=SyncEvent)
+        event.id = 1
+        event.event_type = "xapi_statement"
+        event.sync_session_id = sync_session_id
+        event.payload = {
+            "object_type": "level",
+            "object_id": "hello-world://level/2",
+            "result": {"completion": True},
+        }
+
+        await updater.update(event)
+
+        mock_svc.resolve_segment_level_id_from_object.assert_called_once_with(
+            sync_session_id, 2
+        )
+        mock_repo.update.assert_called_once()
+
+
 class TestProgressUpdaterConstructor:
     """Tests for ProgressUpdater constructor backward compatibility."""
 

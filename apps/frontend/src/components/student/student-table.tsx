@@ -41,16 +41,13 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // Set default course filter to the most recent course (first in the sorted list)
-  const [courseFilter, setCourseFilter] = useState<string>("all");
-
-  // Filter students based on search term and course filter
+  // Filter students based on search term
+  // TODO: agregar filtro por curso cuando se implemente la columna
   const filteredStudents = initialStudents.filter(
     (student) =>
-      (student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       student.maxLevel.toString().includes(searchTerm)) &&
-      (courseFilter === "all" || student.course === courseFilter)
+      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.maxLevel.toString().includes(searchTerm)
   );
 
   // Calculate pagination values
@@ -177,8 +174,8 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                 />
               </div>
               
-              {/* Course Filter - Using shadcn Select */}
-              <Select value={courseFilter} onValueChange={(value) => {
+              {/* TODO: Filtro por curso — habilitar cuando se implemente la columna */}
+              {/* <Select value={courseFilter} onValueChange={(value) => {
                 setCourseFilter(value);
                 setCurrentPage(1);
               }}>
@@ -196,7 +193,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </Select>
+              </Select> */}
 
               {selectedStudents.size > 0 && (
                 <Button 
@@ -285,7 +282,8 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
               <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Nombre</TableHead>
               <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Estado</TableHead>
               <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Nivel</TableHead>
-              <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Curso</TableHead>
+              {/* TODO: Columna Curso — implementar cuando se tenga el dato */}
+              {/* <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Curso</TableHead> */}
               <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Correo</TableHead>
             </TableRow>
           </TableHeader>
@@ -347,12 +345,13 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
                       Nivel {student.maxLevel}
                     </span>
                   </TableCell>
-                  <TableCell>
+                  {/* TODO: Celda Curso — implementar cuando se tenga el dato */}
+                  {/* <TableCell>
                     <div className="flex items-center gap-2">
                       <BookOpen className="h-3.5 w-3.5 text-violet-500" />
                       <span className="text-slate-700 dark:text-slate-300">{student.course}</span>
                     </div>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Mail className="h-3.5 w-3.5 text-slate-400" />
@@ -364,7 +363,7 @@ export default function StudentTable({ initialStudents, initialCourses }: Studen
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={5}
                   className="text-center py-12 text-slate-500 dark:text-slate-400"
                 >
                   <div className="flex flex-col items-center gap-2">

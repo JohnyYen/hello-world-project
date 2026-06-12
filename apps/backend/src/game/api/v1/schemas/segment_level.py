@@ -14,6 +14,7 @@ class SegmentLevelCreate(BaseModel):
     """Esquema para crear un nuevo segmento de nivel"""
 
     level_id: Optional[int] = None
+    segment_number: Optional[int] = None
     configuration: Optional[Dict[str, Any]] = None
 
 
@@ -35,6 +36,7 @@ class SegmentLevelResponse(BaseModel):
 
     id: str | UUID
     level_id: int = Field(alias="level_number_id")
+    segment_number: int
     configuration: Optional[Dict[str, Any]] = None
     created_at: datetime
     updated_at: Optional[datetime] = None

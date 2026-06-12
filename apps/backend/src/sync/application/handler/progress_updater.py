@@ -401,9 +401,19 @@ class ProgressUpdater:
 
         # Path 1: xapi_statement with object_type/object_id
         if object_id:
-            # Extract level number from hello-world://level/2 or hello-world://segment/level_1_seg_3
-            level_number = self._extract_level_number_from_object_id(object_id)
-            if level_number is not None:
+            # Resolve (level_number, segment_number) from object_id
+            resolved = self._resolve_level_and_segment_from_object_id(object_id)
+            if resolved is not None:
+                level_number, segment_number = resolved
+                if segment_number is not None:
+                    return await self._resolution_service.resolve_segment_level_id_from_object(
+                        event.sync_session_id, level_number, segment_number
+                    )
+                # Legacy format — no segment_number available
+                logger.warning(
+                    f"Legacy xAPI object_id format without segment_number: "
+                    f"'{object_id}'. Falling back to .limit(1) resolution."
+                )
                 return await self._resolution_service.resolve_segment_level_id_from_object(
                     event.sync_session_id, level_number
                 )
@@ -424,57 +434,67 @@ class ProgressUpdater:
 
         return None
 
-    def _extract_level_number_from_object_id(self, object_id: str) -> Optional[int]:
+    def _resolve_level_and_segment_from_object_id(
+        self, object_id: str
+    ) -> Optional[tuple[int, Optional[int]]]:
         """
-        Extract level number from xAPI object_id.
+        Resolve (level_number, segment_number) from xAPI object_id.
 
-        Handles:
-        - hello-world://level/2 -> level_number=2
-        - hello-world://segment/level_1_seg_3 -> level_number=1 (extracted from segment part)
-        - hello-world://activity/course_1 -> level_number=1
-        - Plain integer strings (e.g., "5" -> level_number=5)
+        Handles (in order):
+        1. hello-world://level/{n}/segment/{m} -> (n, m) [new compound format]
+        2. Plain integer strings (e.g., "5") -> (5, None) [legacy]
+        3. hello-world://level/{n} -> (n, None) [legacy]
+        4. hello-world://segment/level_{n}_seg_{m} -> (n, None) [legacy]
+        5. hello-world://activity/course_{n} -> (n, None) [legacy]
+        6. Invalid/empty -> None
 
         Args:
-            object_id: xAPI object ID (e.g., "hello-world://level/2")
+            object_id: xAPI object ID
 
         Returns:
-            Level number as int, or None if cannot extract
+            Tuple of (level_number, segment_number) or None if cannot extract
         """
         if not object_id:
             return None
 
-        # Handle plain integer strings (legacy format)
+        # 1. New compound format: hello-world://level/{n}/segment/{m}
+        level_seg_match = re.match(
+            r"^hello-world://level/(\d+)/segment/(\d+)$", object_id
+        )
+        if level_seg_match:
+            return (int(level_seg_match.group(1)), int(level_seg_match.group(2)))
+
+        # 2. Handle plain integer strings (legacy format)
         try:
-            return int(object_id)
+            return (int(object_id), None)
         except (ValueError, TypeError):
             pass
 
-        # Handle hello-world://level/2 format
+        # 3. Handle hello-world://level/{n} format
         if object_id.startswith("hello-world://level/"):
             try:
-                return int(object_id.replace("hello-world://level/", ""))
+                return (int(object_id.replace("hello-world://level/", "")), None)
             except (ValueError, TypeError):
                 return None
         
-        # Handle hello-world://segment/level_1_seg_3 format
+        # 4. Handle hello-world://segment/level_{n}_seg_{m} format
         if object_id.startswith("hello-world://segment/"):
             try:
-                # Extract level_1 from "level_1_seg_3"
                 segment_part = object_id.replace("hello-world://segment/", "")
                 if "level_" in segment_part and "seg_" in segment_part:
                     level_part = segment_part.split("_")[1]  # "1_seg_3"
                     level_number = int(level_part.split("_")[0])  # "1"
-                    return level_number
+                    return (level_number, None)
             except (ValueError, IndexError, TypeError):
                 pass
         
-        # Handle hello-world://activity/course_1 format
+        # 5. Handle hello-world://activity/course_{n} format
         if object_id.startswith("hello-world://activity/"):
             try:
                 activity_part = object_id.replace("hello-world://activity/", "")
                 if "_" in activity_part:
                     level_number = int(activity_part.split("_")[1])  # "course_1" -> 1
-                    return level_number
+                    return (level_number, None)
             except (ValueError, IndexError, TypeError):
                 pass
         

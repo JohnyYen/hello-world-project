@@ -282,3 +282,23 @@ func test_track_custom_interacted_is_persisted() -> void:
 			found = true
 			break
 	assert_eq(found, true, "El statement 'interactuó' debe estar persistido en la BD")
+
+# =============================================================================
+# build_object_id tests (compound URI)
+# =============================================================================
+
+func test_build_object_id_returns_compound_uri() -> void:
+	var result := XAPIService.build_object_id(1, 2)
+	assert_eq(result, "hello-world://level/1/segment/2")
+
+func test_build_object_id_with_different_numbers() -> void:
+	var result := XAPIService.build_object_id(5, 3)
+	assert_eq(result, "hello-world://level/5/segment/3")
+
+func test_build_object_id_zero_values() -> void:
+	var result := XAPIService.build_object_id(0, 0)
+	assert_eq(result, "hello-world://level/0/segment/0")
+
+func test_build_object_id_large_numbers() -> void:
+	var result := XAPIService.build_object_id(999, 888)
+	assert_eq(result, "hello-world://level/999/segment/888")
