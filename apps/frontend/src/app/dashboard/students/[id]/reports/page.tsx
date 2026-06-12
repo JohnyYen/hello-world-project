@@ -2,10 +2,28 @@
 
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Trophy, Gamepad2, Clock, Target, Flame, TrendingUp, Activity, Zap, Award } from "lucide-react";
+import {
+  ChevronLeft,
+  Trophy,
+  Gamepad2,
+  Clock,
+  Target,
+  Flame,
+  TrendingUp,
+  Activity,
+  Zap,
+  Award,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { MetricCard, LineChart, BarChart, DonutChart, AreaChart, HeatMap } from "@/components/charts";
+import {
+  MetricCard,
+  LineChart,
+  BarChart,
+  DonutChart,
+  AreaChart,
+  HeatMap,
+} from "@/components/charts";
 import { ExportButton } from "@/components/export/ExportButton";
 import { useStudentReports } from "@/hooks/use-student-reports";
 import { useStudentHeatmap } from "@/hooks/use-student-heatmap";
@@ -31,9 +49,19 @@ function formatDate(dateString: string | null): string {
 }
 
 // Animated section header component
-function SectionHeader({ title, subtitle, icon: Icon, delay = 0 }: { title: string; subtitle?: string; icon?: React.ElementType; delay?: number }) {
+function SectionHeader({
+  title,
+  subtitle,
+  icon: Icon,
+  delay = 0,
+}: {
+  title: string;
+  subtitle?: string;
+  icon?: React.ElementType;
+  delay?: number;
+}) {
   return (
-    <div 
+    <div
       className="relative mb-8 pl-4 border-l-4 border-indigo-500 dark:border-indigo-400"
       style={{ animationDelay: `${delay}ms` }}
     >
@@ -45,9 +73,7 @@ function SectionHeader({ title, subtitle, icon: Icon, delay = 0 }: { title: stri
         )}
         <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
       </div>
-      {subtitle && (
-        <p className="text-muted-foreground ml-12">{subtitle}</p>
-      )}
+      {subtitle && <p className="text-muted-foreground ml-12">{subtitle}</p>}
       {/* Decorative line */}
       <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-indigo-500 to-violet-500 group-hover:w-full transition-all duration-500" />
     </div>
@@ -58,15 +84,26 @@ export default function StudentReportPage() {
   const params = useParams();
   const studentId = params.id as string;
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { kpis, progressOverTime, levelPerformance, activityDistribution, isLoading, error } =
-    useStudentReports(studentId);
+
+  const {
+    kpis,
+    progressOverTime,
+    levelPerformance,
+    activityDistribution,
+    isLoading,
+    error,
+  } = useStudentReports(studentId);
 
   // Get real heatmap data from API
-  const { heatmapData, isLoading: isLoadingHeatmap } = useStudentHeatmap(studentId, 30);
+  const { heatmapData, isLoading: isLoadingHeatmap } = useStudentHeatmap(
+    studentId,
+    30,
+  );
 
   // Calculate cumulative time for area chart
-  const cumulativeProgress = progressOverTime.reduce<Array<{ date: string; cumulativeScore: number; cumulativeTime: number }>>((acc, item, index) => {
+  const cumulativeProgress = progressOverTime.reduce<
+    Array<{ date: string; cumulativeScore: number; cumulativeTime: number }>
+  >((acc, item, index) => {
     const prevCumulative = index > 0 ? acc[index - 1].cumulativeScore : 0;
     const prevTime = index > 0 ? acc[index - 1].cumulativeTime : 0;
     acc.push({
@@ -85,7 +122,10 @@ export default function StudentReportPage() {
             <div className="h-8 w-48 bg-slate-200 dark:bg-slate-800 rounded" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-32 bg-slate-200 dark:bg-slate-800 rounded-xl" />
+                <div
+                  key={i}
+                  className="h-32 bg-slate-200 dark:bg-slate-800 rounded-xl"
+                />
               ))}
             </div>
             <div className="h-96 bg-slate-200 dark:bg-slate-800 rounded-xl" />
@@ -123,27 +163,40 @@ export default function StudentReportPage() {
       <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+            <pattern
+              id="grid"
+              width="40"
+              height="40"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 40 0 L 0 0 0 40"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+              />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
       </div>
 
-      <div ref={containerRef} className="container mx-auto py-12 px-6 relative z-10">
+      <div
+        ref={containerRef}
+        className="container mx-auto py-12 px-6 relative z-10"
+      >
         {/* Header */}
         <div className="mb-12">
           <Link href={`/dashboard/students/${studentId}`}>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="mb-6 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-600 transition-colors"
             >
               <ChevronLeft className="h-4 w-4 mr-2" />
               Volver al perfil
             </Button>
           </Link>
-          
+
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
@@ -153,9 +206,9 @@ export default function StudentReportPage() {
                 Análisis detallado del rendimiento académico
               </p>
             </div>
-            
+
             <div className="flex items-center gap-4">
-              <ExportButton 
+              <ExportButton
                 targetRef={containerRef}
                 fileName={`reporte-estudiante-${studentId}`}
                 variant="outline"
@@ -165,9 +218,15 @@ export default function StudentReportPage() {
               {/* Decorative badge */}
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800">
                 <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">Datos actualizados</span>
-                <span className="text-xs text-indigo-500 dark:text-indigo-400">•</span>
-                <span className="text-xs text-indigo-500 dark:text-indigo-400">{formatDate(kpis?.lastActivity || null)}</span>
+                <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300">
+                  Datos actualizados
+                </span>
+                <span className="text-xs text-indigo-500 dark:text-indigo-400">
+                  •
+                </span>
+                <span className="text-xs text-indigo-500 dark:text-indigo-400">
+                  {formatDate(kpis?.lastActivity || null)}
+                </span>
               </div>
             </div>
           </div>
@@ -175,14 +234,17 @@ export default function StudentReportPage() {
 
         {/* KPIs Section - Now with variant highlights */}
         <section className="mb-12">
-          <SectionHeader 
-            title="Métricas Principales" 
+          <SectionHeader
+            title="Métricas Principales"
             subtitle="Indicadores clave de rendimiento del estudiante"
             icon={Activity}
             delay={0}
           />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div style={{ animationDelay: "100ms" }} className="animate-fade-in-up">
+            <div
+              style={{ animationDelay: "100ms" }}
+              className="animate-fade-in-up"
+            >
               <MetricCard
                 title="Niveles Completados"
                 value={kpis?.totalLevelsCompleted || 0}
@@ -191,7 +253,10 @@ export default function StudentReportPage() {
                 variant="default"
               />
             </div>
-            <div style={{ animationDelay: "200ms" }} className="animate-fade-in-up">
+            <div
+              style={{ animationDelay: "200ms" }}
+              className="animate-fade-in-up"
+            >
               <MetricCard
                 title="Partidas Jugadas"
                 value={kpis?.totalGamesPlayed || 0}
@@ -200,7 +265,10 @@ export default function StudentReportPage() {
                 variant="default"
               />
             </div>
-            <div style={{ animationDelay: "300ms" }} className="animate-fade-in-up">
+            <div
+              style={{ animationDelay: "300ms" }}
+              className="animate-fade-in-up"
+            >
               <MetricCard
                 title="Tiempo de Juego"
                 value={formatPlayTime(kpis?.totalPlayTime || 0)}
@@ -209,7 +277,10 @@ export default function StudentReportPage() {
                 variant="highlight"
               />
             </div>
-            <div style={{ animationDelay: "400ms" }} className="animate-fade-in-up">
+            <div
+              style={{ animationDelay: "400ms" }}
+              className="animate-fade-in-up"
+            >
               <MetricCard
                 title="Racha Actual"
                 value={`${kpis?.currentStreak || 0} días`}
@@ -223,23 +294,27 @@ export default function StudentReportPage() {
 
         {/* Progress Over Time - Line & Area Charts */}
         <section className="mb-12">
-          <SectionHeader 
-            title="Análisis Temporal" 
+          <SectionHeader
+            title="Análisis Temporal"
             subtitle="Evolución del rendimiento a lo largo del tiempo"
             icon={TrendingUp}
             delay={500}
           />
-          
+
           {/* Line Chart - Score & Level */}
-          <div 
+          <div
             className="mb-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
             style={{ animationDelay: "600ms" }}
           >
             <div className="p-6 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">Evolución de puntuación y nivel</h3>
-                  <p className="text-sm text-muted-foreground">Rendimiento semanal del estudiante</p>
+                  <h3 className="text-lg font-semibold">
+                    Evolución de puntuación y nivel
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Rendimiento semanal del estudiante
+                  </p>
                 </div>
                 <div className="flex items-center gap-4 text-sm">
                   <div className="flex items-center gap-2">
@@ -263,46 +338,68 @@ export default function StudentReportPage() {
                 ]}
                 title=""
                 subtitle=""
-                yAxisLabel="Valor"
+                yAxisLabel="Puntuación / Nivel"
+                xAxisLabel="Fecha"
+                yAxisDomain={[0, 100]}
                 height={320}
               />
             </div>
           </div>
 
-          {/* Area Chart - Cumulative Progress */}
-          <div 
-            className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
-            style={{ animationDelay: "700ms" }}
-          >
+          {/* Area Chart - Cumulative Progress - Separated into two charts for clarity */}
+          {/* Cumulative Score */}
+          <div className="mb-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
             <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold">Progreso Acumulado</h3>
-                  <p className="text-sm text-muted-foreground">Evolución del progreso total a lo largo del tiempo</p>
-                </div>
-                <div className="flex items-center gap-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-primary" />
-                    <span className="text-muted-foreground">Score</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-accent" />
-                    <span className="text-muted-foreground">Tiempo</span>
-                  </div>
-                </div>
-              </div>
+              <h3 className="text-lg font-semibold">Puntuación Acumulada</h3>
+              <p className="text-sm text-muted-foreground">
+                Evolución de la puntuación total a lo largo del tiempo
+              </p>
             </div>
             <div className="p-6">
               <AreaChart
                 data={cumulativeProgress}
                 xAxisDataKey="date"
                 areas={[
-                  { dataKey: "cumulativeScore", name: "Puntuación Acumulada", color: "#3B82F6" },
-                  { dataKey: "cumulativeTime", name: "Tiempo Acumulado (min)", color: "#F59E0B" },
+                  {
+                    dataKey: "cumulativeScore",
+                    name: "Puntuación Acumulada",
+                    color: "#3B82F6",
+                    yAxisId: "left",
+                  },
                 ]}
                 title=""
                 subtitle=""
-                yAxisLabel="Valor"
+                yAxisLabels={{ left: "Puntos" }}
+                xAxisLabel="Fecha"
+                height={280}
+              />
+            </div>
+          </div>
+
+          {/* Cumulative Time */}
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
+            <div className="p-6 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="text-lg font-semibold">Tiempo Acumulado</h3>
+              <p className="text-sm text-muted-foreground">
+                Evolución del tiempo total invertido (minutos)
+              </p>
+            </div>
+            <div className="p-6">
+              <AreaChart
+                data={cumulativeProgress}
+                xAxisDataKey="date"
+                areas={[
+                  {
+                    dataKey: "cumulativeTime",
+                    name: "Tiempo Acumulado",
+                    color: "#F59E0B",
+                    yAxisId: "left",
+                  },
+                ]}
+                title=""
+                subtitle=""
+                yAxisLabels={{ left: "Minutos" }}
+                xAxisLabel="Fecha"
                 height={280}
               />
             </div>
@@ -311,19 +408,23 @@ export default function StudentReportPage() {
 
         {/* Activity Heatmap */}
         <section className="mb-12">
-          <SectionHeader 
-            title="Patrón de Actividad" 
+          <SectionHeader
+            title="Patrón de Actividad"
             subtitle="Distribución temporal del tiempo de estudio"
             icon={Zap}
             delay={800}
           />
-          <div 
+          <div
             className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
             style={{ animationDelay: "900ms" }}
           >
             <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-lg font-semibold">Mapa de Actividad Semanal</h3>
-              <p className="text-sm text-muted-foreground">Distribución de tiempo de juego por día y hora</p>
+              <h3 className="text-lg font-semibold">
+                Mapa de Actividad Semanal
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Distribución de tiempo de juego por día y hora
+              </p>
             </div>
             <div className="p-6">
               <HeatMap
@@ -339,41 +440,52 @@ export default function StudentReportPage() {
 
         {/* Level Performance & Activity Distribution */}
         <section className="mb-12">
-          <SectionHeader 
-            title="Desempeño por Área" 
+          <SectionHeader
+            title="Desempeño por Área"
             subtitle="Análisis detallado por nivel y tipo de actividad"
             icon={Award}
             delay={1000}
           />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div 
+            <div
               className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
               style={{ animationDelay: "1100ms" }}
             >
               <div className="p-6 border-b border-slate-100 dark:border-slate-800">
                 <h3 className="text-lg font-semibold">Desempeño por Nivel</h3>
-                <p className="text-sm text-muted-foreground">Puntuación obtenida en cada nivel</p>
+                <p className="text-sm text-muted-foreground">
+                  Puntuación obtenida en cada nivel
+                </p>
               </div>
               <div className="p-6">
                 <BarChart
                   data={levelPerformance}
                   xAxisDataKey="levelName"
-                  bars={[{ dataKey: "score", name: "Puntuación", color: "#8B5CF6" }]}
+                  bars={[
+                    { dataKey: "score", name: "Puntuación", color: "#8B5CF6" },
+                  ]}
                   title=""
                   subtitle=""
                   yAxisLabel="Puntos"
                   height={320}
+                  layout="vertical"
+                  yAxisDomain={[0, 100]}
+                  tooltipFormatter={(value) => `${value} puntos`}
                 />
               </div>
             </div>
 
-            <div 
+            <div
               className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
               style={{ animationDelay: "1200ms" }}
             >
               <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-lg font-semibold">Distribución de Actividades</h3>
-                <p className="text-sm text-muted-foreground">Tiempo dedicado a cada juego</p>
+                <h3 className="text-lg font-semibold">
+                  Distribución de Actividades
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Tiempo dedicado a cada juego
+                </p>
               </div>
               <div className="p-6">
                 <DonutChart
@@ -389,8 +501,6 @@ export default function StudentReportPage() {
             </div>
           </div>
         </section>
-
-        
 
         {/* Footer decorative element */}
         <div className="text-center py-8 border-t border-slate-200 dark:border-slate-800">

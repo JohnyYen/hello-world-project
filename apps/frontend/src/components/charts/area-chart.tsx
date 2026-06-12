@@ -19,16 +19,26 @@ interface AreaChartProps<T> {
     name: string;
     color?: string;
     stackId?: string;
+    yAxisId?: string;
   }[];
   xAxisDataKey: string;
   title?: string;
   subtitle?: string;
   yAxisLabel?: string;
+  yAxisLabels?: {
+    left?: string;
+    right?: string;
+  };
+  xAxisLabel?: string;
   height?: number;
   stacked?: boolean;
   showAnimation?: boolean;
   showGrid?: boolean;
   yAxisDomain?: [number, number];
+  yAxisDomains?: {
+    left?: [number, number];
+    right?: [number, number];
+  };
   tooltipFormatter?: (value: number, name: string) => string;
 }
 
@@ -39,11 +49,14 @@ export function AreaChart<T>({
   title,
   subtitle,
   yAxisLabel,
+  yAxisLabels,
+  xAxisLabel,
   height = 300,
   stacked = false,
   showAnimation = true,
   showGrid = true,
   yAxisDomain,
+  yAxisDomains,
   tooltipFormatter,
 }: AreaChartProps<T>) {
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) => {
@@ -86,16 +99,28 @@ export function AreaChart<T>({
             tick={{ fill: COLORS.muted, fontSize: 12 }}
             axisLine={{ stroke: COLORS.border }}
             tickLine={{ stroke: COLORS.border }}
+            label={
+              xAxisLabel
+                ? {
+                    value: xAxisLabel,
+                    position: "insideBottom",
+                    offset: -5,
+                    fill: COLORS.muted,
+                    fontSize: 12,
+                  }
+                : undefined
+            }
           />
           <YAxis
+            yAxisId="left"
             tick={{ fill: COLORS.muted, fontSize: 12 }}
             axisLine={{ stroke: COLORS.border }}
             tickLine={{ stroke: COLORS.border }}
-            domain={yAxisDomain}
+            domain={yAxisDomains?.left || yAxisDomain || [0, "dataMax"]}
             label={
-              yAxisLabel
+              yAxisLabels?.left || yAxisLabel
                 ? {
-                    value: yAxisLabel,
+                    value: yAxisLabels?.left || yAxisLabel || "",
                     angle: -90,
                     position: "insideLeft",
                     fill: COLORS.muted,
@@ -104,6 +129,23 @@ export function AreaChart<T>({
                 : undefined
             }
           />
+          {yAxisLabels?.right && (
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              tick={{ fill: COLORS.muted, fontSize: 12 }}
+              axisLine={{ stroke: COLORS.border }}
+              tickLine={{ stroke: COLORS.border }}
+              domain={yAxisDomains?.right || yAxisDomain || [0, "dataMax"]}
+              label={{
+                value: yAxisLabels.right,
+                angle: 90,
+                position: "insideRight",
+                fill: COLORS.muted,
+                fontSize: 12,
+              }}
+            />
+          )}
           <Tooltip content={<CustomTooltip />} />
           <Legend 
             wrapperStyle={{ paddingTop: "10px" }}
@@ -115,6 +157,7 @@ export function AreaChart<T>({
               type="monotone"
               dataKey={area.dataKey}
               name={area.name}
+              yAxisId={area.yAxisId || "left"}
               stackId={stacked ? area.stackId || "stack" : undefined}
               stroke={area.color || CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]}
               fill={area.color || CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]}

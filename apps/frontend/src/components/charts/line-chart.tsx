@@ -26,6 +26,7 @@ interface LineChartProps<T> {
   title?: string;
   subtitle?: string;
   yAxisLabel?: string;
+  xAxisLabel?: string;
   height?: number;
   showAnimation?: boolean;
   showGrid?: boolean;
@@ -40,6 +41,7 @@ export function LineChart<T>({
   title,
   subtitle,
   yAxisLabel,
+  xAxisLabel,
   height = 300,
   showAnimation = true,
   showGrid = true,
@@ -86,6 +88,17 @@ export function LineChart<T>({
             tick={{ fill: COLORS.muted, fontSize: 12 }}
             axisLine={{ stroke: COLORS.border }}
             tickLine={{ stroke: COLORS.border }}
+            label={
+              xAxisLabel
+                ? {
+                    value: xAxisLabel,
+                    position: "insideBottom",
+                    offset: -5,
+                    fill: COLORS.muted,
+                    fontSize: 12,
+                  }
+                : undefined
+            }
           />
           <YAxis
             tick={{ fill: COLORS.muted, fontSize: 12 }}
