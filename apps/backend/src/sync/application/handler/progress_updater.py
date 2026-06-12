@@ -1,13 +1,20 @@
 import logging
+import math
+import re
 from typing import Any, Optional
 from uuid import UUID
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.sync.domain.sync_event import SyncEvent
 from src.sync.domain.service.sync_resolution_service import SyncResolutionService
 from src.statistic.infrastructure.progress_repository import ProgressRepository
 from src.statistic.domain.progress import Progress
+from src.users.infrastructure.student_activity_log_repository import (
+    StudentActivityLogRepository,
+)
+from src.users.domain.student import Student
 
 
 logger = logging.getLogger(__name__)
@@ -27,6 +34,7 @@ class ProgressUpdater:
         self,
         db: AsyncSession,
         resolution_service: Optional[SyncResolutionService] = None,
+        activity_log_repo: Optional[StudentActivityLogRepository] = None,
     ):
         """
         Initialize the progress updater.
@@ -35,10 +43,13 @@ class ProgressUpdater:
             db: AsyncSession for database operations
             resolution_service: Optional SyncResolutionService for entity resolution chain.
                 If not provided, a default instance is created.
+            activity_log_repo: Optional StudentActivityLogRepository for logging student
+                activity. If not provided, a default instance is created.
         """
         self.db = db
         self.repository = ProgressRepository(db)
         self._resolution_service = resolution_service or SyncResolutionService(db)
+        self._activity_log_repo = activity_log_repo or StudentActivityLogRepository(db)
 
     async def update(self, event: SyncEvent) -> None:
         """
@@ -102,6 +113,10 @@ class ProgressUpdater:
             await self.db.commit()
             logger.info(f"Updated progress {progress.id} for event {event.id}")
 
+        # Write to student_activity_log for xapi_statement events (heatmap data)
+        if event.event_type == "xapi_statement" and student_id:
+            await self._log_activity(event, student_id)
+
 
 
     def _build_update_data(self, event: SyncEvent) -> dict[str, Any]:
@@ -160,13 +175,24 @@ class ProgressUpdater:
                 verb_id = payload.get("verb_id", "")
 
             # Level completed: update based on result
-            # NOTE: "attempted" events MUST NOT set objectives_completed.
+            # NOTE: "attempted" events MUST NOT set objectives_completed OR attempt_count.
             # The game sends attempted when a level starts (before any result),
             # and the builder defaults result_completion=true, which would
             # incorrectly mark the level as completed.
             if "attempted" not in verb_id:
                 if "completed" in verb_id or result.get("completion") or result.get("success"):
                     update_data["objectives_completed"] = 1
+
+                    # Set attempt_count from duration (ISO 8601) or default to 1.
+                    # The game sends result.duration as PT{M}M{S}S which we parse as
+                    # minutes. If no duration field is present, default to 1 attempt.
+                    duration_str = result.get("duration") if result else None
+                    duration_minutes = self._parse_duration_to_minutes(duration_str)
+                    if duration_minutes is not None:
+                        update_data["attempt_count"] = duration_minutes
+                    else:
+                        # No duration or empty duration — count as 1 attempt
+                        update_data["attempt_count"] = 1
 
             # Map score to efficiency_rating (0-100 scale) - anytime score is present
             # Handle both standard xAPI format (result.score.scaled/raw) and legacy format (result.score_scaled/raw)
@@ -214,6 +240,120 @@ class ProgressUpdater:
             pass
 
         return update_data
+
+    @staticmethod
+    def _parse_duration_to_minutes(duration: Optional[str]) -> Optional[int]:
+        """
+        Parse an ISO 8601 duration string to integer minutes (ceil).
+
+        Supports PT{H}H{M}M{S}S format used by the game:
+        - PT5M30S -> 6 (ceil 5.5)
+        - PT30S -> 1 (ceil 0.5)
+        - PT1H -> 60
+        - PT1H30M -> 90
+        - PT0S -> 0
+
+        Args:
+            duration: ISO 8601 duration string (e.g., "PT5M30S")
+
+        Returns:
+            Integer minutes (ceil), or None if invalid/missing
+        """
+        if not duration:
+            return None
+
+        # Match PT{H}H{M}M{S}S — all components are optional but at least one must match
+        match = re.match(
+            r"^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$", duration.strip()
+        )
+        if not match:
+            logger.warning(f"Could not parse duration string: '{duration}'")
+            return None
+
+        hours_str, minutes_str, seconds_str = match.groups()
+        hours = int(hours_str) if hours_str else 0
+        minutes = int(minutes_str) if minutes_str else 0
+        seconds = int(seconds_str) if seconds_str else 0
+
+        total_minutes = hours * 60 + minutes + seconds / 60.0
+        return int(math.ceil(total_minutes))
+
+    async def _resolve_user_id(self, student_id: UUID) -> Optional[UUID]:
+        """
+        Bridge from students.id to users.id for activity logging.
+
+        StudentActivityLog.student_id FK references users.id, but the
+        ProgressUpdater resolves students.id. This method bridges the gap.
+
+        Args:
+            student_id: The students.id value
+
+        Returns:
+            UUID of the User, or None if not found
+        """
+        query = select(Student.user_id).where(Student.id == student_id)
+        result = await self.db.execute(query)
+        user_id = result.scalar_one_or_none()
+        if not user_id:
+            logger.warning(
+                f"Could not resolve user_id for student {student_id}"
+            )
+        return user_id
+
+    async def _log_activity(
+        self, event: SyncEvent, student_id: UUID
+    ) -> None:
+        """
+        Log a student activity entry for xapi_statement events.
+
+        Used to populate the student_activity_log table for heatmap
+        and activity tracking in the dashboard.
+
+        Args:
+            event: The sync event being processed
+            student_id: The resolved students.id
+        """
+        try:
+            user_id = await self._resolve_user_id(student_id)
+            if not user_id:
+                return
+
+            payload = event.payload or {}
+            verb_id = ""
+            object_id = ""
+            duration_str = None
+
+            # Extract fields from either complete xAPI or legacy format
+            if "actor" in payload and "verb" in payload and "object" in payload:
+                # Complete xAPI statement format
+                verb_id = payload.get("verb", {}).get("id", "")
+                object_id = payload.get("object", {}).get("id", "")
+                result = payload.get("result", {})
+                duration_str = result.get("duration") if result else None
+            else:
+                # Legacy format
+                verb_id = payload.get("verb_id", "")
+                object_id = payload.get("object_id", "")
+                result = payload.get("result", {})
+                duration_str = result.get("duration") if result else None
+
+            metadata = {
+                "verb_id": verb_id,
+                "object_id": object_id,
+                "duration": duration_str,
+                "event_id": str(event.id),
+            }
+
+            await self._activity_log_repo.create_log(
+                student_id=user_id,
+                activity_type="xapi_statement",
+                metadata=metadata,
+            )
+        except Exception as e:
+            # Activity logging must NEVER break the sync pipeline
+            logger.warning(
+                f"Failed to log activity for event {event.id}: {str(e)}"
+            )
 
     async def _resolve_student_id(self, event: SyncEvent) -> Optional[UUID]:
         """

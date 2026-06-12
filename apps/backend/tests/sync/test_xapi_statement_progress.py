@@ -6,9 +6,10 @@ xAPI statements are not being converted to progress data.
 """
 
 import pytest
+import logging
 from datetime import datetime, timezone
 from uuid import uuid4
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import MagicMock, AsyncMock, patch
 
 from src.sync.application.handler.progress_updater import ProgressUpdater
 from src.sync.domain.sync_event import SyncEvent
