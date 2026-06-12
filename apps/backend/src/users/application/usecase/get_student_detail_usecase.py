@@ -2,14 +2,16 @@ from typing import Optional
 from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
 
 from src.shared.infrastructure.session import get_db
 from src.shared.deps import get_current_user
 from src.users.domain.user import User
+from src.users.domain.student_activity_log import StudentActivityLog
 from src.users.infrastructure.user_repository import UserRepository
-from src.users.infrastructure.student_repository import StudentRepository
 from src.game.infrastructure.game_instance_repository import GameInstanceRepository
 from src.statistic.infrastructure.progress_repository import ProgressRepository
+from src.statistic.infrastructure.xapi_statement_repository import XAPIStatementRepository
 from src.users.api.v1.schemas.student import StudentResponse
 
 
@@ -58,61 +60,99 @@ class GetStudentDetailUseCase:
                 detail="No tiene permisos para ver este estudiante",
             )
 
-        # Buscar usuario
+        # Buscar usuario (con student eager loaded)
         user_repo = UserRepository(self.db)
-        student = await user_repo.get_by_id_with_role(student_id)
+        user = await user_repo.get_by_id_with_role(student_id)
 
-        if not student:
+        if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Estudiante no encontrado",
             )
 
         # Verificar que sea estudiante
-        if not student.role or student.role.role_name != "student":
+        if not user.role or user.role.role_name != "student":
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="El usuario no es un estudiante",
             )
 
-        # Calcular last_activity desde game_instances y progress
-        last_activity = None
-        try:
-            game_instance_repo = GameInstanceRepository(self.db)
-            instances = await game_instance_repo.get_by_student_id(student.id)
-            if instances:
-                last_activity = max(
-                    (i.updated_at or i.created_at for i in instances if i.updated_at or i.created_at),
-                    default=None
-                )
-        except Exception:
-            # Si falla, continuamos sin last_activity
-            pass
+        # Resolver students.id (tablas como game_instances, progresses, xapi_statements
+        # referencian students.id, NO users.id)
+        student_record = user.student  # eager loaded via selectinload
+        student_db_id = student_record.id if student_record else None
 
-        # También considerar Progress.updated_at (xAPI pipeline actualiza Progress,
-        # no game_instances)
-        try:
-            progress_repo = ProgressRepository(self.db)
-            progress_records = await progress_repo.get_by_student_id(student.id)
-            if progress_records:
-                progress_activity = max(
-                    (p.updated_at for p in progress_records if p.updated_at),
-                    default=None
+        # Calcular last_activity desde TODAS las fuentes de actividad
+        last_activity = None
+
+        # 1. game_instances.updated_at / created_at (FK a students.id)
+        if student_db_id:
+            try:
+                game_instance_repo = GameInstanceRepository(self.db)
+                instances = await game_instance_repo.get_by_student_id(student_db_id)
+                if instances:
+                    last_activity = max(
+                        (i.updated_at or i.created_at for i in instances if i.updated_at or i.created_at),
+                        default=None
+                    )
+            except Exception:
+                pass
+
+        # 2. progresses.updated_at (FK a students.id) — xAPI pipeline
+        if student_db_id:
+            try:
+                progress_repo = ProgressRepository(self.db)
+                progress_records = await progress_repo.get_by_student_id(student_db_id)
+                if progress_records:
+                    progress_activity = max(
+                        (p.updated_at for p in progress_records if p.updated_at),
+                        default=None
+                    )
+                    if progress_activity and (not last_activity or progress_activity > last_activity):
+                        last_activity = progress_activity
+            except Exception:
+                pass
+
+        # 3. xapi_statements.timestamp (FK a students.id) — dato MÁS fresco
+        #    Cada interacción del videojuego genera un statement xAPI con timestamp
+        if student_db_id:
+            try:
+                xapi_repo = XAPIStatementRepository(self.db)
+                xapi_records = await xapi_repo.get_by_student_id(
+                    student_db_id, skip=0, limit=1
                 )
-                if progress_activity and (not last_activity or progress_activity > last_activity):
-                    last_activity = progress_activity
+                if xapi_records:
+                    xapi_ts = xapi_records[0].timestamp
+                    if xapi_ts and (not last_activity or xapi_ts > last_activity):
+                        last_activity = xapi_ts
+            except Exception:
+                pass
+
+        # 4. student_activity_log.occurred_at (FK a users.id) — log de actividad
+        try:
+            log_query = (
+                select(func.max(StudentActivityLog.occurred_at))
+                .where(
+                    StudentActivityLog.student_id == user.id,
+                    StudentActivityLog.is_deleted == False,
+                )
+            )
+            log_result = await self.db.execute(log_query)
+            log_ts = log_result.scalar()
+            if log_ts and (not last_activity or log_ts > last_activity):
+                last_activity = log_ts
         except Exception:
             pass
 
         # Construir respuesta
         return StudentResponse(
-            id=student.id,
-            username=student.username,
-            email=student.email,
-            name=student.name,
-            lastname=student.lastname,
-            is_active=student.is_active,
-            created_at=student.created_at,
-            updated_at=student.updated_at,
+            id=user.id,
+            username=user.username,
+            email=user.email,
+            name=user.name,
+            lastname=user.lastname,
+            is_active=user.is_active,
+            created_at=user.created_at,
+            updated_at=user.updated_at,
             last_activity=last_activity,
         )

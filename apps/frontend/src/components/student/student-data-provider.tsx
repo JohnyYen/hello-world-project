@@ -26,8 +26,8 @@ async function getAuthToken(): Promise<string | undefined> {
 /**
  * Calcula el estado del estudiante basado en last_activity:
  * - Pendiente (unregistered): nunca ha tenido actividad (last_activity = null)
- * - Inactivo (inactive): última actividad hace más de 14 días
- * - Activo (active): última actividad en los últimos 14 días
+ * - Activo (active): última actividad en los últimos 7 días
+ * - Inactivo (inactive): última actividad hace más de 7 días
  */
 function calculateStudentStatus(lastActivity: string | null): "active" | "inactive" | "unregistered" {
   if (!lastActivity) {
@@ -36,44 +36,68 @@ function calculateStudentStatus(lastActivity: string | null): "active" | "inacti
 
   const activityDate = new Date(lastActivity);
   const now = new Date();
-  const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000; // 14 días en milisegundos
+  const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000; // 7 días en milisegundos
 
-  if (now.getTime() - activityDate.getTime() > twoWeeksInMs) {
-    return "inactive";  // Inactivo - más de 2 semanas sin actividad
+  if (now.getTime() - activityDate.getTime() > sevenDaysInMs) {
+    return "inactive";  // Inactivo - más de 7 días sin actividad
   }
 
-  return "active";  // Activo - actividad en las últimas 2 semanas
+  return "active";  // Activo - actividad en los últimos 7 días
 }
 
 /**
  * Obtiene un estudiante por ID SIN cache.
+ * También fetchea los KPIs de progreso para poblar maxLevel, completedLessons, progress.
  */
 export async function getStudentById(id: string): Promise<Student | null> {
   try {
     const token = await getAuthToken();
     if (!token) return null;
 
+    // 1. Fetch datos básicos del estudiante
     const response = await apiGetStudent(id, token);
     
     // El backend puede devolver directamente el objeto o envuelto en ApiResponse
-    // Convertir a unknown primero para evitar ошибки de tipo
     const studentData = ((response as unknown) as { data?: Record<string, unknown> })?.data || ((response as unknown) as Record<string, unknown>);
 
     if (!studentData || !studentData.id) return null;
 
     const lastActivity = studentData.last_activity as string | null;
 
+    // 2. Fetch KPIs de progreso (contiene total_levels_completed, average_score, etc.)
+    let completedLessons = 0;
+    let maxLevel = 0;
+    let progress = 0;
+    try {
+      const progressResponse = await fetch(
+        `/api/statistic/students/${id}/progress`,
+        {
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        }
+      );
+      if (progressResponse.ok) {
+        const progressData = await progressResponse.json();
+        const kpis = progressData.kpis || progressData;
+        completedLessons = kpis.total_levels_completed || 0;
+        maxLevel = kpis.total_levels_completed || 0;
+        progress = kpis.average_score || 0;
+      }
+    } catch {
+      // Si falla el fetch de progress, usamos defaults (0)
+    }
+
     return {
       id: String(studentData.id),
       name: `${studentData.name || ''} ${studentData.lastname || ''}`.trim(),
       email: String(studentData.email || ''),
-      maxLevel: 0,
+      maxLevel,
       status: calculateStudentStatus(lastActivity),
       registrationDate: String(studentData.created_at || ''),
       lastActivity: lastActivity || String(studentData.updated_at || ''),
-      completedLessons: 0,
-      totalLessons: 0,
-      progress: 0,
+      completedLessons,
+      totalLessons: 0,  // No tenemos total de lecciones disponibles desde este endpoint
+      progress,
       achievements: [],
     };
   } catch (error) {

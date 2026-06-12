@@ -90,9 +90,9 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
         />
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Student Info Card */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Información del Estudiante</CardTitle>
@@ -125,21 +125,30 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
                   )}
                 </div>
               </div>
-              <div>
+              {/* TODO: Panel de Nivel Máximo — diseñar lógica de achievements */}
+              {/* <div>
                 <p className="text-sm text-muted-foreground">Nivel Máximo</p>
                 <p className="font-medium">
-                  <span className="inline-flex items-center rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-medium text-primary">
-                    Nivel {student.maxLevel}
-                  </span>
+                  {student.maxLevel > 0 ? (
+                    <span className="inline-flex items-center rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-medium text-primary">
+                      Nivel {student.maxLevel}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground text-sm">Sin actividad</span>
+                  )}
                 </p>
-              </div>
+              </div> */}
               <div>
                 <p className="text-sm text-muted-foreground">Fecha de Registro</p>
                 <p className="font-medium">{new Date(student.registrationDate).toLocaleDateString('es-ES')}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Última Actividad</p>
-                <p className="font-medium">{new Date(student.lastActivity).toLocaleDateString('es-ES')}</p>
+                <p className="font-medium">
+                  {student.lastActivity
+                    ? new Date(student.lastActivity).toLocaleDateString('es-ES')
+                    : 'Sin actividad'}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -154,24 +163,28 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span>Lecciones Completadas</span>
-                  <span className="font-medium">{student.completedLessons} / {student.totalLessons}</span>
+                  <span className="font-medium">
+                    {student.totalLessons > 0
+                      ? `${student.completedLessons} / ${student.totalLessons}`
+                      : student.completedLessons}
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5">
                   <div
-                    className="bg-primary h-2.5 rounded-full"
-                    style={{ width: `${student.progress}%` }}
+                    className="bg-primary h-2.5 rounded-full transition-all duration-500"
+                    style={{ width: `${Math.min(student.progress, 100)}%` }}
                   ></div>
                 </div>
                 <div className="text-right text-sm text-muted-foreground">
-                  {student.progress}% completado
+                  {student.progress > 0 ? `${student.progress}% completado` : 'Sin progreso aún'}
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Achievements and Stats */}
-        <div className="space-y-6">
+        {/* TODO: Panel de Logros y Estadísticas — rediseñar cuando se implemente sistema de achievements */}
+        {/* <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle>Logros</CardTitle>
@@ -192,7 +205,6 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
             </CardContent>
           </Card>
 
-          {/* Quick Stats */}
           <Card>
             <CardHeader>
               <CardTitle>Estadísticas</CardTitle>
@@ -217,7 +229,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
         </div>
 
         {/* Feedback History Section */}

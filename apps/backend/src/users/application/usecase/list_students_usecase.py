@@ -2,13 +2,17 @@ from typing import List, Optional
 from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
 
 from src.shared.infrastructure.session import get_db
 from src.shared.deps import get_current_user
 from src.users.domain.user import User
+from src.users.domain.student_activity_log import StudentActivityLog
 from src.users.infrastructure.user_repository import UserRepository
+from src.users.infrastructure.student_repository import StudentRepository
 from src.game.infrastructure.game_instance_repository import GameInstanceRepository
 from src.statistic.infrastructure.progress_repository import ProgressRepository
+from src.statistic.infrastructure.xapi_statement_repository import XAPIStatementRepository
 from src.users.api.v1.schemas.student import StudentListResponse, StudentResponse
 
 
@@ -77,33 +81,72 @@ class ListStudentsUseCase:
         # Obtener repositorios para calcular last_activity
         game_instance_repo = GameInstanceRepository(self.db)
         progress_repo = ProgressRepository(self.db)
+        xapi_repo = XAPIStatementRepository(self.db)
+        student_repo_inst = StudentRepository(self.db)
 
         # Construir respuesta
         student_responses = []
         for student in students:
-            # Calcular last_activity desde game_instances y/o progress
-            last_activity = None
-            try:
-                instances = await game_instance_repo.get_by_student_id(student.id)
-                if instances:
-                    last_activity = max(
-                        (i.updated_at or i.created_at for i in instances if i.updated_at or i.created_at),
-                        default=None
-                    )
-            except Exception:
-                pass
+            # Resolver students.id (tablas como game_instances, progresses,
+            # xapi_statements referencian students.id, NO users.id)
+            student_record = await student_repo_inst.get_by_user_id(student.id)
+            student_db_id = student_record.id if student_record else None
 
-            # También considerar Progress.updated_at (xAPI pipeline actualiza Progress,
-            # no game_instances)
-            try:
-                progress_records = await progress_repo.get_by_student_id(student.id)
-                if progress_records:
-                    progress_activity = max(
-                        (p.updated_at for p in progress_records if p.updated_at),
-                        default=None
+            # Calcular last_activity desde TODAS las fuentes de actividad
+            last_activity = None
+
+            # 1. game_instances.updated_at / created_at (FK a students.id)
+            if student_db_id:
+                try:
+                    instances = await game_instance_repo.get_by_student_id(student_db_id)
+                    if instances:
+                        last_activity = max(
+                            (i.updated_at or i.created_at for i in instances if i.updated_at or i.created_at),
+                            default=None
+                        )
+                except Exception:
+                    pass
+
+            # 2. progresses.updated_at (FK a students.id) — xAPI pipeline
+            if student_db_id:
+                try:
+                    progress_records = await progress_repo.get_by_student_id(student_db_id)
+                    if progress_records:
+                        progress_activity = max(
+                            (p.updated_at for p in progress_records if p.updated_at),
+                            default=None
+                        )
+                        if progress_activity and (not last_activity or progress_activity > last_activity):
+                            last_activity = progress_activity
+                except Exception:
+                    pass
+
+            # 3. xapi_statements.timestamp (FK a students.id) — dato MÁS fresco
+            if student_db_id:
+                try:
+                    xapi_records = await xapi_repo.get_by_student_id(
+                        student_db_id, skip=0, limit=1
                     )
-                    if progress_activity and (not last_activity or progress_activity > last_activity):
-                        last_activity = progress_activity
+                    if xapi_records:
+                        xapi_ts = xapi_records[0].timestamp
+                        if xapi_ts and (not last_activity or xapi_ts > last_activity):
+                            last_activity = xapi_ts
+                except Exception:
+                    pass
+
+            # 4. student_activity_log.occurred_at (FK a users.id)
+            try:
+                log_query = (
+                    select(func.max(StudentActivityLog.occurred_at))
+                    .where(
+                        StudentActivityLog.student_id == student.id,
+                        StudentActivityLog.is_deleted == False,
+                    )
+                )
+                log_result = await self.db.execute(log_query)
+                log_ts = log_result.scalar()
+                if log_ts and (not last_activity or log_ts > last_activity):
+                    last_activity = log_ts
             except Exception:
                 pass
 
