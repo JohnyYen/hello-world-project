@@ -49,12 +49,13 @@ class ProgressUpdater:
         """
         payload = event.payload or {}
 
-        # Use student_id from payload if already resolved (to avoid double resolution)
-        student_id = payload.get("student_id") or payload.get("actor_id")
+        # Resolve student_id from the sync session chain (most reliable).
+        # The game sends actor_id=user_id in the payload, but progresses
+        # FK references students.id — the chain resolves the correct one
+        # (students.id ≠ user_id, they're different UUIDs).
+        # The chain traversal: SyncSession -> GameInstance -> student_id (correct FK).
+        student_id = payload.get("student_id")
         if not student_id:
-            # Resolve student_id from the sync session chain (most reliable).
-            # The game sends actor_id=user_id in the payload, but progresses
-            # FK references students.id — the chain resolves the correct one.
             student_id = await self._resolve_student_id(event)
 
         # Resolve segment_level_id from payload or via sync session chain
@@ -158,28 +159,35 @@ class ProgressUpdater:
                 result = payload.get("result", {})
                 verb_id = payload.get("verb_id", "")
 
-            # Level completed/attempted: update based on result
-            if "completed" in verb_id or "attempted" in verb_id:
-                if result.get("completion") or result.get("success"):
+            # Level completed: update based on result
+            # NOTE: "attempted" events MUST NOT set objectives_completed.
+            # The game sends attempted when a level starts (before any result),
+            # and the builder defaults result_completion=true, which would
+            # incorrectly mark the level as completed.
+            if "attempted" not in verb_id:
+                if "completed" in verb_id or result.get("completion") or result.get("success"):
                     update_data["objectives_completed"] = 1
-            elif result.get("completion") or result.get("success"):
-                # Also set objectives_completed if completion/success is true even without verb
-                update_data["objectives_completed"] = 1
 
             # Map score to efficiency_rating (0-100 scale) - anytime score is present
             # Handle both standard xAPI format (result.score.scaled/raw) and legacy format (result.score_scaled/raw)
+            # IMPORTANT: Always use explicit `is not None` checks, NEVER `or` for score
+            # aggregation. `0.0` is a VALID score (student got 0%), but `or` treats it as
+            # falsy and would fall through to the other field, producing wrong results.
             score = None
             if is_complete_xapi:
                 # Standard xAPI 1.0 format: result.score.scaled or result.score.raw
                 score_obj = result.get("score") if result else None
                 if score_obj:
-                    score = score_obj.get("scaled") or score_obj.get("raw")
+                    scaled = score_obj.get("scaled")
+                    raw = score_obj.get("raw")
+                    score = scaled if scaled is not None else raw
             else:
                 # Legacy format: result has score_raw/score_scaled nested (game format)
                 # The game sends result.score_raw and result.score_scaled (nested in result)
-                score_raw = result.get("score_raw") if result else None
-                score_scaled = result.get("score_scaled") if result else None
-                score = score_scaled or score_raw
+                if result:
+                    score_raw = result.get("score_raw")
+                    score_scaled = result.get("score_scaled")
+                    score = score_scaled if score_scaled is not None else score_raw
 
             if score is not None:
                 if isinstance(score, float) and score <= 1.0:
