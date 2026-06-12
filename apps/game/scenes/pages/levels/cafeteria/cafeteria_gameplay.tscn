@@ -267,6 +267,7 @@ size = Vector2(56, 105.5)
 size = Vector2(74, 59)
 
 [node name="CafeteriaLevel" node_paths=PackedStringArray("code_space", "hud", "drink_machine", "bread_station", "cash_register") instance=ExtResource("1_lxa08")]
+level_number = 1
 script = ExtResource("2_krp0b")
 back_scene = "uid://ce0a2mmdts12p"
 code_space = NodePath("MarginContainer/HBoxContainer/CodeArea/CodeSpace")

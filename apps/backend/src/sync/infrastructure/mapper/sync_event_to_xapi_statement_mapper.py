@@ -38,6 +38,7 @@ Complete xAPI statement structure (new):
 }
 """
 
+import re
 from datetime import datetime, timezone
 from uuid import uuid4
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -196,8 +197,13 @@ class SyncEventToXAPIStatementMapper:
         activity_type = self._build_activity_type(object_type)
 
         # Build IRI for the object
+        # The game may now send compound URIs (hello-world://level/{n}/segment/{m})
+        # or plain object_ids (e.g., "1" for legacy). Detect and handle both.
         if object_type == "level":
-            iri = f"hello-world://level/{object_id}"
+            if re.match(r"^hello-world://level/\d+/segment/\d+$", object_id):
+                iri = object_id  # Already a valid compound URI, use as-is
+            else:
+                iri = f"hello-world://level/{object_id}"
         elif object_type == "segment":
             iri = f"hello-world://segment/{object_id}"
         else:
