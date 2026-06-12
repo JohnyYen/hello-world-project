@@ -342,6 +342,11 @@ export default function StudentReportPage() {
                 xAxisLabel="Fecha"
                 yAxisDomain={[0, 100]}
                 height={320}
+                tooltipFormatter={(value, name) => {
+                  if (name === "Puntuación") return `${value} pts`;
+                  if (name === "Nivel") return `${value}`;
+                  return String(value);
+                }}
               />
             </div>
           </div>
@@ -470,7 +475,18 @@ export default function StudentReportPage() {
                   height={320}
                   layout="vertical"
                   yAxisDomain={[0, 100]}
-                  tooltipFormatter={(value) => `${value} puntos`}
+                  tooltipLabelFormatter={(label, item) => {
+                    const typedItem = item as {
+                      levelName: string;
+                      attempts?: number;
+                      timeSpent?: number;
+                    };
+                    const extra = typedItem.attempts
+                      ? `${typedItem.attempts} intentos • ${typedItem.timeSpent ? formatPlayTime(typedItem.timeSpent) : ""}`
+                      : "";
+                    return extra ? `${label} (${extra})` : label;
+                  }}
+                  tooltipFormatter={(value) => `${value} pts`}
                 />
               </div>
             </div>

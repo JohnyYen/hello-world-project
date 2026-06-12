@@ -32,6 +32,7 @@ interface BarChartProps<T> {
   showGrid?: boolean;
   yAxisDomain?: [number, number];
   tooltipFormatter?: (value: number, name: string) => string;
+  tooltipLabelFormatter?: (label: string, item: T) => string;
 }
 
 export function BarChart<T>({
@@ -49,6 +50,7 @@ export function BarChart<T>({
   showGrid = true,
   yAxisDomain,
   tooltipFormatter,
+  tooltipLabelFormatter,
 }: BarChartProps<T>) {
   const CustomTooltip = ({
     active,
@@ -56,14 +58,34 @@ export function BarChart<T>({
     label,
   }: {
     active?: boolean;
-    payload?: Array<{ name: string; value: number; color: string }>;
+    payload?: Array<{
+      name: string;
+      value: number;
+      color: string;
+      payload?: T;
+    }>;
     label?: string;
   }) => {
     if (!active || !payload || !payload.length) return null;
 
+    // Find the item in data that matches the label
+    const item = data.find((d) => {
+      const itemAsRecord = d as Record<string, unknown>;
+      return String(itemAsRecord[xAxisDataKey]) === String(label);
+    }) as T | undefined;
+
+    const displayLabel =
+      item && tooltipLabelFormatter
+        ? tooltipLabelFormatter(label || "", item)
+        : label;
+
     return (
       <div className="rounded-lg border bg-card p-3 shadow-lg">
-        <p className="text-sm font-medium text-foreground mb-2">{label}</p>
+        {displayLabel && (
+          <p className="text-sm font-medium text-foreground mb-2">
+            {displayLabel}
+          </p>
+        )}
         <div className="space-y-1">
           {payload.map((entry, index) => (
             <div key={index} className="flex items-center gap-2 text-sm">
