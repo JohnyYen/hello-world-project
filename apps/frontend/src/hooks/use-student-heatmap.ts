@@ -21,6 +21,24 @@ interface UseStudentHeatmapReturn {
   error: string | null;
 }
 
+/**
+ * Detecta la zona horaria del navegador en formato IANA.
+ *
+ * Ejemplos: ``America/Caracas``, ``Europe/Madrid``, ``America/Argentina/Buenos_Aires``
+ */
+function detectBrowserTimezone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    // Fallback: calcular offset UTC
+    const offset = -new Date().getTimezoneOffset();
+    const hours = Math.floor(Math.abs(offset) / 60);
+    const minutes = Math.abs(offset) % 60;
+    const sign = offset >= 0 ? "+" : "-";
+    return `${sign}${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  }
+}
+
 export function useStudentHeatmap(studentId: string, days: number = 30): UseStudentHeatmapReturn {
   const [heatmapData, setHeatmapData] = useState<HeatMapData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,8 +50,9 @@ export function useStudentHeatmap(studentId: string, days: number = 30): UseStud
       setError(null);
 
       try {
+        const timezone = encodeURIComponent(detectBrowserTimezone());
         const response = await fetch(
-          `/api/users/students/${studentId}/activity/heatmap?days=${days}`,
+          `/api/users/students/${studentId}/activity/heatmap?days=${days}&timezone=${timezone}`,
           {
             headers: {
               "Content-Type": "application/json",
