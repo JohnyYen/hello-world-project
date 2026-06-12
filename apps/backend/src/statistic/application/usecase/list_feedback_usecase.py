@@ -62,39 +62,68 @@ class ListFeedbackUseCase:
         skip: int = 0,
         limit: int = 100,
     ) -> FeedbackListResponse:
+        # --- Professor flow: view feedback for any student in their courses ---
         professor = self.current_user.professor
-        if not professor:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User does not have a professor profile",
+        if professor:
+            result = await self.db.execute(
+                select(CourseProfessor.course_id).where(
+                    CourseProfessor.professor_id == professor.id
+                )
             )
+            course_ids = list(result.scalars().all())
 
-        result = await self.db.execute(
-            select(CourseProfessor.course_id).where(
-                CourseProfessor.professor_id == professor.id
-            )
-        )
-        course_ids = list(result.scalars().all())
+            if not course_ids:
+                return FeedbackListResponse(items=[], total=0, skip=skip, limit=limit)
 
-        if not course_ids:
-            return FeedbackListResponse(items=[], total=0, skip=skip, limit=limit)
+            canonical_student_id = await self._resolve_student_id(student_id)
 
-        canonical_student_id = await self._resolve_student_id(student_id)
-
-        feedbacks = (
-            await self.feedback_service.get_feedback_for_student_with_null_courses(
+            feedbacks = await self.feedback_service.get_feedback_for_student_with_null_courses(
                 student_id=canonical_student_id,
                 course_ids=course_ids,
                 skip=skip,
                 limit=limit,
             )
-        )
 
-        total = (
-            await self.feedback_service.count_feedback_for_student_with_null_courses(
+            total = await self.feedback_service.count_feedback_for_student_with_null_courses(
                 student_id=canonical_student_id,
                 course_ids=course_ids,
             )
+
+            return FeedbackListResponse(
+                items=[FeedbackSchema.model_validate(f) for f in feedbacks],
+                total=total,
+                skip=skip,
+                limit=limit,
+            )
+
+        # --- Student flow: only their own feedback, no course filtering ---
+        # Query student separately to avoid async lazy-loading (MissingGreenlet)
+        student_result = await self.db.execute(
+            select(Student).where(Student.user_id == self.current_user.id)
+        )
+        student = student_result.scalar_one_or_none()
+        if not student:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User does not have a professor or student profile",
+            )
+
+        canonical_student_id = await self._resolve_student_id(student_id)
+
+        # Students can only see their own feedback
+        if canonical_student_id != student.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Students can only view their own feedback",
+            )
+
+        feedbacks = await self.feedback_service.get_all(
+            skip=skip,
+            limit=limit,
+            filters={"student_id": canonical_student_id},
+        )
+        total = await self.feedback_service.count(
+            filters={"student_id": canonical_student_id},
         )
 
         return FeedbackListResponse(

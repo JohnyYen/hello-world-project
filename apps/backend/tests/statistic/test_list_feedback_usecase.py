@@ -77,6 +77,12 @@ class TestListFeedbackUseCaseExecute:
         mock_feedback_service = MagicMock()
         mock_current_user = MagicMock()
         mock_current_user.professor = None
+        mock_current_user.student = None  # Explicitly no student profile either
+        
+        # Mock db.execute for the Student query to return None
+        mock_student_result = MagicMock()
+        mock_student_result.scalar_one_or_none.return_value = None
+        mock_db.execute = AsyncMock(return_value=mock_student_result)
         
         use_case = ListFeedbackUseCase(
             db=mock_db,
@@ -88,7 +94,7 @@ class TestListFeedbackUseCaseExecute:
             await use_case.execute(student_id=uuid4())
         
         assert exc_info.value.status_code == status.HTTP_403_FORBIDDEN
-        assert "professor profile" in exc_info.value.detail
+        assert "professor or student profile" in exc_info.value.detail
 
     @pytest.mark.asyncio
     async def test_execute_returns_empty_when_professor_has_no_courses(self):
@@ -134,7 +140,7 @@ class TestListFeedbackUseCaseExecute:
         mock_course_result.scalars().all.return_value = [uuid4(), uuid4()]  # Two course IDs
         mock_db.execute = AsyncMock(return_value=mock_course_result)
         
-        # Mock feedback_service.get_feedback_for_student to return feedbacks
+        # Mock feedback_service.get_feedback_for_student_with_null_courses to return feedbacks
         mock_feedback1 = MagicMock()
         mock_feedback1.id = uuid4()
         mock_feedback1.student_id = uuid4()
@@ -165,12 +171,12 @@ class TestListFeedbackUseCaseExecute:
         mock_feedback2.level_id = None
         mock_feedback2.created_at = datetime.now()
         
-        mock_feedback_service.get_feedback_for_student = AsyncMock(
+        mock_feedback_service.get_feedback_for_student_with_null_courses = AsyncMock(
             return_value=[mock_feedback1, mock_feedback2]
         )
         
-        # Mock feedback_service.count to return total count
-        mock_feedback_service.count = AsyncMock(return_value=2)
+        # Mock feedback_service.count_feedback_for_student_with_null_courses to return total count
+        mock_feedback_service.count_feedback_for_student_with_null_courses = AsyncMock(return_value=2)
         
         use_case = ListFeedbackUseCase(
             db=mock_db,
@@ -181,8 +187,8 @@ class TestListFeedbackUseCaseExecute:
         student_id = uuid4()
         result = await use_case.execute(student_id=student_id, skip=0, limit=10)
         
-        # Verify feedback_service.get_feedback_for_student was called with correct params
-        mock_feedback_service.get_feedback_for_student.assert_called_once_with(
+        # Verify feedback_service.get_feedback_for_student_with_null_courses was called with correct params
+        mock_feedback_service.get_feedback_for_student_with_null_courses.assert_called_once_with(
             student_id=student_id,
             course_ids=[mock_course_result.scalars().all.return_value[0], 
                        mock_course_result.scalars().all.return_value[1]],
@@ -190,8 +196,8 @@ class TestListFeedbackUseCaseExecute:
             limit=10
         )
         
-        # Verify feedback_service.count was called
-        mock_feedback_service.count.assert_called_once()
+        # Verify feedback_service.count_feedback_for_student_with_null_courses was called
+        mock_feedback_service.count_feedback_for_student_with_null_courses.assert_called_once()
         
         # Verify result
         assert isinstance(result, FeedbackListResponse)
@@ -225,11 +231,11 @@ class TestListFeedbackUseCaseExecute:
         mock_course_result.scalars().all.return_value = [uuid4()]
         mock_db.execute = AsyncMock(return_value=mock_course_result)
         
-        # Mock feedback_service.get_feedback_for_student to return feedbacks
-        mock_feedback_service.get_feedback_for_student = AsyncMock(return_value=[])
+        # Mock feedback_service.get_feedback_for_student_with_null_courses to return feedbacks
+        mock_feedback_service.get_feedback_for_student_with_null_courses = AsyncMock(return_value=[])
         
-        # Mock feedback_service.count to return total count
-        mock_feedback_service.count = AsyncMock(return_value=0)
+        # Mock feedback_service.count_feedback_for_student_with_null_courses to return total count
+        mock_feedback_service.count_feedback_for_student_with_null_courses = AsyncMock(return_value=0)
         
         use_case = ListFeedbackUseCase(
             db=mock_db,
@@ -241,7 +247,7 @@ class TestListFeedbackUseCaseExecute:
         await use_case.execute(student_id=student_id, skip=5, limit=10)
         
         # Verify pagination parameters were passed correctly
-        mock_feedback_service.get_feedback_for_student.assert_called_once_with(
+        mock_feedback_service.get_feedback_for_student_with_null_courses.assert_called_once_with(
             student_id=student_id,
             course_ids=[mock_course_result.scalars().all.return_value[0]],
             skip=5,

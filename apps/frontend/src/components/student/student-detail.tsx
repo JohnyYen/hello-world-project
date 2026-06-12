@@ -16,6 +16,7 @@ type StudentDetailProps = {
 
 export default function StudentDetail({ student, studentId }: StudentDetailProps) {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedbackVersion, setFeedbackVersion] = useState(0);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
       {/* Grid Pattern Overlay */}
@@ -87,6 +88,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
         <StudentFeedback
           student={student}
           onClose={() => setIsFeedbackOpen(false)}
+          onFeedbackCreated={() => setFeedbackVersion((v) => v + 1)}
         />
       )}
 
@@ -234,7 +236,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
 
         {/* Feedback History Section */}
         <div className="mt-8">
-          <StudentFeedbackHistory studentId={studentId} />
+          <StudentFeedbackHistory key={feedbackVersion} studentId={studentId} />
         </div>
       </div>
     </div>
