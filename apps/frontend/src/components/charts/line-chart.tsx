@@ -118,9 +118,13 @@ export function LineChart<T>({
             }
           />
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
+          <Legend
             wrapperStyle={{ paddingTop: "10px" }}
-            formatter={(value) => <span style={{ color: COLORS.foreground, fontSize: 12 }}>{value}</span>}
+            formatter={(value) => (
+              <span style={{ color: "hsl(var(--foreground))", fontSize: 12 }}>
+                {value}
+              </span>
+            )}
           />
           {lines.map((line, index) => (
             <Line

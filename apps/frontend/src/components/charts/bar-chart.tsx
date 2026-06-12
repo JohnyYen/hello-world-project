@@ -201,7 +201,7 @@ export function BarChart<T>({
           <Legend
             wrapperStyle={{ paddingTop: "10px" }}
             formatter={(value) => (
-              <span style={{ color: COLORS.foreground, fontSize: 12 }}>
+              <span style={{ color: "hsl(var(--foreground))", fontSize: 12 }}>
                 {value}
               </span>
             )}
