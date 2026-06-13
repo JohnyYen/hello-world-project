@@ -77,7 +77,7 @@ export default function Page() {
         
         {/* Chart Section */}
         <div className="group relative rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl shadow-indigo-500/5 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <ChartAreaInteractive 
             data={activityOverTime}
             period={period}
@@ -88,7 +88,7 @@ export default function Page() {
         
         {/* Data Table Section - Uses levelPerformance from overview endpoint */}
         <div className="group relative rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl shadow-indigo-500/5 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <DataTable 
             data={levelPerformance}
             isLoading={isLoading}

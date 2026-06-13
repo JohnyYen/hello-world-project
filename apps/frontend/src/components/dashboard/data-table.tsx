@@ -12,6 +12,7 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { useRouter } from "next/navigation"
 import {
   arrayMove,
   SortableContext,
@@ -158,6 +159,24 @@ function DragHandle({ id }: { id: string }) {
   )
 }
 
+/**
+ * Custom filter function for completion rate that interprets string categories as numeric ranges.
+ * - "high": rate > 80
+ * - "medium": rate >= 50 && rate <= 80  
+ * - "low": rate < 50
+ */
+export const completionRateFilterFn = (
+  row: Row<z.infer<typeof schema>>,
+  columnId: string,
+  filterValue: string
+) => {
+  const rate = row.getValue(columnId) as number
+  if (filterValue === "high") return rate > 80
+  if (filterValue === "medium") return rate >= 50 && rate <= 80
+  if (filterValue === "low") return rate < 50
+  return true
+}
+
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
@@ -218,7 +237,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         </div>
       )
     },
-    filterFn: "includesString",
+    filterFn: completionRateFilterFn,
   },
   {
     accessorKey: "averageAttempts",
@@ -246,26 +265,51 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8 hover:bg-indigo-500/10 hover:text-indigo-600"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Abrir menú</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40 rounded-xl border-slate-200/60 dark:border-slate-800/60">
-          <DropdownMenuItem className="rounded-lg">Ver Detalles</DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg">Ver Estudiantes</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" className="rounded-lg">Archivar</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => {
+      const router = useRouter()
+      const levelName = row.original.levelName
+
+      const handleViewDetails = () => {
+        router.push(`/dashboard/levels/${encodeURIComponent(levelName)}`)
+      }
+
+      const handleViewStudents = () => {
+        router.push(`/dashboard/students?level=${encodeURIComponent(levelName)}`)
+      }
+
+      const handleArchive = () => {
+        toast.warning("¿Estás seguro de archivar este nivel?", {
+          action: {
+            label: "Archivar",
+            onClick: () => {
+              toast.success(`Nivel "${levelName}" archivado correctamente`)
+            },
+          },
+          cancelButton: true,
+        })
+      }
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8 hover:bg-indigo-500/10 hover:text-indigo-600"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Abrir menú</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40 rounded-xl border-slate-200/60 dark:border-slate-800/60">
+            <DropdownMenuItem className="rounded-lg" onClick={handleViewDetails}>Ver Detalles</DropdownMenuItem>
+            <DropdownMenuItem className="rounded-lg" onClick={handleViewStudents}>Ver Estudiantes</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive" className="rounded-lg" onClick={handleArchive}>Archivar</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
     size: 50,
   },
 ]
