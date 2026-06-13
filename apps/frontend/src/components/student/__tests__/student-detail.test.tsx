@@ -80,14 +80,14 @@ describe("StudentDetail", () => {
     const gamesProgress: GameProgressItem[] = [
       {
         gameTitle: "Matemáticas Básicas",
-        confidenceLevelsCompleted: 3,
-        totalConfidenceLevels: 5,
+        completedSegments: 3,
+        totalSegments: 5,
         completionPercentage: 60,
       },
       {
         gameTitle: "Física Divertida",
-        confidenceLevelsCompleted: 2,
-        totalConfidenceLevels: 4,
+        completedSegments: 2,
+        totalSegments: 4,
         completionPercentage: 50,
       },
     ];
@@ -101,8 +101,8 @@ describe("StudentDetail", () => {
 
     expect(screen.getByText("Matemáticas Básicas")).toBeDefined();
     expect(screen.getByText("Física Divertida")).toBeDefined();
-    expect(screen.getByText("3 de 5 niveles completados")).toBeDefined();
-    expect(screen.getByText("2 de 4 niveles completados")).toBeDefined();
+    expect(screen.getByText("3 de 5 segmentos completados")).toBeDefined();
+    expect(screen.getByText("2 de 4 segmentos completados")).toBeDefined();
     expect(screen.getByText("60%")).toBeDefined();
     expect(screen.getByText("50%")).toBeDefined();
   });
@@ -111,8 +111,8 @@ describe("StudentDetail", () => {
     const gamesProgress: GameProgressItem[] = [
       {
         gameTitle: "Matemáticas Básicas",
-        confidenceLevelsCompleted: 3,
-        totalConfidenceLevels: 5,
+        completedSegments: 3,
+        totalSegments: 5,
         completionPercentage: 60,
       },
     ];

@@ -29,14 +29,14 @@ const mockApiResponse = {
   games_progress: [
     {
       game_title: "Matemáticas Básicas",
-      confidence_levels_completed: 3,
-      total_confidence_levels: 5,
+      completed_segments: 3,
+      total_segments: 5,
       completion_percentage: 60,
     },
     {
       game_title: "Física Divertida",
-      confidence_levels_completed: 2,
-      total_confidence_levels: 4,
+      completed_segments: 2,
+      total_segments: 4,
       completion_percentage: 50,
     },
   ],
@@ -87,14 +87,14 @@ describe("useStudentReports", () => {
     expect(result.current.gamesProgress).toHaveLength(2);
     expect(result.current.gamesProgress[0]).toEqual({
       gameTitle: "Matemáticas Básicas",
-      confidenceLevelsCompleted: 3,
-      totalConfidenceLevels: 5,
+      completedSegments: 3,
+      totalSegments: 5,
       completionPercentage: 60,
     });
     expect(result.current.gamesProgress[1]).toEqual({
       gameTitle: "Física Divertida",
-      confidenceLevelsCompleted: 2,
-      totalConfidenceLevels: 4,
+      completedSegments: 2,
+      totalSegments: 4,
       completionPercentage: 50,
     });
   });

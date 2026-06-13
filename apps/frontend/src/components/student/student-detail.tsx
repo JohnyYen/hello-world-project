@@ -178,7 +178,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
                 <div className="mb-4">
                   <h3 className="text-lg font-semibold">Progreso por Juego</h3>
                   <p className="text-sm text-muted-foreground">
-                    Niveles completados por juego
+                    Segmentos completados por juego
                   </p>
                 </div>
                 {gamesProgress.length === 0 ? (
@@ -199,7 +199,7 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-xs text-muted-foreground">
-                            {game.confidenceLevelsCompleted} de {game.totalConfidenceLevels} niveles completados
+                            {game.completedSegments} de {game.totalSegments} segmentos completados
                           </span>
                           <Badge variant="secondary" className="text-xs">
                             {game.completionPercentage}%

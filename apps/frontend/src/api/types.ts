@@ -429,8 +429,8 @@ export interface ActivityDistributionItem {
 
 export interface GameProgressItem {
   gameTitle: string;
-  confidenceLevelsCompleted: number;
-  totalConfidenceLevels: number;
+  completedSegments: number;
+  totalSegments: number;
   completionPercentage: number;
 }
 

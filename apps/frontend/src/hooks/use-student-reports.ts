@@ -101,10 +101,10 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
 
         const gamesData = data.games_progress || [];
         setGamesProgress(
-          gamesData.map((item: { game_title: string; confidence_levels_completed: number; total_confidence_levels: number; completion_percentage: number }) => ({
+          gamesData.map((item: { game_title: string; completed_segments: number; total_segments: number; completion_percentage: number }) => ({
             gameTitle: item.game_title,
-            confidenceLevelsCompleted: item.confidence_levels_completed,
-            totalConfidenceLevels: item.total_confidence_levels,
+            completedSegments: item.completed_segments,
+            totalSegments: item.total_segments,
             completionPercentage: item.completion_percentage,
           }))
         );
