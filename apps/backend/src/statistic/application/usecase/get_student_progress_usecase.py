@@ -172,20 +172,55 @@ class GetStudentProgressUseCase:
     def _calculate_progress_over_time(
         self, enriched_rows: list
     ) -> list[ProgressOverTimeItem]:
-        """Calcula evolución del progreso con nombres de nivel reales."""
-        sorted_data = sorted(
-            [r for r in enriched_rows if r["progress"].created_at is not None],
-            key=lambda r: r["progress"].created_at,
+        """
+        Calcula evolución del progreso agrupada por día.
+
+        Usa `updated_at` (con fallback a ``created_at``) para determinar la
+        fecha de cada actividad, porque los registros de progreso se actualizan
+        in-situ cuando el estudiante re-juega un mismo segmento (no se crean
+        nuevos registros). Sin esta agrupación, los charts perderían el
+        historial diario al sobrescribirse las fechas.
+        """
+        from datetime import datetime as dt
+
+        daily: dict[str, dict] = {}
+
+        for r in enriched_rows:
+            p = r["progress"]
+            activity_dt = p.updated_at or p.created_at
+            if activity_dt is None:
+                continue
+            date_key = activity_dt.strftime("%b %d")
+
+            if date_key not in daily:
+                daily[date_key] = {
+                    "total_score": 0,
+                    "max_level": 0,
+                    "total_time": 0,
+                    "count": 0,
+                }
+
+            daily[date_key]["total_score"] += p.efficiency_rating
+            daily[date_key]["max_level"] = max(
+                daily[date_key]["max_level"], r["level_number"]
+            )
+            daily[date_key]["total_time"] += p.attempt_count
+            daily[date_key]["count"] += 1
+
+        # Ordenar cronológicamente para mantener el orden en el chart
+        sorted_dates = sorted(
+            daily.items(),
+            key=lambda item: dt.strptime(item[0], "%b %d").replace(year=2026),
         )
 
         return [
             ProgressOverTimeItem(
-                date=p["progress"].created_at.strftime("%b %d"),
-                level=p["level_number"],
-                score=p["progress"].efficiency_rating,
-                time_spent=p["progress"].attempt_count,
+                date=date_str,
+                level=data["max_level"],
+                score=data["total_score"] // data["count"],  # promedio diario
+                time_spent=data["total_time"],
             )
-            for p in sorted_data
+            for date_str, data in sorted_dates
         ]
 
     def _calculate_level_performance(
