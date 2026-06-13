@@ -17,6 +17,7 @@ from src.statistic.api.v1.schemas.student_progress import (
     ProgressOverTimeItem,
     LevelPerformanceItem,
     ActivityDistributionItem,
+    GameProgressItem,
     StudentProgressResponse,
 )
 
@@ -165,6 +166,40 @@ class TestActivityDistributionItem:
         assert item.game_name == "Juego 12345678"
         assert item.time_spent == 120
         assert item.sessions == 8
+
+
+class TestGameProgressItem:
+    """Test suite para el schema GameProgressItem."""
+
+    def test_create_game_progress_item(self):
+        """Test correct serialization with known values."""
+        item = GameProgressItem(
+            game_title="Nivelación",
+            confidence_levels_completed=3,
+            total_confidence_levels=10,
+            completion_percentage=30.0,
+        )
+
+        assert item.game_title == "Nivelación"
+        assert item.confidence_levels_completed == 3
+        assert item.total_confidence_levels == 10
+        assert item.completion_percentage == 30.0
+
+    def test_game_progress_snake_case_json_keys(self):
+        """Test snake_case keys in JSON output."""
+        item = GameProgressItem(
+            game_title="Operaciones",
+            confidence_levels_completed=5,
+            total_confidence_levels=8,
+            completion_percentage=62.5,
+        )
+
+        result = item.model_dump()
+
+        assert "game_title" in result
+        assert "confidence_levels_completed" in result
+        assert "total_confidence_levels" in result
+        assert "completion_percentage" in result
 
 
 class TestStudentProgressResponse:

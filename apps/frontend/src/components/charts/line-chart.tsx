@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { COLORS, CHART_COLORS_ARRAY } from "@/lib/colors";
+import { COLORS, CHART_COLORS_ARRAY, useChartThemeColors } from "@/lib/colors";
 import { cn } from "@/lib/utils";
 
 interface LineChartProps<T> {
@@ -48,22 +48,34 @@ export function LineChart<T>({
   yAxisDomain,
   tooltipFormatter,
 }: LineChartProps<T>) {
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) => {
+  const themeColors = useChartThemeColors();
+
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: boolean;
+    payload?: Array<{ name: string; value: number; color: string }>;
+    label?: string;
+  }) => {
     if (!active || !payload || !payload.length) return null;
-    
+
     return (
       <div className="rounded-lg border bg-card p-3 shadow-lg">
         <p className="text-sm font-medium text-foreground mb-2">{label}</p>
         <div className="space-y-1">
           {payload.map((entry, index) => (
             <div key={index} className="flex items-center gap-2 text-sm">
-              <div 
-                className="w-3 h-3 rounded-full" 
+              <div
+                className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: entry.color }}
               />
               <span className="text-muted-foreground">{entry.name}:</span>
               <span className="font-medium">
-                {tooltipFormatter ? tooltipFormatter(entry.value, entry.name) : entry.value}
+                {tooltipFormatter
+                  ? tooltipFormatter(entry.value, entry.name)
+                  : entry.value}
               </span>
             </div>
           ))}
@@ -77,33 +89,40 @@ export function LineChart<T>({
       {(title || subtitle) && (
         <div className="mb-4">
           {title && <h3 className="text-lg font-semibold">{title}</h3>}
-          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+          {subtitle && (
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
+          )}
         </div>
       )}
       <ResponsiveContainer width="100%" height={height}>
-        <RechartsLineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          {showGrid && <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />}
+        <RechartsLineChart
+          data={data}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        >
+          {showGrid && (
+            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.border} />
+          )}
           <XAxis
             dataKey={xAxisDataKey}
-            tick={{ fill: COLORS.muted, fontSize: 12 }}
-            axisLine={{ stroke: COLORS.border }}
-            tickLine={{ stroke: COLORS.border }}
+            tick={{ fill: themeColors.text, fontSize: 12 }}
+            axisLine={{ stroke: themeColors.border }}
+            tickLine={{ stroke: themeColors.border }}
             label={
               xAxisLabel
                 ? {
                     value: xAxisLabel,
                     position: "insideBottom",
                     offset: -5,
-                    fill: COLORS.muted,
+                    fill: themeColors.text,
                     fontSize: 12,
                   }
                 : undefined
             }
           />
           <YAxis
-            tick={{ fill: COLORS.muted, fontSize: 12 }}
-            axisLine={{ stroke: COLORS.border }}
-            tickLine={{ stroke: COLORS.border }}
+            tick={{ fill: themeColors.text, fontSize: 12 }}
+            axisLine={{ stroke: themeColors.border }}
+            tickLine={{ stroke: themeColors.border }}
             domain={yAxisDomain}
             label={
               yAxisLabel
@@ -111,7 +130,7 @@ export function LineChart<T>({
                     value: yAxisLabel,
                     angle: -90,
                     position: "insideLeft",
-                    fill: COLORS.muted,
+                    fill: themeColors.text,
                     fontSize: 12,
                   }
                 : undefined
@@ -121,7 +140,7 @@ export function LineChart<T>({
           <Legend
             wrapperStyle={{ paddingTop: "10px" }}
             formatter={(value) => (
-              <span style={{ color: "hsl(var(--foreground))", fontSize: 12 }}>
+              <span style={{ color: themeColors.foreground, fontSize: 12 }}>
                 {value}
               </span>
             )}
@@ -132,10 +151,18 @@ export function LineChart<T>({
               type="monotone"
               dataKey={line.dataKey}
               name={line.name}
-              stroke={line.color || CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]}
+              stroke={
+                line.color ||
+                CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]
+              }
               strokeWidth={line.strokeWidth || 2}
               strokeDasharray={line.strokeDasharray}
-              dot={{ fill: line.color || CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length], r: 4 }}
+              dot={{
+                fill:
+                  line.color ||
+                  CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length],
+                r: 4,
+              }}
               activeDot={{ r: 6, strokeWidth: 0 }}
               animationDuration={1000}
               animationEasing="ease-out"

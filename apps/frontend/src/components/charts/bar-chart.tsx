@@ -10,7 +10,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { COLORS, CHART_COLORS_ARRAY } from "@/lib/colors";
+import { COLORS, CHART_COLORS_ARRAY, useChartThemeColors } from "@/lib/colors";
+import { cn } from "@/lib/utils";
 
 interface BarChartProps<T> {
   data: T[];
@@ -52,6 +53,8 @@ export function BarChart<T>({
   tooltipFormatter,
   tooltipLabelFormatter,
 }: BarChartProps<T>) {
+  const themeColors = useChartThemeColors();
+
   const CustomTooltip = ({
     active,
     payload,
@@ -123,15 +126,15 @@ export function BarChart<T>({
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
           {showGrid && (
-            <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
+            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.border} />
           )}
           {layout === "horizontal" ? (
             <>
               <XAxis
                 dataKey={xAxisDataKey}
-                tick={{ fill: COLORS.muted, fontSize: 12 }}
-                axisLine={{ stroke: COLORS.border }}
-                tickLine={{ stroke: COLORS.border }}
+                tick={{ fill: themeColors.text, fontSize: 12 }}
+                axisLine={{ stroke: themeColors.border }}
+                tickLine={{ stroke: themeColors.border }}
                 interval={0}
                 angle={-15}
                 textAnchor="end"
@@ -142,16 +145,16 @@ export function BarChart<T>({
                         value: xAxisLabel,
                         position: "insideBottom",
                         offset: -5,
-                        fill: COLORS.muted,
+                        fill: themeColors.text,
                         fontSize: 12,
                       }
                     : undefined
                 }
               />
               <YAxis
-                tick={{ fill: COLORS.muted, fontSize: 12 }}
-                axisLine={{ stroke: COLORS.border }}
-                tickLine={{ stroke: COLORS.border }}
+                tick={{ fill: themeColors.text, fontSize: 12 }}
+                axisLine={{ stroke: themeColors.border }}
+                tickLine={{ stroke: themeColors.border }}
                 domain={yAxisDomain}
                 label={
                   yAxisLabel
@@ -159,7 +162,7 @@ export function BarChart<T>({
                         value: yAxisLabel,
                         angle: -90,
                         position: "insideLeft",
-                        fill: COLORS.muted,
+                        fill: themeColors.text,
                         fontSize: 12,
                       }
                     : undefined
@@ -170,9 +173,9 @@ export function BarChart<T>({
             <>
               <XAxis
                 type="number"
-                tick={{ fill: COLORS.muted, fontSize: 12 }}
-                axisLine={{ stroke: COLORS.border }}
-                tickLine={{ stroke: COLORS.border }}
+                tick={{ fill: themeColors.text, fontSize: 12 }}
+                axisLine={{ stroke: themeColors.border }}
+                tickLine={{ stroke: themeColors.border }}
                 domain={yAxisDomain}
                 label={
                   xAxisLabel
@@ -181,7 +184,7 @@ export function BarChart<T>({
                         angle: 90,
                         position: "insideBottom",
                         offset: 5,
-                        fill: COLORS.muted,
+                        fill: themeColors.text,
                         fontSize: 12,
                       }
                     : undefined
@@ -190,9 +193,9 @@ export function BarChart<T>({
               <YAxis
                 type="category"
                 dataKey={xAxisDataKey}
-                tick={{ fill: COLORS.muted, fontSize: 12 }}
-                axisLine={{ stroke: COLORS.border }}
-                tickLine={{ stroke: COLORS.border }}
+                tick={{ fill: themeColors.text, fontSize: 12 }}
+                axisLine={{ stroke: themeColors.border }}
+                tickLine={{ stroke: themeColors.border }}
                 width={120}
               />
             </>
@@ -201,7 +204,7 @@ export function BarChart<T>({
           <Legend
             wrapperStyle={{ paddingTop: "10px" }}
             formatter={(value) => (
-              <span style={{ color: "hsl(var(--foreground))", fontSize: 12 }}>
+              <span style={{ color: themeColors.foreground, fontSize: 12 }}>
                 {value}
               </span>
             )}

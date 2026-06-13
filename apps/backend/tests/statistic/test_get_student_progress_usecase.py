@@ -45,7 +45,9 @@ class TestGetStudentProgressExecute:
         mock_db = MagicMock()
         with patch(
             "src.statistic.application.usecase.get_student_progress_usecase.ProgressRepository"
-        ) as MockRepo, patch.object(
+        ) as MockRepo, patch(
+            "src.statistic.application.usecase.get_student_progress_usecase.LevelRepository"
+        ) as MockLevelRepo, patch.object(
             GetStudentProgressUseCase, "_resolve_student_id",
             new=AsyncMock(side_effect=lambda uid: uid),
         ):
@@ -54,6 +56,10 @@ class TestGetStudentProgressExecute:
                 return_value=sample_enriched_data
             )
             MockRepo.return_value = mock_repo
+
+            mock_level_repo = MagicMock()
+            mock_level_repo.count_levels_by_game_ids = AsyncMock(return_value={})
+            MockLevelRepo.return_value = mock_level_repo
 
             use_case = GetStudentProgressUseCase(db=mock_db)
             result = await use_case.execute("550e8400-e29b-41d4-a716-446655440000")
@@ -396,6 +402,84 @@ class TestCalculateActivityDistribution:
         assert len(result) == 3  # All unique games returned, no limit of 4
 
 
+class TestCalculateGamesProgress:
+    """Test suite for _calculate_games_progress method."""
+
+    @pytest.mark.asyncio
+    async def test_calculate_games_progress_empty_rows(self):
+        """Test empty enriched_rows returns [] without calling LevelRepository."""
+        mock_db = MagicMock()
+        use_case = GetStudentProgressUseCase(db=mock_db)
+
+        result = await use_case._calculate_games_progress([])
+
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_calculate_games_progress_with_data(
+        self, sample_enriched_data_with_game_id
+    ):
+        """Test two games with mixed completion returns correct counts and percentages."""
+        mock_db = MagicMock()
+        with patch(
+            "src.statistic.application.usecase.get_student_progress_usecase.LevelRepository"
+        ) as MockLevelRepo:
+            mock_level_repo = MagicMock()
+            mock_level_repo.count_levels_by_game_ids = AsyncMock(
+                return_value={
+                    UUID("11111111-1111-1111-1111-111111111111"): 3,
+                    UUID("22222222-2222-2222-2222-222222222222"): 5,
+                }
+            )
+            MockLevelRepo.return_value = mock_level_repo
+
+            use_case = GetStudentProgressUseCase(db=mock_db)
+            result = await use_case._calculate_games_progress(
+                sample_enriched_data_with_game_id
+            )
+
+            assert len(result) == 2
+            assert result[0].game_title == "Nivelación"
+            assert result[0].confidence_levels_completed == 1
+            assert result[0].total_confidence_levels == 3
+            assert result[0].completion_percentage == 33.3
+            assert result[1].game_title == "Operaciones"
+            assert result[1].confidence_levels_completed == 1
+            assert result[1].total_confidence_levels == 5
+            assert result[1].completion_percentage == 20.0
+
+    @pytest.mark.asyncio
+    async def test_calculate_games_progress_division_by_zero(self):
+        """Test division by zero when total_levels = 0 returns 0.0%."""
+        mock_db = MagicMock()
+        data = [
+            {
+                "progress": MagicMock(objectives_completed=2),
+                "game_title": "Sin Niveles",
+                "game_id": UUID("33333333-3333-3333-3333-333333333333"),
+            }
+        ]
+
+        with patch(
+            "src.statistic.application.usecase.get_student_progress_usecase.LevelRepository"
+        ) as MockLevelRepo:
+            mock_level_repo = MagicMock()
+            mock_level_repo.count_levels_by_game_ids = AsyncMock(
+                return_value={
+                    UUID("33333333-3333-3333-3333-333333333333"): 0,
+                }
+            )
+            MockLevelRepo.return_value = mock_level_repo
+
+            use_case = GetStudentProgressUseCase(db=mock_db)
+            result = await use_case._calculate_games_progress(data)
+
+            assert len(result) == 1
+            assert result[0].completion_percentage == 0.0
+            assert result[0].total_confidence_levels == 0
+            assert result[0].confidence_levels_completed == 1
+
+
 # ============== Fixtures ==============
 
 
@@ -415,6 +499,7 @@ def sample_enriched_data():
             "level_title": "Sumas Básicas",
             "level_number": 1,
             "game_title": "Nivelación",
+            "game_id": UUID("11111111-1111-1111-1111-111111111111"),
         },
         {
             "progress": MagicMock(
@@ -427,6 +512,41 @@ def sample_enriched_data():
             "level_title": "Sumas Avanzadas",
             "level_number": 2,
             "game_title": "Operaciones",
+            "game_id": UUID("22222222-2222-2222-2222-222222222222"),
+        },
+    ]
+
+
+@pytest.fixture
+def sample_enriched_data_with_game_id():
+    """Create enriched data with game_id for games_progress testing."""
+    base_time = datetime(2026, 3, 1, 10, 0, 0, tzinfo=timezone.utc)
+    return [
+        {
+            "progress": MagicMock(
+                attempt_count=3,
+                efficiency_rating=85,
+                objectives_completed=2,
+                created_at=base_time,
+                updated_at=base_time,
+            ),
+            "level_title": "Sumas Básicas",
+            "level_number": 1,
+            "game_title": "Nivelación",
+            "game_id": UUID("11111111-1111-1111-1111-111111111111"),
+        },
+        {
+            "progress": MagicMock(
+                attempt_count=5,
+                efficiency_rating=90,
+                objectives_completed=3,
+                created_at=datetime(2026, 3, 2, 10, 0, 0, tzinfo=timezone.utc),
+                updated_at=datetime(2026, 3, 2, 10, 0, 0, tzinfo=timezone.utc),
+            ),
+            "level_title": "Sumas Avanzadas",
+            "level_number": 2,
+            "game_title": "Operaciones",
+            "game_id": UUID("22222222-2222-2222-2222-222222222222"),
         },
     ]
 

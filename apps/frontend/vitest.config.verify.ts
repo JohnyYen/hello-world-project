@@ -2,13 +2,6 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
-const monorepoReact = path.resolve(
-  __dirname,
-  "../../node_modules/.pnpm",
-  // Use the frontend's react symlink target to find the actual .pnpm path
-  require("fs").readlinkSync(path.resolve(__dirname, "node_modules/react"))
-);
-
 export default defineConfig({
   plugins: [react()],
   test: {
@@ -27,6 +20,11 @@ export default defineConfig({
         "*.config.*",
         "*.setup.*",
       ],
+    },
+    server: {
+      deps: {
+        inline: true,
+      },
     },
   },
   resolve: {

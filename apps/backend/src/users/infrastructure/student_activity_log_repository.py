@@ -1,11 +1,54 @@
+import re
 from typing import List, Optional
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
+from zoneinfo import ZoneInfo
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select, func
 
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.users.domain.student_activity_log import StudentActivityLog
+
+
+def _to_timezone(dt: datetime, tz: str) -> datetime:
+    """
+    Convierte un datetime UTC a la zona horaria indicada.
+
+    Soporta:
+    - UTC offsets: ``+00:00``, ``-04:00``, ``+05:30``
+    - IANA timezones: ``America/Caracas``, ``Europe/Madrid``
+    - Especiales: ``UTC``, ``Z``
+
+    Args:
+        dt: datetime en UTC para convertir
+        tz: Zona horaria destino
+
+    Returns:
+        datetime convertido a la zona horaria destino
+    """
+    if tz in ("UTC", "Z"):
+        return dt.replace(tzinfo=timezone.utc)
+
+    # Intentar como IANA timezone primero
+    try:
+        target = ZoneInfo(tz)
+        return dt.astimezone(target)
+    except (KeyError, TypeError):
+        pass
+
+    # Intentar como offset UTC (+/-HH:MM)
+    match = re.match(r"^([+-])(\d{2}):(\d{2})$", tz)
+    if match:
+        sign, hours, minutes = match.groups()
+        offset = int(hours) * 60 + int(minutes)
+        if sign == "-":
+            offset = -offset
+        target = timezone(timedelta(minutes=offset))
+        return dt.astimezone(target)
+
+    # Fallback: devolver UTC sin cambios
+    return dt.replace(tzinfo=timezone.utc)
 
 
 class StudentActivityLogRepository(BaseRepository[StudentActivityLog]):
@@ -97,15 +140,22 @@ class StudentActivityLogRepository(BaseRepository[StudentActivityLog]):
         self,
         student_id: UUID,
         days: int = 30,
+        timezone_str: str = "+00:00",
     ) -> dict:
         """
         Cuenta la actividad por día y hora para el heatmap.
         Retorna un diccionario con la estructura:
         { "day": { hour: count } }
 
+        Los timestamps se convierten de UTC a la zona horaria indicada
+        antes de extraer día/hora, para que el heatmap refleje la hora
+        local del usuario.
+
         Args:
             student_id: ID del estudiante
             days: Número de días hacia atrás
+            timezone_str: Zona horaria destino (default +00:00 UTC).
+                          Ej: ``-04:00``, ``America/Caracas``, ``UTC``
 
         Returns:
             dict: Diccionario de conteos por día y hora
@@ -121,10 +171,11 @@ class StudentActivityLogRepository(BaseRepository[StudentActivityLog]):
         
         for activity in activities:
             if activity.occurred_at:
-                # Get day name (weekday returns 0=Monday, 6=Sunday)
-                day_idx = activity.occurred_at.weekday()
+                # Convertir de UTC a la zona horaria solicitada
+                local_dt = _to_timezone(activity.occurred_at, timezone_str)
+                day_idx = local_dt.weekday()
                 day_name = day_names[day_idx]
-                hour = activity.occurred_at.hour
+                hour = local_dt.hour
                 result[day_name][hour] += 1
         
         return result

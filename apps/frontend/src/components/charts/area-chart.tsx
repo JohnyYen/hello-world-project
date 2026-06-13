@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { COLORS, CHART_COLORS_ARRAY } from "@/lib/colors";
+import { COLORS, CHART_COLORS_ARRAY, useChartThemeColors } from "@/lib/colors";
 
 interface AreaChartProps<T> {
   data: T[];
@@ -59,6 +59,8 @@ export function AreaChart<T>({
   yAxisDomains,
   tooltipFormatter,
 }: AreaChartProps<T>) {
+  const themeColors = useChartThemeColors();
+
   const CustomTooltip = ({
     active,
     payload,
@@ -109,20 +111,20 @@ export function AreaChart<T>({
           margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
         >
           {showGrid && (
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.border} />
           )}
           <XAxis
             dataKey={xAxisDataKey}
-            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-            axisLine={{ stroke: "hsl(var(--border))" }}
-            tickLine={{ stroke: "hsl(var(--border))" }}
+            tick={{ fill: themeColors.text, fontSize: 12 }}
+            axisLine={{ stroke: themeColors.border }}
+            tickLine={{ stroke: themeColors.border }}
             label={
               xAxisLabel
                 ? {
                     value: xAxisLabel,
                     position: "insideBottom",
                     offset: -5,
-                    fill: "hsl(var(--muted-foreground))",
+                    fill: themeColors.text,
                     fontSize: 12,
                   }
                 : undefined
@@ -130,9 +132,9 @@ export function AreaChart<T>({
           />
           <YAxis
             yAxisId="left"
-            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-            axisLine={{ stroke: "hsl(var(--border))" }}
-            tickLine={{ stroke: "hsl(var(--border))" }}
+            tick={{ fill: themeColors.text, fontSize: 12 }}
+            axisLine={{ stroke: themeColors.border }}
+            tickLine={{ stroke: themeColors.border }}
             domain={yAxisDomains?.left || yAxisDomain || [0, "dataMax"]}
             label={
               yAxisLabels?.left || yAxisLabel
@@ -140,7 +142,7 @@ export function AreaChart<T>({
                     value: yAxisLabels?.left || yAxisLabel || "",
                     angle: -90,
                     position: "insideLeft",
-                    fill: "hsl(var(--muted-foreground))",
+                    fill: themeColors.text,
                     fontSize: 12,
                   }
                 : undefined
@@ -150,15 +152,15 @@ export function AreaChart<T>({
             <YAxis
               yAxisId="right"
               orientation="right"
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-              axisLine={{ stroke: "hsl(var(--border))" }}
-              tickLine={{ stroke: "hsl(var(--border))" }}
+              tick={{ fill: themeColors.text, fontSize: 12 }}
+              axisLine={{ stroke: themeColors.border }}
+              tickLine={{ stroke: themeColors.border }}
               domain={yAxisDomains?.right || yAxisDomain || [0, "dataMax"]}
               label={{
                 value: yAxisLabels.right,
                 angle: 90,
                 position: "insideRight",
-                fill: "hsl(var(--muted-foreground))",
+                fill: themeColors.text,
                 fontSize: 12,
               }}
             />
@@ -167,7 +169,7 @@ export function AreaChart<T>({
           <Legend
             wrapperStyle={{ paddingTop: "10px" }}
             formatter={(value) => (
-              <span style={{ color: "hsl(var(--foreground))", fontSize: 12 }}>
+              <span style={{ color: themeColors.foreground, fontSize: 12 }}>
                 {value}
               </span>
             )}

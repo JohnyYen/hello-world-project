@@ -33,6 +33,19 @@ class ActivityDistributionItem(BaseModel):
     sessions: int = Field(..., description="Número de sesiones")
 
 
+class GameProgressItem(BaseModel):
+    game_title: str = Field(..., description="Nombre del juego")
+    confidence_levels_completed: int = Field(
+        ..., description="Niveles completados por el estudiante"
+    )
+    total_confidence_levels: int = Field(
+        ..., description="Total de niveles del juego"
+    )
+    completion_percentage: float = Field(
+        ..., description="Porcentaje de completación (0-100)"
+    )
+
+
 class StudentProgressResponse(BaseModel):
     student_id: str = Field(..., description="ID del estudiante (UUID)")
     kpis: StudentReportKPIs = Field(..., description="KPIs del progreso del estudiante")
@@ -44,4 +57,7 @@ class StudentProgressResponse(BaseModel):
     )
     activity_distribution: List[ActivityDistributionItem] = Field(
         default_factory=list, description="Distribución de actividades"
+    )
+    games_progress: List[GameProgressItem] = Field(
+        default_factory=list, description="Progreso por juego"
     )
