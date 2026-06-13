@@ -136,7 +136,7 @@ async def seed_feedbacks(db: AsyncSession):
 
 
 async def seed_progress(db: AsyncSession):
-    """Seed progress records for students in segments."""
+    """Seed progress records for students in segments with distributed dates."""
     from src.users.domain.student import Student
     from src.game.domain.segment_level import SegmentLevel
 
@@ -157,6 +157,12 @@ async def seed_progress(db: AsyncSession):
         selected_segments = random.sample(segments, min(num_segments, len(segments)))
 
         for segment in selected_segments:
+            # Distribute dates across 90 days for historical chart data
+            progress_date = datetime.now() - timedelta(
+                days=random.randint(0, 90),
+                hours=random.randint(0, 23),
+                minutes=random.randint(0, 59),
+            )
             progress = Progress(
                 attempt_count=random.randint(1, 5),
                 error_count=random.randint(0, 3),
@@ -166,6 +172,8 @@ async def seed_progress(db: AsyncSession):
                 efficiency_rating=random.randint(60, 100),
                 student_id=student.id,
                 segment_level_id=segment.id,
+                created_at=progress_date,
+                # updated_at stays NULL - uses COALESCE to created_at in queries
             )
             db.add(progress)
             progresses.append(progress)

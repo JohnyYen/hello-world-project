@@ -499,9 +499,15 @@ async def seed_sync_and_analytics(
                 )
                 db.add(sync_event)
                 
-                # Create progress if completed
+                # Create progress if completed - with historical created_at dates
                 if "completed" in event_type or random.random() > 0.7:
                     segment = random.choice(segments)
+                    # Distribute dates across multiple days for better chart visualization
+                    progress_date = started_at + timedelta(
+                        days=random.randint(-30, 0),
+                        hours=random.randint(0, 23),
+                        minutes=random.randint(0, 59),
+                    )
                     progress = Progress(
                         attempt_count=random.randint(1, 5),
                         error_count=random.randint(0, 3),
@@ -511,6 +517,8 @@ async def seed_sync_and_analytics(
                         efficiency_rating=random.randint(60, 100),
                         student_id=student.id,
                         segment_level_id=segment.id,
+                        created_at=progress_date,
+                        # updated_at stays NULL (uses COALESCE to created_at in queries)
                     )
                     db.add(progress)
                 
