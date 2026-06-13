@@ -8,6 +8,8 @@ import Link from "next/link";
 import { Student } from "@/types/index";
 import { StudentFeedback } from "@/components/student/student-feedback";
 import { StudentFeedbackHistory } from "@/components/student/student-feedback-history";
+import { useStudentReports } from "@/hooks/use-student-reports";
+import { cn } from "@/lib/utils";
 
 type StudentDetailProps = {
   student: Student;
@@ -17,6 +19,7 @@ type StudentDetailProps = {
 export default function StudentDetail({ student, studentId }: StudentDetailProps) {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [feedbackVersion, setFeedbackVersion] = useState(0);
+  const { gamesProgress } = useStudentReports(studentId);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
       {/* Grid Pattern Overlay */}
@@ -162,24 +165,50 @@ export default function StudentDetail({ student, studentId }: StudentDetailProps
               <CardDescription>Detalles de avance en el curso</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span>Lecciones Completadas</span>
-                  <span className="font-medium">
-                    {student.totalLessons > 0
-                      ? `${student.completedLessons} / ${student.totalLessons}`
-                      : student.completedLessons}
-                  </span>
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold">Resumen</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {gamesProgress.length > 0
+                    ? `${gamesProgress.length} juego${gamesProgress.length !== 1 ? 's' : ''} con actividad`
+                    : 'Sin actividad registrada'}
+                </p>
+              </div>
+
+              <div>
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold">Progreso por Juego</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Niveles completados por juego
+                  </p>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-primary h-2.5 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(student.progress, 100)}%` }}
-                  ></div>
-                </div>
-                <div className="text-right text-sm text-muted-foreground">
-                  {student.progress > 0 ? `${student.progress}% completado` : 'Sin progreso aún'}
-                </div>
+                {gamesProgress.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">Sin progreso registrado</p>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {gamesProgress.map((game) => (
+                      <div
+                        key={game.gameTitle}
+                        className="border rounded-lg p-4 space-y-3 bg-card"
+                      >
+                        <p className="font-semibold text-sm truncate">{game.gameTitle}</p>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className={cn("bg-primary h-2 rounded-full transition-all duration-500")}
+                            style={{ width: `${Math.min(game.completionPercentage, 100)}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-muted-foreground">
+                            {game.confidenceLevelsCompleted} de {game.totalConfidenceLevels} niveles completados
+                          </span>
+                          <Badge variant="secondary" className="text-xs">
+                            {game.completionPercentage}%
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

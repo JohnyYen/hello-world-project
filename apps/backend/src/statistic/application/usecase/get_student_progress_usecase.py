@@ -13,7 +13,9 @@ from src.statistic.api.v1.schemas.student_progress import (
     ProgressOverTimeItem,
     LevelPerformanceItem,
     ActivityDistributionItem,
+    GameProgressItem,
 )
+from src.game.infrastructure.level_repository import LevelRepository
 from src.users.domain.student import Student
 
 
@@ -74,12 +76,14 @@ class GetStudentProgressUseCase:
                 progress_over_time=[],
                 level_performance=[],
                 activity_distribution=[],
+                games_progress=[],
             )
 
         kpis = self._calculate_kpis(enriched_rows)
         progress_over_time = self._calculate_progress_over_time(enriched_rows)
         level_performance = self._calculate_level_performance(enriched_rows)
         activity_distribution = self._calculate_activity_distribution(enriched_rows)
+        games_progress = await self._calculate_games_progress(enriched_rows)
 
         return StudentProgressResponse(
             student_id=student_id,
@@ -87,6 +91,7 @@ class GetStudentProgressUseCase:
             progress_over_time=progress_over_time,
             level_performance=level_performance,
             activity_distribution=activity_distribution,
+            games_progress=games_progress,
         )
 
     async def _resolve_student_id(self, given_id: UUID) -> UUID:
@@ -241,3 +246,45 @@ class GetStudentProgressUseCase:
             )
             for game_name, data in game_data.items()
         ]
+
+    async def _calculate_games_progress(
+        self, enriched_rows: list
+    ) -> list[GameProgressItem]:
+        if not enriched_rows:
+            return []
+
+        unique_game_ids = list({r["game_id"] for r in enriched_rows})
+
+        level_repo = LevelRepository(self.db)
+        total_levels_by_game = await level_repo.count_levels_by_game_ids(
+            unique_game_ids
+        )
+
+        game_data: dict[UUID, dict] = {}
+        for r in enriched_rows:
+            gid = r["game_id"]
+            if gid not in game_data:
+                game_data[gid] = {
+                    "game_title": r["game_title"],
+                    "completed_levels": set(),
+                }
+            if r["progress"].objectives_completed > 0:
+                game_data[gid]["completed_levels"].add(r["level_title"])
+
+        result = []
+        for gid, data in game_data.items():
+            total = total_levels_by_game.get(gid, 0)
+            completed = len(data["completed_levels"])
+            percentage = (completed / total * 100) if total > 0 else 0.0
+
+            result.append(
+                GameProgressItem(
+                    game_title=data["game_title"],
+                    confidence_levels_completed=completed,
+                    total_confidence_levels=total,
+                    completion_percentage=round(percentage, 1),
+                )
+            )
+
+        result.sort(key=lambda x: x.game_title)
+        return result
