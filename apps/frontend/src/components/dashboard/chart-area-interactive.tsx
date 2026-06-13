@@ -2,8 +2,12 @@
 
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { toast } from "sonner"
 
 import { useIsMobile } from "@/hooks/use-mobile"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Card,
   CardAction,
@@ -30,8 +34,18 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
-export const description = "An interactive area chart"
+export const description = "An interactive area chart showing sessions, active students, and play time"
+
+// Available metrics for the chart
+const CHART_METRICS = ["sessions", "students", "playTime"] as const
+type MetricKey = (typeof CHART_METRICS)[number]
 
 export interface ActivityData {
   date: string
@@ -49,49 +63,40 @@ export interface ChartAreaInteractiveProps {
 
 // Fallback data when no props provided
 const fallbackData = [
-  { date: "2024-04-01", sessions: 222, students: 150 },
-  { date: "2024-04-02", sessions: 97, students: 180 },
-  { date: "2024-04-03", sessions: 167, students: 120 },
-  { date: "2024-04-04", sessions: 242, students: 260 },
-  { date: "2024-04-05", sessions: 373, students: 290 },
-  { date: "2024-04-06", sessions: 301, students: 340 },
-  { date: "2024-04-07", sessions: 245, students: 180 },
-  { date: "2024-04-08", sessions: 409, students: 320 },
-  { date: "2024-04-09", sessions: 59, students: 110 },
-  { date: "2024-04-10", sessions: 261, students: 190 },
-  { date: "2024-04-11", sessions: 327, students: 350 },
-  { date: "2024-04-12", sessions: 292, students: 210 },
-  { date: "2024-04-13", sessions: 342, students: 380 },
-  { date: "2024-04-14", sessions: 137, students: 220 },
-  { date: "2024-04-15", sessions: 120, students: 170 },
-  { date: "2024-04-16", sessions: 138, students: 190 },
-  { date: "2024-04-17", sessions: 446, students: 360 },
-  { date: "2024-04-18", sessions: 364, students: 410 },
-  { date: "2024-04-19", sessions: 243, students: 180 },
-  { date: "2024-04-20", sessions: 89, students: 150 },
-  { date: "2024-04-21", sessions: 137, students: 200 },
-  { date: "2024-04-22", sessions: 224, students: 170 },
-  { date: "2024-04-23", sessions: 138, students: 230 },
-  { date: "2024-04-24", sessions: 387, students: 290 },
-  { date: "2024-04-25", sessions: 215, students: 250 },
-  { date: "2024-04-26", sessions: 75, students: 130 },
-  { date: "2024-04-27", sessions: 383, students: 420 },
-  { date: "2024-04-28", sessions: 122, students: 180 },
-  { date: "2024-04-29", sessions: 315, students: 240 },
-  { date: "2024-04-30", sessions: 454, students: 380 },
+  { date: "2024-04-01", sessions: 222, students: 150, playTime: 45 },
+  { date: "2024-04-02", sessions: 97, students: 180, playTime: 38 },
+  { date: "2024-04-03", sessions: 167, students: 120, playTime: 52 },
+  { date: "2024-04-04", sessions: 242, students: 260, playTime: 61 },
+  { date: "2024-04-05", sessions: 373, students: 290, playTime: 73 },
+  { date: "2024-04-06", sessions: 301, students: 340, playTime: 85 },
+  { date: "2024-04-07", sessions: 245, students: 180, playTime: 42 },
+  { date: "2024-04-08", sessions: 409, students: 320, playTime: 91 },
+  { date: "2024-04-09", sessions: 59, students: 110, playTime: 28 },
+  { date: "2024-04-10", sessions: 261, students: 190, playTime: 56 },
+  { date: "2024-04-11", sessions: 327, students: 350, playTime: 68 },
+  { date: "2024-04-12", sessions: 292, students: 210, playTime: 41 },
+  { date: "2024-04-13", sessions: 342, students: 380, playTime: 75 },
+  { date: "2024-04-14", sessions: 137, students: 220, playTime: 33 },
+  { date: "2024-04-15", sessions: 120, students: 170, playTime: 29 },
+  { date: "2024-04-16", sessions: 138, students: 190, playTime: 35 },
+  { date: "2024-04-17", sessions: 446, students: 360, playTime: 82 },
+  { date: "2024-04-18", sessions: 364, students: 410, playTime: 94 },
+  { date: "2024-04-19", sessions: 243, students: 180, playTime: 51 },
+  { date: "2024-04-20", sessions: 89, students: 150, playTime: 22 },
 ]
 
-const chartConfig = {
+export const chartConfig = {
   sessions: {
     label: "Sesiones",
+    color: "var(--color-primary)",
   },
   students: {
-    label: "Estudiantes",
-    color: "var(--primary)",
+    label: "Estudiantes Activos",
+    color: "var(--color-secondary)",
   },
   playTime: {
-    label: "Tiempo de juego",
-    color: "var(--primary)",
+    label: "Tiempo de Juego",
+    color: "var(--color-accent)",
   },
 } satisfies ChartConfig
 
@@ -146,6 +151,11 @@ export function ChartAreaInteractive({
     initialPeriod || "30d"
   )
   
+  // Metric visibility state for legend toggle
+  const [visibleMetrics, setVisibleMetrics] = React.useState<Set<MetricKey>>(
+    new Set(CHART_METRICS)
+  )
+  
   // Use external period if provided, otherwise use internal
   const period = initialPeriod || internalPeriod
 
@@ -157,6 +167,18 @@ export function ChartAreaInteractive({
     } else {
       setInternalPeriod(newPeriod)
     }
+  }
+
+  const toggleMetricVisibility = (metric: MetricKey) => {
+    setVisibleMetrics(prev => {
+      const next = new Set(prev)
+      if (next.has(metric)) {
+        next.delete(metric)
+      } else {
+        next.add(metric)
+      }
+      return next
+    })
   }
 
   React.useEffect(() => {
@@ -181,18 +203,19 @@ export function ChartAreaInteractive({
     "30d": 30,
     "3m": 90,
   }
-  
-  const filteredData = React.useMemo(() => {
+
+  // React Compiler handles memoization automatically - no useMemo needed
+  const filteredData = (() => {
     const daysToSubtract = periodDays[period]
     const referenceDate = new Date()
     const startDate = new Date(referenceDate)
     startDate.setDate(startDate.getDate() - daysToSubtract)
-    
+
     return sourceData.filter((item) => {
       const itemDate = new Date(item.date)
       return itemDate >= startDate
     })
-  }, [sourceData, period])
+  })()
 
   // Show loading state
   if (isLoading) {
@@ -210,7 +233,7 @@ export function ChartAreaInteractive({
         <CardTitle>Actividad de Estudiantes</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
-            Sesiones y estudiantes activos
+            Sesiones, estudiantes activos y tiempo de juego
           </span>
           <span className="@[540px]/card:hidden">Última actividad</span>
         </CardDescription>
@@ -267,6 +290,30 @@ export function ChartAreaInteractive({
                   stopOpacity={0.1}
                 />
               </linearGradient>
+              <linearGradient id="fillStudents" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-secondary)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-secondary)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+              <linearGradient id="fillPlayTime" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-accent)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-accent)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
@@ -287,6 +334,7 @@ export function ChartAreaInteractive({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              tickFormatter={(value) => value.toLocaleString()}
             />
             <ChartTooltip
               cursor={false}
@@ -302,15 +350,88 @@ export function ChartAreaInteractive({
                 />
               }
             />
-            <Area
-              dataKey="sessions"
-              type="natural"
-              fill="url(#fillSessions)"
-              stroke="var(--color-primary)"
-              stackId="a"
-            />
+            {visibleMetrics.has("sessions") && (
+              <Area
+                dataKey="sessions"
+                type="natural"
+                fill="url(#fillSessions)"
+                stroke="var(--color-primary)"
+              />
+            )}
+            {visibleMetrics.has("students") && (
+              <Area
+                dataKey="students"
+                type="natural"
+                fill="url(#fillStudents)"
+                stroke="var(--color-secondary)"
+              />
+            )}
+            {visibleMetrics.has("playTime") && (
+              <Area
+                dataKey="playTime"
+                type="natural"
+                fill="url(#fillPlayTime)"
+                stroke="var(--color-accent)"
+              />
+            )}
           </AreaChart>
         </ChartContainer>
+        {/* Custom Legend with Checkboxes */}
+        <div className="flex flex-wrap gap-4 pt-4 px-4 justify-center">
+          <TooltipProvider>
+            {CHART_METRICS.map(metric => {
+              const tooltipText = {
+                sessions: "Cantidad de veces que los estudiantes iniciaron sesión en la plataforma",
+                students: "Número de estudiantes únicos que jugaron al menos un nivel en el período",
+                playTime: "Minutos acumulados de juego de todos los estudiantes en la plataforma",
+              }[metric]
+
+              return (
+                <label 
+                  key={metric}
+                  className="flex items-center gap-2 text-xs cursor-pointer hover:text-foreground transition-colors"
+                >
+                  <Checkbox
+                    checked={visibleMetrics.has(metric)}
+                    onCheckedChange={() => toggleMetricVisibility(metric)}
+                    className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                  />
+                  <span className="text-muted-foreground">
+                    {chartConfig[metric].label}
+                  </span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-full text-muted-foreground/50 hover:text-muted-foreground transition-colors focus:outline-none"
+                        aria-label={`Información sobre ${chartConfig[metric].label}`}
+                        tabIndex={-1}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="size-3.5"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 16v-4" />
+                          <path d="M12 8h.01" />
+                        </svg>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-64 text-xs">
+                      {tooltipText}
+                    </TooltipContent>
+                  </Tooltip>
+                </label>
+              )
+            })}
+          </TooltipProvider>
+        </div>
       </CardContent>
     </Card>
   )

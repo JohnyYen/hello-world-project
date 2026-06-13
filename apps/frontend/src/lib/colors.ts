@@ -52,6 +52,72 @@ export const CHART_COLORS_ARRAY = [
   COLORS.chart.pink,
 ];
 
+// Chart text colors - used for inline styles in Recharts
+// These are theme-aware values for light/dark mode
+export const CHART_COLORS = {
+  // Light mode
+  light: {
+    text: '#475569', // muted-foreground
+    foreground: '#0f172a', // foreground
+    border: '#e2e8f0', // border
+  },
+  // Dark mode  
+  dark: {
+    text: '#9ca3af', // muted-foreground dark
+    foreground: '#e5e7eb', // foreground dark
+    border: '#374151', // border dark
+  }
+} as const;
+
+/**
+ * Chart theme colors interface
+ */
+export interface ChartThemeColors {
+  text: string;
+  foreground: string;
+  border: string;
+}
+
+/**
+ * Hook to read chart colors from CSS custom properties (theme-aware).
+ * This is necessary because Recharts SVG elements use inline styles,
+ * not CSS classes, so CSS variables don't resolve automatically.
+ * 
+ * Automatically updates when the theme changes (via class toggle on <html>).
+ */
+import { useState, useEffect } from "react";
+
+export function useChartThemeColors(): ChartThemeColors {
+  const [colors, setColors] = useState<ChartThemeColors>(() => {
+    // Default to light mode values as SSR fallback
+    return { ...CHART_COLORS.light };
+  });
+
+  useEffect(() => {
+    const updateColors = () => {
+      const style = getComputedStyle(document.documentElement);
+      setColors({
+        text: style.getPropertyValue("--muted-foreground").trim() || CHART_COLORS.light.text,
+        border: style.getPropertyValue("--border").trim() || CHART_COLORS.light.border,
+        foreground: style.getPropertyValue("--foreground").trim() || CHART_COLORS.light.foreground,
+      });
+    };
+
+    updateColors();
+
+    // Watch for theme changes (dark class toggle on <html>)
+    const observer = new MutationObserver(updateColors);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return colors;
+}
+
 // Colores para badges de estado usando clases de Tailwind
 export const BADGE_VARIANTS = {
   success: 'bg-emerald-100 text-emerald-800 border-emerald-200 hover:bg-emerald-200',

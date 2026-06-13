@@ -64,16 +64,26 @@ export async function getStudentById(id: string): Promise<Student | null> {
 
     const lastActivity = studentData.last_activity as string | null;
 
-    // 2. Fetch KPIs de progreso (contiene total_levels_completed, average_score, etc.)
+    // 2. Fetch KPIs de progreso directamente desde el backend (no vía proxy)
+    //    IMPORTANTE: No usamos el proxy /api/statistic/students/... porque desde
+    //    Server Component las cookies del usuario no se reenvían al proxy.
+    //    Llamamos directo al backend con el token de auth.
     let completedLessons = 0;
     let maxLevel = 0;
     let progress = 0;
     try {
+      const apiBase =
+        typeof window !== "undefined"
+          ? (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010")
+          : (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8010");
+
       const progressResponse = await fetch(
-        `/api/statistic/students/${id}/progress`,
+        `${apiBase}/api/v1/statistic/students/${id}/progress`,
         {
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
       if (progressResponse.ok) {

@@ -68,7 +68,8 @@ export function useDashboardStats(
       );
 
       setLevelPerformance(
-        data.level_performance.map((item: { level_name: string; completion_rate: number; average_attempts: number; average_time_minutes: number }) => ({
+        data.level_performance.map((item: { game_name: string; level_name: string; completion_rate: number; average_attempts: number; average_time_minutes: number }) => ({
+          gameName: item.game_name,
           levelName: item.level_name,
           completionRate: item.completion_rate,
           averageAttempts: item.average_attempts,

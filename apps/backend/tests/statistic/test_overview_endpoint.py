@@ -151,6 +151,7 @@ class TestOverviewEndpointResponseStructure:
             mock_progress_repo.aggregate_level_performance = AsyncMock(
                 return_value=[
                     {
+                        "game_name": "Juego 1",
                         "level_name": "Nivel 1",
                         "completion_rate": 0.85,
                         "average_attempts": 2.5,

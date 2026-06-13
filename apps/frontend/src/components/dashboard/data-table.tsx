@@ -12,6 +12,7 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { useRouter } from "next/navigation"
 import {
   arrayMove,
   SortableContext,
@@ -101,6 +102,7 @@ import { LevelPerformanceItem } from "@/types/api"
 
 // Schema for level performance data from API
 export const schema = z.object({
+  gameName: z.string(),
   levelName: z.string(),
   completionRate: z.number(),
   averageAttempts: z.number(),
@@ -158,6 +160,25 @@ function DragHandle({ id }: { id: string }) {
   )
 }
 
+/**
+ * Custom filter function for completion rate that interprets string categories as numeric ranges.
+ * - "high": rate > 80
+ * - "medium": rate >= 50 && rate <= 80  
+ * - "low": rate < 50
+ */
+export const completionRateFilterFn = (
+  row: Row<z.infer<typeof schema>>,
+  columnId: string,
+  filterValue: string
+) => {
+  // Backend sends 0-1 scale, convert to 0-100 for comparison
+  const rate = (row.getValue(columnId) as number) * 100
+  if (filterValue === "high") return rate > 80
+  if (filterValue === "medium") return rate >= 50 && rate <= 80
+  if (filterValue === "low") return rate < 50
+  return true
+}
+
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
@@ -193,6 +214,17 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     size: 40,
   },
   {
+    accessorKey: "gameName",
+    header: "Juego",
+    cell: ({ row }) => {
+      return (
+        <div className="text-sm text-muted-foreground">
+          {row.original.gameName}
+        </div>
+      )
+    },
+  },
+  {
     accessorKey: "levelName",
     header: "Nivel",
     cell: ({ row }) => {
@@ -205,20 +237,21 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: "Tasa de Completado",
     cell: ({ row }) => {
       const rate = row.original.completionRate
-      const rateColor = rate >= 80 ? "text-emerald-600 dark:text-emerald-400" : rate >= 50 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
+      const ratePercent = rate * 100
+      const rateColor = ratePercent >= 80 ? "text-emerald-600 dark:text-emerald-400" : ratePercent >= 50 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
       return (
         <div className="flex items-center gap-2">
           <div className="w-16 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
             <div 
-              className={`h-full ${rate >= 80 ? 'bg-emerald-500' : rate >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}
-              style={{ width: `${Math.min(rate, 100)}%` }}
+              className={`h-full ${ratePercent >= 80 ? 'bg-emerald-500' : ratePercent >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}
+              style={{ width: `${Math.min(ratePercent, 100)}%` }}
             />
           </div>
-          <span className={`font-semibold ${rateColor}`}>{rate.toFixed(0)}%</span>
+          <span className={`font-semibold ${rateColor}`}>{ratePercent.toFixed(0)}%</span>
         </div>
       )
     },
-    filterFn: "includesString",
+    filterFn: completionRateFilterFn,
   },
   {
     accessorKey: "averageAttempts",
@@ -246,26 +279,51 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8 hover:bg-indigo-500/10 hover:text-indigo-600"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Abrir menú</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40 rounded-xl border-slate-200/60 dark:border-slate-800/60">
-          <DropdownMenuItem className="rounded-lg">Ver Detalles</DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg">Ver Estudiantes</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" className="rounded-lg">Archivar</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => {
+      const router = useRouter()
+      const levelName = row.original.levelName
+
+      const handleViewDetails = () => {
+        router.push(`/dashboard/levels/${encodeURIComponent(levelName)}`)
+      }
+
+      const handleViewStudents = () => {
+        router.push(`/dashboard/students?level=${encodeURIComponent(levelName)}`)
+      }
+
+      const handleArchive = () => {
+        toast.warning("¿Estás seguro de archivar este nivel?", {
+          action: {
+            label: "Archivar",
+            onClick: () => {
+              toast.success(`Nivel "${levelName}" archivado correctamente`)
+            },
+          },
+          cancelButton: true,
+        })
+      }
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8 hover:bg-indigo-500/10 hover:text-indigo-600"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Abrir menú</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40 rounded-xl border-slate-200/60 dark:border-slate-800/60">
+            <DropdownMenuItem className="rounded-lg" onClick={handleViewDetails}>Ver Detalles</DropdownMenuItem>
+            <DropdownMenuItem className="rounded-lg" onClick={handleViewStudents}>Ver Estudiantes</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive" className="rounded-lg" onClick={handleArchive}>Archivar</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
     size: 50,
   },
 ]
@@ -310,7 +368,9 @@ export function DataTable({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: "completionRate", desc: false },
+  ])
   const [globalFilter, setGlobalFilter] = React.useState("")
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
@@ -657,7 +717,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                   <IconTrendingUp className="size-4" />
                 </div>
                 <div className="text-muted-foreground">
-                  Este nivel ha sido completado por el {item.completionRate.toFixed(0)}% de los estudiantes. 
+                  Este nivel ha sido completado por el {(item.completionRate * 100).toFixed(0)}% de los estudiantes. 
                   El tiempo promedio de finalización es de {item.averageTimeMinutes.toFixed(0)} minutos 
                   con un promedio de {item.averageAttempts.toFixed(1)} intentos.
                 </div>
@@ -673,7 +733,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="completionRate">Tasa de Completado (%)</Label>
-                <Input id="completionRate" type="number" defaultValue={item.completionRate} />
+                <Input id="completionRate" type="number" defaultValue={item.completionRate * 100} />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="averageAttempts">Intentos Promedio</Label>

@@ -40,6 +40,7 @@ class ActivityOverTimeItem(BaseModel):
 class LevelPerformanceItem(BaseModel):
     """Item de rendimiento por nivel."""
 
+    game_name: str = Field(..., description="Nombre del juego al que pertenece el nivel")
     level_name: str = Field(..., description="Nombre del nivel")
     completion_rate: float = Field(
         ..., ge=0, le=1, description="Tasa de completación (0-1)"

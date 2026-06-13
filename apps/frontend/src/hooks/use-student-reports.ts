@@ -6,6 +6,7 @@ import {
   ProgressOverTime,
   LevelPerformance,
   ActivityDistribution,
+  GameProgressItem,
 } from "@/types/api";
 
 interface UseStudentReportsReturn {
@@ -13,6 +14,7 @@ interface UseStudentReportsReturn {
   progressOverTime: ProgressOverTime[];
   levelPerformance: LevelPerformance[];
   activityDistribution: ActivityDistribution[];
+  gamesProgress: GameProgressItem[];
   isLoading: boolean;
   error: string | null;
 }
@@ -22,6 +24,7 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
   const [progressOverTime, setProgressOverTime] = useState<ProgressOverTime[]>([]);
   const [levelPerformance, setLevelPerformance] = useState<LevelPerformance[]>([]);
   const [activityDistribution, setActivityDistribution] = useState<ActivityDistribution[]>([]);
+  const [gamesProgress, setGamesProgress] = useState<GameProgressItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -95,6 +98,16 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
             sessions: item.sessions,
           }))
         );
+
+        const gamesData = data.games_progress || [];
+        setGamesProgress(
+          gamesData.map((item: { game_title: string; completed_segments: number; total_segments: number; completion_percentage: number }) => ({
+            gameTitle: item.game_title,
+            completedSegments: item.completed_segments,
+            totalSegments: item.total_segments,
+            completionPercentage: item.completion_percentage,
+          }))
+        );
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -116,6 +129,7 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
     progressOverTime,
     levelPerformance,
     activityDistribution,
+    gamesProgress,
     isLoading,
     error,
   };

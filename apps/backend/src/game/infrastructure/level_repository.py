@@ -1,9 +1,11 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from sqlalchemy import select
+from sqlalchemy import select, func
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
 from src.game.domain.level import Level
+from src.game.domain.segment_level import SegmentLevel
 
 
 class LevelRepository(BaseRepository[Level]):
@@ -94,6 +96,60 @@ class LevelRepository(BaseRepository[Level]):
         """
         filters = {"game_id": game_id, "level_number": level_number}
         return await self.get_one_by_filters(filters, include_deleted=include_deleted)
+
+    async def count_levels_by_game_ids(
+        self, game_ids: List[UUID]
+    ) -> Dict[UUID, int]:
+        """
+        Cuenta el número de niveles (no eliminados) por juego.
+
+        Args:
+            game_ids: Lista de UUIDs de juegos
+
+        Returns:
+            Dict[UUID, int]: Diccionario con game_id como clave y conteo como valor
+        """
+        if not game_ids:
+            return {}
+
+        stmt = (
+            select(Level.game_id, func.count(Level.id))
+            .where(Level.game_id.in_(game_ids))
+            .where(Level.deleted_at.is_(None))
+            .group_by(Level.game_id)
+        )
+
+        result = await self.db.execute(stmt)
+        return {row.game_id: row[1] for row in result.fetchall()}
+
+    async def count_segments_by_game_ids(
+        self, game_ids: List[UUID]
+    ) -> Dict[UUID, int]:
+        """
+        Cuenta el número de segmentos (no eliminados) por juego.
+
+        Hace join Level -> SegmentLevel para contar los segmentos
+        que pertenecen a cada juego.
+
+        Args:
+            game_ids: Lista de UUIDs de juegos
+
+        Returns:
+            Dict[UUID, int]: Diccionario con game_id como clave y conteo como valor
+        """
+        if not game_ids:
+            return {}
+
+        stmt = (
+            select(Level.game_id, func.count(SegmentLevel.id))
+            .join(SegmentLevel, SegmentLevel.level_number_id == Level.id)
+            .where(Level.game_id.in_(game_ids))
+            .where(Level.deleted_at.is_(None))
+            .group_by(Level.game_id)
+        )
+
+        result = await self.db.execute(stmt)
+        return {row.game_id: row[1] for row in result.fetchall()}
 
     async def get_by_name(
         self, name: str, include_deleted: bool = False

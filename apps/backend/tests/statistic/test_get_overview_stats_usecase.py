@@ -46,12 +46,14 @@ class MockProgressRepository:
         self.aggregate_level_performance = AsyncMock(
             return_value=[
                 {
+                    "game_name": "Juego 1",
                     "level_name": "Nivel 1",
                     "completion_rate": 0.85,
                     "average_attempts": 2.5,
                     "average_time_minutes": 15.0,
                 },
                 {
+                    "game_name": "Juego 1",
                     "level_name": "Nivel 2",
                     "completion_rate": 0.70,
                     "average_attempts": 3.0,

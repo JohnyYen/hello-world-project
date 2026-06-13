@@ -24,14 +24,22 @@ class GetStudentActivityUseCase:
         self.db = db
 
     async def get_heatmap_data(
-        self, student_id: str, days: int = 30
+        self,
+        student_id: str,
+        days: int = 30,
+        timezone_str: str = "+00:00",
     ) -> HeatMapResponse:
         """
         Obtiene los datos del heatmap de actividad.
 
+        Los timestamps se convierten de UTC a la zona horaria indicada
+        para que el heatmap refleje la hora local del usuario.
+
         Args:
             student_id: UUID del estudiante
             days: Número de días hacia atrás (default 30)
+            timezone_str: Zona horaria destino (default +00:00 UTC).
+                          Ej: ``-04:00``, ``America/Caracas``, ``UTC``
 
         Returns:
             HeatMapResponse: Datos del heatmap
@@ -42,7 +50,9 @@ class GetStudentActivityUseCase:
             raise ValueError("ID de estudiante inválido")
 
         log_repo = StudentActivityLogRepository(self.db)
-        activity_counts = await log_repo.count_by_day_and_hour(student_uuid, days)
+        activity_counts = await log_repo.count_by_day_and_hour(
+            student_uuid, days, timezone_str
+        )
 
         # Convertir a formato de respuesta
         data_points: List[HeatMapDataPoint] = []

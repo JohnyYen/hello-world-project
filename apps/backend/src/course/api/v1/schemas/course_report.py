@@ -41,8 +41,8 @@ class CourseMetricsResponse(BaseModel):
 
 class CourseProgressOverTimeResponse(BaseModel):
     date: str
-    averageProgress: float
-    averageGrade: float
+    averageProgress: float = Field(alias="average_progress")
+    averageGrade: float = Field(alias="average_grade")
 
     model_config = {"populate_by_name": True}
 

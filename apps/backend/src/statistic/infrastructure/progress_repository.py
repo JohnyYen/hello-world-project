@@ -66,6 +66,7 @@ class ProgressRepository(BaseRepository[Progress]):
                 Level.title.label("level_title"),
                 Level.level_number.label("level_number"),
                 Game.title.label("game_title"),
+                Game.id.label("game_id"),
             )
             .join(SegmentLevel, Progress.segment_level_id == SegmentLevel.id)
             .join(Level, SegmentLevel.level_number_id == Level.id)
@@ -87,6 +88,7 @@ class ProgressRepository(BaseRepository[Progress]):
                 "level_title": row.level_title,
                 "level_number": row.level_number,
                 "game_title": row.game_title,
+                "game_id": row.game_id,
             }
             for row in rows
         ]
@@ -431,23 +433,62 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         Agrega rendimiento por nivel.
 
+        La tasa de completitud se calcula como:
+            SUM(objectives_completed) / total_de_segmentos_del_nivel
+
+        Esto refleja cuánto del contenido del nivel ha sido completado
+        por los estudiantes, considerando el total de segmentos disponibles.
+
         Returns:
             List[dict]: Lista de rendimiento por nivel
         """
         from src.game.domain.segment_level import SegmentLevel
         from src.game.domain.level import Level
+        from src.game.domain.game import Game
+
+        # Subquery: contar segmentos por nivel (no eliminados)
+        segments_subq = (
+            select(
+                SegmentLevel.level_number_id,
+                func.count(SegmentLevel.id).label("segment_count"),
+            )
+            .where(SegmentLevel.deleted_at.is_(None))
+            .group_by(SegmentLevel.level_number_id)
+            .subquery()
+        )
 
         stmt = (
             select(
+                Game.title.label("game_name"),
                 Level.title.label("level_name"),
                 func.avg(Progress.efficiency_rating).label("average_score"),
                 func.avg(Progress.attempt_count).label("average_attempts"),
+                # NOTE: Both average_attempts and average_time_minutes use AVG(attempt_count)
+                # because the Progress model doesn't have a separate time_spent_minutes field.
+                # TODO: Add time_spent_minutes column to Progress model and use it here.
+                func.avg(Progress.attempt_count).label("average_time_minutes"),
                 func.sum(Progress.objectives_completed).label("total_completed"),
                 func.count(Progress.id).label("total_attempts"),
+                segments_subq.c.segment_count,
+                func.count(func.distinct(Progress.student_id)).label(
+                    "total_students"
+                ),
             )
             .join(SegmentLevel, Progress.segment_level_id == SegmentLevel.id)
             .join(Level, SegmentLevel.level_number_id == Level.id)
-            .group_by(Level.id, Level.title)
+            .join(Game, Level.game_id == Game.id)
+            .join(
+                segments_subq,
+                segments_subq.c.level_number_id == Level.id,
+                isouter=True,  # LEFT JOIN por si un nivel no tiene segmentos
+            )
+            .group_by(
+                Game.id,
+                Game.title,
+                Level.id,
+                Level.title,
+                segments_subq.c.segment_count,
+            )
         )
 
         result = await self.db.execute(stmt)
@@ -455,12 +496,15 @@ class ProgressRepository(BaseRepository[Progress]):
 
         return [
             {
+                "game_name": row.game_name,
                 "level_name": row.level_name,
-                "completion_rate": min(row.total_completed / row.total_attempts, 1.0)
-                if row.total_attempts > 0
+                "completion_rate": min(
+                    row.total_completed / row.segment_count, 1.0
+                )
+                if row.segment_count and row.segment_count > 0
                 else 0.0,
                 "average_attempts": float(row.average_attempts or 0),
-                "average_time_minutes": float(row.average_attempts or 0),
+                "average_time_minutes": float(row.average_time_minutes or 0),
             }
             for row in rows
         ]
@@ -486,6 +530,8 @@ class ProgressRepository(BaseRepository[Progress]):
                 "medium_performers": 0,
                 "low_performers": 0,
                 "total_students": 0,
+                "daily_active_users": 0,
+                "weekly_active_users": 0,
             }
 
         query = text("""
@@ -555,6 +601,7 @@ class ProgressRepository(BaseRepository[Progress]):
                 ce.course_id,
                 COUNT(DISTINCT ce.student_id) AS total_students,
                 COALESCE(AVG(sa.avg_efficiency), 0) AS average_progress,
+                COALESCE(AVG(sa.avg_grade), 0) AS average_grade,
                 COALESCE(COUNT(DISTINCT CASE WHEN sa.has_progress = 1 THEN ce.student_id END) * 100.0
                     / NULLIF(COUNT(DISTINCT ce.student_id), 0), 0) AS completion_rate,
                 COUNT(DISTINCT CASE WHEN sa.has_progress = 1 THEN ce.student_id END) AS students_completed,
@@ -562,11 +609,17 @@ class ProgressRepository(BaseRepository[Progress]):
                 COALESCE(AVG(sa.total_attempts), 0) AS avg_sessions,
                 COUNT(DISTINCT CASE WHEN sa.avg_efficiency >= 80 THEN ce.student_id END) AS high_performers,
                 COUNT(DISTINCT CASE WHEN sa.avg_efficiency BETWEEN 50 AND 79 THEN ce.student_id END) AS medium_performers,
-                COUNT(DISTINCT CASE WHEN sa.avg_efficiency < 50 THEN ce.student_id END) AS low_performers
+                COUNT(DISTINCT CASE WHEN sa.avg_efficiency < 50 THEN ce.student_id END) AS low_performers,
+                COALESCE(act.daily_active_users, 0) AS daily_active_users,
+                COALESCE(act.weekly_active_users, 0) AS weekly_active_users
             FROM course_enrollments ce
             LEFT JOIN (
                 SELECT student_id,
                     AVG(efficiency_rating) AS avg_efficiency,
+                    AVG(
+                        efficiency_rating * (1.0 - COALESCE(error_count * 1.0 / NULLIF(attempt_count, 0), 0) * 0.15
+                                                         - COALESCE(hints_used_count * 1.0 / NULLIF(attempt_count, 0), 0) * 0.10)
+                    ) AS avg_grade,
                     SUM(attempt_count) AS total_attempts,
                     MAX(CASE WHEN efficiency_rating > 0 OR objectives_completed > 0
                         THEN 1 ELSE 0 END) AS has_progress
@@ -574,9 +627,26 @@ class ProgressRepository(BaseRepository[Progress]):
                 WHERE deleted_at IS NULL
                 GROUP BY student_id
             ) sa ON ce.student_id = sa.student_id
+            LEFT JOIN (
+                SELECT
+                    ce_act.course_id,
+                    COUNT(DISTINCT p_act.student_id) FILTER (
+                        WHERE p_act.created_at >= CURRENT_TIMESTAMP - INTERVAL '1 day'
+                    ) AS daily_active_users,
+                    COUNT(DISTINCT p_act.student_id) FILTER (
+                        WHERE p_act.created_at >= CURRENT_TIMESTAMP - INTERVAL '7 days'
+                    ) AS weekly_active_users
+                FROM course_enrollments ce_act
+                JOIN progresses p_act
+                    ON p_act.student_id = ce_act.student_id
+                    AND p_act.deleted_at IS NULL
+                WHERE ce_act.course_id = ANY(:course_ids)
+                  AND ce_act.deleted_at IS NULL
+                GROUP BY ce_act.course_id
+            ) act ON act.course_id = ce.course_id
             WHERE ce.course_id = ANY(:course_ids)
               AND ce.deleted_at IS NULL
-            GROUP BY ce.course_id
+            GROUP BY ce.course_id, act.daily_active_users, act.weekly_active_users
         """)
         result = await self.db.execute(query, {"course_ids": course_ids})
         rows = result.fetchall()
@@ -585,7 +655,7 @@ class ProgressRepository(BaseRepository[Progress]):
         for row in rows:
             metrics_map[row.course_id] = {
                 "average_progress": round(float(row.average_progress), 1),
-                "average_grade": round(float(row.average_progress), 1),  # Note: same source as progress since system only tracks efficiency_rating
+                "average_grade": round(float(row.average_grade), 1),
                 "completion_rate": round(float(row.completion_rate), 1),
                 "students_completed": int(row.students_completed),
                 "average_active_time": round(float(row.total_attempts), 1),
@@ -594,6 +664,8 @@ class ProgressRepository(BaseRepository[Progress]):
                 "medium_performers": int(row.medium_performers),
                 "low_performers": int(row.low_performers),
                 "total_students": int(row.total_students),
+                "daily_active_users": int(row.daily_active_users),
+                "weekly_active_users": int(row.weekly_active_users),
             }
 
         for cid in course_ids:
@@ -626,7 +698,11 @@ class ProgressRepository(BaseRepository[Progress]):
         query = text("""
             SELECT EXTRACT(MONTH FROM created_at) as month,
                    EXTRACT(YEAR FROM created_at) as year,
-                   AVG(efficiency_rating) as avg_progress
+                   AVG(efficiency_rating) as avg_progress,
+                   AVG(
+                       efficiency_rating * (1.0 - COALESCE(error_count * 1.0 / NULLIF(attempt_count, 0), 0) * 0.15
+                                                        - COALESCE(hints_used_count * 1.0 / NULLIF(attempt_count, 0), 0) * 0.10)
+                   ) as avg_grade
             FROM progresses
             WHERE student_id = ANY(:student_ids)
               AND deleted_at IS NULL
@@ -655,7 +731,7 @@ class ProgressRepository(BaseRepository[Progress]):
             {
                 "date": f"{month_names[int(r[0]) - 1]} {int(r[1])}",
                 "average_progress": round(float(r[2]), 1),
-                "average_grade": round(float(r[2]), 1),
+                "average_grade": round(float(r[3]), 1),
             }
             for r in rows
         ]
