@@ -400,6 +400,7 @@ async def seed_games_levels_analytics(db: SessionLocal) -> tuple:
                 if not existing_seg:
                     segment = SegmentLevel(
                         level_number_id=level.id,
+                        segment_number=i,
                         configuration={"type": f"exercise_{i}", "count": 5},
                     )
                     db.add(segment)

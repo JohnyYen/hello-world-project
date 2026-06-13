@@ -198,7 +198,7 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         cutoff_date = date.today() - timedelta(days=days)
         stmt = select(func.count(func.distinct(Progress.student_id))).where(
-            and_(Progress.created_at >= cutoff_date)
+            and_(func.coalesce(Progress.updated_at, Progress.created_at) >= cutoff_date)
         )
         result = await self.db.execute(stmt)
         return result.scalar() or 0
@@ -218,9 +218,9 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         conditions = []
         if start_date:
-            conditions.append(cast(Progress.created_at, Date) >= start_date)
+            conditions.append(cast(func.coalesce(Progress.updated_at, Progress.created_at), Date) >= start_date)
         if end_date:
-            conditions.append(cast(Progress.created_at, Date) <= end_date)
+            conditions.append(cast(func.coalesce(Progress.updated_at, Progress.created_at), Date) <= end_date)
 
         stmt = select(func.count(func.distinct(Progress.student_id)))
         if conditions:
@@ -353,9 +353,9 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         conditions = []
         if start_date:
-            conditions.append(cast(Progress.created_at, Date) >= start_date)
+            conditions.append(cast(func.coalesce(Progress.updated_at, Progress.created_at), Date) >= start_date)
         if end_date:
-            conditions.append(cast(Progress.created_at, Date) <= end_date)
+            conditions.append(cast(func.coalesce(Progress.updated_at, Progress.created_at), Date) <= end_date)
 
         # Total de niveles completados (objectives_completed > 0 indica completado)
         stmt_completed = select(func.count(Progress.id)).where(
@@ -399,21 +399,24 @@ class ProgressRepository(BaseRepository[Progress]):
         Returns:
             List[dict]: Lista de actividad por fecha
         """
+        activity_date = cast(
+            func.coalesce(Progress.updated_at, Progress.created_at), Date
+        )
         stmt = (
             select(
-                cast(Progress.created_at, Date).label("date"),
+                activity_date.label("date"),
                 func.count(Progress.id).label("sessions"),
                 func.count(func.distinct(Progress.student_id)).label("active_students"),
                 func.sum(Progress.attempt_count).label("play_time_minutes"),
             )
             .where(
                 and_(
-                    cast(Progress.created_at, Date) >= start_date,
-                    cast(Progress.created_at, Date) <= end_date,
+                    activity_date >= start_date,
+                    activity_date <= end_date,
                 )
             )
-            .group_by(cast(Progress.created_at, Date))
-            .order_by(cast(Progress.created_at, Date))
+            .group_by(activity_date)
+            .order_by(activity_date)
         )
 
         result = await self.db.execute(stmt)
@@ -696,8 +699,8 @@ class ProgressRepository(BaseRepository[Progress]):
             return []
 
         query = text("""
-            SELECT EXTRACT(MONTH FROM created_at) as month,
-                   EXTRACT(YEAR FROM created_at) as year,
+            SELECT EXTRACT(MONTH FROM COALESCE(updated_at, created_at)) as month,
+                   EXTRACT(YEAR FROM COALESCE(updated_at, created_at)) as year,
                    AVG(efficiency_rating) as avg_progress,
                    AVG(
                        efficiency_rating * (1.0 - COALESCE(error_count * 1.0 / NULLIF(attempt_count, 0), 0) * 0.15
@@ -706,7 +709,7 @@ class ProgressRepository(BaseRepository[Progress]):
             FROM progresses
             WHERE student_id = ANY(:student_ids)
               AND deleted_at IS NULL
-            GROUP BY EXTRACT(MONTH FROM created_at), EXTRACT(YEAR FROM created_at)
+            GROUP BY EXTRACT(MONTH FROM COALESCE(updated_at, created_at)), EXTRACT(YEAR FROM COALESCE(updated_at, created_at))
             ORDER BY year, month
         """)
         result = await self.db.execute(query, {"student_ids": student_ids})
@@ -748,15 +751,15 @@ class ProgressRepository(BaseRepository[Progress]):
             return []
 
         query = text("""
-            SELECT DATE(created_at) as activity_date,
+            SELECT DATE(COALESCE(updated_at, created_at)) as activity_date,
                    COUNT(DISTINCT student_id) as active_students,
                    SUM(attempt_count) as total_time_spent,
                    AVG(attempt_count) as avg_session_time
             FROM progresses
             WHERE student_id = ANY(:student_ids)
-              AND created_at >= CURRENT_DATE - make_interval(days := :days)
+              AND COALESCE(updated_at, created_at) >= CURRENT_DATE - make_interval(days := :days)
               AND deleted_at IS NULL
-            GROUP BY DATE(created_at)
+            GROUP BY DATE(COALESCE(updated_at, created_at))
             ORDER BY activity_date
         """)
         result = await self.db.execute(
