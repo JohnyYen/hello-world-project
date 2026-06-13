@@ -433,12 +433,29 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         Agrega rendimiento por nivel.
 
+        La tasa de completitud se calcula como:
+            SUM(objectives_completed) / total_de_segmentos_del_nivel
+
+        Esto refleja cuánto del contenido del nivel ha sido completado
+        por los estudiantes, considerando el total de segmentos disponibles.
+
         Returns:
             List[dict]: Lista de rendimiento por nivel
         """
         from src.game.domain.segment_level import SegmentLevel
         from src.game.domain.level import Level
         from src.game.domain.game import Game
+
+        # Subquery: contar segmentos por nivel (no eliminados)
+        segments_subq = (
+            select(
+                SegmentLevel.level_number_id,
+                func.count(SegmentLevel.id).label("segment_count"),
+            )
+            .where(SegmentLevel.deleted_at.is_(None))
+            .group_by(SegmentLevel.level_number_id)
+            .subquery()
+        )
 
         stmt = (
             select(
@@ -452,11 +469,26 @@ class ProgressRepository(BaseRepository[Progress]):
                 func.avg(Progress.attempt_count).label("average_time_minutes"),
                 func.sum(Progress.objectives_completed).label("total_completed"),
                 func.count(Progress.id).label("total_attempts"),
+                segments_subq.c.segment_count,
+                func.count(func.distinct(Progress.student_id)).label(
+                    "total_students"
+                ),
             )
             .join(SegmentLevel, Progress.segment_level_id == SegmentLevel.id)
             .join(Level, SegmentLevel.level_number_id == Level.id)
             .join(Game, Level.game_id == Game.id)
-            .group_by(Game.id, Game.title, Level.id, Level.title)
+            .join(
+                segments_subq,
+                segments_subq.c.level_number_id == Level.id,
+                isouter=True,  # LEFT JOIN por si un nivel no tiene segmentos
+            )
+            .group_by(
+                Game.id,
+                Game.title,
+                Level.id,
+                Level.title,
+                segments_subq.c.segment_count,
+            )
         )
 
         result = await self.db.execute(stmt)
@@ -466,8 +498,10 @@ class ProgressRepository(BaseRepository[Progress]):
             {
                 "game_name": row.game_name,
                 "level_name": row.level_name,
-                "completion_rate": min(row.total_completed / row.total_attempts, 1.0)
-                if row.total_attempts > 0
+                "completion_rate": min(
+                    row.total_completed / row.segment_count, 1.0
+                )
+                if row.segment_count and row.segment_count > 0
                 else 0.0,
                 "average_attempts": float(row.average_attempts or 0),
                 "average_time_minutes": float(row.average_time_minutes or 0),
