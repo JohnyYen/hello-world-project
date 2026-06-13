@@ -171,7 +171,8 @@ export const completionRateFilterFn = (
   columnId: string,
   filterValue: string
 ) => {
-  const rate = row.getValue(columnId) as number
+  // Backend sends 0-1 scale, convert to 0-100 for comparison
+  const rate = (row.getValue(columnId) as number) * 100
   if (filterValue === "high") return rate > 80
   if (filterValue === "medium") return rate >= 50 && rate <= 80
   if (filterValue === "low") return rate < 50
@@ -236,16 +237,17 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: "Tasa de Completado",
     cell: ({ row }) => {
       const rate = row.original.completionRate
-      const rateColor = rate >= 80 ? "text-emerald-600 dark:text-emerald-400" : rate >= 50 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
+      const ratePercent = rate * 100
+      const rateColor = ratePercent >= 80 ? "text-emerald-600 dark:text-emerald-400" : ratePercent >= 50 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
       return (
         <div className="flex items-center gap-2">
           <div className="w-16 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
             <div 
-              className={`h-full ${rate >= 80 ? 'bg-emerald-500' : rate >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}
-              style={{ width: `${Math.min(rate, 100)}%` }}
+              className={`h-full ${ratePercent >= 80 ? 'bg-emerald-500' : ratePercent >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}
+              style={{ width: `${Math.min(ratePercent, 100)}%` }}
             />
           </div>
-          <span className={`font-semibold ${rateColor}`}>{rate.toFixed(0)}%</span>
+          <span className={`font-semibold ${rateColor}`}>{ratePercent.toFixed(0)}%</span>
         </div>
       )
     },
@@ -715,7 +717,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                   <IconTrendingUp className="size-4" />
                 </div>
                 <div className="text-muted-foreground">
-                  Este nivel ha sido completado por el {item.completionRate.toFixed(0)}% de los estudiantes. 
+                  Este nivel ha sido completado por el {(item.completionRate * 100).toFixed(0)}% de los estudiantes. 
                   El tiempo promedio de finalización es de {item.averageTimeMinutes.toFixed(0)} minutos 
                   con un promedio de {item.averageAttempts.toFixed(1)} intentos.
                 </div>
@@ -731,7 +733,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="completionRate">Tasa de Completado (%)</Label>
-                <Input id="completionRate" type="number" defaultValue={item.completionRate} />
+                <Input id="completionRate" type="number" defaultValue={item.completionRate * 100} />
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="averageAttempts">Intentos Promedio</Label>

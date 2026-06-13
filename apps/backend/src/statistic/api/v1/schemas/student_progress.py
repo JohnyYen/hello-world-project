@@ -35,11 +35,11 @@ class ActivityDistributionItem(BaseModel):
 
 class GameProgressItem(BaseModel):
     game_title: str = Field(..., description="Nombre del juego")
-    confidence_levels_completed: int = Field(
-        ..., description="Niveles completados por el estudiante"
+    completed_segments: int = Field(
+        ..., description="Segmentos completados por el estudiante"
     )
-    total_confidence_levels: int = Field(
-        ..., description="Total de niveles del juego"
+    total_segments: int = Field(
+        ..., description="Total de segmentos del juego"
     )
     completion_percentage: float = Field(
         ..., description="Porcentaje de completación (0-100)"
