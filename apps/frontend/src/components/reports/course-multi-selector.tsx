@@ -230,16 +230,18 @@ export function CourseMultiSelector({
         {/* Selected pills */}
         {selectedCourses.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-3">
-            {schoolYears.map((year) => {
+            {schoolYears.flatMap((year) => {
               const yearCourses = coursesByYear[year];
               const yearCourseIds = yearCourses.map(c => String(c.id));
               const selectedInYear = yearCourseIds.filter(id => selectedCourses.includes(id));
               
+              if (selectedInYear.length === 0) return [];
+              
               if (selectedInYear.length === yearCourseIds.length) {
                 // Show single pill for the whole year
-                return (
+                return [(
                   <span
-                    key={year}
+                    key={`year-${year}`}
                     className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-200 text-sm rounded-full border border-indigo-300 dark:border-indigo-500/30"
                   >
                     {year} (Todos)
@@ -250,16 +252,18 @@ export function CourseMultiSelector({
                       <X className="h-3 w-3" />
                     </button>
                   </span>
-                );
-              } else if (selectedInYear.length > 0) {
-                // Show individual pills for selected courses in the year
-                return selectedInYear.map(courseId => {
+                )];
+              }
+              
+              // Show individual pills for selected courses in the year
+              return selectedInYear
+                .map(courseId => {
                   const course = courses.find(c => String(c.id) === courseId);
                   if (!course) return null;
                   
                   return (
                     <span
-                      key={courseId}
+                      key={`course-${courseId}`}
                       className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-200 text-sm rounded-full border border-indigo-300 dark:border-indigo-500/30"
                     >
                       {course.period} - {course.schoolYear}
@@ -271,9 +275,8 @@ export function CourseMultiSelector({
                       </button>
                     </span>
                   );
-                });
-              }
-              return null;
+                })
+                .filter(Boolean);
             })}
           </div>
         )}

@@ -79,6 +79,8 @@ class GetCourseReportUseCase:
                 "mediumPerformers": int(metrics.get("medium_performers", 0)),
                 "lowPerformers": int(metrics.get("low_performers", 0)),
                 "totalStudents": int(metrics.get("total_students", 0)),  # From batch_metrics
+                "dailyActiveUsers": int(metrics.get("daily_active_users", 0)),
+                "weeklyActiveUsers": int(metrics.get("weekly_active_users", 0)),
                 "progressTrend": 0.0,
                 "gradeTrend": 0.0,
                 "engagementTrend": 0.0,
@@ -151,6 +153,8 @@ class GetCourseReportUseCase:
                 "medium_performers": int(metrics.get("medium_performers", 0)),
                 "low_performers": int(metrics.get("low_performers", 0)),
                 "total_students": int(metrics.get("total_students", 0)),
+                "daily_active_users": int(metrics.get("daily_active_users", 0)),
+                "weekly_active_users": int(metrics.get("weekly_active_users", 0)),
             })
 
         # Get unique students count (not sum of enrollments)
@@ -280,8 +284,8 @@ class GetCourseReportUseCase:
             "completionRate": round(float(metrics.get("completion_rate", 0)), 1),
             "studentsCompleted": int(metrics.get("students_completed", 0)),
             "averageActiveTime": round(float(metrics.get("average_active_time", 0)), 1),
-            "dailyActiveUsers": 0,  # TODO: requires separate activity log queries
-            "weeklyActiveUsers": 0,  # TODO: requires separate activity log queries
+            "dailyActiveUsers": int(metrics.get("daily_active_users", 0)),
+            "weeklyActiveUsers": int(metrics.get("weekly_active_users", 0)),
             "averageSessionsPerStudent": round(float(metrics.get("average_sessions", 0)), 1),
             "highPerformers": int(metrics.get("high_performers", 0)),
             "mediumPerformers": int(metrics.get("medium_performers", 0)),

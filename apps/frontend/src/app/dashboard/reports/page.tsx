@@ -33,7 +33,8 @@ function normalizeMetric(metric: any): any {
     // Handle snake_case from backend
     courseName: metric.courseName || metric.course_name || '',
     schoolYear: metric.schoolYear || metric.school_year || '',
-    period: metric.period || metric.periodLabel || metric.period_label || '',
+    periodLabel: metric.periodLabel || metric.period_label || metric.period || metric.display_period || '',
+    period: metric.periodLabel || metric.period_label || metric.period || metric.display_period || '',
   };
 }
 
@@ -157,8 +158,8 @@ export default function ReportsPage() {
           ...c,
           schoolYear: c.schoolYear || c.school_year || '',
           name: c.name || c.course_name || '',
-          period: c.period || c.periodLabel || c.period_label || '',
-          display_period: c.display_period || c.displayPeriod || c.period || '',
+          periodLabel: c.periodLabel || c.period_label || c.period || c.display_period || '',
+          period: c.periodLabel || c.period_label || c.period || c.display_period || '',
         }));
 
         setCourses(normalizedCourses);

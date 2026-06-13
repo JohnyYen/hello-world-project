@@ -6,8 +6,10 @@
 export interface Course {
   id: number | string;
   name: string;
-  period: string;
+  periodLabel: string;       // backend devuelve periodLabel (camelCase)
+  period?: string;           // fallback snake_case/legacy
   schoolYear: string;
+  school_year?: string;      // fallback snake_case
   startDate: string;
   endDate: string;
   totalStudents: number;
@@ -15,12 +17,16 @@ export interface Course {
 
 export interface CourseMetrics {
   courseId: string;
-  courseName: string;  // backend puede devolver course_name (snake_case)
-  course_name?: string;  // alternativa por compatibilidad
-  period: string;
+  courseName: string;
+  course_name?: string;      // fallback snake_case
+  
+  periodLabel: string;       // backend devuelve periodLabel (camelCase)
+  period?: string;           // fallback snake_case/legacy
+  display_period?: string;   // fallback adicional
+  
   schoolYear: string;
-  school_year?: string;  // alternativa por compatibilidad
-  totalStudents: number;  // ← AGREGADO: Total de estudiantes del curso
+  school_year?: string;      // fallback snake_case
+  totalStudents: number;
   
   // Progreso y Rendimiento
   averageProgress: number;
@@ -30,8 +36,8 @@ export interface CourseMetrics {
   
   // Engagement
   averageActiveTime: number;
-  dailyActiveUsers: number;
-  weeklyActiveUsers: number;
+  dailyActiveUsers: number;     // estudiantes activos en las últimas 24h
+  weeklyActiveUsers: number;    // estudiantes activos en los últimos 7 días
   averageSessionsPerStudent: number;
   
   // Distribución de rendimiento
