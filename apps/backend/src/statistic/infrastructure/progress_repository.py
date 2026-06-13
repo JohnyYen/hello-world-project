@@ -399,24 +399,30 @@ class ProgressRepository(BaseRepository[Progress]):
         Returns:
             List[dict]: Lista de actividad por fecha
         """
-        activity_date = cast(
+        # Para el filtro usamos COALESCE(updated_at, created_at) para capturar
+        # actividad reciente (registros actualizados dentro del rango).
+        activity_date_filter = cast(
             func.coalesce(Progress.updated_at, Progress.created_at), Date
         )
+        # Para el agrupamiento usamos solo created_at para mantener el historial
+        # diario basado en cuándo se creó cada registro de progreso.
+        activity_date_group = cast(Progress.created_at, Date)
+
         stmt = (
             select(
-                activity_date.label("date"),
+                activity_date_group.label("date"),
                 func.count(Progress.id).label("sessions"),
                 func.count(func.distinct(Progress.student_id)).label("active_students"),
                 func.sum(Progress.attempt_count).label("play_time_minutes"),
             )
             .where(
                 and_(
-                    activity_date >= start_date,
-                    activity_date <= end_date,
+                    activity_date_filter >= start_date,
+                    activity_date_filter <= end_date,
                 )
             )
-            .group_by(activity_date)
-            .order_by(activity_date)
+            .group_by(activity_date_group)
+            .order_by(activity_date_group)
         )
 
         result = await self.db.execute(stmt)
@@ -699,8 +705,8 @@ class ProgressRepository(BaseRepository[Progress]):
             return []
 
         query = text("""
-            SELECT EXTRACT(MONTH FROM COALESCE(updated_at, created_at)) as month,
-                   EXTRACT(YEAR FROM COALESCE(updated_at, created_at)) as year,
+            SELECT EXTRACT(MONTH FROM created_at) as month,
+                   EXTRACT(YEAR FROM created_at) as year,
                    AVG(efficiency_rating) as avg_progress,
                    AVG(
                        efficiency_rating * (1.0 - COALESCE(error_count * 1.0 / NULLIF(attempt_count, 0), 0) * 0.15
@@ -709,7 +715,7 @@ class ProgressRepository(BaseRepository[Progress]):
             FROM progresses
             WHERE student_id = ANY(:student_ids)
               AND deleted_at IS NULL
-            GROUP BY EXTRACT(MONTH FROM COALESCE(updated_at, created_at)), EXTRACT(YEAR FROM COALESCE(updated_at, created_at))
+            GROUP BY EXTRACT(MONTH FROM created_at), EXTRACT(YEAR FROM created_at)
             ORDER BY year, month
         """)
         result = await self.db.execute(query, {"student_ids": student_ids})
@@ -751,7 +757,7 @@ class ProgressRepository(BaseRepository[Progress]):
             return []
 
         query = text("""
-            SELECT DATE(COALESCE(updated_at, created_at)) as activity_date,
+            SELECT DATE(created_at) as activity_date,
                    COUNT(DISTINCT student_id) as active_students,
                    SUM(attempt_count) as total_time_spent,
                    AVG(attempt_count) as avg_session_time
@@ -759,7 +765,7 @@ class ProgressRepository(BaseRepository[Progress]):
             WHERE student_id = ANY(:student_ids)
               AND COALESCE(updated_at, created_at) >= CURRENT_DATE - make_interval(days := :days)
               AND deleted_at IS NULL
-            GROUP BY DATE(COALESCE(updated_at, created_at))
+            GROUP BY DATE(created_at)
             ORDER BY activity_date
         """)
         result = await self.db.execute(
