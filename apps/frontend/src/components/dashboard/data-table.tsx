@@ -354,7 +354,9 @@ export function DataTable({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: "completionRate", desc: false },
+  ])
   const [globalFilter, setGlobalFilter] = React.useState("")
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
