@@ -256,32 +256,35 @@ class GetStudentProgressUseCase:
         unique_game_ids = list({r["game_id"] for r in enriched_rows})
 
         level_repo = LevelRepository(self.db)
-        total_levels_by_game = await level_repo.count_levels_by_game_ids(
+        total_segments_by_game = await level_repo.count_segments_by_game_ids(
             unique_game_ids
         )
 
+        # Agrupar segmentos completados (únicos) por juego
         game_data: dict[UUID, dict] = {}
         for r in enriched_rows:
             gid = r["game_id"]
             if gid not in game_data:
                 game_data[gid] = {
                     "game_title": r["game_title"],
-                    "completed_levels": set(),
+                    "completed_segments": set(),
                 }
             if r["progress"].objectives_completed > 0:
-                game_data[gid]["completed_levels"].add(r["level_title"])
+                game_data[gid]["completed_segments"].add(
+                    r["progress"].segment_level_id
+                )
 
         result = []
         for gid, data in game_data.items():
-            total = total_levels_by_game.get(gid, 0)
-            completed = len(data["completed_levels"])
+            total = total_segments_by_game.get(gid, 0)
+            completed = len(data["completed_segments"])
             percentage = (completed / total * 100) if total > 0 else 0.0
 
             result.append(
                 GameProgressItem(
                     game_title=data["game_title"],
-                    confidence_levels_completed=completed,
-                    total_confidence_levels=total,
+                    completed_segments=completed,
+                    total_segments=total,
                     completion_percentage=round(percentage, 1),
                 )
             )
