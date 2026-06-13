@@ -7,6 +7,7 @@ var agent : AdaptiveAgent
 var feedback_controller : FeedbackController
 
 var _current_level_id: int = 0
+var _current_level_number: int = 0
 var _current_actor_id: String = ""
 var _is_retry_mode: bool = false
 var _level_controller: LevelController
@@ -17,8 +18,9 @@ static var _instance: GameController = null
 func _ready() -> void:
 	EventBus.level_loaded.connect(_on_level_loaded)
 
-func _on_level_loaded(segment_id: int, actor_id: String) -> void:
-	print("[GameController] Nivel cargado - segment_id=%d, actor_id=%s" % [segment_id, actor_id])
+func _on_level_loaded(segment_id: int, level_number: int, actor_id: String) -> void:
+	print("[GameController] Nivel cargado - segment_id=%d, level_number=%d, actor_id=%s" % [segment_id, level_number, actor_id])
+	_current_level_number = level_number
 	begin_segment(segment_id, actor_id)
 
 static func create_level_controller(level) -> LevelController:
@@ -72,7 +74,7 @@ func begin_segment(segment_id: int, actor_id: String) -> void:
 	print("[GameController] Segmento iniciado - level_id=%d, actor=%s" % [segment_id, actor_id])
 	_XAPIService.start_segment_tracking(segment_id, actor_id)
 	# Crear statement xAPI 'attempted' para tracking de sincronización
-	_XAPIService.track_level_started(str(segment_id), "Level %d" % segment_id, actor_id)
+	_XAPIService.track_level_started(str(segment_id), "Level %d" % segment_id, actor_id, _current_level_number, segment_id)
 	_current_level_id = segment_id
 	_current_actor_id = actor_id
 
@@ -107,7 +109,9 @@ func complete_level(result: Dictionary) -> void:
 		score,
 		score,
 		result.success,
-		"PT%fS" % time_sec
+		"PT%fS" % time_sec,
+		_current_level_number,
+		_current_level_id
 	)
 	
 	if _level_controller:

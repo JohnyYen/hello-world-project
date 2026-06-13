@@ -10,7 +10,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { COLORS, CHART_COLORS_ARRAY } from "@/lib/colors";
+import { COLORS, CHART_COLORS_ARRAY, useChartThemeColors } from "@/lib/colors";
+import { cn } from "@/lib/utils";
 
 interface BarChartProps<T> {
   data: T[];
@@ -24,6 +25,7 @@ interface BarChartProps<T> {
   title?: string;
   subtitle?: string;
   yAxisLabel?: string;
+  xAxisLabel?: string;
   height?: number;
   layout?: "horizontal" | "vertical";
   stacked?: boolean;
@@ -31,6 +33,7 @@ interface BarChartProps<T> {
   showGrid?: boolean;
   yAxisDomain?: [number, number];
   tooltipFormatter?: (value: number, name: string) => string;
+  tooltipLabelFormatter?: (label: string, item: T) => string;
 }
 
 export function BarChart<T>({
@@ -40,6 +43,7 @@ export function BarChart<T>({
   title,
   subtitle,
   yAxisLabel,
+  xAxisLabel,
   height = 300,
   layout = "horizontal",
   stacked = false,
@@ -47,23 +51,56 @@ export function BarChart<T>({
   showGrid = true,
   yAxisDomain,
   tooltipFormatter,
+  tooltipLabelFormatter,
 }: BarChartProps<T>) {
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) => {
+  const themeColors = useChartThemeColors();
+
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: boolean;
+    payload?: Array<{
+      name: string;
+      value: number;
+      color: string;
+      payload?: T;
+    }>;
+    label?: string;
+  }) => {
     if (!active || !payload || !payload.length) return null;
-    
+
+    // Find the item in data that matches the label
+    const item = data.find((d) => {
+      const itemAsRecord = d as Record<string, unknown>;
+      return String(itemAsRecord[xAxisDataKey]) === String(label);
+    }) as T | undefined;
+
+    const displayLabel =
+      item && tooltipLabelFormatter
+        ? tooltipLabelFormatter(label || "", item)
+        : label;
+
     return (
       <div className="rounded-lg border bg-card p-3 shadow-lg">
-        <p className="text-sm font-medium text-foreground mb-2">{label}</p>
+        {displayLabel && (
+          <p className="text-sm font-medium text-foreground mb-2">
+            {displayLabel}
+          </p>
+        )}
         <div className="space-y-1">
           {payload.map((entry, index) => (
             <div key={index} className="flex items-center gap-2 text-sm">
-              <div 
-                className="w-3 h-3 rounded-full" 
+              <div
+                className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: entry.color }}
               />
               <span className="text-muted-foreground">{entry.name}:</span>
               <span className="font-medium">
-                {tooltipFormatter ? tooltipFormatter(entry.value, entry.name) : entry.value}
+                {tooltipFormatter
+                  ? tooltipFormatter(entry.value, entry.name)
+                  : entry.value}
               </span>
             </div>
           ))}
@@ -77,7 +114,9 @@ export function BarChart<T>({
       {(title || subtitle) && (
         <div className="mb-4">
           {title && <h3 className="text-lg font-semibold">{title}</h3>}
-          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+          {subtitle && (
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
+          )}
         </div>
       )}
       <ResponsiveContainer width="100%" height={height}>
@@ -86,23 +125,36 @@ export function BarChart<T>({
           layout={layout}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
-          {showGrid && <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />}
+          {showGrid && (
+            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.border} />
+          )}
           {layout === "horizontal" ? (
             <>
               <XAxis
                 dataKey={xAxisDataKey}
-                tick={{ fill: COLORS.muted, fontSize: 12 }}
-                axisLine={{ stroke: COLORS.border }}
-                tickLine={{ stroke: COLORS.border }}
+                tick={{ fill: themeColors.text, fontSize: 12 }}
+                axisLine={{ stroke: themeColors.border }}
+                tickLine={{ stroke: themeColors.border }}
                 interval={0}
                 angle={-15}
                 textAnchor="end"
                 height={60}
+                label={
+                  xAxisLabel
+                    ? {
+                        value: xAxisLabel,
+                        position: "insideBottom",
+                        offset: -5,
+                        fill: themeColors.text,
+                        fontSize: 12,
+                      }
+                    : undefined
+                }
               />
               <YAxis
-                tick={{ fill: COLORS.muted, fontSize: 12 }}
-                axisLine={{ stroke: COLORS.border }}
-                tickLine={{ stroke: COLORS.border }}
+                tick={{ fill: themeColors.text, fontSize: 12 }}
+                axisLine={{ stroke: themeColors.border }}
+                tickLine={{ stroke: themeColors.border }}
                 domain={yAxisDomain}
                 label={
                   yAxisLabel
@@ -110,7 +162,7 @@ export function BarChart<T>({
                         value: yAxisLabel,
                         angle: -90,
                         position: "insideLeft",
-                        fill: COLORS.muted,
+                        fill: themeColors.text,
                         fontSize: 12,
                       }
                     : undefined
@@ -121,32 +173,51 @@ export function BarChart<T>({
             <>
               <XAxis
                 type="number"
-                tick={{ fill: COLORS.muted, fontSize: 12 }}
-                axisLine={{ stroke: COLORS.border }}
-                tickLine={{ stroke: COLORS.border }}
+                tick={{ fill: themeColors.text, fontSize: 12 }}
+                axisLine={{ stroke: themeColors.border }}
+                tickLine={{ stroke: themeColors.border }}
                 domain={yAxisDomain}
+                label={
+                  xAxisLabel
+                    ? {
+                        value: xAxisLabel,
+                        angle: 90,
+                        position: "insideBottom",
+                        offset: 5,
+                        fill: themeColors.text,
+                        fontSize: 12,
+                      }
+                    : undefined
+                }
               />
               <YAxis
                 type="category"
                 dataKey={xAxisDataKey}
-                tick={{ fill: COLORS.muted, fontSize: 12 }}
-                axisLine={{ stroke: COLORS.border }}
-                tickLine={{ stroke: COLORS.border }}
-                width={100}
+                tick={{ fill: themeColors.text, fontSize: 12 }}
+                axisLine={{ stroke: themeColors.border }}
+                tickLine={{ stroke: themeColors.border }}
+                width={120}
               />
             </>
           )}
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
+          <Legend
             wrapperStyle={{ paddingTop: "10px" }}
-            formatter={(value) => <span style={{ color: COLORS.foreground, fontSize: 12 }}>{value}</span>}
+            formatter={(value) => (
+              <span style={{ color: themeColors.foreground, fontSize: 12 }}>
+                {value}
+              </span>
+            )}
           />
           {bars.map((bar, index) => (
             <Bar
               key={bar.dataKey}
               dataKey={bar.dataKey}
               name={bar.name}
-              fill={bar.color || CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]}
+              fill={
+                bar.color ||
+                CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]
+              }
               stackId={stacked ? bar.stackId || "stack" : undefined}
               radius={stacked ? [0, 0, 0, 0] : [4, 4, 0, 0]}
               animationDuration={1000}

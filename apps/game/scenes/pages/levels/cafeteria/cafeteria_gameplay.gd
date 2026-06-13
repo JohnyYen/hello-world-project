@@ -52,8 +52,8 @@ func _ready() -> void:
 		return
 	
 	# Emit level_loaded signal for signal-based architecture (Phase 3.1)
-	EventBus.level_loaded.emit(self.segment_id, actor_id)
-	print("[CafeteriaGameplay | _ready]: level_loaded signal emit - level_id=%d, actor=%s" % [self.segment_id, actor_id])
+	EventBus.level_loaded.emit(self.segment_id, self.level_number, actor_id)
+	print("[CafeteriaGameplay | _ready]: level_loaded signal emit - segment_id=%d, level_number=%d, actor=%s" % [self.segment_id, self.level_number, actor_id])
 	
 	controller.modifier.segment_id = self.segment_id
 	controller.modifier.original_config = controller.level_configuration.json_data

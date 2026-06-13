@@ -33,11 +33,13 @@ interface CourseOption {
 interface StudentFeedbackProps {
   student: Student;
   onClose: () => void;
+  onFeedbackCreated?: () => void;
   courses?: CourseOption[];
 }
 
-export function StudentFeedback({ student, onClose, courses }: StudentFeedbackProps) {
+export function StudentFeedback({ student, onClose, onFeedbackCreated, courses }: StudentFeedbackProps) {
   const [rating, setRating] = useState(0);
+  const [feedbackType, setFeedbackType] = useState("advice");
   const [strengths, setStrengths] = useState("");
   const [improvements, setImprovements] = useState("");
   const [comments, setComments] = useState("");
@@ -76,7 +78,7 @@ export function StudentFeedback({ student, onClose, courses }: StudentFeedbackPr
       const payload: FeedbackCreatePayload = {
         student_id: student.id,
         rating,
-        feedback_type: "advice",
+        feedback_type: feedbackType as FeedbackCreatePayload["feedback_type"],
         display_in_game: false,
         comments: mappedComments,
       };
@@ -91,6 +93,7 @@ export function StudentFeedback({ student, onClose, courses }: StudentFeedbackPr
         description: "El feedback ha sido guardado exitosamente.",
       });
       onClose();
+      onFeedbackCreated?.();
     } catch (error) {
       notifications.apiError(error, "Error al enviar feedback");
     } finally {
@@ -144,23 +147,14 @@ export function StudentFeedback({ student, onClose, courses }: StudentFeedbackPr
         <CardContent className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Student Info Summary */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-lg">
+            <div className="p-4 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
-                  Última actividad: {student.lastActivity || "No registrada"}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  Progreso: {student.progress || 0}%
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Star className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  Promedio: {student.averageGrade || "N/A"}
+                  Última actividad:{' '}
+                  {student.lastActivity
+                    ? new Date(student.lastActivity).toLocaleDateString('es-ES')
+                    : 'No registrada'}
                 </span>
               </div>
             </div>
@@ -189,33 +183,53 @@ export function StudentFeedback({ student, onClose, courses }: StudentFeedbackPr
               </div>
             )}
 
-            {/* Rating */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium flex items-center gap-2">
-                Calificación General
-                <span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center gap-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => handleRatingChange(star)}
-                    className="transition-colors"
-                    aria-label={`Calificación ${star} de 5`}
-                  >
-                    <Star
-                      className={`h-8 w-8 ${
-                        star <= rating
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "fill-gray-200 text-gray-300"
-                      } hover:scale-110 transition-transform`}
-                    />
-                  </button>
-                ))}
-                <span className="text-sm text-muted-foreground ml-2">
-                  {rating}/5
-                </span>
+            {/* Rating + Feedback Type */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  Calificación General
+                  <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => handleRatingChange(star)}
+                      className="transition-colors"
+                      aria-label={`Calificación ${star} de 5`}
+                    >
+                      <Star
+                        className={`h-8 w-8 ${
+                          star <= rating
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "fill-gray-200 text-gray-300"
+                        } hover:scale-110 transition-transform`}
+                      />
+                    </button>
+                  ))}
+                  <span className="text-sm text-muted-foreground ml-2">
+                    {rating}/5
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium flex items-center gap-2">
+                  Tipo de Feedback
+                  <span className="text-red-500">*</span>
+                </label>
+                <Select value={feedbackType} onValueChange={setFeedbackType}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Seleccionar tipo..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="advice">Consejo</SelectItem>
+                    <SelectItem value="hint">Pista</SelectItem>
+                    <SelectItem value="tip">Sugerencia</SelectItem>
+                    <SelectItem value="message">Mensaje</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

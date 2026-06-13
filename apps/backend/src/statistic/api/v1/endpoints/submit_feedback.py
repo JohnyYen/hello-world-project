@@ -50,7 +50,7 @@ async def get_course_feedback(
 async def get_student_feedback_history(
     student_id: UUID,
     skip: int = Query(0, ge=0),
-    limit: int = Query(100, ge=1, le=1000),
+    limit: int = Query(100, ge=1, le=100),
     usecase: ListFeedbackUseCase = Depends(get_list_feedback_usecase),
 ):
     """

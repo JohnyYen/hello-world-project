@@ -115,4 +115,5 @@ export type {
   ProgressOverTimeItem as ProgressOverTime,
   LevelPerformance,
   ActivityDistributionItem as ActivityDistribution,
+  GameProgressItem,
 } from "@/api/types";

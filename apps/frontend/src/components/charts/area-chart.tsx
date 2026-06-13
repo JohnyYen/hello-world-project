@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { COLORS, CHART_COLORS_ARRAY } from "@/lib/colors";
+import { COLORS, CHART_COLORS_ARRAY, useChartThemeColors } from "@/lib/colors";
 
 interface AreaChartProps<T> {
   data: T[];
@@ -19,16 +19,26 @@ interface AreaChartProps<T> {
     name: string;
     color?: string;
     stackId?: string;
+    yAxisId?: string;
   }[];
   xAxisDataKey: string;
   title?: string;
   subtitle?: string;
   yAxisLabel?: string;
+  yAxisLabels?: {
+    left?: string;
+    right?: string;
+  };
+  xAxisLabel?: string;
   height?: number;
   stacked?: boolean;
   showAnimation?: boolean;
   showGrid?: boolean;
   yAxisDomain?: [number, number];
+  yAxisDomains?: {
+    left?: [number, number];
+    right?: [number, number];
+  };
   tooltipFormatter?: (value: number, name: string) => string;
 }
 
@@ -39,29 +49,44 @@ export function AreaChart<T>({
   title,
   subtitle,
   yAxisLabel,
+  yAxisLabels,
+  xAxisLabel,
   height = 300,
   stacked = false,
   showAnimation = true,
   showGrid = true,
   yAxisDomain,
+  yAxisDomains,
   tooltipFormatter,
 }: AreaChartProps<T>) {
-  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) => {
+  const themeColors = useChartThemeColors();
+
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: boolean;
+    payload?: Array<{ name: string; value: number; color: string }>;
+    label?: string;
+  }) => {
     if (!active || !payload || !payload.length) return null;
-    
+
     return (
       <div className="rounded-lg border bg-card p-3 shadow-lg">
         <p className="text-sm font-medium text-foreground mb-2">{label}</p>
         <div className="space-y-1">
           {payload.map((entry, index) => (
             <div key={index} className="flex items-center gap-2 text-sm">
-              <div 
-                className="w-3 h-3 rounded-full" 
+              <div
+                className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: entry.color }}
               />
               <span className="text-muted-foreground">{entry.name}:</span>
               <span className="font-medium">
-                {tooltipFormatter ? tooltipFormatter(entry.value, entry.name) : entry.value}
+                {tooltipFormatter
+                  ? tooltipFormatter(entry.value, entry.name)
+                  : entry.value}
               </span>
             </div>
           ))}
@@ -75,39 +100,79 @@ export function AreaChart<T>({
       {(title || subtitle) && (
         <div className="mb-4">
           {title && <h3 className="text-lg font-semibold">{title}</h3>}
-          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+          {subtitle && (
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
+          )}
         </div>
       )}
       <ResponsiveContainer width="100%" height={height}>
-        <RechartsAreaChart data={data} margin={{ top: 10, right: 30, left: 20, bottom: 5 }}>
-          {showGrid && <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />}
+        <RechartsAreaChart
+          data={data}
+          margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
+        >
+          {showGrid && (
+            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.border} />
+          )}
           <XAxis
             dataKey={xAxisDataKey}
-            tick={{ fill: COLORS.muted, fontSize: 12 }}
-            axisLine={{ stroke: COLORS.border }}
-            tickLine={{ stroke: COLORS.border }}
-          />
-          <YAxis
-            tick={{ fill: COLORS.muted, fontSize: 12 }}
-            axisLine={{ stroke: COLORS.border }}
-            tickLine={{ stroke: COLORS.border }}
-            domain={yAxisDomain}
+            tick={{ fill: themeColors.text, fontSize: 12 }}
+            axisLine={{ stroke: themeColors.border }}
+            tickLine={{ stroke: themeColors.border }}
             label={
-              yAxisLabel
+              xAxisLabel
                 ? {
-                    value: yAxisLabel,
-                    angle: -90,
-                    position: "insideLeft",
-                    fill: COLORS.muted,
+                    value: xAxisLabel,
+                    position: "insideBottom",
+                    offset: -5,
+                    fill: themeColors.text,
                     fontSize: 12,
                   }
                 : undefined
             }
           />
+          <YAxis
+            yAxisId="left"
+            tick={{ fill: themeColors.text, fontSize: 12 }}
+            axisLine={{ stroke: themeColors.border }}
+            tickLine={{ stroke: themeColors.border }}
+            domain={yAxisDomains?.left || yAxisDomain || [0, "dataMax"]}
+            label={
+              yAxisLabels?.left || yAxisLabel
+                ? {
+                    value: yAxisLabels?.left || yAxisLabel || "",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: themeColors.text,
+                    fontSize: 12,
+                  }
+                : undefined
+            }
+          />
+          {yAxisLabels?.right && (
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              tick={{ fill: themeColors.text, fontSize: 12 }}
+              axisLine={{ stroke: themeColors.border }}
+              tickLine={{ stroke: themeColors.border }}
+              domain={yAxisDomains?.right || yAxisDomain || [0, "dataMax"]}
+              label={{
+                value: yAxisLabels.right,
+                angle: 90,
+                position: "insideRight",
+                fill: themeColors.text,
+                fontSize: 12,
+              }}
+            />
+          )}
           <Tooltip content={<CustomTooltip />} />
-          <Legend 
+          <Legend
             wrapperStyle={{ paddingTop: "10px" }}
-            formatter={(value) => <span style={{ color: COLORS.foreground, fontSize: 12 }}>{value}</span>}
+            formatter={(value) => (
+              <span style={{ color: themeColors.foreground, fontSize: 12 }}>
+                {value}
+              </span>
+            )}
           />
           {areas.map((area, index) => (
             <Area
@@ -115,9 +180,16 @@ export function AreaChart<T>({
               type="monotone"
               dataKey={area.dataKey}
               name={area.name}
+              yAxisId={area.yAxisId || "left"}
               stackId={stacked ? area.stackId || "stack" : undefined}
-              stroke={area.color || CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]}
-              fill={area.color || CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]}
+              stroke={
+                area.color ||
+                CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]
+              }
+              fill={
+                area.color ||
+                CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]
+              }
               fillOpacity={0.3}
               strokeWidth={2}
               animationDuration={1000}

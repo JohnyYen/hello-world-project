@@ -76,13 +76,37 @@ func set_sync_service(sync_service: SyncService) -> void:
 
 ## === Métodos de tracking xAPI ===
 
+## Construye un object_id compuesto con formato URI jerárquico.
+## Formato: "hello-world://level/{level_number}/segment/{segment_number}"
+static func build_object_id(level_number: int, segment_number: int) -> String:
+	return "hello-world://level/%d/segment/%d" % [level_number, segment_number]
+
 ## Registra que un nivel comenzó
-func track_level_started(level_id: String, level_name: String, actor_id: String) -> Dictionary:
-	var statement := _builder.on_level_started(level_id, level_name, actor_id)
+## @param level_id: ID del nivel (string legacy)
+## @param level_name: Nombre legible del nivel
+## @param actor_id: UUID del jugador
+## @param level_number: Número de nivel (para URI compuesto, -1 para omitir)
+## @param segment_number: Número de segmento (para URI compuesto, -1 para omitir)
+func track_level_started(
+	level_id: String,
+	level_name: String,
+	actor_id: String,
+	level_number: int = -1,
+	segment_number: int = -1
+) -> Dictionary:
+	var object_id := level_id
+	if level_number >= 0 and segment_number >= 0:
+		object_id = build_object_id(level_number, segment_number)
+	var statement := _builder.on_level_started(object_id, level_name, actor_id)
 	_notify_pending_update()
 	return statement
 
 ## Registra que un nivel fue completado
+## @param level_id: ID del nivel (string legacy)
+## @param level_name: Nombre legible del nivel
+## @param actor_id: UUID del jugador
+## @param level_number: Número de nivel (para URI compuesto, -1 para omitir)
+## @param segment_number: Número de segmento (para URI compuesto, -1 para omitir)
 func track_level_completed(
 	level_id: String,
 	level_name: String,
@@ -90,10 +114,15 @@ func track_level_completed(
 	score_raw: float,
 	score_scaled: float,
 	success: bool,
-	duration: String
+	duration: String,
+	level_number: int = -1,
+	segment_number: int = -1
 ) -> Dictionary:
+	var object_id := level_id
+	if level_number >= 0 and segment_number >= 0:
+		object_id = build_object_id(level_number, segment_number)
 	var statement := _builder.on_level_completed(
-		level_id, level_name, actor_id, score_raw, score_scaled, success, duration
+		object_id, level_name, actor_id, score_raw, score_scaled, success, duration
 	)
 	_notify_pending_update()
 	return statement

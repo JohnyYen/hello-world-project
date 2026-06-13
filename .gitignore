@@ -31,6 +31,9 @@ test-results/
 openspec/
 docs/sdd/
 
+# Dev data dumps
+*.yml
+
 # AI Framework artifacts
 .opencode/
 .engram/

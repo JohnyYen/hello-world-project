@@ -11,13 +11,14 @@ export async function GET(
     const token = request.cookies.get("auth_token")?.value;
     const { searchParams } = new URL(request.url);
     const days = searchParams.get("days") || "30";
+    const timezone = searchParams.get("timezone") || "+00:00";
 
     if (!token) {
       return NextResponse.json({ detail: "No autorizado" }, { status: 401 });
     }
 
     const response = await fetch(
-      `${API_BASE_URL}/api/v1/users/students/${studentId}/activity/heatmap?days=${days}`,
+      `${API_BASE_URL}/api/v1/users/students/${studentId}/activity/heatmap?days=${days}&timezone=${encodeURIComponent(timezone)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -10,6 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export interface KPIsData {
@@ -64,6 +70,15 @@ const fallbackCardsData: CardData[] = [
     gradient: "from-rose-500 to-orange-500",
   },
   {
+    title: "Puntaje Promedio",
+    value: "0%",
+    change: 0,
+    trend: "up",
+    description: "Puntaje promedio general",
+    icon: <IconChartBar className="w-4 h-4" />,
+    gradient: "from-amber-500 to-yellow-500",
+  },
+  {
     title: "Niveles Completados",
     value: "0",
     change: 0,
@@ -79,11 +94,18 @@ const fallbackCardsData: CardData[] = [
     trend: "up",
     description: "Tiempo total de juego",
     icon: <IconClock className="w-4 h-4" />,
-    gradient: "from-amber-500 to-yellow-500",
+    gradient: "from-cyan-500 to-blue-600",
   },
 ]
 
-// Transform API data to card data format
+/**
+ * Transforms KPIs and Trends data into card format for display.
+ * Each card includes a description with comparison to the previous period.
+ * 
+ * Period comparison behavior:
+ * - All trend percentages show "vs período anterior" context
+ * - Description format: "{trendPercent}% vs período anterior"
+ */
 function transformKPIsToCards(kpis: KPIsData, trends: TrendsData): CardData[] {
   const formatNumber = (num: number): string => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + "M"
@@ -100,13 +122,22 @@ function transformKPIsToCards(kpis: KPIsData, trends: TrendsData): CardData[] {
     return `${minutes}m`
   }
 
+  const formatTrendDescription = (
+    trend: number,
+    baseDescription: string
+  ): string => {
+    return trend >= 0 
+      ? `${baseDescription} • +${trend}% vs período anterior`
+      : `${baseDescription} • ${trend}% vs período anterior`
+  }
+
   return [
     {
       title: "Estudiantes Totales",
       value: formatNumber(kpis.totalStudents),
       change: trends.studentsChangePercent,
       trend: trends.studentsChangePercent >= 0 ? "up" : "down",
-      description: trends.studentsChangePercent >= 0 ? "Crecimiento positivo" : "Necesita atención",
+      description: formatTrendDescription(trends.studentsChangePercent, "Total de estudiantes registrados"),
       icon: <IconSchool className="w-4 h-4" />,
       gradient: "from-emerald-500 to-teal-600",
     },
@@ -115,35 +146,44 @@ function transformKPIsToCards(kpis: KPIsData, trends: TrendsData): CardData[] {
       value: formatNumber(kpis.activeStudentsThisMonth),
       change: trends.activityChangePercent,
       trend: trends.activityChangePercent >= 0 ? "up" : "down",
-      description: "En los últimos 30 días",
+      description: formatTrendDescription(trends.activityChangePercent, "En los últimos 30 días"),
       icon: <IconUsers className="w-4 h-4" />,
       gradient: "from-rose-500 to-orange-500",
     },
     {
-    title: "Niveles Completados",
+      title: "Puntaje Promedio",
+      value: `${kpis.averageScore.toFixed(0)}%`,
+      change: trends.scoreChangePercent,
+      trend: trends.scoreChangePercent >= 0 ? "up" : "down",
+      description: formatTrendDescription(trends.scoreChangePercent, "Puntaje promedio general"),
+      icon: <IconChartBar className="w-4 h-4" />,
+      gradient: "from-amber-500 to-yellow-500",
+    },
+    {
+      title: "Niveles Completados",
       value: formatNumber(kpis.totalLevelsCompleted),
-      change: trends.activityChangePercent,
-      trend: trends.activityChangePercent >= 0 ? "up" : "down",
-      description: "Total de niveles",
+      change: 0,
+      trend: "up",
+      description: "Total de niveles completados",
       icon: <IconTarget className="w-4 h-4" />,
       gradient: "from-indigo-500 to-violet-600",
     },
     {
       title: "Tiempo de Juego",
       value: formatTime(kpis.totalPlayTimeMinutes),
-      change: trends.scoreChangePercent,
-      trend: trends.scoreChangePercent >= 0 ? "up" : "down",
-      description: `Promedio: ${kpis.averageScore.toFixed(0)}%`,
+      change: 0,
+      trend: "up",
+      description: "Tiempo total de juego",
       icon: <IconClock className="w-4 h-4" />,
-      gradient: "from-amber-500 to-yellow-500",
+      gradient: "from-cyan-500 to-blue-600",
     },
   ]
 }
 
 function LoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      {[...Array(4)].map((_, i) => (
+    <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3 @[1400px]/main:grid-cols-5">
+      {[...Array(5)].map((_, i) => (
         <Card 
           key={i}
           className="@container/card group relative overflow-hidden border-slate-200/60 dark:border-slate-800/60 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm"
@@ -181,7 +221,7 @@ export function SectionCards({ kpis, trends, isLoading }: SectionCardsProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 px-4 lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3 @[1400px]/main:grid-cols-5">
       {cardsData.map((card, index) => (
         <Card 
           key={card.title} 
@@ -206,28 +246,48 @@ export function SectionCards({ kpis, trends, isLoading }: SectionCardsProps) {
             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-slate-800 dark:text-slate-200">
               {card.value}
             </CardTitle>
-            <CardAction className="relative">
-              <Badge 
-                variant="outline" 
-                className={`${
-                  card.trend === "up" 
-                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" 
-                    : "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20"
-                }`}
-              >
-                {card.trend === "up" ? <IconTrendingUp /> : <IconTrendingDown />}
-                {Math.abs(card.change)}%
-              </Badge>
+<CardAction className="relative">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Badge 
+                      variant="outline" 
+                      className={`${
+                        card.change === 0
+                          ? "bg-slate-500/10 text-slate-500 dark:text-slate-400 border-slate-500/20"
+                          : card.trend === "up" 
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" 
+                            : "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20"
+                      }`}
+                    >
+                      {card.change === 0 ? (
+                        "—"
+                      ) : card.trend === "up" ? (
+                        <><IconTrendingUp />{Math.abs(card.change)}%</>
+                      ) : (
+                        <><IconTrendingDown />{Math.abs(card.change)}%</>
+                      )}
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {card.change === 0 ? (
+                      <p>Sin datos de tendencia para este período</p>
+                    ) : (
+                      <p>{card.trend === "up" ? "Mejoró" : "Disminuyó"} un {Math.abs(card.change)}% vs período anterior</p>
+                    )}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardAction>
           </CardHeader>
           <CardFooter className="relative flex-col items-start gap-1.5 text-sm pt-0">
             <div className="line-clamp-1 flex gap-2 font-medium text-slate-700 dark:text-slate-300">
               {card.description}
-              {card.trend === "up" ? (
+              {card.change > 0 ? (
                 <IconTrendingUp className="size-4 text-emerald-500" />
-              ) : (
+              ) : card.change < 0 ? (
                 <IconTrendingDown className="size-4 text-red-500" />
-              )}
+              ) : null}
             </div>
             <div className="text-muted-foreground text-xs">
               {kpis ? "Datos del período seleccionado" : "Datos de ejemplo"}

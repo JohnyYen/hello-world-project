@@ -2,6 +2,7 @@ import { AuthProvider } from "@/context/auth-context";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { AppSidebar, SiteHeader } from "@/components/dashboard";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 export default async function Layout({
   children,
@@ -36,6 +37,7 @@ export default async function Layout({
             </SidebarInset>
           </SidebarProvider>
         </div>
+        <Toaster />
       </AuthGuard>
     </AuthProvider>
   );

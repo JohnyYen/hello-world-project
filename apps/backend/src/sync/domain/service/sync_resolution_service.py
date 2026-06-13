@@ -54,16 +54,22 @@ class SyncResolutionService:
         return game_instance.student_id
 
     async def resolve_segment_level_id_from_object(
-        self, sync_session_id: UUID, level_number: int
+        self,
+        sync_session_id: UUID,
+        level_number: int,
+        segment_number: Optional[int] = None,
     ) -> Optional[UUID]:
         """
-        Resolve segment_level_id from the sync session chain using a level number.
+        Resolve segment_level_id from the sync session chain using a level number
+        and optionally a segment number.
 
         Traverses: SyncSession -> GameInstance -> Level -> SegmentLevel
 
         Args:
             sync_session_id: UUID of the SyncSession
             level_number: The level number to look up
+            segment_number: Optional segment number. When None (legacy format),
+                falls back to .limit(1) in the segment query.
 
         Returns:
             UUID of the SegmentLevel, or None if it cannot be resolved
@@ -80,13 +86,14 @@ class SyncResolutionService:
         if not level:
             return None
 
-        segment_level = await self._get_segment_level(level.id)
+        segment_level = await self._get_segment_level(level.id, segment_number)
         if not segment_level:
             return None
 
         logger.info(
             f"Resolved segment_level_id={segment_level.id} from "
-            f"level_number={level_number}, game={game_instance.game_id}"
+            f"level_number={level_number}, segment_number={segment_number}, "
+            f"game={game_instance.game_id}"
         )
         return segment_level.id
 
@@ -158,17 +165,27 @@ class SyncResolutionService:
             return None
         return level
 
-    async def _get_segment_level(self, level_id: UUID) -> Optional[SegmentLevel]:
-        result = await self.db.execute(
-            select(SegmentLevel)
-            .where(
-                SegmentLevel.level_number_id == level_id,
-                SegmentLevel.deleted_at.is_(None),
-            )
-            .limit(1)
+    async def _get_segment_level(
+        self, level_id: UUID, segment_number: Optional[int] = None
+    ) -> Optional[SegmentLevel]:
+        query = select(SegmentLevel).where(
+            SegmentLevel.level_number_id == level_id,
+            SegmentLevel.deleted_at.is_(None),
         )
+
+        if segment_number is not None:
+            query = query.where(SegmentLevel.segment_number == segment_number)
+        else:
+            query = query.limit(1)
+
+        result = await self.db.execute(query)
         segment_level = result.scalar_one_or_none()
         if not segment_level:
-            logger.warning(f"No SegmentLevel found for level {level_id}")
+            if segment_number is not None:
+                logger.warning(
+                    f"No SegmentLevel found for level {level_id}, segment {segment_number}"
+                )
+            else:
+                logger.warning(f"No SegmentLevel found for level {level_id}")
             return None
         return segment_level
