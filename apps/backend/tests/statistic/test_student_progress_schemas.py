@@ -175,30 +175,30 @@ class TestGameProgressItem:
         """Test correct serialization with known values."""
         item = GameProgressItem(
             game_title="Nivelación",
-            confidence_levels_completed=3,
-            total_confidence_levels=10,
+            completed_segments=3,
+            total_segments=10,
             completion_percentage=30.0,
         )
 
         assert item.game_title == "Nivelación"
-        assert item.confidence_levels_completed == 3
-        assert item.total_confidence_levels == 10
+        assert item.completed_segments == 3
+        assert item.total_segments == 10
         assert item.completion_percentage == 30.0
 
     def test_game_progress_snake_case_json_keys(self):
         """Test snake_case keys in JSON output."""
         item = GameProgressItem(
             game_title="Operaciones",
-            confidence_levels_completed=5,
-            total_confidence_levels=8,
+            completed_segments=5,
+            total_segments=8,
             completion_percentage=62.5,
         )
 
         result = item.model_dump()
 
         assert "game_title" in result
-        assert "confidence_levels_completed" in result
-        assert "total_confidence_levels" in result
+        assert "completed_segments" in result
+        assert "total_segments" in result
         assert "completion_percentage" in result
 
 

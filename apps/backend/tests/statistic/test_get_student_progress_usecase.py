@@ -58,7 +58,7 @@ class TestGetStudentProgressExecute:
             MockRepo.return_value = mock_repo
 
             mock_level_repo = MagicMock()
-            mock_level_repo.count_levels_by_game_ids = AsyncMock(return_value={})
+            mock_level_repo.count_segments_by_game_ids = AsyncMock(return_value={})
             MockLevelRepo.return_value = mock_level_repo
 
             use_case = GetStudentProgressUseCase(db=mock_db)
@@ -425,7 +425,7 @@ class TestCalculateGamesProgress:
             "src.statistic.application.usecase.get_student_progress_usecase.LevelRepository"
         ) as MockLevelRepo:
             mock_level_repo = MagicMock()
-            mock_level_repo.count_levels_by_game_ids = AsyncMock(
+            mock_level_repo.count_segments_by_game_ids = AsyncMock(
                 return_value={
                     UUID("11111111-1111-1111-1111-111111111111"): 3,
                     UUID("22222222-2222-2222-2222-222222222222"): 5,
@@ -440,22 +440,25 @@ class TestCalculateGamesProgress:
 
             assert len(result) == 2
             assert result[0].game_title == "Nivelación"
-            assert result[0].confidence_levels_completed == 1
-            assert result[0].total_confidence_levels == 3
+            assert result[0].completed_segments == 1
+            assert result[0].total_segments == 3
             assert result[0].completion_percentage == 33.3
             assert result[1].game_title == "Operaciones"
-            assert result[1].confidence_levels_completed == 1
-            assert result[1].total_confidence_levels == 5
+            assert result[1].completed_segments == 1
+            assert result[1].total_segments == 5
             assert result[1].completion_percentage == 20.0
 
     @pytest.mark.asyncio
     async def test_calculate_games_progress_division_by_zero(self):
-        """Test division by zero when total_levels = 0 returns 0.0%."""
+        """Test division by zero when total_segments = 0 returns 0.0%."""
         mock_db = MagicMock()
         data = [
             {
-                "progress": MagicMock(objectives_completed=2),
-                "game_title": "Sin Niveles",
+                "progress": MagicMock(
+                    objectives_completed=2,
+                    segment_level_id=999,
+                ),
+                "game_title": "Sin Segmentos",
                 "game_id": UUID("33333333-3333-3333-3333-333333333333"),
             }
         ]
@@ -464,7 +467,7 @@ class TestCalculateGamesProgress:
             "src.statistic.application.usecase.get_student_progress_usecase.LevelRepository"
         ) as MockLevelRepo:
             mock_level_repo = MagicMock()
-            mock_level_repo.count_levels_by_game_ids = AsyncMock(
+            mock_level_repo.count_segments_by_game_ids = AsyncMock(
                 return_value={
                     UUID("33333333-3333-3333-3333-333333333333"): 0,
                 }
@@ -476,8 +479,8 @@ class TestCalculateGamesProgress:
 
             assert len(result) == 1
             assert result[0].completion_percentage == 0.0
-            assert result[0].total_confidence_levels == 0
-            assert result[0].confidence_levels_completed == 1
+            assert result[0].total_segments == 0
+            assert result[0].completed_segments == 1
 
 
 # ============== Fixtures ==============
@@ -493,6 +496,7 @@ def sample_enriched_data():
                 attempt_count=3,
                 efficiency_rating=85,
                 objectives_completed=2,
+                segment_level_id=101,
                 created_at=base_time,
                 updated_at=base_time,
             ),
@@ -506,6 +510,7 @@ def sample_enriched_data():
                 attempt_count=5,
                 efficiency_rating=90,
                 objectives_completed=3,
+                segment_level_id=201,
                 created_at=datetime(2026, 3, 2, 10, 0, 0, tzinfo=timezone.utc),
                 updated_at=datetime(2026, 3, 2, 10, 0, 0, tzinfo=timezone.utc),
             ),
@@ -527,6 +532,7 @@ def sample_enriched_data_with_game_id():
                 attempt_count=3,
                 efficiency_rating=85,
                 objectives_completed=2,
+                segment_level_id=101,
                 created_at=base_time,
                 updated_at=base_time,
             ),
@@ -540,6 +546,7 @@ def sample_enriched_data_with_game_id():
                 attempt_count=5,
                 efficiency_rating=90,
                 objectives_completed=3,
+                segment_level_id=201,
                 created_at=datetime(2026, 3, 2, 10, 0, 0, tzinfo=timezone.utc),
                 updated_at=datetime(2026, 3, 2, 10, 0, 0, tzinfo=timezone.utc),
             ),
