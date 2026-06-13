@@ -375,6 +375,7 @@ export interface ActivityOverTimeItem {
 }
 
 export interface LevelPerformanceItem {
+  gameName: string;
   levelName: string;
   completionRate: number;
   averageAttempts: number;
@@ -426,10 +427,18 @@ export interface ActivityDistributionItem {
   sessions: number;
 }
 
+export interface GameProgressItem {
+  gameTitle: string;
+  confidenceLevelsCompleted: number;
+  totalConfidenceLevels: number;
+  completionPercentage: number;
+}
+
 export interface StudentProgressReport {
   student_id: string;
   kpis: StudentReportKPIs;
   progress_over_time: ProgressOverTimeItem[];
   level_performance: LevelPerformance[];
   activity_distribution: ActivityDistributionItem[];
+  games_progress: GameProgressItem[];
 }

@@ -228,7 +228,13 @@ class ProgressUpdater:
             update_data["hints_used_count"] = payload.get("hints_used_count", 0)
             update_data["errors_details"] = payload.get("errors_details")
             update_data["efficiency_rating"] = int(payload.get("efficiency_rating") or 0)
-            update_data["objectives_completed"] = payload.get("objectives_completed", 0)
+
+            # Only set objectives_completed if payload has a positive value.
+            # Prevents raw_stats from overwriting a previous "completed" event
+            # that already set objectives_completed=1 on the same record.
+            raw_objectives = payload.get("objectives_completed")
+            if raw_objectives and raw_objectives > 0:
+                update_data["objectives_completed"] = raw_objectives
 
         elif event_type == "level_time":
             pass

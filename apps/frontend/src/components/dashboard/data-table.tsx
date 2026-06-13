@@ -102,6 +102,7 @@ import { LevelPerformanceItem } from "@/types/api"
 
 // Schema for level performance data from API
 export const schema = z.object({
+  gameName: z.string(),
   levelName: z.string(),
   completionRate: z.number(),
   averageAttempts: z.number(),
@@ -210,6 +211,17 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     enableSorting: false,
     enableHiding: false,
     size: 40,
+  },
+  {
+    accessorKey: "gameName",
+    header: "Juego",
+    cell: ({ row }) => {
+      return (
+        <div className="text-sm text-muted-foreground">
+          {row.original.gameName}
+        </div>
+      )
+    },
   },
   {
     accessorKey: "levelName",

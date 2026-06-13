@@ -438,9 +438,11 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         from src.game.domain.segment_level import SegmentLevel
         from src.game.domain.level import Level
+        from src.game.domain.game import Game
 
         stmt = (
             select(
+                Game.title.label("game_name"),
                 Level.title.label("level_name"),
                 func.avg(Progress.efficiency_rating).label("average_score"),
                 func.avg(Progress.attempt_count).label("average_attempts"),
@@ -453,7 +455,8 @@ class ProgressRepository(BaseRepository[Progress]):
             )
             .join(SegmentLevel, Progress.segment_level_id == SegmentLevel.id)
             .join(Level, SegmentLevel.level_number_id == Level.id)
-            .group_by(Level.id, Level.title)
+            .join(Game, Level.game_id == Game.id)
+            .group_by(Game.id, Game.title, Level.id, Level.title)
         )
 
         result = await self.db.execute(stmt)
@@ -461,6 +464,7 @@ class ProgressRepository(BaseRepository[Progress]):
 
         return [
             {
+                "game_name": row.game_name,
                 "level_name": row.level_name,
                 "completion_rate": min(row.total_completed / row.total_attempts, 1.0)
                 if row.total_attempts > 0
