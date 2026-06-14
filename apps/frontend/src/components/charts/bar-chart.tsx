@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  Cell,
 } from "recharts";
 import { COLORS, CHART_COLORS_ARRAY, useChartThemeColors } from "@/lib/colors";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,10 @@ interface BarChartProps<T> {
   yAxisDomain?: [number, number];
   tooltipFormatter?: (value: number, name: string) => string;
   tooltipLabelFormatter?: (label: string, item: T) => string;
+  /** Optional function to compute fill color per data point. Receives the datum and its index, returns a color string. */
+  barFill?: (entry: T, index: number) => string;
+  /** When true, the Legend component is not rendered */
+  hideLegend?: boolean;
 }
 
 export function BarChart<T>({
@@ -52,6 +57,8 @@ export function BarChart<T>({
   yAxisDomain,
   tooltipFormatter,
   tooltipLabelFormatter,
+  barFill,
+  hideLegend = false,
 }: BarChartProps<T>) {
   const themeColors = useChartThemeColors();
 
@@ -201,28 +208,40 @@ export function BarChart<T>({
             </>
           )}
           <Tooltip content={<CustomTooltip />} />
-          <Legend
-            wrapperStyle={{ paddingTop: "10px" }}
-            formatter={(value) => (
-              <span style={{ color: themeColors.foreground, fontSize: 12 }}>
-                {value}
-              </span>
-            )}
-          />
+          {!hideLegend && (
+            <Legend
+              wrapperStyle={{ paddingTop: "10px" }}
+              formatter={(value) => (
+                <span style={{ color: themeColors.foreground, fontSize: 12 }}>
+                  {value}
+                </span>
+              )}
+            />
+          )}
           {bars.map((bar, index) => (
             <Bar
               key={bar.dataKey}
               dataKey={bar.dataKey}
               name={bar.name}
               fill={
-                bar.color ||
-                CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]
+                barFill
+                  ? undefined
+                  : bar.color ||
+                    CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]
               }
               stackId={stacked ? bar.stackId || "stack" : undefined}
               radius={stacked ? [0, 0, 0, 0] : [4, 4, 0, 0]}
               animationDuration={1000}
               animationEasing="ease-out"
-            />
+            >
+              {barFill &&
+                data.map((entry, cellIndex) => (
+                  <Cell
+                    key={`cell-${cellIndex}`}
+                    fill={barFill(entry, cellIndex)}
+                  />
+                ))}
+            </Bar>
           ))}
         </RechartsBarChart>
       </ResponsiveContainer>
