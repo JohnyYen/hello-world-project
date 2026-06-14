@@ -18,6 +18,7 @@ import {
   X,
 } from 'lucide-react';
 import { MetricCard, LineChart as LineChartComponent, BarChart, DonutChart } from '@/components/charts';
+import { ChartHelp } from '@/components/ui/chart-help';
 import { ExportButton } from '@/components/export/ExportButton';
 import { CourseMultiSelector } from '@/components/reports/course-multi-selector';
 import { CourseHighlightCards } from '@/components/reports/course-report-kpis';
@@ -33,6 +34,7 @@ function normalizeMetric(metric: any): any {
   return {
     ...metric,
     // Handle snake_case from backend
+    courseId: metric.courseId ?? metric.course_id ?? '',
     courseName: metric.courseName || metric.course_name || '',
     schoolYear: metric.schoolYear || metric.school_year || '',
     periodLabel: metric.periodLabel || metric.period_label || metric.period || metric.display_period || '',
@@ -713,7 +715,7 @@ export default function ReportsPage() {
                 />
                  
                   <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
-                    <h3 className="text-lg font-semibold mb-6">Progreso y Calificación</h3>
+                    <h3 className="text-lg font-semibold mb-6">Progreso y Calificación<ChartHelp content="Muestra la evolución del progreso y calificación promedio entre períodos. Útil para comparar el rendimiento general de los cursos seleccionados." /></h3>
                     <LineChartComponent
                        data={selectedMetrics.map(m => ({ date: `${m.courseName}\n${m.period || ''}`, averageProgress: m.averageProgress, averageGrade: m.averageGrade }))}
                       xAxisDataKey="date"
@@ -729,7 +731,7 @@ export default function ReportsPage() {
                   </div>
 
                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
-                     <h3 className="text-lg font-semibold mb-6">Completación y Engagement</h3>
+                     <h3 className="text-lg font-semibold mb-6">Completación y Engagement<ChartHelp content="Analiza la tasa de completación y sesiones promedio por estudiante. Ayuda a identificar si los estudiantes finalizan los cursos y con qué frecuencia participan." /></h3>
                     <LineChartComponent
                       data={selectedMetrics.map(m => ({ date: `${m.courseName}\n${m.period || ''}`, completionRate: m.completionRate, sessionsPerStudent: m.averageSessionsPerStudent }))}
                      xAxisDataKey="date"
@@ -763,7 +765,7 @@ export default function ReportsPage() {
                       accentColor="violet"
                     />
                     <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
-                      <h3 className="text-lg font-semibold mb-6">Progreso y Calificación en el Tiempo</h3>
+                      <h3 className="text-lg font-semibold mb-6">Progreso y Calificación en el Tiempo<ChartHelp content="Muestra la evolución diaria del progreso y calificación. Útil para detectar tendencias a corto plazo y el impacto de intervenciones educativas." /></h3>
                       <LineChartComponent
                         data={timeSeriesData}
                         xAxisDataKey="date"
@@ -807,7 +809,7 @@ export default function ReportsPage() {
                 />
                  
                   <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
-                    <h3 className="text-lg font-semibold mb-6">Métricas Comparadas</h3>
+                    <h3 className="text-lg font-semibold mb-6">Métricas Comparadas<ChartHelp content="Compara progreso, calificación y completación entre distintos cursos o períodos. Las barras agrupadas facilitan la comparación visual directa." /></h3>
                    <BarChart
                       data={selectedMetrics.map(m => ({ name: `${m.courseName}\n${m.period || ''}`, Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
                      xAxisDataKey="name"
@@ -825,7 +827,7 @@ export default function ReportsPage() {
 
                 <div className="grid grid-cols-1 gap-6">
                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
-                     <h3 className="text-lg font-semibold mb-4">Distribución por Período</h3>
+                     <h3 className="text-lg font-semibold mb-4">Distribución por Período<ChartHelp content="Muestra cómo se distribuyen los estudiantes en niveles de rendimiento (alto, medio, bajo) para cada período. Útil para ver cambios en la composición del rendimiento." /></h3>
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {selectedMetrics.map((metric) => (
                         <div key={`dist-${metric.courseId}`}>
