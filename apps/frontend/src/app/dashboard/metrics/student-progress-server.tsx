@@ -1,46 +1,110 @@
-import { unstable_cache } from 'next/cache';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-
-// Data fetching
-async function getStudentProgress() {
-  return unstable_cache(
-    async () => {
-      await new Promise(resolve => setTimeout(resolve, 80));
-      return [
-        { id: "1", name: "Juan Pérez", progress: 85, score: 88, lastActivity: "2024-10-28" },
-        { id: "2", name: "María González", progress: 92, score: 94, lastActivity: "2024-10-30" },
-        { id: "3", name: "Carlos Rodríguez", progress: 65, score: 70, lastActivity: "2024-10-25" },
-        { id: "4", name: "Ana López", progress: 78, score: 82, lastActivity: "2024-10-29" },
-        { id: "5", name: "Luis Fernández", progress: 45, score: 52, lastActivity: "2024-10-20" },
-      ];
-    },
-    ['student-progress'],
-    { revalidate: 300, tags: ['metrics'] }
-  )();
-}
+import { getMetricsOverview } from "@/lib/metrics-data";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 export async function StudentProgressServer() {
-  const students = await getStudentProgress();
+  let overview;
+  try {
+    overview = await getMetricsOverview();
+  } catch {
+    return (
+      <Card className="border-0 shadow-lg">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-semibold">
+            Rendimiento por Juego
+          </CardTitle>
+          <CardDescription>
+            No se pudieron cargar los datos
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  // Agrupar level_performance por juego
+  const gameMap = new Map<string, {
+    gameName: string;
+    totalLevels: number;
+    avgCompletionRate: number;
+    avgAttempts: number;
+  }>();
+
+  for (const level of overview.levelPerformance) {
+    const existing = gameMap.get(level.gameName);
+    if (existing) {
+      existing.totalLevels += 1;
+      existing.avgCompletionRate += level.completionRate;
+      existing.avgAttempts += level.averageAttempts;
+    } else {
+      gameMap.set(level.gameName, {
+        gameName: level.gameName,
+        totalLevels: 1,
+        avgCompletionRate: level.completionRate,
+        avgAttempts: level.averageAttempts,
+      });
+    }
+  }
+
+  const games = Array.from(gameMap.values())
+    .map((g) => ({
+      ...g,
+      avgCompletionRate: Math.round((g.avgCompletionRate / g.totalLevels) * 100),
+      avgAttempts: parseFloat((g.avgAttempts / g.totalLevels).toFixed(1)),
+    }))
+    .sort((a, b) => b.avgCompletionRate - a.avgCompletionRate);
+
+  if (games.length === 0) {
+    return (
+      <Card className="border-0 shadow-lg">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-semibold">
+            Rendimiento por Juego
+          </CardTitle>
+          <CardDescription>
+            No hay datos de rendimiento disponibles
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border-0 shadow-lg">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-semibold">Progreso de Estudiantes</CardTitle>
-        <CardDescription>Top 5 estudiantes por progreso</CardDescription>
+        <CardTitle className="text-lg font-semibold">
+          Rendimiento por Juego
+        </CardTitle>
+        <CardDescription>
+          Completado promedio por juego
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {students.map((student) => (
-            <div key={student.id} className="flex items-center justify-between">
+          {games.map((game, index) => (
+            <div key={index} className="flex items-center justify-between">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-slate-900">{student.name}</span>
-                  <span className="text-sm text-slate-500">{student.progress}%</span>
+                  <div className="flex-1 min-w-0 mr-2">
+                    <span className="text-sm font-medium text-slate-900 block truncate">
+                      {game.gameName}
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      {game.totalLevels} niveles · Ø {game.avgAttempts} intentos
+                    </span>
+                  </div>
+                  <span className="text-sm font-bold text-primary shrink-0">
+                    {game.avgCompletionRate}%
+                  </span>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-gradient-to-r from-primary to-primary h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${student.progress}%` }}
+                    style={{ width: `${game.avgCompletionRate}%` }}
                   />
                 </div>
               </div>
