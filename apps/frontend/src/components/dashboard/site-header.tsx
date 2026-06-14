@@ -56,13 +56,29 @@ export function SiteHeader() {
     );
   }
 
+  // Derive user role from the available response types
+  const getUserRole = (u: typeof user): string => {
+    if (!u) return "Usuario";
+
+    // TeacherProfileResponse: has department field but no role
+    if ("department" in u && u.department) return "Profesor";
+
+    // UserResponse: has role field with name
+    if ("role" in u && u.role) {
+      const r = u.role as { name?: string; role_name?: string };
+      return r.name ?? r.role_name ?? "Usuario";
+    }
+
+    return "Usuario";
+  };
+
   // Use real user if authenticated, otherwise use demo for preview
   const navUser = isAuthenticated && user
     ? {
         name: user.lastname ? `${user.name} ${user.lastname}` : user.name,
         email: user.email,
         avatar: `/avatars/${user.username || "user"}.jpg`,
-        role: "role" in user ? ((user.role as any)?.role_name ?? (user.role as any)?.name ?? "Usuario") : "Usuario",
+        role: getUserRole(user),
         status: user.is_active ? "online" as const : "offline" as const,
       }
     : DEMO_USER;
