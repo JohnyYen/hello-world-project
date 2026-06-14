@@ -4,7 +4,7 @@
 .godot/editor/
 editor_layout.cfg
 *.translation
-.db
+*.db
 .sqlite3
 .sqlite
 /builds
