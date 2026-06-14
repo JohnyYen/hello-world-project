@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from uuid import UUID
+from typing import Optional
 
 from src.statistic.application.usecase.get_student_progress_usecase import (
     GetStudentProgressUseCase,
@@ -14,15 +15,23 @@ router = APIRouter(tags=["Student Progress"])
     "/students/{student_id}/progress",
     response_model=StudentProgressResponse,
     summary="Obtener reporte de progreso por estudiante",
-    description="Retorna métricas de progreso, rendimiento por nivel y distribución de actividades",
+    description="Retorna métricas de progreso, rendimiento por nivel y distribución de actividades. Opcionalmente filtrar por juego.",
     status_code=status.HTTP_200_OK,
 )
 async def get_student_progress(
     student_id: str,
+    game_id: Optional[UUID] = Query(
+        None,
+        description="UUID del juego para filtrar (opcional). Si se omite, incluye todos los juegos.",
+    ),
     use_case: GetStudentProgressUseCase = Depends(),
 ) -> StudentProgressResponse:
     """
     Obtiene el reporte completo de progreso de un estudiante.
+
+    Args:
+        student_id: UUID del estudiante
+        game_id: UUID del juego para filtrar (opcional)
 
     Returns:
         - student_id: UUID del estudiante
@@ -30,5 +39,6 @@ async def get_student_progress(
         - progress_over_time: Evolución del progreso en el tiempo
         - level_performance: Rendimiento detallado por nivel
         - activity_distribution: Distribución del tiempo por juego
+        - games_progress: Progreso por juego
     """
-    return await use_case.execute(student_id)
+    return await use_case.execute(student_id, game_id=game_id)

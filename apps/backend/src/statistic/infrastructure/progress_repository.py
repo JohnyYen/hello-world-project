@@ -43,6 +43,7 @@ class ProgressRepository(BaseRepository[Progress]):
         self,
         student_id: UUID,
         include_deleted: bool = False,
+        game_id: Optional[UUID] = None,
     ) -> List[Dict[str, Any]]:
         """
         Obtiene progresos enriquecidos con nombres de nivel y juego.
@@ -52,6 +53,7 @@ class ProgressRepository(BaseRepository[Progress]):
         Args:
             student_id: UUID del estudiante
             include_deleted: Si True, incluye progresos marcados como eliminados
+            game_id: UUID del juego para filtrar (opcional)
 
         Returns:
             List[Dict]: Lista de diccionarios con datos enriquecidos
@@ -76,6 +78,9 @@ class ProgressRepository(BaseRepository[Progress]):
 
         if not include_deleted:
             stmt = stmt.where(Progress.deleted_at.is_(None))
+
+        if game_id is not None:
+            stmt = stmt.where(Game.id == game_id)
 
         stmt = stmt.order_by(Progress.created_at.asc())
 
