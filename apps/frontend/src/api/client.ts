@@ -39,7 +39,20 @@ async function request<T>(
     let detail = `HTTP ${response.status}`;
     try {
       const body = await response.json();
-      detail = body?.detail || body?.message || detail;
+      const rawDetail = body?.detail ?? body?.message;
+      if (Array.isArray(rawDetail)) {
+        // FastAPI/Pydantic v2 returns 422 errors with detail as an array of
+        // { type, loc, msg, input, ctx } objects — flatten to readable string
+        detail = rawDetail
+          .map((d: Record<string, unknown>) =>
+            typeof d === "object" && d !== null
+              ? String(d.msg ?? d.message ?? JSON.stringify(d))
+              : String(d)
+          )
+          .join("; ");
+      } else {
+        detail = rawDetail ?? detail;
+      }
     } catch {
       // ignore
     }
