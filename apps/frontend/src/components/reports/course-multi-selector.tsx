@@ -108,7 +108,7 @@ export function CourseMultiSelector({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5 text-indigo-400" />
-            <CardTitle className="text-lg font-semibold text-slate-600 dark:text-slate-200">Comparar Cursos</CardTitle>
+            <CardTitle className="text-lg font-semibold text-slate-600 dark:text-slate-200">Seleccionar Cursos y Períodos</CardTitle>
           </div>
           <span className="text-sm text-slate-500 dark:text-slate-400">
             {maxSelection !== undefined 
@@ -135,7 +135,7 @@ export function CourseMultiSelector({
             )}>
               {selectedCourseNames.length > 0 
                 ? selectedCourseNames.join(', ')
-                : 'Seleccionar cursos para comparar'}
+                : 'Seleccionar cursos y períodos'}
             </span>
             <ChevronDown className={cn(
               "h-4 w-4 text-slate-500 dark:text-slate-400 transition-transform duration-200",
@@ -181,8 +181,8 @@ export function CourseMultiSelector({
                           {isPartiallySelected && <div className="w-2 h-2 rounded-full bg-white" />}
                         </div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-slate-700 dark:text-slate-100">{year} (Todos)</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400">{yearCourses.length} períodos, {yearCourses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes</p>
+                          <p className="text-sm font-medium text-slate-700 dark:text-slate-100">{year} (Todos los cursos)</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{yearCourses.length} cursos, {yearCourses.reduce((sum, c) => sum + c.totalStudents, 0)} estudiantes</p>
                         </div>
                       </button>
                     </div>
@@ -212,8 +212,8 @@ export function CourseMultiSelector({
                                 {isSelected && <Check className="h-2.5 w-2.5 text-white" />}
                               </div>
                               <div className="flex-1">
-                                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{course.period}</p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">{course.name} - {course.totalStudents} estudiantes</p>
+                                <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{course.name}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">{course.period} — {course.totalStudents} estudiantes</p>
                               </div>
                             </button>
                           );
@@ -241,7 +241,7 @@ export function CourseMultiSelector({
                 // Show single pill for the whole year
                 return [(
                   <span
-                    key={`year-${year}`}
+                    key={`pill-year-${year}`}
                     className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-200 text-sm rounded-full border border-indigo-300 dark:border-indigo-500/30"
                   >
                     {year} (Todos)
@@ -256,27 +256,27 @@ export function CourseMultiSelector({
               }
               
               // Show individual pills for selected courses in the year
-              return selectedInYear
-                .map(courseId => {
-                  const course = courses.find(c => String(c.id) === courseId);
-                  if (!course) return null;
-                  
-                  return (
-                    <span
-                      key={`course-${courseId}`}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-200 text-sm rounded-full border border-indigo-300 dark:border-indigo-500/30"
+              const pills: React.ReactNode[] = [];
+              for (const courseId of selectedInYear) {
+                const course = courses.find(c => String(c.id) === courseId);
+                if (!course) continue;
+                
+                pills.push(
+                  <span
+                    key={`pill-course-${courseId}`}
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-200 text-sm rounded-full border border-indigo-300 dark:border-indigo-500/30"
+                  >
+                    {course.name} ({course.period} - {course.schoolYear})
+                    <button
+                      onClick={() => toggleCourse(courseId)}
+                      className="hover:bg-indigo-200 dark:hover:bg-indigo-600/50 rounded-full p-0.5 ml-1"
                     >
-                      {course.period} - {course.schoolYear}
-                      <button
-                        onClick={() => toggleCourse(courseId)}
-                        className="hover:bg-indigo-200 dark:hover:bg-indigo-600/50 rounded-full p-0.5 ml-1"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </span>
-                  );
-                })
-                .filter(Boolean);
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                );
+              }
+              return pills;
             })}
           </div>
         )}

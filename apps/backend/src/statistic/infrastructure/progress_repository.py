@@ -43,6 +43,7 @@ class ProgressRepository(BaseRepository[Progress]):
         self,
         student_id: UUID,
         include_deleted: bool = False,
+        game_id: Optional[UUID] = None,
     ) -> List[Dict[str, Any]]:
         """
         Obtiene progresos enriquecidos con nombres de nivel y juego.
@@ -52,6 +53,7 @@ class ProgressRepository(BaseRepository[Progress]):
         Args:
             student_id: UUID del estudiante
             include_deleted: Si True, incluye progresos marcados como eliminados
+            game_id: UUID del juego para filtrar (opcional)
 
         Returns:
             List[Dict]: Lista de diccionarios con datos enriquecidos
@@ -76,6 +78,9 @@ class ProgressRepository(BaseRepository[Progress]):
 
         if not include_deleted:
             stmt = stmt.where(Progress.deleted_at.is_(None))
+
+        if game_id is not None:
+            stmt = stmt.where(Game.id == game_id)
 
         stmt = stmt.order_by(Progress.created_at.asc())
 
@@ -198,7 +203,7 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         cutoff_date = date.today() - timedelta(days=days)
         stmt = select(func.count(func.distinct(Progress.student_id))).where(
-            and_(Progress.created_at >= cutoff_date)
+            and_(func.coalesce(Progress.updated_at, Progress.created_at) >= cutoff_date)
         )
         result = await self.db.execute(stmt)
         return result.scalar() or 0
@@ -218,9 +223,9 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         conditions = []
         if start_date:
-            conditions.append(cast(Progress.created_at, Date) >= start_date)
+            conditions.append(cast(func.coalesce(Progress.updated_at, Progress.created_at), Date) >= start_date)
         if end_date:
-            conditions.append(cast(Progress.created_at, Date) <= end_date)
+            conditions.append(cast(func.coalesce(Progress.updated_at, Progress.created_at), Date) <= end_date)
 
         stmt = select(func.count(func.distinct(Progress.student_id)))
         if conditions:
@@ -353,9 +358,9 @@ class ProgressRepository(BaseRepository[Progress]):
         """
         conditions = []
         if start_date:
-            conditions.append(cast(Progress.created_at, Date) >= start_date)
+            conditions.append(cast(func.coalesce(Progress.updated_at, Progress.created_at), Date) >= start_date)
         if end_date:
-            conditions.append(cast(Progress.created_at, Date) <= end_date)
+            conditions.append(cast(func.coalesce(Progress.updated_at, Progress.created_at), Date) <= end_date)
 
         # Total de niveles completados (objectives_completed > 0 indica completado)
         stmt_completed = select(func.count(Progress.id)).where(
@@ -399,21 +404,30 @@ class ProgressRepository(BaseRepository[Progress]):
         Returns:
             List[dict]: Lista de actividad por fecha
         """
+        # Para el filtro usamos COALESCE(updated_at, created_at) para capturar
+        # actividad reciente (registros actualizados dentro del rango).
+        activity_date_filter = cast(
+            func.coalesce(Progress.updated_at, Progress.created_at), Date
+        )
+        # Para el agrupamiento usamos solo created_at para mantener el historial
+        # diario basado en cuándo se creó cada registro de progreso.
+        activity_date_group = cast(Progress.created_at, Date)
+
         stmt = (
             select(
-                cast(Progress.created_at, Date).label("date"),
+                activity_date_group.label("date"),
                 func.count(Progress.id).label("sessions"),
                 func.count(func.distinct(Progress.student_id)).label("active_students"),
                 func.sum(Progress.attempt_count).label("play_time_minutes"),
             )
             .where(
                 and_(
-                    cast(Progress.created_at, Date) >= start_date,
-                    cast(Progress.created_at, Date) <= end_date,
+                    activity_date_filter >= start_date,
+                    activity_date_filter <= end_date,
                 )
             )
-            .group_by(cast(Progress.created_at, Date))
-            .order_by(cast(Progress.created_at, Date))
+            .group_by(activity_date_group)
+            .order_by(activity_date_group)
         )
 
         result = await self.db.execute(stmt)
@@ -754,7 +768,7 @@ class ProgressRepository(BaseRepository[Progress]):
                    AVG(attempt_count) as avg_session_time
             FROM progresses
             WHERE student_id = ANY(:student_ids)
-              AND created_at >= CURRENT_DATE - make_interval(days := :days)
+              AND COALESCE(updated_at, created_at) >= CURRENT_DATE - make_interval(days := :days)
               AND deleted_at IS NULL
             GROUP BY DATE(created_at)
             ORDER BY activity_date

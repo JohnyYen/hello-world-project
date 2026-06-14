@@ -19,6 +19,9 @@ from src.statistic.api.v1.endpoints.overview import (
 from src.statistic.api.v1.endpoints.bulk_stats import (
     router as bulk_stats_router,
 )
+from src.statistic.api.v1.endpoints.student_games import (
+    router as student_games_router,
+)
 
 
 router = APIRouter(
@@ -32,3 +35,4 @@ router.include_router(metric_types_router)
 router.include_router(student_progress_router)
 router.include_router(overview_router)
 router.include_router(bulk_stats_router)
+router.include_router(student_games_router)

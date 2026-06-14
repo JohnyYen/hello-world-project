@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from datetime import date as datetime_date, timedelta
 from collections import defaultdict
+from typing import Optional
 
 from src.shared.infrastructure.session import get_db
 from src.statistic.infrastructure.progress_repository import ProgressRepository
@@ -32,12 +33,18 @@ class GetStudentProgressUseCase:
     def __init__(self, db: AsyncSession = Depends(get_db)):
         self.db = db
 
-    async def execute(self, student_id: str) -> StudentProgressResponse:
+    async def execute(
+        self,
+        student_id: str,
+        game_id: Optional[UUID] = None,
+    ) -> StudentProgressResponse:
         """
         Obtiene el reporte de progreso de un estudiante.
 
         Args:
             student_id: UUID del estudiante
+            game_id: UUID del juego para filtrar (opcional). Si se proporciona,
+                     solo se incluyen datos de ese juego.
 
         Returns:
             StudentProgressResponse: Datos de progreso para el frontend (puede estar vacío si no hay datos)
@@ -53,13 +60,26 @@ class GetStudentProgressUseCase:
                 detail="ID de estudiante inválido",
             )
 
+        # Validar game_id si se proporciona
+        if game_id is not None:
+            try:
+                UUID(str(game_id))
+            except ValueError:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="ID de juego inválido",
+                )
+
         # Resolver si el ID recibido es un user_id (enviado por el frontend)
         # en lugar de student_id. Progress.student_id referencia students.id,
         # pero el frontend envía users.id. Mapeamos user_id → student_id.
         resolved_id = await self._resolve_student_id(student_uuid)
 
         progress_repo = ProgressRepository(self.db)
-        enriched_rows = await progress_repo.get_enriched_by_student_id(resolved_id)
+        enriched_rows = await progress_repo.get_enriched_by_student_id(
+            resolved_id,
+            game_id=game_id,
+        )
 
         # Si no hay progreso, retornar datos vacíos (no es un error)
         if not enriched_rows:

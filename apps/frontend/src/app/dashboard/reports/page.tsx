@@ -18,9 +18,12 @@ import {
   X,
 } from 'lucide-react';
 import { MetricCard, LineChart as LineChartComponent, BarChart, DonutChart } from '@/components/charts';
+import { ChartHelp } from '@/components/ui/chart-help';
 import { ExportButton } from '@/components/export/ExportButton';
 import { CourseMultiSelector } from '@/components/reports/course-multi-selector';
+import { CourseHighlightCards } from '@/components/reports/course-report-kpis';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 import { courseReportsService, apiClient } from '@/lib/api-client';
 import type { Course, CourseMetrics, CourseReportKPIs, CourseProgressOverTime } from '@/types/course-report.interface';
 
@@ -31,6 +34,7 @@ function normalizeMetric(metric: any): any {
   return {
     ...metric,
     // Handle snake_case from backend
+    courseId: metric.courseId ?? metric.course_id ?? '',
     courseName: metric.courseName || metric.course_name || '',
     schoolYear: metric.schoolYear || metric.school_year || '',
     periodLabel: metric.periodLabel || metric.period_label || metric.period || metric.display_period || '',
@@ -39,11 +43,14 @@ function normalizeMetric(metric: any): any {
 }
 
 function formatPlayTime(minutes: number): string {
-  const hours = Math.floor(minutes / 60);
+  const abs = Math.abs(minutes);
+  const hours = Math.floor(abs / 60);
+  const mins = Math.round(abs % 60);
+  const sign = minutes < 0 ? '−' : '+';
   if (hours > 0) {
-    return `${hours}h`;
+    return `${sign}${hours}h ${mins}m`;
   }
-  return `${minutes}m`;
+  return `${sign}${mins}m`;
 }
 
 // Animated section header
@@ -104,6 +111,19 @@ function ComparisonBadge({ trend }: { trend: number }) {
   );
 }
 
+// Find previous metric for same course to show difference
+function getPreviousMetric(metrics: CourseMetrics[], currentIndex: number): CourseMetrics | null {
+  if (currentIndex <= 0) return null;
+  const current = metrics[currentIndex];
+  for (let i = currentIndex - 1; i >= 0; i--) {
+    const prev = metrics[i];
+    if (prev.courseName?.toLowerCase() === current.courseName?.toLowerCase()) {
+      return prev;
+    }
+  }
+  return null;
+}
+
 // Trend indicator arrow
 function TrendArrow({ value }: { value: number }) {
   const isPositive = value >= 0;
@@ -119,6 +139,7 @@ function TrendArrow({ value }: { value: number }) {
 export default function ReportsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [courses, setCourses] = useState<Course[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [selectedMetrics, setSelectedMetrics] = useState<CourseMetrics[]>([]);
@@ -178,8 +199,10 @@ export default function ReportsPage() {
           });
           setSelectedCourses(latestYearCourses.map(c => String(c.id)));
         }
-      } catch (error) {
-        console.error('Error loading reports data:', error);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Error al cargar los reportes';
+        setError(message);
+        console.error('Error loading reports data:', err);
       } finally {
         setLoading(false);
       }
@@ -237,9 +260,11 @@ export default function ReportsPage() {
           progressMap[courseId] = data;
         });
         setProgressData(progressMap);
-      } catch (error) {
-        if (!cancelled && !(error instanceof DOMException && error.name === 'AbortError')) {
-          console.error('Error loading selected metrics:', error);
+      } catch (err) {
+        if (!cancelled && !(err instanceof DOMException && err.name === 'AbortError')) {
+          const message = err instanceof Error ? err.message : 'Error al cargar métricas';
+          setError(message);
+          console.error('Error loading selected metrics:', err);
         }
       }
     };
@@ -275,6 +300,28 @@ export default function ReportsPage() {
     };
   }, [selectedMetrics]);
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
+        <div className="container mx-auto py-12 px-6">
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-6">
+              <X className="w-10 h-10 text-red-500" />
+            </div>
+            <h2 className="text-2xl font-bold mb-3">Error al cargar reportes</h2>
+            <p className="text-muted-foreground max-w-md mb-6">{error}</p>
+            <button
+              onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
+              className="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-colors"
+            >
+              Reintentar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
@@ -292,6 +339,28 @@ export default function ReportsPage() {
                 <div className="h-96 bg-slate-200 dark:bg-slate-800 rounded-xl" />
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
+        <div className="container mx-auto py-12 px-6">
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-20 h-20 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-6">
+              <X className="w-10 h-10 text-red-500" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Error al cargar reportes</h3>
+            <p className="text-muted-foreground max-w-md mb-6">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors"
+            >
+              Reintentar
+            </button>
           </div>
         </div>
       </div>
@@ -418,7 +487,7 @@ export default function ReportsPage() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {selectedCourses.length >= 2 
-                      ? `Comparando ${selectedMetrics[0]?.period} → ${selectedMetrics[selectedMetrics.length - 1]?.period}`
+                      ? `Comparando ${selectedMetrics[0]?.courseName} (${selectedMetrics[0]?.period}) → ${selectedMetrics[selectedMetrics.length - 1]?.courseName} (${selectedMetrics[selectedMetrics.length - 1]?.period})`
                       : 'Selecciona más períodos'}
                   </p>
                 </div>
@@ -501,11 +570,28 @@ export default function ReportsPage() {
                   </div>
                 </section>
 
+                {/* Course highlights - actionable insights */}
+                {kpis?.topPerformingCourse && kpis?.needsAttentionCourse && (
+                  <section className="mb-8">
+                    <SectionHeader 
+                      title="Cursos Destacados" 
+                      subtitle="Rendimiento comparativo entre cursos"
+                      icon={Award}
+                      delay={250}
+                      accentColor="amber"
+                    />
+                    <CourseHighlightCards 
+                      topCourse={kpis.topPerformingCourse}
+                      attentionCourse={kpis.needsAttentionCourse}
+                    />
+                  </section>
+                )}
+
                 {evolutionData && (
                   <section className="mb-8">
                     <SectionHeader 
                       title="Evolución Total" 
-                      subtitle={`Desde ${selectedMetrics[0]?.period} hasta ${selectedMetrics[selectedMetrics.length - 1]?.period}`}
+                      subtitle={`${selectedMetrics[0]?.courseName} (${selectedMetrics[0]?.period}) → ${selectedMetrics[selectedMetrics.length - 1]?.courseName} (${selectedMetrics[selectedMetrics.length - 1]?.period})`}
                       icon={TrendingUp}
                       delay={300}
                       accentColor="violet"
@@ -531,7 +617,7 @@ export default function ReportsPage() {
                       </div>
                        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-4 text-center">
                          <p className="text-xs text-muted-foreground mb-1">Tiempo</p>
-                        <p className="text-2xl font-bold text-violet-400">+{formatPlayTime(evolutionData.timeDiff)}</p>
+                         <p className="text-2xl font-bold text-violet-400">{formatPlayTime(evolutionData.timeDiff)}</p>
                       </div>
                     </div>
                   </section>
@@ -548,29 +634,54 @@ export default function ReportsPage() {
                       <table className="w-full">
                         <thead>
                            <tr className="border-b border-slate-200 dark:border-slate-800">
-                             <th className="text-left p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Período</th>
-                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Año</th>
-                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Est.</th>
+                              <th className="text-left p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Curso</th>
+                              <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Período</th>
+                              <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Año</th>
+                              <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Est.</th>
                              <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Prog.</th>
-                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Calif.</th>
-                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Tasa</th>
-                             <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Tendencia</th>
+                              <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Calif.</th>
+                              <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">vs Ant.</th>
+                              <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Tasa</th>
+                              <th className="text-center p-3 text-xs font-semibold text-slate-600 dark:text-slate-300">Tendencia</th>
                            </tr>
                         </thead>
                         <tbody>
-                          {selectedMetrics.map((metric) => (
-                             <tr 
-                               key={metric.courseId}
-                               className="border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                             >
-                              <td className="p-3 font-medium text-sm">{metric.period}</td>
-                              <td className="p-3 text-center text-xs text-muted-foreground">{metric.schoolYear}</td>
-                              <td className="p-3 text-center">{metric.totalStudents || 0}</td>
+                            {selectedMetrics.map((metric) => (
+                              <tr 
+                                key={metric.courseId}
+                                onClick={() => window.location.href = `/dashboard/courses/${metric.courseId}`}
+                                className="border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
+                              >
+                                <td className="p-3 font-medium text-sm">
+                                  <Link 
+                                    href={`/dashboard/courses/${metric.courseId}`}
+                                    className="text-indigo-500 hover:text-indigo-400 hover:underline underline-offset-2"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {metric.courseName || metric.course_name || '—'}
+                                  </Link>
+                                </td>
+                                <td className="p-3 text-center text-sm text-muted-foreground">{metric.period}</td>
+                                <td className="p-3 text-center text-xs text-muted-foreground">{metric.schoolYear}</td>
+                               <td className="p-3 text-center">{metric.totalStudents || 0}</td>
                               <td className="p-3 text-center font-semibold">{metric.averageProgress}%</td>
                               <td className="p-3 text-center">
                                 <span className={cn("font-bold", metric.averageGrade >= 80 ? "text-indigo-400" : metric.averageGrade >= 60 ? "text-amber-400" : "text-red-400")}>
                                   {metric.averageGrade}%
                                 </span>
+                              </td>
+                              <td className="p-3 text-center">
+                                {(() => {
+                                  const index = selectedMetrics.indexOf(metric);
+                                  const prev = getPreviousMetric(selectedMetrics, index);
+                                  if (!prev) return <span className="text-xs text-slate-500">—</span>;
+                                  const diff = metric.averageGrade - prev.averageGrade;
+                                  return (
+                                    <span className={cn("inline-flex items-center gap-0.5 text-xs font-semibold", diff >= 0 ? "text-emerald-400" : "text-red-400")}>
+                                      {diff >= 0 ? '+' : ''}{diff.toFixed(1)}%
+                                    </span>
+                                  );
+                                })()}
                               </td>
                               <td className="p-3">
                                 <div className="flex justify-center">
@@ -594,7 +705,7 @@ export default function ReportsPage() {
             )}
 
             {/* Evolution Tab */}
-            {activeTab === 'evolution' && selectedMetrics.length > 0 && (
+            {activeTab === 'evolution' && selectedMetrics.length >= 2 && (
               <section className="mb-8">
                 <SectionHeader 
                   title="Análisis de Evolución" 
@@ -603,38 +714,87 @@ export default function ReportsPage() {
                   accentColor="violet"
                 />
                  
-                 <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
-                   <h3 className="text-lg font-semibold mb-6">Progreso y Calificación</h3>
-                   <LineChartComponent
-                     data={selectedMetrics.map(m => ({ date: (m.period || '').replace(' - ', '\n'), averageProgress: m.averageProgress, averageGrade: m.averageGrade }))}
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
+                    <h3 className="text-lg font-semibold mb-6">Progreso y Calificación<ChartHelp content="Muestra la evolución del progreso y calificación promedio entre períodos. Útil para comparar el rendimiento general de los cursos seleccionados." /></h3>
+                    <LineChartComponent
+                       data={selectedMetrics.map(m => ({ date: `${m.courseName}\n${m.period || ''}`, averageProgress: m.averageProgress, averageGrade: m.averageGrade }))}
+                      xAxisDataKey="date"
+                      lines={[
+                        { dataKey: "averageProgress", name: "Progreso", color: "#10B981" },
+                        { dataKey: "averageGrade", name: "Calificación", color: "#06B6D4" },
+                      ]}
+                      title=""
+                      subtitle=""
+                      yAxisLabel="%"
+                      height={300}
+                    />
+                  </div>
+
+                   <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
+                     <h3 className="text-lg font-semibold mb-6">Completación y Engagement<ChartHelp content="Analiza la tasa de completación y sesiones promedio por estudiante. Ayuda a identificar si los estudiantes finalizan los cursos y con qué frecuencia participan." /></h3>
+                    <LineChartComponent
+                      data={selectedMetrics.map(m => ({ date: `${m.courseName}\n${m.period || ''}`, completionRate: m.completionRate, sessionsPerStudent: m.averageSessionsPerStudent }))}
                      xAxisDataKey="date"
                      lines={[
-                       { dataKey: "averageProgress", name: "Progreso", color: "#10B981" },
-                       { dataKey: "averageGrade", name: "Calificación", color: "#06B6D4" },
+                       { dataKey: "completionRate", name: "Tasa Completación", color: "#F59E0B" },
+                       { dataKey: "sessionsPerStudent", name: "Sesiones Promedio", color: "#8B5CF6" },
                      ]}
                      title=""
                      subtitle=""
-                     yAxisLabel="%"
+                     yAxisLabel="Valor"
                      height={300}
                    />
                  </div>
+               </section>
+            )}
 
-                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
-                    <h3 className="text-lg font-semibold mb-6">Completación y Engagement</h3>
-                   <LineChartComponent
-                     data={selectedMetrics.map(m => ({ date: (m.period || '').replace(' - ', '\n'), completionRate: m.completionRate, sessionsPerStudent: m.averageSessionsPerStudent * 2 }))}
-                    xAxisDataKey="date"
-                    lines={[
-                      { dataKey: "completionRate", name: "Tasa Completación", color: "#F59E0B" },
-                      { dataKey: "sessionsPerStudent", name: "Sesiones (x2)", color: "#8B5CF6" },
-                    ]}
-                    title=""
-                    subtitle=""
-                    yAxisLabel="Valor"
-                    height={300}
-                  />
+            {/* Time-series progress chart using real progress-over-time data */}
+            {activeTab === 'evolution' && selectedCourses.length > 0 && (
+              (() => {
+                const courseWithData = selectedCourses.find(id => (progressData[id]?.length ?? 0) > 0);
+                if (!courseWithData) return null;
+                const timeSeriesData = progressData[courseWithData] ?? [];
+                if (timeSeriesData.length < 2) return null;
+                return (
+                  <section className="mb-8">
+                    <SectionHeader 
+                      title="Progreso Diario" 
+                      subtitle={`${timeSeriesData.length} puntos de datos — ${timeSeriesData[0]?.date ?? ''} → ${timeSeriesData[timeSeriesData.length - 1]?.date ?? ''}`}
+                      icon={Activity}
+                      delay={600}
+                      accentColor="violet"
+                    />
+                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
+                      <h3 className="text-lg font-semibold mb-6">Progreso y Calificación en el Tiempo<ChartHelp content="Muestra la evolución diaria del progreso y calificación. Útil para detectar tendencias a corto plazo y el impacto de intervenciones educativas." /></h3>
+                      <LineChartComponent
+                        data={timeSeriesData}
+                        xAxisDataKey="date"
+                        lines={[
+                          { dataKey: "averageProgress", name: "Progreso", color: "#10B981" },
+                          { dataKey: "averageGrade", name: "Calificación", color: "#06B6D4" },
+                        ]}
+                        title=""
+                        subtitle=""
+                        yAxisLabel="%"
+                        height={300}
+                      />
+                    </div>
+                  </section>
+                );
+              })()
+            )}
+
+            {activeTab === 'evolution' && selectedMetrics.length === 1 && (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center mb-6">
+                  <TrendingUp className="w-10 h-10 text-slate-500 dark:text-slate-400" />
                 </div>
-              </section>
+                <h3 className="text-xl font-semibold mb-2">Selecciona al menos 2 cursos o períodos</h3>
+                <p className="text-muted-foreground max-w-md">
+                  Los gráficos de evolución necesitan al menos 2 puntos de datos para mostrar tendencias.
+                  Seleccioná más cursos del panel izquierdo.
+                </p>
+              </div>
             )}
 
             {/* Comparison Tab */}
@@ -648,11 +808,11 @@ export default function ReportsPage() {
                   accentColor="amber"
                 />
                  
-                 <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
-                   <h3 className="text-lg font-semibold mb-6">Métricas Comparadas</h3>
-                  <BarChart
-                     data={selectedMetrics.map(m => ({ name: (m.period || '').replace(' - ', '\n'), Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
-                    xAxisDataKey="name"
+                  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
+                    <h3 className="text-lg font-semibold mb-6">Métricas Comparadas<ChartHelp content="Compara progreso, calificación y completación entre distintos cursos o períodos. Las barras agrupadas facilitan la comparación visual directa." /></h3>
+                   <BarChart
+                      data={selectedMetrics.map(m => ({ name: `${m.courseName}\n${m.period || ''}`, Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
+                     xAxisDataKey="name"
                     bars={[
                       { dataKey: "Progreso", name: "Progreso", color: "#10B981" },
                       { dataKey: "Calificación", name: "Calificación", color: "#06B6D4" },
@@ -665,27 +825,38 @@ export default function ReportsPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
-                     <h3 className="text-lg font-semibold mb-4">Distribución</h3>
-                    <DonutChart
-                      data={[
-                        { name: 'Alto', value: selectedMetrics[selectedMetrics.length - 1]?.highPerformers || 0 },
-                        { name: 'Medio', value: selectedMetrics[selectedMetrics.length - 1]?.mediumPerformers || 0 },
-                        { name: 'Bajo', value: selectedMetrics[selectedMetrics.length - 1]?.lowPerformers || 0 },
-                      ]}
-                      title=""
-                      subtitle=""
-                      height={250}
-                    />
+                     <h3 className="text-lg font-semibold mb-4">Distribución por Período<ChartHelp content="Muestra cómo se distribuyen los estudiantes en niveles de rendimiento (alto, medio, bajo) para cada período. Útil para ver cambios en la composición del rendimiento." /></h3>
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedMetrics.map((metric) => (
+                        <div key={`dist-${metric.courseId}`}>
+                          <p className="text-sm font-medium text-center mb-2 text-muted-foreground">
+                            {metric.courseName} — {metric.period}
+                          </p>
+                          <DonutChart
+                            data={[
+                              { name: 'Alto', value: metric.highPerformers || 0 },
+                              { name: 'Medio', value: metric.mediumPerformers || 0 },
+                              { name: 'Bajo', value: metric.lowPerformers || 0 },
+                            ]}
+                            title=""
+                            subtitle=""
+                            height={200}
+                            innerRadius={40}
+                            outerRadius={70}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6">
                      <h3 className="text-lg font-semibold mb-4">Tendencias</h3>
                     <div className="space-y-2 max-h-64 overflow-y-auto">
                       {selectedMetrics.slice(1).map((metric) => (
-                        <div key={metric.courseId} className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/30">
-                          <p className="text-xs font-medium mb-1">{metric.period}</p>
+                         <div key={metric.courseId} className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800/30 border border-slate-200 dark:border-slate-700/30">
+                           <p className="text-xs font-medium mb-1">{metric.courseName} — {metric.period}</p>
                           <div className="flex gap-4 text-xs">
                             <span className="text-muted-foreground">Prog: <TrendArrow value={metric.progressTrend} /></span>
                             <span className="text-muted-foreground">Calif: <TrendArrow value={metric.gradeTrend} /></span>
@@ -703,10 +874,17 @@ export default function ReportsPage() {
                 <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center mb-6">
                   <ArrowRightLeft className="w-10 h-10 text-slate-500 dark:text-slate-400" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Selecciona al menos 2 períodos</h3>
-                <p className="text-muted-foreground max-w-md">
-                  Usa el selector de la izquierda para elegir períodos a comparar.
+                <h3 className="text-xl font-semibold mb-2">Selecciona al menos 2 cursos o períodos</h3>
+                <p className="text-muted-foreground max-w-md mb-4">
+                  Usa el panel izquierdo para seleccionar múltiples cursos del mismo o diferente año escolar.
+                  Podrás comparar sus métricas lado a lado, ver distribuciones de rendimiento y tendencias.
                 </p>
+                <button
+                  onClick={() => setActiveTab('overview')}
+                  className="text-sm text-indigo-400 hover:text-indigo-300 underline underline-offset-2"
+                >
+                  Volver a Resumen
+                </button>
               </div>
             )}
           </div>

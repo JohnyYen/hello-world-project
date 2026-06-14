@@ -1,212 +1,214 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { HelpCircle, Mail, Phone, MessageCircle } from "lucide-react";
+import { HelpCircle, ChevronRight, LifeBuoy, BookOpen } from "lucide-react";
+import { HelpQuickGuides } from "@/components/help/help-quick-guides";
+import { HelpFaq } from "@/components/help/help-faq";
+import { HelpContactForm } from "@/components/help/help-contact-form";
+import { HelpSystemStatus } from "@/components/help/help-system-status";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 export default function HelpPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
-      {/* Background pattern */}
-      <div className="fixed inset-0 opacity-[0.03] pointer-events-none">
-        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
+    <div className="min-h-screen">
+      {/* ─────────────── HERO ─────────────── */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 dark:from-indigo-950 dark:via-indigo-900 dark:to-violet-950">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-24 -right-24 size-96 rounded-full bg-white/5 blur-3xl" />
+          <div className="absolute -bottom-32 -left-32 size-80 rounded-full bg-violet-400/10 blur-3xl" />
+          <div className="absolute top-1/2 left-1/4 w-px h-48 bg-gradient-to-b from-white/10 to-transparent" />
+          <div className="absolute top-1/3 right-1/3 w-px h-32 bg-gradient-to-b from-white/10 to-transparent" />
+        </div>
+
+        <div className="relative mx-auto max-w-5xl px-6 py-16 sm:py-20">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-1.5 text-xs text-indigo-200 mb-4">
+            <span>Dashboard</span>
+            <ChevronRight className="size-3" />
+            <span className="text-white/90 font-medium">Centro de Ayuda</span>
+          </div>
+
+          <div className="flex items-start gap-5">
+            <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm ring-1 ring-white/20">
+              <LifeBuoy className="size-7 text-white" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+                Centro de Ayuda
+              </h1>
+              <p className="mt-2 text-lg text-indigo-200 max-w-2xl">
+                Todo lo que necesitás saber para usar la plataforma como docente. Encontrá guías,
+                respuestas a preguntas frecuentes y canales de soporte.
+              </p>
+            </div>
+          </div>
+
+          {/* Quick stats bar */}
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: "Guías disponibles", value: "8" },
+              { label: "Preguntas frecuentes", value: "16" },
+              { label: "Tiempo de respuesta", value: "~24h" },
+              { label: "Satisfacción", value: "98%" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-xl bg-white/10 backdrop-blur-sm px-4 py-3 text-center ring-1 ring-white/10"
+              >
+                <p className="text-lg font-bold text-white">{stat.value}</p>
+                <p className="text-[11px] text-indigo-200/80 mt-0.5">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom wave transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-slate-50 to-transparent dark:from-slate-950" />
+      </section>
+
+      {/* ─────────────── CONTENT ─────────────── */}
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        {/* Guías Rápidas */}
+        <HelpQuickGuides />
+
+        <Separator className="my-10" />
+
+        {/* Two-column layout: FAQ (main) + Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main column: FAQ */}
+          <div className="lg:col-span-2">
+            <HelpFaq />
+
+            <Separator className="my-10" />
+
+            {/* Contact form */}
+            <HelpContactForm />
+          </div>
+
+          {/* Sidebar column: System Status + Resources */}
+          <div className="space-y-6">
+            <HelpSystemStatus />
+
+            {/* Resources section */}
+            <section>
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  Recursos Útiles
+                </h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Documentación y material de apoyo
+                </p>
+              </div>
+              <div className="space-y-2">
+                {[
+                  {
+                    title: "Guía de Inicio Rápido",
+                    desc: "Primeros pasos en la plataforma",
+                    icon: BookOpen,
+                    color: "text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/40",
+                  },
+                  {
+                    title: "Manual del Docente",
+                    desc: "Guía completa de funciones",
+                    icon: BookOpen,
+                    color: "text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40",
+                  },
+                  {
+                    title: "Video Tutoriales",
+                    desc: "Guías visuales paso a paso",
+                    icon: BookOpen,
+                    color: "text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-900/40",
+                  },
+                  {
+                    title: "Comunidad de Docentes",
+                    desc: "Compartí experiencias y consejos",
+                    icon: BookOpen,
+                    color: "text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40",
+                  },
+                  {
+                    title: "Documentación Técnica",
+                    desc: "API, integraciones y xAPI",
+                    icon: BookOpen,
+                    color: "text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60",
+                  },
+                ].map((resource) => (
+                  <button
+                    key={resource.title}
+                    type="button"
+                    className="flex w-full items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 px-4 py-3 text-left text-sm hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all group"
+                  >
+                    <div
+                      className={cn(
+                        "flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors",
+                        resource.color
+                      )}
+                    >
+                      <resource.icon className="size-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-slate-800 dark:text-slate-200 text-xs">
+                        {resource.title}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">{resource.desc}</p>
+                    </div>
+                    <ChevronRight className="size-4 text-muted-foreground/50 group-hover:text-indigo-500 transition-colors" />
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* Support hours card */}
+            <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-gradient-to-br from-indigo-50/50 to-violet-50/50 dark:from-indigo-950/30 dark:to-violet-950/30 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <HelpCircle className="size-4 text-indigo-500" />
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  Horarios de Soporte
+                </h3>
+              </div>
+              <div className="space-y-2 text-xs text-muted-foreground">
+                <div className="flex justify-between">
+                  <span>Lunes a Viernes</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">9:00 - 18:00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Sábados</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">10:00 - 14:00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Domingos</span>
+                  <span className="font-medium text-red-500">Cerrado</span>
+                </div>
+                <Separator className="my-2" />
+                <div className="flex justify-between">
+                  <span>Chat en vivo</span>
+                  <span className="font-medium text-emerald-600 dark:text-emerald-400">Disponible</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Email</span>
+                  <span className="font-medium text-amber-600 dark:text-amber-400">~24h</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
       </div>
 
-      <div className="container mx-auto py-12 px-6 relative z-10">
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
-              <HelpCircle className="h-6 w-6" />
-            </div>
-            <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
-              Soporte
-            </span>
-          </div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2 bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
-            Centro de Ayuda
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Encuentra respuestas a tus preguntas o contacta con nuestro equipo de soporte
+      {/* ─────────────── FOOTER ─────────────── */}
+      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 mt-10">
+        <div className="mx-auto max-w-7xl px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">
+            ¿No encontraste lo que buscabas? Escribinos a{" "}
+            <a
+              href="mailto:soporte@helloworld.edu"
+              className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+            >
+              soporte@helloworld.edu
+            </a>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Hello World Platform v2.0 &mdash; Centro de Ayuda
           </p>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Search and FAQ Section */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-lg font-semibold">Búsqueda de Ayuda</h2>
-                <p className="text-sm text-muted-foreground">Encuentra respuestas rápidamente</p>
-              </div>
-              <div className="p-6">
-                <div className="flex gap-2">
-                  <Input 
-                    placeholder="Buscar en la base de conocimientos..." 
-                    className="h-12"
-                  />
-                  <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700">Buscar</Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-lg font-semibold">Preguntas Frecuentes</h2>
-                <p className="text-sm text-muted-foreground">Respuestas a las consultas más comunes</p>
-              </div>
-              <div className="p-6">
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger>¿Cómo cambio mi contraseña?</AccordionTrigger>
-                    <AccordionContent>
-                      Para cambiar tu contraseña, ve a la sección de &quot;Cuenta&quot; en el menú de perfil, 
-                      selecciona &quot;Seguridad&quot; y luego haz clic en &quot;Cambiar contraseña&quot;. 
-                      Sigue las instrucciones para crear una nueva contraseña segura.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-2">
-                    <AccordionTrigger>¿Cómo puedo ver mi progreso?</AccordionTrigger>
-                    <AccordionContent>
-                      Tu progreso se puede ver en la página principal del dashboard. 
-                      También puedes acceder a reportes detallados en la sección &quot;Reportes&quot; 
-                      donde encontrarás visualizaciones de tu avance y desempeño.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-3">
-                    <AccordionTrigger>¿Qué niveles hay disponibles?</AccordionTrigger>
-                    <AccordionContent>
-                      Actualmente ofrecemos 10 niveles de dificultad progresiva. 
-                      Cada nivel introduce nuevos conceptos de programación y desafíos interactivos. 
-                      Puedes ver tu progreso en cada nivel en la página de reportes.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-4">
-                    <AccordionTrigger>¿Cómo contacto con un docente?</AccordionTrigger>
-                    <AccordionContent>
-                      Puedes contactar a tu docente a través del botón &quot;Contactar&quot; en la página 
-                      de su perfil o en la lista de estudiantes. También puedes dejar comentarios 
-                      en tus tareas que serán visibles para tu docente.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-5">
-                    <AccordionTrigger>¿Qué hago si encuentro un error?</AccordionTrigger>
-                    <AccordionContent>
-                      Si encuentras un error técnico o un problema con la plataforma, 
-                      por favor repórtalo inmediatamente usando el formulario de reporte de errores 
-                      en la parte inferior de esta página. Incluye una descripción detallada 
-                      del problema para ayudarnos a resolverlo rápidamente.
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-lg font-semibold">Reportar un Problema</h2>
-                <p className="text-sm text-muted-foreground">¿Encontraste un error o tienes una sugerencia?</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <div>
-                  <label className="text-sm font-medium">Asunto</label>
-                  <Input placeholder="Breve descripción del problema" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Descripción</label>
-                  <Textarea 
-                    placeholder="Describe el problema con detalle..." 
-                    rows={4}
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <Button className="bg-indigo-600 hover:bg-indigo-700">Enviar Reporte</Button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Section */}
-          <div className="space-y-6">
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-lg font-semibold">Contacto</h2>
-                <p className="text-sm text-muted-foreground">¿Necesitas ayuda inmediata?</p>
-              </div>
-              <div className="p-6 space-y-4">
-                <Button variant="outline" className="w-full flex items-center justify-start gap-3 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-400">
-                  <Mail className="h-5 w-5 text-indigo-500" />
-                  Soporte por Email
-                  <Badge variant="secondary" className="ml-auto bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">Respondemos en 24h</Badge>
-                </Button>
-                <Button variant="outline" className="w-full flex items-center justify-start gap-3 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-400">
-                  <MessageCircle className="h-5 w-5 text-indigo-500" />
-                  Chat en Vivo
-                  <Badge variant="secondary" className="ml-auto bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300">Disponible</Badge>
-                </Button>
-                <Button variant="outline" className="w-full flex items-center justify-start gap-3 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-400">
-                  <Phone className="h-5 w-5 text-indigo-500" />
-                  Soporte Telefónico
-                  <Badge variant="destructive" className="ml-auto">No disponible</Badge>
-                </Button>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-lg font-semibold">Recursos Útiles</h2>
-                <p className="text-sm text-muted-foreground">Documentación y guías</p>
-              </div>
-              <div className="p-6 space-y-3">
-                <Button variant="outline" className="w-full justify-start hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-400">
-                  Guía de Inicio Rápido
-                </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-400">
-                  Documentación del Estudiante
-                </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-400">
-                  Video Tutoriales
-                </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-400">
-                  Comunidad de Usuarios
-                </Button>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h2 className="text-lg font-semibold">Estadísticas de Soporte</h2>
-              </div>
-              <div className="p-6 grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-100 dark:border-indigo-800">
-                  <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">98%</p>
-                  <p className="text-xs text-muted-foreground">Satisfacción</p>
-                </div>
-                <div className="text-center p-3 bg-muted rounded-lg">
-                  <p className="text-2xl font-bold">24h</p>
-                  <p className="text-xs text-muted-foreground">Tiempo de respuesta</p>
-                </div>
-                <div className="text-center p-3 bg-muted rounded-lg">
-                  <p className="text-2xl font-bold">500+</p>
-                  <p className="text-xs text-muted-foreground">Preguntas FAQ</p>
-                </div>
-                <div className="text-center p-3 bg-muted rounded-lg">
-                  <p className="text-2xl font-bold">24/7</p>
-                  <p className="text-xs text-muted-foreground">Disponibilidad</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </footer>
     </div>
   );
 }

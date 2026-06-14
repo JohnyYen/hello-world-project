@@ -442,3 +442,13 @@ export interface StudentProgressReport {
   activity_distribution: ActivityDistributionItem[];
   games_progress: GameProgressItem[];
 }
+
+export interface StudentGameItem {
+  id: string;
+  title: string;
+  description: string | null;
+}
+
+export interface StudentGamesResponse {
+  games: StudentGameItem[];
+}

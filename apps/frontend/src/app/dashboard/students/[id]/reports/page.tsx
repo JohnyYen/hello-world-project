@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
@@ -13,6 +13,7 @@ import {
   Activity,
   Zap,
   Award,
+  Info,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -24,9 +25,12 @@ import {
   AreaChart,
   HeatMap,
 } from "@/components/charts";
+import { ChartHelp } from "@/components/ui/chart-help";
 import { ExportButton } from "@/components/export/ExportButton";
 import { useStudentReports } from "@/hooks/use-student-reports";
 import { useStudentHeatmap } from "@/hooks/use-student-heatmap";
+import { useStudentGames } from "@/hooks/use-student-games";
+import { GameSelector } from "@/components/games/GameSelector";
 
 function formatPlayTime(minutes: number): string {
   const hours = Math.floor(minutes / 60);
@@ -85,6 +89,13 @@ export default function StudentReportPage() {
   const studentId = params.id as string;
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+
+  const {
+    games: availableGames,
+    isLoading: isLoadingGames,
+  } = useStudentGames(studentId);
+
   const {
     kpis,
     progressOverTime,
@@ -92,7 +103,7 @@ export default function StudentReportPage() {
     activityDistribution,
     isLoading,
     error,
-  } = useStudentReports(studentId);
+  } = useStudentReports(studentId, selectedGameId);
 
   // Get real heatmap data from API
   const { heatmapData, isLoading: isLoadingHeatmap } = useStudentHeatmap(
@@ -114,6 +125,18 @@ export default function StudentReportPage() {
     return acc;
   }, []);
 
+  // Sort level performance by score descending for better readability
+  const sortedLevelPerformance = [...levelPerformance].sort(
+    (a, b) => b.score - a.score,
+  );
+
+  // Color bars by score threshold for instant visual comprehension
+  function getScoreColor(score: number): string {
+    if (score >= 80) return "#10B981"; // Excelente
+    if (score >= 50) return "#F59E0B"; // En progreso
+    return "#EF4444"; // Necesita mejorar
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
@@ -134,6 +157,16 @@ export default function StudentReportPage() {
       </div>
     );
   }
+
+  // Build game selector options: "Todos los juegos" + lista de juegos disponibles
+  const gameOptions = [
+    { id: null, title: "Todos los juegos" },
+    ...availableGames.map((game) => ({ id: game.id, title: game.title })),
+  ];
+
+  // Cuando hay un juego específico seleccionado, el donut de distribución
+  // no tiene sentido (solo mostraría 1 juego), así que lo ocultamos
+  const hasSingleGameSelected = selectedGameId !== null;
 
   if (error) {
     return (
@@ -232,11 +265,25 @@ export default function StudentReportPage() {
           </div>
         </div>
 
+        {/* Game Selector - Filtrar por juego */}
+        {gameOptions.length > 1 && (
+          <div className="mb-10 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm shadow-sm">
+            <GameSelector
+              games={gameOptions}
+              selectedGameId={selectedGameId}
+              onSelect={setSelectedGameId}
+              isLoading={isLoadingGames}
+            />
+          </div>
+        )}
+
         {/* KPIs Section - Now with variant highlights */}
         <section className="mb-12">
           <SectionHeader
             title="Métricas Principales"
-            subtitle="Indicadores clave de rendimiento del estudiante"
+            subtitle={selectedGameId
+              ? "Rendimiento en el juego seleccionado"
+              : "Indicadores clave de rendimiento del estudiante"}
             icon={Activity}
             delay={0}
           />
@@ -296,7 +343,9 @@ export default function StudentReportPage() {
         <section className="mb-12">
           <SectionHeader
             title="Análisis Temporal"
-            subtitle="Evolución del rendimiento a lo largo del tiempo"
+            subtitle={selectedGameId
+              ? "Evolución del rendimiento en el juego seleccionado"
+              : "Evolución del rendimiento a lo largo del tiempo"}
             icon={TrendingUp}
             delay={500}
           />
@@ -311,6 +360,7 @@ export default function StudentReportPage() {
                 <div>
                   <h3 className="text-lg font-semibold">
                     Evolución de puntuación y nivel
+                    <ChartHelp content="Muestra la tendencia de puntuación y nivel a lo largo del tiempo. Útil para identificar momentos de mejora, estancamiento o retroceso." />
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     Rendimiento semanal del estudiante
@@ -355,7 +405,10 @@ export default function StudentReportPage() {
           {/* Cumulative Score */}
           <div className="mb-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
             <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-lg font-semibold">Puntuación Acumulada</h3>
+              <h3 className="text-lg font-semibold">
+                Puntuación Acumulada
+                <ChartHelp content="Refleja la suma total de puntos obtenidos. Una curva con pendiente constante indica progreso consistente." />
+              </h3>
               <p className="text-sm text-muted-foreground">
                 Evolución de la puntuación total a lo largo del tiempo
               </p>
@@ -384,7 +437,10 @@ export default function StudentReportPage() {
           {/* Cumulative Time */}
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden">
             <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-lg font-semibold">Tiempo Acumulado</h3>
+              <h3 className="text-lg font-semibold">
+                Tiempo Acumulado
+                <ChartHelp content="Muestra el tiempo total invertido. Permite correlacionar horas de estudio con el rendimiento obtenido." />
+              </h3>
               <p className="text-sm text-muted-foreground">
                 Evolución del tiempo total invertido (minutos)
               </p>
@@ -415,7 +471,9 @@ export default function StudentReportPage() {
         <section className="mb-12">
           <SectionHeader
             title="Patrón de Actividad"
-            subtitle="Distribución temporal del tiempo de estudio"
+            subtitle={selectedGameId
+              ? "Distribución temporal de actividad en el juego seleccionado"
+              : "Distribución temporal del tiempo de estudio"}
             icon={Zap}
             delay={800}
           />
@@ -426,6 +484,7 @@ export default function StudentReportPage() {
             <div className="p-6 border-b border-slate-100 dark:border-slate-800">
               <h3 className="text-lg font-semibold">
                 Mapa de Actividad Semanal
+                <ChartHelp content="Visualiza los momentos de mayor actividad del estudiante. Ayuda a identificar horarios y días de mayor productividad." />
               </h3>
               <p className="text-sm text-muted-foreground">
                 Distribución de tiempo de juego por día y hora
@@ -447,7 +506,9 @@ export default function StudentReportPage() {
         <section className="mb-12">
           <SectionHeader
             title="Desempeño por Área"
-            subtitle="Análisis detallado por nivel y tipo de actividad"
+            subtitle={selectedGameId
+              ? "Análisis detallado por nivel del juego seleccionado"
+              : "Análisis detallado por nivel y tipo de actividad"}
             icon={Award}
             delay={1000}
           />
@@ -457,17 +518,35 @@ export default function StudentReportPage() {
               style={{ animationDelay: "1100ms" }}
             >
               <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-lg font-semibold">Desempeño por Nivel</h3>
+                <h3 className="text-lg font-semibold">
+                  Desempeño por Nivel
+                  <ChartHelp content="Compara el rendimiento en cada nivel. Las barras verdes muestran fortalezas; las rojas, áreas que necesitan refuerzo." />
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Puntuación obtenida en cada nivel
+                  Puntuación obtenida en cada nivel (ordenado de mejor a peor)
                 </p>
+                {/* Color key legend */}
+                <div className="flex items-center gap-4 mt-3 text-xs">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                    Excelente (80+)
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                    En progreso (50-79)
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    Necesita mejorar (&lt;50)
+                  </span>
+                </div>
               </div>
               <div className="p-6">
                 <BarChart
-                  data={levelPerformance}
+                  data={sortedLevelPerformance}
                   xAxisDataKey="levelName"
                   bars={[
-                    { dataKey: "score", name: "Puntuación", color: "#8B5CF6" },
+                    { dataKey: "score", name: "Puntuación" },
                   ]}
                   title=""
                   subtitle=""
@@ -475,15 +554,33 @@ export default function StudentReportPage() {
                   height={320}
                   layout="vertical"
                   yAxisDomain={[0, 100]}
+                  hideLegend
+                  barFill={(entry) =>
+                    getScoreColor((entry as { score: number }).score)
+                  }
                   tooltipLabelFormatter={(label, item) => {
                     const typedItem = item as {
                       levelName: string;
+                      score: number;
                       attempts?: number;
                       timeSpent?: number;
+                      completed?: boolean;
                     };
-                    const extra = typedItem.attempts
-                      ? `${typedItem.attempts} intentos • ${typedItem.timeSpent ? formatPlayTime(typedItem.timeSpent) : ""}`
-                      : "";
+                    const parts: string[] = [];
+                    if (typedItem.completed) {
+                      parts.push("✅ Completado");
+                    } else {
+                      parts.push("⏳ En progreso");
+                    }
+                    if (typedItem.attempts) {
+                      parts.push(`${typedItem.attempts} intentos`);
+                    }
+                    if (typedItem.timeSpent) {
+                      parts.push(
+                        formatPlayTime(typedItem.timeSpent),
+                      );
+                    }
+                    const extra = parts.join(" • ");
                     return extra ? `${label} (${extra})` : label;
                   }}
                   tooltipFormatter={(value) => `${value} pts`}
@@ -491,30 +588,60 @@ export default function StudentReportPage() {
               </div>
             </div>
 
-            <div
-              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
-              style={{ animationDelay: "1200ms" }}
-            >
-              <div className="p-6 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-lg font-semibold">
-                  Distribución de Actividades
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Tiempo dedicado a cada juego
-                </p>
+            {hasSingleGameSelected ? (
+              <div
+                className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
+                style={{ animationDelay: "1200ms" }}
+              >
+                <div className="p-6 border-b border-slate-100 dark:border-slate-800">
+                  <h3 className="text-lg font-semibold">
+                    Juego seleccionado
+                    <ChartHelp content="Vista filtrada para un juego específico. El resto de los gráficos también se actualizan para reflejar solo los datos de este juego." />
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Datos filtrados para un juego específico
+                  </p>
+                </div>
+                <div className="p-6 flex items-center justify-center h-[320px]">
+                  <div className="text-center">
+                    <Gamepad2 className="w-12 h-12 mx-auto mb-3 text-indigo-400" />
+                    <p className="text-muted-foreground">
+                      Mostrando datos del juego seleccionado.
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Seleccioná "Todos los juegos" para ver la distribución
+                      entre juegos.
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="p-6">
-                <DonutChart
-                  data={activityDistribution.map((item) => ({
-                    name: item.gameName,
-                    value: item.timeSpent,
-                  }))}
-                  title=""
-                  subtitle=""
-                  height={320}
-                />
+            ) : (
+              <div
+                className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-xl shadow-indigo-500/5 overflow-hidden"
+                style={{ animationDelay: "1200ms" }}
+              >
+                <div className="p-6 border-b border-slate-100 dark:border-slate-800">
+                  <h3 className="text-lg font-semibold">
+                    Distribución de Actividades
+                    <ChartHelp content="Muestra cómo se distribuye el tiempo entre los distintos juegos. Útil para detectar si el estudiante se enfoca en un área o diversifica su aprendizaje." />
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Tiempo dedicado a cada juego
+                  </p>
+                </div>
+                <div className="p-6">
+                  <DonutChart
+                    data={activityDistribution.map((item) => ({
+                      name: item.gameName,
+                      value: item.timeSpent,
+                    }))}
+                    title=""
+                    subtitle=""
+                    height={320}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </section>
 

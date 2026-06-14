@@ -10,7 +10,6 @@ from src.users.domain.user import User
 from src.users.domain.student_activity_log import StudentActivityLog
 from src.users.infrastructure.user_repository import UserRepository
 from src.users.infrastructure.student_repository import StudentRepository
-from src.game.infrastructure.game_instance_repository import GameInstanceRepository
 from src.statistic.infrastructure.progress_repository import ProgressRepository
 from src.statistic.infrastructure.xapi_statement_repository import XAPIStatementRepository
 from src.users.api.v1.schemas.student import StudentListResponse, StudentResponse
@@ -79,7 +78,6 @@ class ListStudentsUseCase:
         )
 
         # Obtener repositorios para calcular last_activity
-        game_instance_repo = GameInstanceRepository(self.db)
         progress_repo = ProgressRepository(self.db)
         xapi_repo = XAPIStatementRepository(self.db)
         student_repo_inst = StudentRepository(self.db)
@@ -92,22 +90,12 @@ class ListStudentsUseCase:
             student_record = await student_repo_inst.get_by_user_id(student.id)
             student_db_id = student_record.id if student_record else None
 
-            # Calcular last_activity desde TODAS las fuentes de actividad
+            # Calcular last_activity desde fuentes de actividad REAL del estudiante.
+            # Excluimos game_instances porque se crean automáticamente al asignar un juego
+            # y NO representan interacción real del estudiante.
             last_activity = None
 
-            # 1. game_instances.updated_at / created_at (FK a students.id)
-            if student_db_id:
-                try:
-                    instances = await game_instance_repo.get_by_student_id(student_db_id)
-                    if instances:
-                        last_activity = max(
-                            (i.updated_at or i.created_at for i in instances if i.updated_at or i.created_at),
-                            default=None
-                        )
-                except Exception:
-                    pass
-
-            # 2. progresses.updated_at (FK a students.id) — xAPI pipeline
+            # 1. progresses.updated_at (FK a students.id) — xAPI pipeline
             if student_db_id:
                 try:
                     progress_records = await progress_repo.get_by_student_id(student_db_id)

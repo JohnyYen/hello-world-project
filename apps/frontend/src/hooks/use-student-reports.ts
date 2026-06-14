@@ -19,7 +19,10 @@ interface UseStudentReportsReturn {
   error: string | null;
 }
 
-export function useStudentReports(studentId: string): UseStudentReportsReturn {
+export function useStudentReports(
+  studentId: string,
+  gameId?: string | null,
+): UseStudentReportsReturn {
   const [kpis, setKpis] = useState<StudentReportKPIs | null>(null);
   const [progressOverTime, setProgressOverTime] = useState<ProgressOverTime[]>([]);
   const [levelPerformance, setLevelPerformance] = useState<LevelPerformance[]>([]);
@@ -34,16 +37,21 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
       setError(null);
 
       try {
-        // Use local API route which proxies to backend with auth token
-        const response = await fetch(
+        // Build URL with optional game_id filter
+        const url = new URL(
           `/api/statistic/students/${studentId}/progress`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
+          window.location.origin,
         );
+        if (gameId) {
+          url.searchParams.set("game_id", gameId);
+        }
+
+        const response = await fetch(url.toString(), {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
 
         if (!response.ok) {
           if (response.status === 404) {
@@ -122,7 +130,7 @@ export function useStudentReports(studentId: string): UseStudentReportsReturn {
     if (studentId) {
       fetchData();
     }
-  }, [studentId]);
+  }, [studentId, gameId]);
 
   return {
     kpis,

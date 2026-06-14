@@ -14,15 +14,21 @@ export async function GET(
       return NextResponse.json({ detail: "No autorizado" }, { status: 401 });
     }
 
-    const response = await fetch(
+    // Forward query params (like game_id) from the client request to the backend
+    const backendUrl = new URL(
       `${API_BASE_URL}/api/v1/statistic/students/${studentId}/progress`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        cache: "no-store",
-      }
     );
+    const gameId = request.nextUrl.searchParams.get("game_id");
+    if (gameId) {
+      backendUrl.searchParams.set("game_id", gameId);
+    }
+
+    const response = await fetch(backendUrl.toString(), {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));

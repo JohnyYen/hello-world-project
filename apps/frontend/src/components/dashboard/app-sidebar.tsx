@@ -35,7 +35,7 @@ const data = {
   },
   navMain: [
     {
-      title: "Overview",
+      title: "Resumen",
       url: "/dashboard",
       icon: IconDashboard,
     },
@@ -122,7 +122,7 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Settings",
+      title: "Configuración",
       url: "/dashboard/settings",
       icon: IconSettings,
     },
@@ -156,7 +156,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} label="Estadísticas" />
         <NavGameManagement items={data.navGameManagement} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary items={data.navSecondary} />
       </SidebarContent>
     </Sidebar>
   )

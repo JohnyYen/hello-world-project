@@ -34,6 +34,7 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ChartHelp } from "@/components/ui/chart-help"
 import {
   Tooltip,
   TooltipContent,
@@ -212,7 +213,8 @@ export function ChartAreaInteractive({
     startDate.setDate(startDate.getDate() - daysToSubtract)
 
     return sourceData.filter((item) => {
-      const itemDate = new Date(item.date)
+      // Parse ISO date string como UTC para evitar timezone shift del browser
+      const itemDate = new Date(item.date + "T00:00:00Z")
       return itemDate >= startDate
     })
   })()
@@ -230,7 +232,10 @@ export function ChartAreaInteractive({
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Actividad de Estudiantes</CardTitle>
+        <CardTitle>
+          Actividad de Estudiantes
+          <ChartHelp content="Muestra sesiones, estudiantes activos y tiempo de juego a lo largo del tiempo. Útil para identificar tendencias de uso y engagement de la plataforma." />
+        </CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
             Sesiones, estudiantes activos y tiempo de juego
@@ -323,10 +328,11 @@ export function ChartAreaInteractive({
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                const date = new Date(value)
+                const date = new Date(value + "T00:00:00Z")
                 return date.toLocaleDateString("es-ES", {
                   month: "short",
                   day: "numeric",
+                  timeZone: "UTC",
                 })
               }}
             />
@@ -341,9 +347,10 @@ export function ChartAreaInteractive({
               content={
                 <ChartTooltipContent
                   labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("es-ES", {
+                    return new Date(value + "T00:00:00Z").toLocaleDateString("es-ES", {
                       month: "short",
                       day: "numeric",
+                      timeZone: "UTC",
                     })
                   }}
                   indicator="dot"
