@@ -22,8 +22,18 @@ func get_config(level_id : int, segment_id : int) -> Dictionary:
 	var config = repo.get_segment_json(level_id, segment_id)
 	return config
 
-func modify_level(state: String, difficulty : float):
+## Modify level configuration based on action state and difficulty.
+## @param state: String - Action to apply. One of:
+##   "decrease_major" - Much easier (strong decrease)
+##   "decrease_minor" - Slightly easier (light decrease)
+##   "keep" - Maintain current difficulty
+##   "increase_minor" - Slightly harder (light increase)
+##   "increase_major" - Much harder (strong increase)
+## @param difficulty: float - Current difficulty value
+## @return: Dictionary - Modified level configuration
+func modify_level(state: String, difficulty: float) -> Dictionary:
 	push_error("METHOD_NOT_IMPLEMENTED")
+	return {}
 
 
 func apply_modifications():

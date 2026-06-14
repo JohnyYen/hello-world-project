@@ -120,9 +120,10 @@ func complete_level(result: Dictionary) -> void:
 	else:
 		push_error("GameController: No hay _level_controller asignado")
 
-## Enriquece datos analíticos con contexto del nivel (level_id, actor_id).
+## Enriquece datos analíticos con contexto del nivel (level_id, actor_id)
+## y datos de raw_stats (hints_used, efficiency_rating, etc.).
 ## @param analytics: Diccionario de analytics desde end_segment_tracking
-## @return Dictionary enriquecido con level_id y actor_id
+## @return Dictionary enriquecido con level_id, actor_id y campos extendidos
 func _enrich_level_data(analytics: Dictionary) -> Dictionary:
 	var enriched := analytics.duplicate()
 	enriched["level_id"] = _current_level_id
@@ -134,6 +135,32 @@ func _enrich_level_data(analytics: Dictionary) -> Dictionary:
 		enriched["score"] = s.get("score", 0.0)
 		enriched["errors"] = s.get("errors", 0)
 		enriched["time"] = s.get("time", 0.0)
+
+	# Extract raw_stats enrichment data (safe access — may not exist)
+	var raw_stats: Dictionary = analytics.get("raw_stats", {})
+	enriched["hints_used"] = raw_stats.get("hints_used_count", 0)
+	enriched["efficiency_rating"] = raw_stats.get("efficiency_rating", 0.0)
+	enriched["objectives_completed"] = raw_stats.get("objectives_completed", 0)
+
+	# Error details — raw_stats uses "errors_details" internally
+	var error_details_key := "errors_details" if raw_stats.has("errors_details") else "error_details"
+	enriched["error_details"] = raw_stats.get(error_details_key, {})
+
+	# Custom events — prefer raw_stats if present, fall back to top-level analytics
+	if raw_stats.has("custom_events"):
+		enriched["custom_events"] = raw_stats["custom_events"]
+	elif analytics.has("custom_events"):
+		enriched["custom_events"] = analytics["custom_events"]
+	else:
+		enriched["custom_events"] = []
+
+	# Blocks count from last attempt
+	var attempts: Array = analytics.get("attempts", [])
+	enriched["blocks_count"] = 0
+	if not attempts.is_empty():
+		var last_attempt: Dictionary = attempts[-1]
+		enriched["blocks_count"] = last_attempt.get("blocks_count", 0)
+
 	return enriched
 
 ## Agrega un evento de tracking personalizado.

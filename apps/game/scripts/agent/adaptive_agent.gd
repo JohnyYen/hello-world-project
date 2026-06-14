@@ -7,8 +7,24 @@ class_name AdaptiveAgent
 ## Número mínimo de intentos requeridos antes de comenzar a adaptar la dificultad
 const MIN_HISTORY_FOR_DECISION := 5
 
+## Ventana de intentos recientes para el cálculo de corto plazo
+const SHORT_TERM_WINDOW := 5
+
+## Peso para el promedio de corto plazo en el blend
+const SHORT_TERM_WEIGHT := 0.6
+
+## Peso para el promedio de largo plazo en el blend
+const LONG_TERM_WEIGHT := 0.4
+
+## Deltas proporcionales para cada acción
+const DELTA_DECREASE_MAJOR := -0.2
+const DELTA_DECREASE_MINOR := -0.1
+const DELTA_KEEP := 0.0
+const DELTA_INCREASE_MINOR := 0.1
+const DELTA_INCREASE_MAJOR := 0.2
+
 ## Emitted when the agent decides on an action to adjust difficulty
-## @param action: String representing the action taken ("increase", "decrease", or "keep")
+## @param action: String representing the action taken ("decrease_major", "decrease_minor", "keep", "increase_minor", or "increase_major")
 ## @param new_difficulty: Float representing the new difficulty level after the action
 signal action_decided(action: String, new_difficulty: float)
 
@@ -30,70 +46,96 @@ var min_difficulty := 0.5
 ## Maximum allowed difficulty level  
 var max_difficulty := 2.0
 
-## The amount by which difficulty changes when increase/decrease actions are taken
-var delta := 0.1
-
 ## Initializes the adaptive agent with required components
 func _init() -> void:
 	inference_engine = RuleBasedInference.new()
 	analyzer = PerformanceAnalyzer.new()
 	trend_calculator = TrendCalculator.new()
 
+## Calcula un score blend entre corto y largo plazo.
+## El corto plazo usa los últimos SHORT_TERM_WINDOW intentos de la sesión actual.
+## El largo plazo carga el historial completo desde persistencia.
+## @param attempts_history: Array[AttemptData] historial de la sesión actual
+## @return Dictionary con {blended_score, short_term_avg, long_term_avg, long_term_count}
+func _blend_short_and_long_term(attempts_history: Array[AttemptData]) -> Dictionary:
+	var window_size := mini(attempts_history.size(), SHORT_TERM_WINDOW)
+	var short_term_sum := 0.0
+	for i in range(attempts_history.size() - window_size, attempts_history.size()):
+		short_term_sum += attempts_history[i].score
+	var short_term_avg := short_term_sum / window_size if window_size > 0 else 0.0
+
+	var long_term_history := AttemptHistoryPersistence.load_history()
+	var long_term_sum := 0.0
+	for a in long_term_history:
+		long_term_sum += a.score
+	var long_term_avg := long_term_sum / long_term_history.size() if long_term_history.size() > 0 else 0.0
+
+	var blended_score: float
+	if long_term_history.size() > 0:
+		blended_score = short_term_avg * SHORT_TERM_WEIGHT + long_term_avg * LONG_TERM_WEIGHT
+	else:
+		blended_score = short_term_avg
+
+	return {
+		"blended_score": blended_score,
+		"short_term_avg": short_term_avg,
+		"long_term_avg": long_term_avg,
+		"long_term_count": long_term_history.size()
+	}
+
 ## Analyzes raw performance data and decides on an action to adjust difficulty
+## Incorpora blended score de corto y largo plazo para decisión más robusta.
 ## @param raw_data: Dictionary containing raw performance metrics with keys:
 ##                  - "score": float between 0.0 and 1.0 representing performance
 ##                  - "errors": integer number of errors made
 ##                  - "time": float representing time taken (optional)
 func analyze_and_decide(raw_data : Dictionary) -> void:
-	# Convertir el Dictionary a AttemptData para mejor type checking
 	var attempt := AttemptData.from_dictionary(raw_data)
-	
-	# Registrar el intento en el historial enriquecido
 	analyzer.record_attempt(attempt)
-	
-	# Verificar si tenemos suficiente historial antes de decidir
-	if self.analyzer.get_attempt_count() < MIN_HISTORY_FOR_DECISION:
+
+	var blended_data := _blend_short_and_long_term(analyzer.get_attempts_history())
+	var in_session_count := analyzer.get_attempt_count()
+	var long_term_count := blended_data["long_term_count"] as int
+	var total_count := in_session_count + long_term_count
+
+	if total_count < MIN_HISTORY_FOR_DECISION:
 		print("[AdaptiveAgent] Insuficientes intentos (%d/%d) - sin adaptación" % 
-			[self.analyzer.get_attempt_count(), MIN_HISTORY_FOR_DECISION])
+			[total_count, MIN_HISTORY_FOR_DECISION])
 		return
-	
-	# Normalize the raw performance data using the analyzer
+
 	var processed_data = analyzer.normalize(raw_data)
-	
-	# Calcular tendencia usando el TrendCalculator
 	var attempts_history = analyzer.get_attempts_history()
 	var trend = trend_calculator.calculate(attempts_history, TrendCalculator.TrendMode.WEIGHTED)
-	
-	# Agregar tendencia a los datos procesados para que el inference engine la use
+
 	processed_data["trend"] = trend
-	
-	# Determine the appropriate action based on the processed data
+	processed_data["blended_score"] = blended_data["blended_score"]
+	processed_data["score"] = blended_data["blended_score"]
+
 	var action = inference_engine.decide_action(processed_data)
-	# Apply the decided action to adjust difficulty
 	_apply_action(action)
 
 ## Applies the specified action to adjust the difficulty level
-## @param action: String representing the action to take ("increase", "decrease", or "keep")
+## Soporta 5 acciones graduadas con deltas proporcionales.
+## @param action: String representing the action to take ("decrease_major", "decrease_minor", "keep", "increase_minor", "increase_major")
 func _apply_action(action: String) -> void:
 	var old_difficulty = difficulty
-	# Apply the action to adjust difficulty accordingly
+	var delta_value := 0.0
+
 	match action:
-		"increase":
-			# Increase difficulty, but ensure it doesn't exceed the maximum
-			difficulty = min(difficulty + delta, max_difficulty)
-		"decrease":
-			# Decrease difficulty, but ensure it doesn't go below the minimum
-			difficulty = max(difficulty - delta, min_difficulty)
+		"decrease_major":
+			delta_value = DELTA_DECREASE_MAJOR
+		"decrease_minor":
+			delta_value = DELTA_DECREASE_MINOR
+		"increase_minor":
+			delta_value = DELTA_INCREASE_MINOR
+		"increase_major":
+			delta_value = DELTA_INCREASE_MAJOR
 		"keep":
-			# No change to difficulty
-			pass
+			delta_value = DELTA_KEEP
 		_:
-			# Handle unexpected actions with a warning
 			push_warning("Unknown action: %s" % action)
-	
-	# Ensure difficulty is clamped between min and max values as an extra safety measure
-	difficulty = clamp(difficulty, min_difficulty, max_difficulty)
-	
-	# Emit the signal to notify other parts of the system about the decision
+
+	difficulty = clamp(difficulty + delta_value, min_difficulty, max_difficulty)
+
 	emit_signal("action_decided", action, difficulty)
 	print("[AdaptiveAgent] Acción %s aplicada - Dificultad %.2f → %.2f" % [action, old_difficulty, difficulty])

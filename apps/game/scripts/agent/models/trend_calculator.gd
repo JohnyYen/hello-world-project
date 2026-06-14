@@ -18,6 +18,10 @@ var max_history_length: int = 5
 ## Índice 0 = más reciente, con mayor peso
 var weighted_mode_weights: Array[float] = [0.5, 0.3, 0.15, 0.04, 0.01]
 
+## Pesos para blend de corto y largo plazo
+const SHORT_TERM_WEIGHT := 0.6
+const LONG_TERM_WEIGHT := 0.4
+
 ## Calcula la tendencia usando el modo especificado
 ## @param attempts_history: Array[AttemptData] con el historial de intentos
 ## @param mode: TrendMode.SIMPLE o TrendMode.WEIGHTED
@@ -108,6 +112,37 @@ func calculate_hybrid_metric(current_score: float, trend: float,
 	var hybrid = (normalized_score * score_weight) + (normalized_trend * trend_weight)
 	
 	return hybrid
+
+## Calcula el baseline de largo plazo a partir de TODO el historial
+## Usa ponderación lineal (más reciente = mayor peso)
+## @param full_history: Array[AttemptData] con todo el historial
+## @return float: Promedio ponderado de scores
+func calculate_long_term_baseline(full_history: Array) -> float:
+	if full_history.is_empty():
+		return 0.0
+
+	var weighted_sum := 0.0
+	var total_weight := 0.0
+	var n := full_history.size()
+
+	for i in range(n):
+		var weight := float(i + 1)
+		weighted_sum += full_history[i].score * weight
+		total_weight += weight
+
+	return weighted_sum / total_weight
+
+
+## Combina score de corto y largo plazo usando pesos configurables
+## Si no hay datos de largo plazo (long_term == 0.0), usa solo short_term
+## @param short_term: Score de corto plazo (últimos N intentos)
+## @param long_term: Score de largo plazo (historial completo)
+## @return float: Score combinado
+func blend_scores(short_term: float, long_term: float) -> float:
+	if long_term == 0.0:
+		return short_term
+	return short_term * SHORT_TERM_WEIGHT + long_term * LONG_TERM_WEIGHT
+
 
 ## Obtiene descripción textual de la tendencia
 ## @param trend: Valor de tendencia

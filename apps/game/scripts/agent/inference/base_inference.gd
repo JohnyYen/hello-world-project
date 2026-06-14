@@ -12,7 +12,8 @@ class_name BaseInference
 ##                         - "errors": the number of errors made
 ##                         - "avg_score": the average performance score
 ##                         - "time": the time taken (if applicable)
-## @return: String representing the action to take ("increase", "decrease", or "keep")
+## @return: String representing the action to take
+##          ("decrease_major", "decrease_minor", "keep", "increase_minor", "increase_major")
 func decide_action(performance_data: Dictionary) -> String:
     print("DEBUG: BaseInference.decide_action called with data: ", performance_data)
     # Issue a warning indicating that this method should be implemented by subclasses
