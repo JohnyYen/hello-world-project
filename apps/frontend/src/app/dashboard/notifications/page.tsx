@@ -17,12 +17,6 @@ import {
 import type { NotificationItem } from '@/api/types';
 import { getNotifications, markAsRead as apiMarkAsRead, markAllAsRead as apiMarkAllAsRead, deleteNotification as apiDeleteNotification } from '@/services/notifications';
 
-function getAuthToken(): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(/(?:^|; )auth_token=([^;]+)/);
-  return match ? match[1] : null;
-}
-
 export default function NotificationPage() {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -34,14 +28,8 @@ export default function NotificationPage() {
     try {
       setLoading(true);
       setError(null);
-      const token = getAuthToken();
-      if (!token) {
-        setError("No autenticado");
-        setLoading(false);
-        return;
-      }
       // Always fetch all, filter locally for responsiveness
-      const response = await getNotifications(token, 0, 50, false);
+      const response = await getNotifications(0, 50, false);
       if (response.success && Array.isArray(response.data)) {
         setNotifications(response.data);
         setUnreadCount(response.unread_count ?? 0);
@@ -55,7 +43,7 @@ export default function NotificationPage() {
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  }, []);
 
   useEffect(() => {
     fetchNotifications();
@@ -63,9 +51,7 @@ export default function NotificationPage() {
 
   const handleMarkAsRead = async (id: string) => {
     try {
-      const token = getAuthToken();
-      if (!token) return;
-      await apiMarkAsRead(id, token);
+      await apiMarkAsRead(id);
       // Optimistic update
       setNotifications(prev => prev.map(n => 
         n.id === id ? { ...n, read: true } : n
@@ -78,9 +64,7 @@ export default function NotificationPage() {
 
   const handleMarkAllAsRead = async () => {
     try {
-      const token = getAuthToken();
-      if (!token) return;
-      await apiMarkAllAsRead(token);
+      await apiMarkAllAsRead();
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch (err) {
@@ -90,9 +74,7 @@ export default function NotificationPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const token = getAuthToken();
-      if (!token) return;
-      await apiDeleteNotification(id, token);
+      await apiDeleteNotification(id);
       setNotifications(prev => prev.filter(n => n.id !== id));
       // Recalculate unread count
       const wasUnread = notifications.find(n => n.id === id)?.read === false;

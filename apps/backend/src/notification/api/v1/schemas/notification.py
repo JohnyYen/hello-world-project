@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from src.shared.api.schemas.base import ResponseSchema
 
@@ -17,9 +17,9 @@ class NotificationResponse(BaseModel):
     id: str
     title: str
     message: str
-    type: str
-    read: bool
-    date: str
+    type: str = Field(validation_alias="notification_type")
+    read: bool = Field(validation_alias="is_read")
+    date: str = Field(validation_alias="created_at")
     notification_type: str
 
     @field_validator("id", mode="before")
