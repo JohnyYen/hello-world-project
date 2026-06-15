@@ -29,6 +29,7 @@ _SaveController="*res://scripts/controllers/save_controller.gd"
 _DialogueUiController="*res://scripts/controllers/dialogue_ui_controller.gd"
 _GameController="*res://scripts/controllers/game_controller.gd"
 _XAPIService="*res://scripts/xapi/xapi_service.gd"
+_LevelProgressManager="*res://scripts/controllers/level_progress_manager.gd"
 
 [dialogue_manager]
 

@@ -120,7 +120,10 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 				"success": true,
 				"attempt_number": _attempt_count
 			})
-			
+
+			# Persistir progreso del nivel
+			_LevelProgressManager.complete_level(self.segment_id)
+
 			FeedbackBalloon.show_feedback("Ganaste")
 			
 			await get_tree().create_timer(1).timeout

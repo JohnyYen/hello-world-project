@@ -44,20 +44,25 @@ level_number = 0
 icon_texture = ExtResource("3_t17kn")
 
 [node name="Level2" parent="LevelContainer" index="1"]
+segment_id = 1
 icon_texture = ExtResource("3_t17kn")
 
 [node name="Level3" parent="LevelContainer" index="2"]
+segment_id = 2
 level_number = 2
 icon_texture = ExtResource("3_t17kn")
 
 [node name="Level4" parent="LevelContainer" index="3"]
+segment_id = 3
 level_number = 3
 icon_texture = ExtResource("3_t17kn")
 
 [node name="Level5" parent="LevelContainer" index="4"]
+segment_id = 4
 level_number = 4
 icon_texture = ExtResource("3_t17kn")
 
 [node name="Level6" parent="LevelContainer" index="5"]
+segment_id = 5
 level_number = 5
 icon_texture = ExtResource("3_t17kn")
