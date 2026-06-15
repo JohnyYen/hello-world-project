@@ -370,6 +370,36 @@ export const lmsApi = {
     ),
 };
 
+// ─── Notifications ──────────────────────────────────────────────────────────
+
+export const notificationsApi = {
+  list: (token: string, skip = 0, limit = 50, unreadOnly = false) => {
+    let url = `/api/v1/notifications?skip=${skip}&limit=${limit}`;
+    if (unreadOnly) {
+      url += "&unread_only=true";
+    }
+    return request<import("./types").NotificationListResponse>(url, { token });
+  },
+
+  markAsRead: (notificationId: string, token: string) =>
+    request<import("./types").NotificationActionResponse>(
+      `/api/v1/notifications/${notificationId}/read`,
+      { method: "PATCH", token }
+    ),
+
+  markAllAsRead: (token: string) =>
+    request<import("./types").NotificationActionResponse>(
+      "/api/v1/notifications/read-all",
+      { method: "PATCH", token }
+    ),
+
+  delete: (notificationId: string, token: string) =>
+    request<import("./types").NotificationActionResponse>(
+      `/api/v1/notifications/${notificationId}`,
+      { method: "DELETE", token }
+    ),
+};
+
 // ─── Sync ──────────────────────────────────────────────────────────────────
 
 export const syncApi = {

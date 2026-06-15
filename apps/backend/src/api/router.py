@@ -8,6 +8,7 @@ This module provides a central router that includes all API routers from:
 - Sync (sync)
 - Statistics (statistic)
 - Course Reports (course)
+- Notifications (notification)
 """
 
 from fastapi import APIRouter
@@ -19,6 +20,7 @@ from src.game.api.router import router as game_router
 from src.sync.api.v1.router import router as sync_router
 from src.statistic.api.v1.router import router as statistic_router
 from src.course.api.v1.router import router as course_router
+from src.notification.api.v1.router import router as notification_router
 
 # Create the central API router
 # Auth is handled per-domain (each domain router has its own Depends(HTTPBearer()))
@@ -31,3 +33,4 @@ router.include_router(game_router)
 router.include_router(sync_router)
 router.include_router(statistic_router)
 router.include_router(course_router)
+router.include_router(notification_router)
