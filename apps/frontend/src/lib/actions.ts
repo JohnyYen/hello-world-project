@@ -402,12 +402,6 @@ export async function updateProfileAction(
       return { success: false, message: "No autenticado" };
     }
 
-    const { getServerUser } = await import("@/lib/auth-server");
-    const { user } = await getServerUser();
-    if (!user || !user.id) {
-      return { success: false, message: "No se pudo obtener la información del usuario" };
-    }
-
     const { name, lastname, email, department, contactPhone } = validatedFields.data;
 
     await usersApi.updateTeacherProfile(token, {

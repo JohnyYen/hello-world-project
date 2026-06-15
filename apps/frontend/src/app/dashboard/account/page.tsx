@@ -11,34 +11,36 @@ import { User, Calendar, BookOpen, TrendingUp, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { ChangePasswordForm } from "@/components/auth";
 import { AvatarUploadButton, ProfileForm } from "@/components/account";
+import type { TeacherProfileData, AccountStats } from "@/types/professor.interface";
+import type { TeacherProfileResponse, UserResponse } from "@/api/types";
 
-export interface TeacherProfileData {
-  id: string;
-  fullName: string;
-  email: string;
-  username: string;
-  avatarUrl: string | null;
-  department: string;
-  contactPhone: string | null;
-  createdAt: string;
+// ─── Type guard ──────────────────────────────────────────────────────────────
+
+function isTeacherProfile(user: unknown): user is TeacherProfileResponse {
+  return typeof user === "object" && user !== null && "department" in user;
 }
 
-function buildProfile(user: NonNullable<ReturnType<typeof useAuth>["user"]>): TeacherProfileData {
-  const name = "name" in user ? (user.name as string) : "";
-  const lastname = "lastname" in user ? (user.lastname as string | null) : null;
-  const email = user.email || "";
-  const username = "username" in user ? (user.username as string) : "";
-  const department = "department" in user ? (user.department as string) : "";
-  const contactPhone = "contact_phone" in user ? (user.contact_phone as string | null) : null;
-  const avatarUrl = "avatar_url" in user ? (user.avatar_url as string | null) : null;
+// ─── Profile builder ──────────────────────────────────────────────────────────
+
+function buildProfile(user: TeacherProfileResponse | UserResponse): TeacherProfileData {
+  const name = "name" in user ? (user as TeacherProfileResponse | UserResponse).name : "";
+  const lastname = isTeacherProfile(user) ? user.lastname : null;
+  const username = "username" in user ? (user as TeacherProfileResponse | UserResponse).username : "";
+  const department = isTeacherProfile(user) ? user.department : "";
+  const contactPhone = isTeacherProfile(user) ? user.contact_phone : null;
+  const avatarUrl = isTeacherProfile(user) ? user.avatar_url : null;
   const createdAt = "created_at" in user && user.created_at
-    ? new Date(user.created_at as string).toLocaleDateString("es-ES", { year: "numeric", month: "short", day: "numeric" })
+    ? new Date(user.created_at as string).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
     : "";
 
   return {
     id: user.id?.toString() || "",
     fullName: `${name} ${lastname || ""}`.trim() || username,
-    email,
+    email: user.email || "",
     username,
     avatarUrl,
     department,
@@ -48,9 +50,10 @@ function buildProfile(user: NonNullable<ReturnType<typeof useAuth>["user"]>): Te
 }
 
 export default function AccountPage() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading, refreshProfile } = useAuth();
   const router = useRouter();
   const [profile, setProfile] = useState<TeacherProfileData | null>(null);
+  const [stats, setStats] = useState<AccountStats | null>(null);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -60,6 +63,20 @@ export default function AccountPage() {
       setProfile(buildProfile(user));
     }
   }, [user, isAuthenticated, isLoading, router]);
+
+  // Fetch account stats (courses + students count)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    fetch("/api/account/stats", { cache: "no-store" })
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data) setStats(data);
+      })
+      .catch(() => {
+        // Silently fail — stats are not critical
+      });
+  }, [isAuthenticated]);
 
   if (isLoading || !profile) {
     return (
@@ -132,7 +149,10 @@ export default function AccountPage() {
                 </div>
               </CardHeader>
               <CardHeader className="pt-0">
-                <AvatarUploadButton />
+                <AvatarUploadButton
+                  currentAvatarUrl={profile.avatarUrl}
+                  userName={profile.fullName}
+                />
               </CardHeader>
             </Card>
 
@@ -163,7 +183,7 @@ export default function AccountPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Cursos activos</p>
-                      <p className="font-medium">—</p>
+                      <p className="font-medium">{stats?.activeCourses ?? "—"}</p>
                     </div>
                   </div>
                 </div>
@@ -175,7 +195,7 @@ export default function AccountPage() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Estudiantes</p>
-                      <p className="font-medium">—</p>
+                      <p className="font-medium">{stats?.totalStudents ?? "—"}</p>
                     </div>
                   </div>
                 </div>

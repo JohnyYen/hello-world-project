@@ -33,3 +33,23 @@ export interface UpdateProfessorDto {
   officeLocation?: string;
   contactNumber?: string;
 }
+
+/**
+ * Teacher profile data used in the account page.
+ * Built from the API UserResponse / TeacherProfileResponse.
+ */
+export interface TeacherProfileData {
+  id: string;
+  fullName: string;
+  email: string;
+  username: string;
+  avatarUrl: string | null;
+  department: string;
+  contactPhone: string | null;
+  createdAt: string;
+}
+
+export interface AccountStats {
+  activeCourses: number;
+  totalStudents: number;
+}

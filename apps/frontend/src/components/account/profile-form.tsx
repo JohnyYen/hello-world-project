@@ -9,13 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup } from "@/components/ui/field";
 import { updateProfileAction, ActionState } from "@/lib/actions";
-import { TeacherProfileData } from "@/app/dashboard/account/page";
+import type { TeacherProfileData } from "@/types/professor.interface";
+import { useAuth } from "@/context/auth-context";
 
 interface ProfileFormProps {
   profile: TeacherProfileData;
 }
 
 export function ProfileForm({ profile }: ProfileFormProps) {
+  const { refreshProfile } = useAuth();
   const nameParts = profile.fullName.split(" ");
   const firstName = nameParts[0] || "";
   const lastName = nameParts.slice(1).join(" ") || "";
@@ -28,9 +30,12 @@ export function ProfileForm({ profile }: ProfileFormProps) {
   useEffect(() => {
     if (state?.success) {
       toast.success(state.message || "Perfil actualizado exitosamente");
+      // Refresh auth context so sidebar/header reflect changes
+      refreshProfile();
     } else if (state?.success === false && state.message) {
       toast.error(state.message);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   return (
