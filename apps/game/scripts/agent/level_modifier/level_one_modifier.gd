@@ -293,6 +293,7 @@ func _apply_decrease_major() -> Dictionary:
 	# Actions: no distractors
 	_apply_actions_with_distractors(cfg, 0)
 
+	_enforce_consistency(cfg, "decrease_major")
 	return cfg
 
 
@@ -317,6 +318,7 @@ func _apply_decrease_minor() -> Dictionary:
 	cfg.execution_rules.time_limit = DECREASE_MINOR_TIME_LIMIT
 	_apply_actions_with_distractors(cfg, 0)
 
+	_enforce_consistency(cfg, "decrease_minor")
 	return cfg
 
 
@@ -334,6 +336,7 @@ func _apply_keep() -> Dictionary:
 	cfg.environment_data = _decrease_environment.duplicate()
 	_apply_actions_with_distractors(cfg, 0)
 
+	_enforce_consistency(cfg, "keep")
 	return cfg
 
 
@@ -360,6 +363,7 @@ func _apply_increase_minor() -> Dictionary:
 	_apply_actions_with_distractors(cfg, 2)
 	_apply_expected_outputs_for_students(cfg, [_extra_students[0]])
 
+	_enforce_consistency(cfg, "increase_minor")
 	return cfg
 
 
@@ -386,6 +390,7 @@ func _apply_increase_major() -> Dictionary:
 	_apply_actions_with_distractors(cfg, 5)
 	_apply_expected_outputs_for_students(cfg, _extra_students)
 
+	_enforce_consistency(cfg, "increase_major")
 	return cfg
 
 
