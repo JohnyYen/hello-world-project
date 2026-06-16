@@ -61,7 +61,8 @@ func _ready() -> void:
 	
 	_GameController.agent.action_decided.connect(Callable(controller.modifier, "apply_modifications"))
 	self.code_space.evaluate_signal.connect(_on_execute_solution)
-	self.show_instructions(controller.level_configuration.json_data['description'])
+	var initial_desc := controller.level_configuration.description
+	self.show_instructions(initial_desc if not initial_desc.is_empty() else "Completa el nivel")
 	
 	hud.reset_level.connect(Callable(self, "_on_reset_level"))
 	hud.back_pressed.connect(Callable(self, "_on_back_level"))
@@ -295,12 +296,16 @@ func _spawn_students_from_queue(queue : Array) -> void:
 		spawned_students.append(inst)
 		
 func _apply_ui_from_config(config : LevelOneConfiguration) -> void:
-	# Ejemplo: mostrar texto del reto en un Label/HUD
-	var display_text := config.get_display_text()
+	# Mostrar titulo adaptado en el ProblemLabel
+	var title_text := config.title if not config.title.is_empty() else config.get_display_text()
 	var hud_label := $MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel if has_node("$MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel") else null
-	
 	if hud_label:
-		hud_label.text = display_text
+		hud_label.text = title_text
+
+	# Mostrar descripcion adaptada en las instrucciones
+	var desc_text := config.description if not config.description.is_empty() else ""
+	if not desc_text.is_empty():
+		instruction_label.text = desc_text
 
 	# Hints, messages, etc.
 	var hints = config.feedback_messages.get("hints", []) if typeof(config.feedback_messages) == TYPE_DICTIONARY else []
