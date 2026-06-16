@@ -56,6 +56,9 @@ expand_icon = true
 
 [node name="TimerLabel" type="Label" parent="MarginContainer2/VBoxContainer/TopBar"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0.854902, 1)
+theme_override_constants/shadow_outline_size = 6
 
 [node name="Timer" type="Timer" parent="MarginContainer2/VBoxContainer/TopBar"]
 
@@ -80,9 +83,17 @@ stretch_mode = 5
 
 [node name="Coin" type="Label" parent="MarginContainer2/VBoxContainer/TopBar/Cash"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0.862745, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 6
 
 [node name="AttempsLabel" type="Label" parent="MarginContainer2/VBoxContainer/TopBar"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.104047, 0.26749, 0.594689, 1)
+theme_override_constants/shadow_outline_size = 5
 text = "Intentos x 2"
 
 [node name="InventoryPanel" type="HBoxContainer" parent="MarginContainer2/VBoxContainer"]

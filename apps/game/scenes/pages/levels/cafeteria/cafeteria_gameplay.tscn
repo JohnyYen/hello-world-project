@@ -275,8 +275,10 @@ drink_machine = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportCont
 bread_station = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/BreadStation")
 cash_register = NodePath("MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/Stations/CashRegister")
 student_scenes = [ExtResource("9_c28ar"), ExtResource("10_f0h7g"), ExtResource("14_402hk"), ExtResource("15_1ngbw")]
-segment_id = 2
 level_number = 1
+
+[node name="SubViewport" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer" index="0"]
+size = Vector2i(688, 648)
 
 [node name="World" type="Node2D" parent="MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport" index="0" node_paths=PackedStringArray("player_node", "drink_machine", "bread_storage", "hud")]
 z_as_relative = false
