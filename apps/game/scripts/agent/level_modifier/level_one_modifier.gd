@@ -509,6 +509,23 @@ func _filter_distractors_by_type(cfg: Dictionary) -> void:
 
 func _generate_validation_criteria(cfg: Dictionary) -> void:
 	var criteria: Array = []
+	
+	# Convert existing string-format criteria to structured
+	var existing := cfg.get("validation_criteria", [])
+	for entry in existing:
+		if typeof(entry) == TYPE_STRING:
+			var parts := entry.split(" served", true)
+			if parts.size() > 0 and not parts[0].is_empty():
+				var name := parts[0].strip_edges()
+				criteria.append({
+					"condition": "orders_served",
+					"target": [{"nombre": name, "pedido": ""}],
+					"type": "all"
+				})
+				continue
+		criteria.append(entry)
+	
+	# Generate new criteria from expected_outputs
 	for expected in cfg.expected_outputs:
 		if expected.has("orders_served"):
 			var names := expected.orders_served.map(func(o): return o.nombre)
@@ -518,14 +535,17 @@ func _generate_validation_criteria(cfg: Dictionary) -> void:
 				desc = "%s debe ser atendido" % names[0]
 			criteria.append({
 				"condition": "%s served" % names_str,
-				"description": desc
+				"description": desc,
+				"type": expected.get("type", "all")
 			})
 		elif expected.has("inventory_contains"):
 			var items := expected.inventory_contains
 			criteria.append({
 				"condition": "inventory contains %s" % ", ".join(items),
-				"description": "El inventario debe contener los items requeridos"
+				"description": "El inventario debe contener los items requeridos",
+				"type": expected.get("type", "all")
 			})
+	
 	cfg.validation_criteria = criteria
 
 
@@ -549,7 +569,79 @@ func _derive_expected_inventory(cfg: Dictionary) -> Array:
 	return items
 
 
+func _ensure_expected_outputs(cfg: Dictionary) -> void:
+	var outputs := cfg.get("expected_outputs", [])
+	if not outputs.is_empty():
+		return
+	
+	var segment_type := cfg.get("segment_type", "mixed")
+	var queue := cfg.get("initial_state", {}).get("student_queue", [])
+	
+	if queue.is_empty():
+		var stations := cfg.get("initial_state", {}).get("stations", {})
+		var items: Array = []
+		for station_name in stations:
+			var station_items = stations[station_name]
+			if station_items is Array:
+				for item in station_items:
+					if item not in items:
+						items.append(item)
+		if not items.is_empty():
+			cfg.expected_outputs = [{"inventory_contains": items}]
+	else:
+		var orders := []
+		for student in queue:
+			orders.append({
+				"nombre": student.get("nombre", "Estudiante"),
+				"pedido": student.get("pedido", "pan")
+			})
+		cfg.expected_outputs = [{"orders_served": orders}]
+
+
+func _sync_stations_with_segment(cfg: Dictionary) -> void:
+	var segment_type := cfg.get("segment_type", "mixed")
+	var stations := cfg.get("initial_state", {}).get("stations", {})
+	
+	match segment_type:
+		"bread-only":
+			if stations.has("drink_dispenser"):
+				stations.drink_dispenser = []
+			if stations.has("bread_dispenser") and stations.bread_dispenser.is_empty():
+				stations.bread_dispenser = ["pan"]
+		"drink-only":
+			if stations.has("bread_dispenser"):
+				stations.bread_dispenser = []
+			if stations.has("drink_dispenser") and stations.drink_dispenser.is_empty():
+				stations.drink_dispenser = ["cafe"]
+		"mixed":
+			if stations.has("bread_dispenser") and stations.bread_dispenser.is_empty():
+				stations.bread_dispenser = ["pan"]
+			if stations.has("drink_dispenser") and stations.drink_dispenser.is_empty():
+				stations.drink_dispenser = ["cafe"]
+
+
+func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
+	var bounds := cfg.get("difficulty_bounds", {})
+	if bounds.is_empty():
+		return
+	
+	var min_students := bounds.get("min_students", 1)
+	var max_students := bounds.get("max_students", 10)
+	var queue := cfg.get("initial_state", {}).get("student_queue", [])
+	
+	while queue.size() < min_students:
+		queue.append({"nombre": "Estudiante", "pedido": "pan"})
+	
+	while queue.size() > max_students:
+		queue.pop_back()
+	
+	var min_blocks := bounds.get("min_blocks", 3)
+	var max_blocks := bounds.get("max_blocks", 10)
+	cfg.execution_rules.max_blocks = clampi(cfg.execution_rules.max_blocks, min_blocks, max_blocks)
+
+
 func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
+	_ensure_expected_outputs(cfg)
 	_generate_title(cfg, tier)
 	_generate_description(cfg, tier)
 	_generate_learning_objective(cfg, tier)
@@ -557,3 +649,5 @@ func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
 	_filter_distractors_by_type(cfg)
 	_generate_validation_criteria(cfg)
 	_update_inventory_expected_outputs(cfg)
+	_sync_stations_with_segment(cfg)
+	_enforce_difficulty_bounds(cfg)

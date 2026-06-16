@@ -64,7 +64,7 @@ func test_resolve_template_singular() -> void:
 
 func test_resolve_template_missing_var() -> void:
 	var result := BaseLevelModifier.resolve_template("Test {exists} y {missing}", {"exists": "ok"})
-	assert_eq(result, "Test ok y {missing}", "template: missing var placeholder preserved")
+	assert_eq(result, "Test ok y ", "template: missing var stripped to empty")
 
 func test_resolve_template_no_placeholders() -> void:
 	var result := BaseLevelModifier.resolve_template("Texto sin placeholders", {})
@@ -601,6 +601,116 @@ func test_backward_compat_all_states() -> void:
 		var result := modifier.modify_level(states[i], difficulties[i])
 		assert_false(result.is_empty(),
 			"backward: %s debe retornar config no vacia sin metadata" % states[i])
+
+
+# =============================================================================
+# difficulty_bounds enforcement (Fix 1)
+# =============================================================================
+
+func test_difficulty_bounds_clamps_students() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.difficulty_bounds = {"min_students": 1, "max_students": 2, "min_blocks": 3, "max_blocks": 5}
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_eq(result.initial_state.student_queue.size(), 2,
+		"difficulty_bounds: student_queue clamped from 3 to max 2")
+	assert_eq(result.execution_rules.max_blocks, 5,
+		"difficulty_bounds: max_blocks clamped from 10 to max 5")
+
+
+func test_difficulty_bounds_pads_students() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.initial_state.student_queue = []
+	cfg.difficulty_bounds = {"min_students": 2, "max_students": 5, "min_blocks": 3, "max_blocks": 10}
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_eq(result.initial_state.student_queue.size(), 2,
+		"difficulty_bounds: student_queue padded from 0 to min 2")
+
+
+# =============================================================================
+# validation_criteria string format backward compat (Fix 3)
+# =============================================================================
+
+func test_validation_criteria_string_format_backward_compat() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.validation_criteria = ["Ana served"]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_eq(result.validation_criteria.size(), 2,
+		"string criteria: converts string entry + generates from expected_outputs")
+
+
+# =============================================================================
+# validation_criteria type field (Fix 4)
+# =============================================================================
+
+func test_validation_criteria_type_min() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.expected_outputs = [{"orders_served": [{"nombre": "Ana", "pedido": "pan"}], "type": "min"}]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_eq(result.validation_criteria[0].get("type", ""), "min",
+		"type min: criteria has type field set to min")
+
+
+# =============================================================================
+# station inventory consistency (Fix 5)
+# =============================================================================
+
+func test_station_sync_bread_only_clears_drink() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.initial_state.stations.drink_dispenser = ["cafe"]
+	cfg.initial_state.stations.bread_dispenser = []
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_eq(result.initial_state.stations.drink_dispenser, [],
+		"station_sync: bread-only clears drink_dispenser")
+	assert_eq(result.initial_state.stations.bread_dispenser, ["pan"],
+		"station_sync: bread-only fills bread_dispenser")
+
+
+func test_station_sync_drink_only_clears_bread() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "drink-only"
+	cfg.initial_state.stations.bread_dispenser = ["pan"]
+	cfg.initial_state.stations.drink_dispenser = []
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_eq(result.initial_state.stations.bread_dispenser, [],
+		"station_sync: drink-only clears bread_dispenser")
+	assert_eq(result.initial_state.stations.drink_dispenser, ["cafe"],
+		"station_sync: drink-only fills drink_dispenser")
+
+
+# =============================================================================
+# auto-detect expected_outputs format (Fix 6)
+# =============================================================================
+
+func test_auto_expected_outputs_with_students() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.erase("expected_outputs")
+	cfg.initial_state.student_queue = [{"nombre": "Ana", "pedido": "pan"}]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_true(result.has("expected_outputs"),
+		"auto: expected_outputs should be generated")
+	assert_eq(result.expected_outputs[0].orders_served[0].nombre, "Ana",
+		"auto: should contain Ana in orders_served")
+
+
+func test_auto_expected_outputs_empty_queue_inventory() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.erase("expected_outputs")
+	cfg.initial_state.student_queue = []
+	cfg.initial_state.stations.bread_dispenser = ["pan"]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_true(result.has("expected_outputs"),
+		"auto: expected_outputs should be generated for empty queue")
+	assert_true(result.expected_outputs[0].has("inventory_contains"),
+		"auto: empty queue should use inventory_contains format")
 
 
 # =============================================================================

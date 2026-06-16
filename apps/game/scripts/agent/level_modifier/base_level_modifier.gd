@@ -21,6 +21,7 @@ static func resolve_template(template: String, ctx: Dictionary) -> String:
 	var result := template
 	for key in ctx:
 		result = result.replace("{%s}" % key, str(ctx[key]))
+	result = result.replacen("{", "").replacen("}", "")
 	return result
 
 
