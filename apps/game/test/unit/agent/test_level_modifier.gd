@@ -3,6 +3,7 @@
 extends GutTest
 
 var LevelOneModifier = load("res://scripts/agent/level_modifier/level_one_modifier.gd")
+var BaseLevelModifier = load("res://scripts/agent/level_modifier/base_level_modifier.gd")
 var modifier
 var base_config: Dictionary
 
@@ -47,6 +48,27 @@ func before_each() -> void:
 		"segment_id": 0,
 		"configuration": base_config.duplicate(true)
 	})
+
+
+# =============================================================================
+# resolve_template (static)
+# =============================================================================
+
+func test_resolve_template_basic() -> void:
+	var result := BaseLevelModifier.resolve_template("Atiende a {count} estudiante{plural}", {"count": 3, "plural": "s"})
+	assert_eq(result, "Atiende a 3 estudiantes", "template: basic substitution")
+
+func test_resolve_template_singular() -> void:
+	var result := BaseLevelModifier.resolve_template("Atiende a {count} estudiante{plural}", {"count": 1, "plural": ""})
+	assert_eq(result, "Atiende a 1 estudiante", "template: singular")
+
+func test_resolve_template_missing_var() -> void:
+	var result := BaseLevelModifier.resolve_template("Test {exists} y {missing}", {"exists": "ok"})
+	assert_eq(result, "Test ok y {missing}", "template: missing var placeholder preserved")
+
+func test_resolve_template_no_placeholders() -> void:
+	var result := BaseLevelModifier.resolve_template("Texto sin placeholders", {})
+	assert_eq(result, "Texto sin placeholders", "template: unchanged when no placeholders")
 
 
 # =============================================================================
@@ -435,3 +457,182 @@ func test_expected_outputs_inventory_format_ignored() -> void:
 	var result := modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.expected_outputs[0].inventory_contains, ["pan"],
 		"inventory_contains: no debe modificarse con estudiantes")
+
+
+# =============================================================================
+# validation criteria generation
+# =============================================================================
+
+func test_validation_criteria_orders_served() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.expected_outputs = [{"orders_served": [{"nombre": "Ana", "pedido": "pan"}]}]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_eq(result.validation_criteria.size(), 1,
+		"validation: debe generar 1 criterio")
+	assert_true(result.validation_criteria[0].condition.contains("Ana"),
+		"validation: condicion debe mencionar a Ana")
+
+
+func test_validation_criteria_inventory_contains() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.expected_outputs = [{"inventory_contains": ["pan"]}]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_true(result.validation_criteria.size() > 0,
+		"validation: debe generar criterio para inventory_contains")
+
+
+# =============================================================================
+# distractor filtering per segment_type
+# =============================================================================
+
+func test_distractor_filtering_bread_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("increase_major", 1.2)
+	for action in result.defined_actions:
+		var is_drink := action.value in ["prepare_drink", "serve_drink"]
+		assert_false(is_drink,
+			"distractors: bread-only NO debe tener drink actions. Found: %s" % action.value)
+
+
+func test_distractor_filtering_drink_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "drink-only"
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("increase_major", 1.2)
+	for action in result.defined_actions:
+		var is_bread := action.value in ["get_bread", "prepare_bread", "serve_bread"]
+		assert_false(is_bread,
+			"distractors: drink-only NO debe tener bread actions. Found: %s" % action.value)
+
+
+func test_distractor_filtering_mixed_allows_all() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "mixed"
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("increase_major", 1.2)
+	assert_gt(result.defined_actions.size(), 2,
+		"distractors: mixed debe tener distractors")
+
+
+# =============================================================================
+# environment-action consistency
+# =============================================================================
+
+func test_environment_bread_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.environment_data = {"bread_station": false, "drink_machine": false, "cash_register": false}
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("increase_major", 1.2)
+	assert_eq(result.environment_data.bread_station, true,
+		"env: bread-only bread_station debe ser true")
+	assert_eq(result.environment_data.drink_machine, false,
+		"env: bread-only drink_machine debe ser false")
+
+
+func test_environment_drink_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "drink-only"
+	cfg.environment_data = {"bread_station": true, "drink_machine": false, "cash_register": true}
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("increase_major", 1.2)
+	assert_eq(result.environment_data.bread_station, false,
+		"env: drink-only bread_station debe ser false")
+	assert_eq(result.environment_data.drink_machine, true,
+		"env: drink-only drink_machine debe ser true")
+
+
+func test_environment_mixed() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "mixed"
+	cfg.environment_data = {"bread_station": false, "drink_machine": false, "cash_register": false}
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("decrease_major", 0.8)
+	assert_eq(result.environment_data.bread_station, true,
+		"env: mixed bread_station debe ser true")
+	assert_eq(result.environment_data.drink_machine, true,
+		"env: mixed drink_machine debe ser true")
+
+
+# =============================================================================
+# inventory_contains sync
+# =============================================================================
+
+func test_inventory_contains_unchanged_by_students() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.expected_outputs = [{"inventory_contains": ["pan"]}]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("increase_major", 1.2)
+	assert_eq(result.expected_outputs[0].inventory_contains, ["pan"],
+		"inventory: no debe modificarse por cambios de estudiantes")
+
+
+# =============================================================================
+# backward compat (no metadata)
+# =============================================================================
+
+func test_backward_compat_no_segment_type() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.erase("segment_type")
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	assert_eq(result.execution_rules.max_blocks, 10,
+		"backward: max_blocks unchanged without metadata")
+	assert_eq(result.initial_state.student_queue.size(), 3,
+		"backward: students unchanged without metadata")
+
+
+func test_backward_compat_all_states() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.erase("segment_type")
+	cfg.erase("templates")
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	
+	var states = ["decrease_major", "decrease_minor", "keep", "increase_minor", "increase_major"]
+	var difficulties = [0.8, 0.9, 1.0, 1.1, 1.2]
+	for i in range(states.size()):
+		var result := modifier.modify_level(states[i], difficulties[i])
+		assert_false(result.is_empty(),
+			"backward: %s debe retornar config no vacia sin metadata" % states[i])
+
+
+# =============================================================================
+# integration - full modifier flow with metadata
+# =============================================================================
+
+func test_integration_full_flow_bread_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.required_actions = ["get_bread", "prepare_bread", "serve_bread"]
+	cfg.templates = {
+		"keep": {
+			"title": "Test {student_count} estudiante{student_plural}",
+			"description": "Descripcion test",
+			"learning_objective": "Objetivo test"
+		}
+	}
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result := modifier.modify_level("keep", 1.0)
+	
+	assert_eq(result.title, "Test 3 estudiantes",
+		"integration: title debe usar template con student_count")
+	
+	assert_eq(result.environment_data.bread_station, true,
+		"integration: bread_station visible")
+	assert_eq(result.environment_data.drink_machine, false,
+		"integration: drink_machine oculta")
+	
+	assert_true(result.has("validation_criteria"),
+		"integration: debe tener validation_criteria")
+	
+	assert_false(result.get("title", "").is_empty(),
+		"integration: title no debe estar vacio")
+	assert_false(result.get("description", "").is_empty(),
+		"integration: description no debe estar vacio")
