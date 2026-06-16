@@ -10,6 +10,36 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Aprende a tomar un pan del dispensador",
 			"version": "1.0",
 			"segment_id": 1,
+			"segment_type": "bread-only",
+			"required_actions": ["get_bread"],
+			"difficulty_bounds": {"min_students": 0, "max_students": 0, "min_blocks": 3, "max_blocks": 8},
+			"templates": {
+				"decrease_major": {
+					"title": "Nivel 1 - Aprende a tomar pan",
+					"description": "Usa un bloque Ejecutar con la accion get_bread para tomar pan del dispensador",
+					"learning_objective": "Introduccion a la secuencia de instrucciones"
+				},
+				"decrease_minor": {
+					"title": "Nivel 1 - Toma pan del dispensador",
+					"description": "Usa un bloque Ejecutar con get_bread",
+					"learning_objective": "Ejecutar una accion simple"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 1",
+					"description": "Aprende a tomar un pan del dispensador",
+					"learning_objective": "Introduccion a la secuencia de instrucciones"
+				},
+				"increase_minor": {
+					"title": "Nivel 1 - Toma pan del dispensador",
+					"description": "Usa la accion get_bread para tomar pan",
+					"learning_objective": "Ejecutar una accion basica"
+				},
+				"increase_major": {
+					"title": "Nivel 1 - Toma pan del dispensador",
+					"description": "Identifica y usa get_bread para completar la tarea",
+					"learning_objective": "Reconocer y ejecutar la accion correcta"
+				}
+			},
 			"initial_state": {
 				"student_queue": [],
 				"menu": {"pan": 1},
@@ -65,6 +95,36 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Preparar pan después de tomarlo",
 			"version": "1.0",
 			"segment_id": 2,
+			"segment_type": "bread-only",
+			"required_actions": ["get_bread", "prepare_bread"],
+			"difficulty_bounds": {"min_students": 0, "max_students": 0, "min_blocks": 3, "max_blocks": 10},
+			"templates": {
+				"decrease_major": {
+					"title": "Nivel 1 - Prepara pan paso a paso",
+					"description": "Primero get_bread, luego prepare_bread. {student_count} estudiante{student_plural}",
+					"learning_objective": "Secuencia de dos acciones"
+				},
+				"decrease_minor": {
+					"title": "Nivel 1 - Prepara pan",
+					"description": "Toma y prepara el pan con get_bread y prepare_bread",
+					"learning_objective": "Secuencia de {student_count} accion{student_plural}"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 2",
+					"description": "Preparar pan despues de tomarlo",
+					"learning_objective": "Secuencia de multiples acciones simples"
+				},
+				"increase_minor": {
+					"title": "Nivel 1 - Prepara pan eficientemente",
+					"description": "Combina get_bread y prepare_bread en el orden correcto",
+					"learning_objective": "Secuencia de dos acciones en orden"
+				},
+				"increase_major": {
+					"title": "Nivel 1 - Prepara pan sin ayuda",
+					"description": "Descubre la secuencia correcta para preparar pan",
+					"learning_objective": "Resolver secuencia de dos pasos"
+				}
+			},
 			"initial_state": {
 				"student_queue": [],
 				"menu": {"pan": 1},
@@ -121,6 +181,36 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Servir pan preparado a un estudiante",
 			"version": "1.0",
 			"segment_id": 3,
+			"segment_type": "bread-only",
+			"required_actions": ["get_bread", "prepare_bread", "serve_bread"],
+			"difficulty_bounds": {"min_students": 1, "max_students": 5, "min_blocks": 3, "max_blocks": 12},
+			"templates": {
+				"decrease_major": {
+					"title": "Sirve pan a {student_count} estudiante{student_plural}",
+					"description": "Prepara y sirve pan a {student_count} estudiante{student_plural}. Estudiantes: {student_names}",
+					"learning_objective": "Atender a {student_count} cliente{student_plural}"
+				},
+				"decrease_minor": {
+					"title": "Sirve pan a {student_count} estudiante{student_plural}",
+					"description": "Toma, prepara y sirve pan a {student_count} estudiante{student_plural}",
+					"learning_objective": "Atender a {student_count} cliente{student_plural}"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 3",
+					"description": "Servir pan preparado a un estudiante",
+					"learning_objective": "Atender al primer cliente"
+				},
+				"increase_minor": {
+					"title": "Sirve pan a {student_count} estudiantes",
+					"description": "Atiende a {student_count} estudiantes con pedidos de pan",
+					"learning_objective": "Atender multiples clientes"
+				},
+				"increase_major": {
+					"title": "Sirve pan a {student_count} estudiantes",
+					"description": "Organiza las acciones para servir a {student_names}",
+					"learning_objective": "Gestionar multiples pedidos de pan"
+				}
+			},
 			"initial_state": {
 				"student_queue": [
 					{"nombre": "Ana", "pedido": "pan"}
@@ -181,6 +271,36 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Atender a un estudiante que pide bebida",
 			"version": "1.0",
 			"segment_id": 4,
+			"segment_type": "drink-only",
+			"required_actions": ["prepare_drink", "serve_drink"],
+			"difficulty_bounds": {"min_students": 1, "max_students": 5, "min_blocks": 3, "max_blocks": 12},
+			"templates": {
+				"decrease_major": {
+					"title": "Sirve bebida a {student_count} estudiante{student_plural}",
+					"description": "Prepara y sirve {drink_item} a {student_count} estudiante{student_plural}",
+					"learning_objective": "Atender a {student_count} cliente{student_plural} con bebidas"
+				},
+				"decrease_minor": {
+					"title": "Sirve bebida a {student_count} estudiante{student_plural}",
+					"description": "Prepara y sirve una bebida a {student_count} estudiante{student_plural}",
+					"learning_objective": "Servir bebidas a {student_count} cliente{student_plural}"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 4",
+					"description": "Atender a un estudiante que pide bebida",
+					"learning_objective": "Introduccion a acciones con bebidas"
+				},
+				"increase_minor": {
+					"title": "Sirve bebidas a {student_count} estudiantes",
+					"description": "Prepara y sirve {drink_item} a {student_count} estudiantes",
+					"learning_objective": "Atender multiples pedidos de bebida"
+				},
+				"increase_major": {
+					"title": "Sirve bebidas a {student_count} estudiantes",
+					"description": "Organiza las acciones para servir bebidas a {student_count} estudiantes",
+					"learning_objective": "Gestionar multiples pedidos de bebida"
+				}
+			},
 			"initial_state": {
 				"student_queue": [
 					{"nombre": "Luis", "pedido": "cafe"}
@@ -240,6 +360,36 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Atender a dos clientes en orden con pedidos distintos",
 			"version": "1.0",
 			"segment_id": 5,
+			"segment_type": "mixed",
+			"required_actions": ["get_bread", "prepare_bread", "serve_bread", "prepare_drink", "serve_drink"],
+			"difficulty_bounds": {"min_students": 2, "max_students": 6, "min_blocks": 4, "max_blocks": 15},
+			"templates": {
+				"decrease_major": {
+					"title": "Atiende a {student_count} estudiante{student_plural}",
+					"description": "Los estudiantes tienen distintos pedidos. Atiende a {student_count} estudiante{student_plural}: {student_names}",
+					"learning_objective": "Atender pedidos mixtos de {student_count} cliente{student_plural}"
+				},
+				"decrease_minor": {
+					"title": "Atiende a {student_count} estudiante{student_plural}",
+					"description": "Cada estudiante tiene un pedido especifico. Sirve a {student_count} estudiante{student_plural}",
+					"learning_objective": "Atender {student_count} cliente{student_plural} correctamente"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 5",
+					"description": "Atender a dos clientes en orden con pedidos distintos",
+					"learning_objective": "Secuencias mas complejas con multiples clientes"
+				},
+				"increase_minor": {
+					"title": "Atiende a {student_count} estudiantes",
+					"description": "{student_count} estudiantes esperan. Identifica cada pedido y sirve correctamente",
+					"learning_objective": "Gestionar multiples pedidos variados"
+				},
+				"increase_major": {
+					"title": "Atiende a {student_count} estudiantes",
+					"description": "{student_count} estudiantes con pedidos variados. Usa las acciones correctas para cada uno",
+					"learning_objective": "Resolver secuencia compleja de {student_count} pasos"
+				}
+			},
 			"initial_state": {
 				"student_queue": [
 					{"nombre": "Ana", "pedido": "pan"},
