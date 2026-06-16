@@ -13,6 +13,17 @@ func _init() -> void:
 	repo = LevelRepository.new()
 	print("[BaseLevelModifier] Inicializado con LevelRepository")
 
+
+# ----------------------------------------------------
+# Helper: resuelve placeholders {variable} en templates
+# ----------------------------------------------------
+static func resolve_template(template: String, ctx: Dictionary) -> String:
+	var result := template
+	for key in ctx:
+		result = result.replace("{%s}" % key, str(ctx[key]))
+	return result
+
+
 func set_level_segment(segment: Dictionary):
 	level_segment = segment
 	original_config = segment.get("configuration", {}).duplicate(true)
