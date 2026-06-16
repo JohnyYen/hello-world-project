@@ -104,7 +104,13 @@ func _on_block_selected(block_data : Dictionary):
 	# Si quieres conectarlo manualmente solo a lo que necesitas:
 	# new_block.block_selected.connect(_on_block_selected)
 	# new_block.btn.pressed.connect(Callable(new_block, "_on_texture_button_pressed"))
-
+	
+	var margin_container: MarginContainer = MarginContainer.new()
+	#margin_container.add_theme_constant_override("margin_left", 5)
+	#margin_container.add_theme_constant_override("margin_right", 5)
+	#margin_container.add_theme_constant_override("margin_top", 15)
+	#margin_container.add_theme_constant_override("margin_bottom", 20)
+	#margin_container.add_child(new_block)
 	block_space.add_child(new_block)
 	
 	if new_block is ExecutionCodeBlock and level_config != null:

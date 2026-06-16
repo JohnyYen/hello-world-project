@@ -235,9 +235,10 @@ func modify_level_by_config(config : LevelOneConfiguration):
 	if allowed_blocks.is_empty():
 		# fallback a los access_blocks del propio config base
 		allowed_blocks = config.access_blocks
-	#controller.send_blocks_to_code_zone(allowed_blocks)
-	## También enviar a component local si fuera necesario
-	#code_space.receive_allowed_blocks(allowed_blocks)
+	if not allowed_blocks.is_empty():
+		# Re-send blocks filtered by config's available_blocks
+		var config_blocks := controller.get_avaible_blocks()
+		controller.send_blocks_to_code_zone(config_blocks)
 	
 	_set_environment_data(config)
 	# 5) UI: texto, paneles, hints
