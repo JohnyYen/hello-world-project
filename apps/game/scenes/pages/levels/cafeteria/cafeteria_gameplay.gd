@@ -11,8 +11,8 @@ var controller : LevelOneController
 @onready var queue_positions : Node2D = $MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer/QueuePositions
 
 @onready var customer_container = $MarginContainer/HBoxContainer/GameArea/SubViewportContainer/SubViewport/World/CustomerContainer
-@onready var instruction_panel = $MarginContainer/Hud/PanelContainer
-@onready var instruction_label = $MarginContainer/Hud/PanelContainer/CenterContainer/Instructions
+@onready var instruction_panel = $MarginContainer/Hud/PanelContainer2
+@onready var instruction_label = $MarginContainer/Hud/PanelContainer2/CenterContainer/Instructions
 @export var hud : HUD
 
 @export var drink_machine : Node2D
@@ -56,7 +56,7 @@ func _ready() -> void:
 	print("[CafeteriaGameplay | _ready]: level_loaded signal emit - segment_id=%d, level_number=%d, actor=%s" % [self.segment_id, self.level_number, actor_id])
 	
 	controller.modifier.segment_id = self.segment_id
-	controller.modifier.original_config = controller.level_configuration.json_data
+	controller.modifier.original_config = controller.level_configuration.json_data.duplicate(true)
 	
 	level_setup_complete.emit(context)
 	
@@ -220,7 +220,7 @@ func modify_level_by_config(config : LevelOneConfiguration):
 		return
 	
 	
-	
+	print(config.json_data)
 	# 1) LIMPIAR lo anterior
 	_clear_spawned_students()
 	
@@ -251,6 +251,7 @@ func modify_level_by_config(config : LevelOneConfiguration):
 func _set_environment_data(config : LevelOneConfiguration) -> void:
 	var environment_data = config.get_environment()
 	if environment_data != {}:
+		#push_error("Holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 		drink_machine.visible = environment_data.get("drink_machine", true)
 		bread_station.visible = environment_data.get("bread_station", true)
 		cash_register.visible = environment_data.get("cash_register", true)

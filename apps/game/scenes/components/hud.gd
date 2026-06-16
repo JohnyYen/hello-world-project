@@ -9,7 +9,7 @@ signal add_item_inventory(item: String)
 
 @onready var timer_label = $MarginContainer2/VBoxContainer/TopBar/TimerLabel
 @onready var inventory_container = $MarginContainer/VBoxContainer/InventoryPanel/InventoryList
-@onready var menu_panel : Panel = $MenuPanel
+@onready var menu_panel : PanelContainer = $MenuPanel
 @onready var timer : Timer = $MarginContainer2/VBoxContainer/TopBar/Timer
 
 @export var inventory: InventoryHUD

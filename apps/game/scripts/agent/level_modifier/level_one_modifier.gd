@@ -63,7 +63,7 @@ func modify_level(state: String, difficulty: float) -> Dictionary:
 
 
 func _apply_decrease_major() -> Dictionary:
-	var cfg = self.original_config
+	var cfg = self.original_config.duplicate(true)
 
 	cfg.execution_rules.max_blocks += DECREASE_MAJOR_BLOCKS_INC
 	print("DECREASE_MAJOR: Blocks +", DECREASE_MAJOR_BLOCKS_INC)
@@ -84,7 +84,7 @@ func _apply_decrease_major() -> Dictionary:
 
 
 func _apply_decrease_minor() -> Dictionary:
-	var cfg = self.original_config
+	var cfg = self.original_config.duplicate(true)
 
 	cfg.execution_rules.max_blocks += DECREASE_MINOR_BLOCKS_INC
 	print("DECREASE_MINOR: Blocks +", DECREASE_MINOR_BLOCKS_INC)
@@ -103,7 +103,7 @@ func _apply_decrease_minor() -> Dictionary:
 
 
 func _apply_keep() -> Dictionary:
-	var cfg = self.original_config
+	var cfg = self.original_config.duplicate(true)
 
 	cfg.execution_rules.max_blocks += KEEP_BLOCKS_DELTA
 
@@ -117,7 +117,7 @@ func _apply_keep() -> Dictionary:
 
 
 func _apply_increase_minor() -> Dictionary:
-	var cfg = self.original_config
+	var cfg = self.original_config.duplicate(true)
 
 	cfg.execution_rules.max_blocks = max(
 		6,
@@ -139,7 +139,7 @@ func _apply_increase_minor() -> Dictionary:
 
 
 func _apply_increase_major() -> Dictionary:
-	var cfg = self.original_config
+	var cfg = self.original_config.duplicate(true)
 
 	cfg.execution_rules.max_blocks = max(
 		6,

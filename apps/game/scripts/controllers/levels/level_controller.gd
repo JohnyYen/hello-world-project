@@ -23,7 +23,16 @@ func get_avaible_blocks() -> Array[Block]:
 	return []
 
 func finish_level(data : Dictionary):
+	print("[LevelController | finish_level] Emitiendo level_completed - data keys=%s" % data.keys())
+	print("[LevelController | finish_level] score=%.2f, errors=%d, level_id=%d, actor_id=%s" % [
+		data.get("score", 0.0), data.get("errors", 0), data.get("level_id", 0), data.get("actor_id", "?")
+	])
+	var signal_connections := get_signal_connection_list("level_completed")
+	print("[LevelController | finish_level] Conexiones a level_completed: %d" % signal_connections.size())
+	for conn in signal_connections:
+		print("[LevelController | finish_level]   -> callable=%s" % str(conn["callable"]))
 	emit_signal('level_completed', data)
+	print("[LevelController | finish_level] Señal level_completed emitida")
 
 func get_level_configuration(segment_id : int) -> LevelConfiguration:
 	push_error("METHOD_NOT_IMPLEMENTED");

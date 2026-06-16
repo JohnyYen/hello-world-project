@@ -11,15 +11,18 @@ var repo : LevelRepository
 
 func _init() -> void:
 	repo = LevelRepository.new()
+	print("[BaseLevelModifier] Inicializado con LevelRepository")
 
 func set_level_segment(segment: Dictionary):
 	level_segment = segment
 	original_config = segment.get("configuration", {}).duplicate(true)
 	modified_config = original_config.duplicate(true)
+	print("[BaseLevelModifier] Segmento asignado - configuration keys: %s" % original_config.keys())
 
 func get_config(level_id : int, segment_id : int) -> Dictionary:
 	var repo = LevelRepository.new()
 	var config = repo.get_segment_json(level_id, segment_id)
+	print("[BaseLevelModifier] Config obtenida para level=%d, segment=%d: %s" % [level_id, segment_id, config])
 	return config
 
 ## Modify level configuration based on action state and difficulty.
@@ -32,15 +35,19 @@ func get_config(level_id : int, segment_id : int) -> Dictionary:
 ## @param difficulty: float - Current difficulty value
 ## @return: Dictionary - Modified level configuration
 func modify_level(state: String, difficulty: float) -> Dictionary:
+	print("[BaseLevelModifier] modify_level llamado con state='%s', difficulty=%.2f - MÉTODO BASE, debe ser sobreescrito" % [state, difficulty])
 	push_error("METHOD_NOT_IMPLEMENTED")
 	return {}
 
 
 func apply_modifications():
+	print("[BaseLevelModifier] Aplicando modificaciones al segmento")
 	_update_segment_configurations(level_segment, modified_config)
+	print("[BaseLevelModifier] Modificaciones aplicadas exitosamente")
 
 
 func _update_segment_configurations(segment: Dictionary, new_config: Dictionary):
+	print("[BaseLevelModifier] Actualizando configuración del segmento")
 	segment["configuration"] = new_config
 
 

@@ -37,6 +37,7 @@ func _init():
 	if _instance != null:
 		push_error("GameController singleton already exists. Use get_instance() to access the singleton.")
 		return
+	_instance = self
 	
 	self.engine = ExecutionEngine.new()
 	self.agent = AdaptiveAgent.new()
@@ -93,9 +94,21 @@ func record_attempt(blocks_executed: Array[String], success: bool, execution_tim
 ## Completa el nivel: registra intento, finaliza tracking y notifica al LevelController.
 ## @param result: Dictionary con keys "blocks", "success", "time"
 func complete_level(result: Dictionary) -> void:
+	print("[GameController | complete_level] ENTRADA - result.success=%s, result.blocks=%s, result.time=%.2f, result.attempt_number=%d" % [
+		result.get("success", false), result.get("blocks", []), result.get("time", 0.0), result.get("attempt_number", 0)
+	])
+	print("[GameController | complete_level] _level_controller is null? %s" % (_level_controller == null))
+	
 	record_attempt(result.blocks, result.success, result.time)
+	print("[GameController | complete_level] record_attempt OK")
+	
 	var analytics = _XAPIService.end_segment_tracking(result.success)
+	print("[GameController | complete_level] analytics recibido: %s" % analytics)
+	
 	var enriched = _enrich_level_data(analytics)
+	print("[GameController | complete_level] enriched data: score=%.2f, errors=%d, level_id=%d, actor_id=%s" % [
+		enriched.get("score", 0.0), enriched.get("errors", 0), enriched.get("level_id", 0), enriched.get("actor_id", "?")
+	])
 	
 	# Crear xAPI statement para sincronización con backend
 	# Captura el evento consolidado de nivel completado con score, errors, duration
@@ -113,12 +126,16 @@ func complete_level(result: Dictionary) -> void:
 		_current_level_number,
 		_current_level_id
 	)
+	print("[GameController | complete_level] track_level_completed OK")
 	
+	print("[GameController | complete_level] _level_controller is null? %s (antes del if)" % (_level_controller == null))
 	if _level_controller:
-		print("[GameController] Enviando analytics al AdaptiveAgent - score=%.2f, errors=%d" % [enriched.get("score", 0.0), enriched.get("errors", 0)])
+		print("[GameController | complete_level] _level_controller VÁLIDO - llamando finish_level")
+		print("[GameController | complete_level] Enviando analytics al AdaptiveAgent - score=%.2f, errors=%d" % [enriched.get("score", 0.0), enriched.get("errors", 0)])
 		_level_controller.finish_level(enriched)
+		print("[GameController | complete_level] finish_level ejecutado correctamente")
 	else:
-		push_error("GameController: No hay _level_controller asignado")
+		push_error("[GameController | complete_level] _level_controller ES NULL - no se puede llamar finish_level")
 
 ## Enriquece datos analíticos con contexto del nivel (level_id, actor_id)
 ## y datos de raw_stats (hints_used, efficiency_rating, etc.).

@@ -14,3 +14,4 @@ editor_layout.cfg
 
 requirements.md
 data/savegame.json
+data/attempt_history.json

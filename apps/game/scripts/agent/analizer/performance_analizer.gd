@@ -73,6 +73,7 @@ func normalize(raw: Dictionary) -> Dictionary:
 func _calc_moving_average() -> float:
 	# If there are no scores in history, return the last known average
 	if scores.size() == 0:
+		print("[PerformanceAnalyzer] _calc_moving_average: sin scores, retornando avg_score=%.2f" % avg_score)
 		return avg_score
 
 	# Calculate sum of all scores in history
@@ -81,6 +82,7 @@ func _calc_moving_average() -> float:
 		s += v
 
 	var avg = s / scores.size()
+	print("[PerformanceAnalyzer] _calc_moving_average: avg=%.4f (basado en %d scores)" % [avg, scores.size()])
 	# Return the arithmetic mean
 	return avg
 
@@ -106,12 +108,17 @@ func record_attempt(attempt: AttemptData) -> void:
 		push_warning("PerformanceAnalyzer.record_attempt: AttemptData es null")
 		return
 	
+	print("[PerformanceAnalyzer] Registrando intento #%d: score=%.2f, errors=%d, time=%.2f, hints=%d" % [
+		attempts_history.size() + 1, attempt.score, attempt.errors, attempt.time, attempt.hints_used
+	])
+	
 	attempts_history.append(attempt)
 
 	if attempts_history.size() > MAX_HISTORY:
 		attempts_history.pop_front()
 	
 	AttemptHistoryPersistence.append_attempt(attempt)
+	print("[PerformanceAnalyzer] Intento registrado - historial actual: %d intentos" % attempts_history.size())
 
 ## Obtiene el historial completo de intentos
 ## @return Array de AttemptData objects

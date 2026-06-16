@@ -66,9 +66,20 @@ func _init(
 	error_details = p_error_details
 	custom_events = p_custom_events
 	timestamp = Time.get_datetime_string_from_system()
+	print("[AttemptData] Creado: score=%.2f, errors=%d, time=%.2f, hints=%d, efficiency=%.1f, objectives=%d, blocks=%d" % [
+		score, errors, time, hints_used, efficiency_rating, objectives_completed, blocks_count
+	])
 
 ## Crea un AttemptData a partir de un Dictionary (conversión desde XAPIService/GameController)
 static func from_dictionary(data: Dictionary) -> AttemptData:
+	print("[AttemptData] Creando desde dictionary: %s" % data)
+	# Convertir untyped Array a Array[Dictionary] (GDScript 2.0 requiere typing explícito)
+	var raw_events: Array = data.get("custom_events", [])
+	var typed_events: Array[Dictionary] = []
+	for event in raw_events:
+		if event is Dictionary:
+			typed_events.append(event)
+	
 	var attempt := AttemptData.new(
 		data.get("score", 0.0),
 		data.get("errors", 0),
@@ -78,7 +89,7 @@ static func from_dictionary(data: Dictionary) -> AttemptData:
 		data.get("objectives_completed", 0),
 		data.get("blocks_count", 0),
 		data.get("error_details", {}),
-		data.get("custom_events", [])
+		typed_events
 	)
 	attempt.level_id = data.get("level_id", 0)
 	attempt.actor_id = data.get("actor_id", "")
