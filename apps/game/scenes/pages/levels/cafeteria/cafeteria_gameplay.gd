@@ -41,10 +41,6 @@ func _ready() -> void:
 	
 	code_space.level_config = controller.level_configuration
 	
-	# Request the allowed blocks for this level
-	var allowed_blocks = controller.get_avaible_blocks()
-	controller.send_blocks_to_code_zone(allowed_blocks)
-	
 	var actor_id: String = str(_GameConfig.user.get("id", ""))
 	if actor_id.is_empty():
 		push_error("No authenticated user; cannot start level tracking")

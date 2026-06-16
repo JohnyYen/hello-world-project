@@ -34,7 +34,14 @@ func before_each() -> void:
 			"drink_machine": true,
 			"cash_register": true
 		},
-		"available_blocks": ["Start", "Execute", "End"]
+		"available_blocks": ["Start", "Execute", "End"],
+		"expected_outputs": [
+			{"orders_served": [
+				{"nombre": "Ana", "pedido": "cafe"},
+				{"nombre": "Luis", "pedido": "te"},
+				{"nombre": "Maria", "pedido": "pan"}
+			]}
+		]
 	}
 	modifier.set_level_segment({
 		"segment_id": 0,
@@ -91,16 +98,21 @@ func test_decrease_major_environment() -> void:
 		"decrease_major: cash_register visible")
 
 
-func test_decrease_major_available_blocks() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
-	assert_eq(result.available_blocks, ["Start", "Execute", "End"],
-		"decrease_major: blocks basic set")
-
-
 func test_decrease_major_time_limit() -> void:
 	var result := modifier.modify_level("decrease_major", 0.8)
 	assert_eq(result.execution_rules.time_limit, 0,
 		"decrease_major: sin time limit")
+
+
+func test_decrease_major_expected_outputs_removed() -> void:
+	var result := modifier.modify_level("decrease_major", 0.8)
+	for expected in result.expected_outputs:
+		if expected.has("orders_served"):
+			var names := expected.orders_served.map(func(o): return o.nombre)
+			assert_eq(expected.orders_served.size(), 1,
+				"decrease_major: expected_outputs remueve 2 (queda 1)")
+			assert_eq(names[0], "Ana",
+				"decrease_major: expected_outputs mantiene primer estudiante")
 
 
 # =============================================================================
@@ -143,16 +155,18 @@ func test_decrease_minor_environment() -> void:
 		"decrease_minor: bread_station visible")
 
 
-func test_decrease_minor_available_blocks() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
-	assert_eq(result.available_blocks, ["Start", "Execute", "End"],
-		"decrease_minor: blocks basic set")
-
-
 func test_decrease_minor_time_limit() -> void:
 	var result := modifier.modify_level("decrease_minor", 0.9)
 	assert_eq(result.execution_rules.time_limit, 0,
 		"decrease_minor: sin time limit")
+
+
+func test_decrease_minor_expected_outputs_removed() -> void:
+	var result := modifier.modify_level("decrease_minor", 0.9)
+	for expected in result.expected_outputs:
+		if expected.has("orders_served"):
+			assert_eq(expected.orders_served.size(), 2,
+				"decrease_minor: expected_outputs remueve 1 (quedan 2)")
 
 
 # =============================================================================
@@ -187,10 +201,12 @@ func test_keep_time_limit() -> void:
 		"keep: sin time limit")
 
 
-func test_keep_available_blocks() -> void:
+func test_keep_expected_outputs_unchanged() -> void:
 	var result := modifier.modify_level("keep", 1.0)
-	assert_eq(result.available_blocks, ["Start", "Execute", "End"],
-		"keep: blocks basic set")
+	for expected in result.expected_outputs:
+		if expected.has("orders_served"):
+			assert_eq(expected.orders_served.size(), 3,
+				"keep: expected_outputs sin cambios (3 ordenes)")
 
 
 # =============================================================================
@@ -237,12 +253,6 @@ func test_increase_minor_environment() -> void:
 		"increase_minor: cash_register visible")
 
 
-func test_increase_minor_available_blocks() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
-	assert_eq(result.available_blocks, ["Start", "Execute", "End", "Condition"],
-		"increase_minor: blocks incluye Condition")
-
-
 func test_increase_minor_time_limit() -> void:
 	var result := modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.execution_rules.time_limit, 90,
@@ -253,6 +263,17 @@ func test_increase_minor_distractor_actions() -> void:
 	var result := modifier.modify_level("increase_minor", 1.1)
 	assert_gt(result.defined_actions.size(), 2,
 		"increase_minor: debe tener distractors agregados")
+
+
+func test_increase_minor_expected_outputs_added() -> void:
+	var result := modifier.modify_level("increase_minor", 1.1)
+	for expected in result.expected_outputs:
+		if expected.has("orders_served"):
+			var names := expected.orders_served.map(func(o): return o.nombre)
+			assert_eq(expected.orders_served.size(), 4,
+				"increase_minor: expected_outputs +1 estudiante → 4")
+			assert_eq(names[3], "Luisa",
+				"increase_minor: expected_outputs agrega a Luisa al final")
 
 
 # =============================================================================
@@ -299,12 +320,6 @@ func test_increase_major_environment() -> void:
 		"increase_major: cash_register oculto")
 
 
-func test_increase_major_available_blocks() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
-	assert_eq(result.available_blocks, ["Start", "Execute", "End", "Condition", "Loop"],
-		"increase_major: blocks incluye Condition + Loop")
-
-
 func test_increase_major_time_limit() -> void:
 	var result := modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.execution_rules.time_limit, 60,
@@ -315,6 +330,19 @@ func test_increase_major_distractor_actions() -> void:
 	var result := modifier.modify_level("increase_major", 1.2)
 	assert_gt(result.defined_actions.size(), 5,
 		"increase_major: debe tener distractors agregados")
+
+
+func test_increase_major_expected_outputs_added() -> void:
+	var result := modifier.modify_level("increase_major", 1.2)
+	for expected in result.expected_outputs:
+		if expected.has("orders_served"):
+			var names := result.expected_outputs[0].orders_served.map(func(o): return o.nombre)
+			assert_eq(expected.orders_served.size(), 5,
+				"increase_major: expected_outputs +2 estudiantes → 5")
+			assert_eq(names[3], "Luisa",
+				"increase_major: expected_outputs agrega a Luisa")
+			assert_eq(names[4], "Carlos",
+				"increase_major: expected_outputs agrega a Carlos")
 
 
 # =============================================================================
@@ -350,13 +378,11 @@ func test_blocks_floor_increase_major() -> void:
 # =============================================================================
 
 func test_immutability_after_multiple_calls() -> void:
-	# Simulate multiple adaptive cycles
 	for i in range(5):
 		modifier.modify_level("decrease_major", 0.8)
 		modifier.modify_level("increase_major", 1.2)
 		modifier.modify_level("keep", 1.0)
 	
-	# After all cycles, a fresh call should still work with clean original
 	var fresh_modifier = LevelOneModifier.new()
 	fresh_modifier.set_level_segment({
 		"segment_id": 0,
@@ -374,7 +400,6 @@ func test_immutability_after_multiple_calls() -> void:
 # =============================================================================
 
 func test_distractors_no_duplicates() -> void:
-	# Config with one action
 	var single_action_config = base_config.duplicate(true)
 	single_action_config.defined_actions = [
 		{"name": "Tomar pan", "value": "get_bread"}
@@ -385,10 +410,28 @@ func test_distractors_no_duplicates() -> void:
 	})
 	var result := modifier.modify_level("increase_major", 1.2)
 	
-	# Same action should not appear twice
 	var value_count := 0
 	for action in result.defined_actions:
 		if action.value == "get_bread":
 			value_count += 1
 	assert_eq(value_count, 1,
 		"distractors: get_bread no debe duplicarse")
+
+
+# =============================================================================
+# expected_outputs: no se actualiza si no hay orders_served
+# =============================================================================
+
+func test_expected_outputs_inventory_format_ignored() -> void:
+	# Segments 1-2 use inventory_contains, not orders_served
+	var inv_config = base_config.duplicate(true)
+	inv_config.expected_outputs = [
+		{"inventory_contains": ["pan"]}
+	]
+	modifier.set_level_segment({
+		"segment_id": 0,
+		"configuration": inv_config
+	})
+	var result := modifier.modify_level("increase_major", 1.2)
+	assert_eq(result.expected_outputs[0].inventory_contains, ["pan"],
+		"inventory_contains: no debe modificarse con estudiantes")

@@ -60,10 +60,8 @@ var _increase_major_environment := {
 	"cash_register": false
 }
 
-# Available blocks per difficulty
-var _decrease_blocks := ["Start", "Execute", "End"]
-var _increase_minor_blocks := ["Start", "Execute", "End", "Condition"]
-var _increase_major_blocks := ["Start", "Execute", "End", "Condition", "Loop"]
+# Note: available_blocks variation is reserved for when Condition/Loop blocks
+# are implemented in the game. Currently only Start/Execute/End exist.
 
 # Distractor actions for harder difficulties (all valid in ActionFactory)
 var _distractor_actions := [
@@ -112,7 +110,7 @@ func _apply_actions_with_distractors(cfg: Dictionary, max_distractors: int) -> v
 	if max_distractors <= 0:
 		return
 	
-	var existing := cfg.defined_actions
+	var existing = cfg.defined_actions
 	var existing_values := []
 	for action in existing:
 		existing_values.append(action.value)
@@ -141,6 +139,27 @@ func _apply_hints(cfg: Dictionary, tier: String) -> void:
 			cfg.feedback_messages.hints = []
 
 
+func _apply_expected_outputs_for_students(cfg: Dictionary, students: Array) -> void:
+	# Add students to expected_outputs so validation expects them
+	for expected in cfg.expected_outputs:
+		if expected.has("orders_served"):
+			for student in students:
+				expected.orders_served.append({
+					"nombre": student.nombre,
+					"pedido": student.pedido
+				})
+
+
+func _remove_students_from_expected_outputs(cfg: Dictionary, count: int) -> void:
+	# Remove students from expected_outputs when they're removed from queue
+	for expected in cfg.expected_outputs:
+		if expected.has("orders_served"):
+			var removed := 0
+			while removed < count and expected.orders_served.size() > 0:
+				expected.orders_served.pop_back()
+				removed += 1
+
+
 func _apply_decrease_major() -> Dictionary:
 	var cfg = self.original_config.duplicate(true)
 
@@ -148,6 +167,7 @@ func _apply_decrease_major() -> Dictionary:
 	print("DECREASE_MAJOR: Blocks +", DECREASE_MAJOR_BLOCKS_INC)
 
 	var remove_count := mini(DECREASE_MAJOR_STUDENTS_REDUCE, maxi(0, cfg.initial_state.student_queue.size() - 1))
+	_remove_students_from_expected_outputs(cfg, remove_count)
 	for i in range(remove_count):
 		cfg.initial_state.student_queue.pop_back()
 
@@ -160,8 +180,6 @@ func _apply_decrease_major() -> Dictionary:
 
 	# Environment: all stations visible
 	cfg.environment_data = _decrease_environment.duplicate()
-	# Blocks: basic set
-	cfg.available_blocks = _decrease_blocks.duplicate()
 	# Time: no limit
 	cfg.execution_rules.time_limit = DECREASE_MAJOR_TIME_LIMIT
 	# Actions: no distractors
@@ -177,6 +195,7 @@ func _apply_decrease_minor() -> Dictionary:
 	print("DECREASE_MINOR: Blocks +", DECREASE_MINOR_BLOCKS_INC)
 
 	var remove_count := mini(DECREASE_MINOR_STUDENTS_REDUCE, maxi(0, cfg.initial_state.student_queue.size() - 1))
+	_remove_students_from_expected_outputs(cfg, remove_count)
 	for i in range(remove_count):
 		cfg.initial_state.student_queue.pop_back()
 
@@ -187,7 +206,6 @@ func _apply_decrease_minor() -> Dictionary:
 	cfg.initial_state.stations.bread_dispenser = ["pan"]
 
 	cfg.environment_data = _decrease_environment.duplicate()
-	cfg.available_blocks = _decrease_blocks.duplicate()
 	cfg.execution_rules.time_limit = DECREASE_MINOR_TIME_LIMIT
 	_apply_actions_with_distractors(cfg, 0)
 
@@ -205,7 +223,6 @@ func _apply_keep() -> Dictionary:
 	cfg.version = str(cfg.version) + ".maintained"
 
 	cfg.execution_rules.time_limit = KEEP_TIME_LIMIT
-	cfg.available_blocks = _decrease_blocks.duplicate()
 	cfg.environment_data = _decrease_environment.duplicate()
 	_apply_actions_with_distractors(cfg, 0)
 
@@ -231,9 +248,9 @@ func _apply_increase_minor() -> Dictionary:
 	cfg.initial_state.stations.drink_dispenser = []
 
 	cfg.environment_data = _increase_minor_environment.duplicate()
-	cfg.available_blocks = _increase_minor_blocks.duplicate()
 	cfg.execution_rules.time_limit = INCREASE_MINOR_TIME_LIMIT
 	_apply_actions_with_distractors(cfg, 2)
+	_apply_expected_outputs_for_students(cfg, [_extra_students[0]])
 
 	return cfg
 
@@ -257,8 +274,8 @@ func _apply_increase_major() -> Dictionary:
 	cfg.initial_state.stations.drink_dispenser = []
 
 	cfg.environment_data = _increase_major_environment.duplicate()
-	cfg.available_blocks = _increase_major_blocks.duplicate()
 	cfg.execution_rules.time_limit = INCREASE_MAJOR_TIME_LIMIT
 	_apply_actions_with_distractors(cfg, 5)
+	_apply_expected_outputs_for_students(cfg, _extra_students)
 
 	return cfg
