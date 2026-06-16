@@ -395,27 +395,27 @@ func _apply_increase_major() -> Dictionary:
 
 
 func _build_template_context(cfg: Dictionary) -> Dictionary:
-	var queue := cfg.get("initial_state", {}).get("student_queue", [])
-	var count := queue.size()
-	var ctx := {
+	var queue = cfg.get("initial_state", {}).get("student_queue", [])
+	var count = queue.size()
+	var ctx: Dictionary = {
 		"student_count": count,
 		"student_plural": "s" if count != 1 else "",
 	}
 
 	if count > 0:
-		var names := queue.map(func(s): return s.get("nombre", ""))
+		var names = queue.map(func(s): return s.get("nombre", ""))
 		ctx["student_names"] = ", ".join(names)
 	else:
 		ctx["student_names"] = ""
 
-	var has_bread := false
-	var has_drink := false
-	var bread_item := "pan"
-	var drink_item := "cafe"
+	var has_bread = false
+	var has_drink = false
+	var bread_item = "pan"
+	var drink_item = "cafe"
 	var actions: Array = []
 	var stations: Array = []
 
-	var stations_dict := cfg.get("initial_state", {}).get("stations", {})
+	var stations_dict = cfg.get("initial_state", {}).get("stations", {})
 	if stations_dict.has("bread_dispenser"):
 		stations.append("panaderia")
 		has_bread = true
@@ -424,7 +424,7 @@ func _build_template_context(cfg: Dictionary) -> Dictionary:
 		has_drink = true
 
 	for student in queue:
-		var pedido := student.get("pedido", "")
+		var pedido = student.get("pedido", "")
 		if pedido in ["cafe", "te", "chocolate"]:
 			has_drink = true
 			drink_item = pedido
@@ -445,60 +445,60 @@ func _build_template_context(cfg: Dictionary) -> Dictionary:
 
 
 func _generate_title(cfg: Dictionary, tier: String) -> void:
-	var segment_type := cfg.get("segment_type", "mixed")
-	var templates_dict := cfg.get("templates", {})
-	var tier_templates := templates_dict.get(tier, {})
-	var template := tier_templates.get("title", "")
+	var segment_type = cfg.get("segment_type", "mixed")
+	var templates_dict = cfg.get("templates", {})
+	var tier_templates = templates_dict.get(tier, {})
+	var template = tier_templates.get("title", "")
 
 	if template.is_empty():
-		var defaults := DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
-		var tier_default := defaults.get(tier, defaults["keep"])
+		var defaults = DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
+		var tier_default = defaults.get(tier, defaults["keep"])
 		template = tier_default.get("title", "")
 
-	var ctx := _build_template_context(cfg)
+	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.title = BaseLevelModifier.resolve_template(template, ctx)
 
 
 func _generate_description(cfg: Dictionary, tier: String) -> void:
-	var segment_type := cfg.get("segment_type", "mixed")
-	var templates_dict := cfg.get("templates", {})
-	var tier_templates := templates_dict.get(tier, {})
-	var template := tier_templates.get("description", "")
+	var segment_type = cfg.get("segment_type", "mixed")
+	var templates_dict = cfg.get("templates", {})
+	var tier_templates = templates_dict.get(tier, {})
+	var template = tier_templates.get("description", "")
 
 	if template.is_empty():
-		var defaults := DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
-		var tier_default := defaults.get(tier, defaults["keep"])
+		var defaults = DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
+		var tier_default = defaults.get(tier, defaults["keep"])
 		template = tier_default.get("description", "")
 
-	var ctx := _build_template_context(cfg)
+	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.description = BaseLevelModifier.resolve_template(template, ctx)
 
 
 func _generate_learning_objective(cfg: Dictionary, tier: String) -> void:
-	var segment_type := cfg.get("segment_type", "mixed")
-	var templates_dict := cfg.get("templates", {})
-	var tier_templates := templates_dict.get(tier, {})
-	var template := tier_templates.get("learning_objective", "")
+	var segment_type = cfg.get("segment_type", "mixed")
+	var templates_dict = cfg.get("templates", {})
+	var tier_templates = templates_dict.get(tier, {})
+	var template = tier_templates.get("learning_objective", "")
 
 	if template.is_empty():
-		var defaults := DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
-		var tier_default := defaults.get(tier, defaults["keep"])
+		var defaults = DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
+		var tier_default = defaults.get(tier, defaults["keep"])
 		template = tier_default.get("learning_objective", "")
 
-	var ctx := _build_template_context(cfg)
+	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.learning_objective = BaseLevelModifier.resolve_template(template, ctx)
 
 
 func _sync_environment_with_segment(cfg: Dictionary) -> void:
-	var segment_type := cfg.get("segment_type", "mixed")
+	var segment_type = cfg.get("segment_type", "mixed")
 	if typeof(cfg.get("environment_data")) == TYPE_DICTIONARY:
 		cfg.environment_data.bread_station = (segment_type in ["bread-only", "mixed"])
 		cfg.environment_data.drink_machine = (segment_type in ["drink-only", "mixed"])
 
 
 func _filter_distractors_by_type(cfg: Dictionary) -> void:
-	var segment_type := cfg.get("segment_type", "mixed")
-	var allowlist := SEGMENT_TYPE_DISTRACTOR_ALLOWLIST.get(segment_type, SEGMENT_TYPE_DISTRACTOR_ALLOWLIST["mixed"])
+	var segment_type = cfg.get("segment_type", "mixed")
+	var allowlist = SEGMENT_TYPE_DISTRACTOR_ALLOWLIST.get(segment_type, SEGMENT_TYPE_DISTRACTOR_ALLOWLIST["mixed"])
 
 	var filtered: Array = []
 	for action in cfg.defined_actions:
@@ -511,12 +511,12 @@ func _generate_validation_criteria(cfg: Dictionary) -> void:
 	var criteria: Array = []
 	
 	# Convert existing string-format criteria to structured
-	var existing := cfg.get("validation_criteria", [])
+	var existing = cfg.get("validation_criteria", [])
 	for entry in existing:
 		if typeof(entry) == TYPE_STRING:
-			var parts := entry.split(" served", true)
+			var parts = entry.split(" served", true)
 			if parts.size() > 0 and not parts[0].is_empty():
-				var name := parts[0].strip_edges()
+				var name = parts[0].strip_edges()
 				criteria.append({
 					"condition": "orders_served",
 					"target": [{"nombre": name, "pedido": ""}],
@@ -528,9 +528,9 @@ func _generate_validation_criteria(cfg: Dictionary) -> void:
 	# Generate new criteria from expected_outputs
 	for expected in cfg.expected_outputs:
 		if expected.has("orders_served"):
-			var names := expected.orders_served.map(func(o): return o.nombre)
-			var names_str := ", ".join(names)
-			var desc := "Todos los estudiantes deben ser atendidos"
+			var names = expected.orders_served.map(func(o): return o.nombre)
+			var names_str = ", ".join(names)
+			var desc = "Todos los estudiantes deben ser atendidos"
 			if names.size() == 1:
 				desc = "%s debe ser atendido" % names[0]
 			criteria.append({
@@ -539,7 +539,7 @@ func _generate_validation_criteria(cfg: Dictionary) -> void:
 				"type": expected.get("type", "all")
 			})
 		elif expected.has("inventory_contains"):
-			var items := expected.inventory_contains
+			var items = expected.inventory_contains
 			criteria.append({
 				"condition": "inventory contains %s" % ", ".join(items),
 				"description": "El inventario debe contener los items requeridos",
@@ -552,14 +552,14 @@ func _generate_validation_criteria(cfg: Dictionary) -> void:
 func _update_inventory_expected_outputs(cfg: Dictionary) -> void:
 	for expected in cfg.expected_outputs:
 		if expected.has("inventory_contains"):
-			var items := _derive_expected_inventory(cfg)
+			var items = _derive_expected_inventory(cfg)
 			if not items.is_empty():
 				expected.inventory_contains = items
 
 
 func _derive_expected_inventory(cfg: Dictionary) -> Array:
 	var items: Array = []
-	var stations := cfg.get("initial_state", {}).get("stations", {})
+	var stations = cfg.get("initial_state", {}).get("stations", {})
 	for station_name in stations:
 		var station_items = stations[station_name]
 		if station_items is Array:
@@ -570,15 +570,15 @@ func _derive_expected_inventory(cfg: Dictionary) -> Array:
 
 
 func _ensure_expected_outputs(cfg: Dictionary) -> void:
-	var outputs := cfg.get("expected_outputs", [])
+	var outputs = cfg.get("expected_outputs", [])
 	if not outputs.is_empty():
 		return
 	
-	var segment_type := cfg.get("segment_type", "mixed")
-	var queue := cfg.get("initial_state", {}).get("student_queue", [])
+	var segment_type = cfg.get("segment_type", "mixed")
+	var queue = cfg.get("initial_state", {}).get("student_queue", [])
 	
 	if queue.is_empty():
-		var stations := cfg.get("initial_state", {}).get("stations", {})
+		var stations = cfg.get("initial_state", {}).get("stations", {})
 		var items: Array = []
 		for station_name in stations:
 			var station_items = stations[station_name]
@@ -589,7 +589,7 @@ func _ensure_expected_outputs(cfg: Dictionary) -> void:
 		if not items.is_empty():
 			cfg.expected_outputs = [{"inventory_contains": items}]
 	else:
-		var orders := []
+		var orders: Array = []
 		for student in queue:
 			orders.append({
 				"nombre": student.get("nombre", "Estudiante"),
@@ -599,8 +599,8 @@ func _ensure_expected_outputs(cfg: Dictionary) -> void:
 
 
 func _sync_stations_with_segment(cfg: Dictionary) -> void:
-	var segment_type := cfg.get("segment_type", "mixed")
-	var stations := cfg.get("initial_state", {}).get("stations", {})
+	var segment_type = cfg.get("segment_type", "mixed")
+	var stations = cfg.get("initial_state", {}).get("stations", {})
 	
 	match segment_type:
 		"bread-only":
@@ -621,13 +621,13 @@ func _sync_stations_with_segment(cfg: Dictionary) -> void:
 
 
 func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
-	var bounds := cfg.get("difficulty_bounds", {})
+	var bounds = cfg.get("difficulty_bounds", {})
 	if bounds.is_empty():
 		return
 	
-	var min_students := bounds.get("min_students", 1)
-	var max_students := bounds.get("max_students", 10)
-	var queue := cfg.get("initial_state", {}).get("student_queue", [])
+	var min_students = bounds.get("min_students", 1)
+	var max_students = bounds.get("max_students", 10)
+	var queue = cfg.get("initial_state", {}).get("student_queue", [])
 	
 	while queue.size() < min_students:
 		queue.append({"nombre": "Estudiante", "pedido": "pan"})
@@ -635,8 +635,8 @@ func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
 	while queue.size() > max_students:
 		queue.pop_back()
 	
-	var min_blocks := bounds.get("min_blocks", 3)
-	var max_blocks := bounds.get("max_blocks", 10)
+	var min_blocks = bounds.get("min_blocks", 3)
+	var max_blocks = bounds.get("max_blocks", 10)
 	cfg.execution_rules.max_blocks = clampi(cfg.execution_rules.max_blocks, min_blocks, max_blocks)
 
 

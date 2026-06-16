@@ -61,7 +61,7 @@ func _ready() -> void:
 	
 	_GameController.agent.action_decided.connect(Callable(controller.modifier, "apply_modifications"))
 	self.code_space.evaluate_signal.connect(_on_execute_solution)
-	var initial_desc := controller.level_configuration.description
+	var initial_desc = controller.level_configuration.description
 	self.show_instructions(initial_desc if not initial_desc.is_empty() else "Completa el nivel")
 	
 	hud.reset_level.connect(Callable(self, "_on_reset_level"))
@@ -297,13 +297,13 @@ func _spawn_students_from_queue(queue : Array) -> void:
 		
 func _apply_ui_from_config(config : LevelOneConfiguration) -> void:
 	# Mostrar titulo adaptado en el ProblemLabel
-	var title_text := config.title if not config.title.is_empty() else config.get_display_text()
-	var hud_label := $MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel if has_node("$MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel") else null
+	var title_text = config.title if not config.title.is_empty() else config.get_display_text()
+	var hud_label = $MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel if is_instance_valid($MarginContainer/HBoxContainer/Sidebar/HUD/ProblemLabel) else null
 	if hud_label:
 		hud_label.text = title_text
 
 	# Mostrar descripcion adaptada en las instrucciones
-	var desc_text := config.description if not config.description.is_empty() else ""
+	var desc_text = config.description if not config.description.is_empty() else ""
 	if not desc_text.is_empty():
 		instruction_label.text = desc_text
 
@@ -311,7 +311,7 @@ func _apply_ui_from_config(config : LevelOneConfiguration) -> void:
 	var hints = config.feedback_messages.get("hints", []) if typeof(config.feedback_messages) == TYPE_DICTIONARY else []
 	if hints.size() > 0:
 		# mostrar primer hint en algun lugar
-		var hint_label := $MarginContainer/HBoxContainer/Sidebar/HUD/HintLabel if has_node("$MarginContainer/HBoxContainer/Sidebar/HUD/HintLabel") else null
+		var hint_label = $MarginContainer/HBoxContainer/Sidebar/HUD/HintLabel if is_instance_valid($MarginContainer/HBoxContainer/Sidebar/HUD/HintLabel) else null
 		if hint_label:
 			hint_label.text = hints[0]
 			

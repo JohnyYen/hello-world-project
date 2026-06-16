@@ -18,10 +18,10 @@ func _init() -> void:
 # Helper: resuelve placeholders {variable} en templates
 # ----------------------------------------------------
 static func resolve_template(template: String, ctx: Dictionary) -> String:
-	var result := template
+	var result: String = template
 	for key in ctx:
 		result = result.replace("{%s}" % key, str(ctx[key]))
-	result = result.replacen("{", "").replacen("}", "")
+	result = result.replace("{", "").replace("}", "")
 	return result
 
 

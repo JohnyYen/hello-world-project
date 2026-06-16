@@ -55,19 +55,19 @@ func before_each() -> void:
 # =============================================================================
 
 func test_resolve_template_basic() -> void:
-	var result := BaseLevelModifier.resolve_template("Atiende a {count} estudiante{plural}", {"count": 3, "plural": "s"})
+	var result = BaseLevelModifier.resolve_template("Atiende a {count} estudiante{plural}", {"count": 3, "plural": "s"})
 	assert_eq(result, "Atiende a 3 estudiantes", "template: basic substitution")
 
 func test_resolve_template_singular() -> void:
-	var result := BaseLevelModifier.resolve_template("Atiende a {count} estudiante{plural}", {"count": 1, "plural": ""})
+	var result = BaseLevelModifier.resolve_template("Atiende a {count} estudiante{plural}", {"count": 1, "plural": ""})
 	assert_eq(result, "Atiende a 1 estudiante", "template: singular")
 
 func test_resolve_template_missing_var() -> void:
-	var result := BaseLevelModifier.resolve_template("Test {exists} y {missing}", {"exists": "ok"})
+	var result = BaseLevelModifier.resolve_template("Test {exists} y {missing}", {"exists": "ok"})
 	assert_eq(result, "Test ok y ", "template: missing var stripped to empty")
 
 func test_resolve_template_no_placeholders() -> void:
-	var result := BaseLevelModifier.resolve_template("Texto sin placeholders", {})
+	var result = BaseLevelModifier.resolve_template("Texto sin placeholders", {})
 	assert_eq(result, "Texto sin placeholders", "template: unchanged when no placeholders")
 
 
@@ -76,13 +76,13 @@ func test_resolve_template_no_placeholders() -> void:
 # =============================================================================
 
 func test_decrease_major_blocks() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	assert_eq(result.execution_rules.max_blocks, 13,
 		"decrease_major: max_blocks debe aumentar 3 → 13")
 
 
 func test_decrease_major_students() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	var queue = result.initial_state.student_queue
 	assert_eq(queue.size(), 1,
 		"decrease_major: debe quedar 1 estudiante (remove 2)")
@@ -91,19 +91,19 @@ func test_decrease_major_students() -> void:
 
 
 func test_decrease_major_inventory() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	assert_eq(result.initial_state.inventory, ["pan", "cafe", "leche"],
 		"decrease_major: inventory 3 items")
 
 
 func test_decrease_major_hints() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	assert_eq(result.feedback_messages.hints.size(), 3,
 		"decrease_major: hints reemplazados por 3 hints verbose")
 
 
 func test_decrease_major_stations() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	assert_eq(result.initial_state.stations.bread_dispenser, ["pan"],
 		"decrease_major: bread_dispenser refill")
 	assert_eq(result.initial_state.stations.drink_dispenser, ["cafe"],
@@ -111,7 +111,7 @@ func test_decrease_major_stations() -> void:
 
 
 func test_decrease_major_environment() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	assert_eq(result.environment_data.bread_station, true,
 		"decrease_major: bread_station visible")
 	assert_eq(result.environment_data.drink_machine, true,
@@ -121,13 +121,13 @@ func test_decrease_major_environment() -> void:
 
 
 func test_decrease_major_time_limit() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	assert_eq(result.execution_rules.time_limit, 0,
 		"decrease_major: sin time limit")
 
 
 func test_decrease_major_expected_outputs_removed() -> void:
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	for expected in result.expected_outputs:
 		if expected.has("orders_served"):
 			var names := expected.orders_served.map(func(o): return o.nombre)
@@ -142,49 +142,49 @@ func test_decrease_major_expected_outputs_removed() -> void:
 # =============================================================================
 
 func test_decrease_minor_blocks() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
+	var result = modifier.modify_level("decrease_minor", 0.9)
 	assert_eq(result.execution_rules.max_blocks, 11,
 		"decrease_minor: max_blocks +1 → 11")
 
 
 func test_decrease_minor_students() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
+	var result = modifier.modify_level("decrease_minor", 0.9)
 	assert_eq(result.initial_state.student_queue.size(), 2,
 		"decrease_minor: remove 1 estudiante → 2 quedan")
 
 
 func test_decrease_minor_inventory() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
+	var result = modifier.modify_level("decrease_minor", 0.9)
 	assert_eq(result.initial_state.inventory, ["pan"],
 		"decrease_minor: inventory 1 item")
 
 
 func test_decrease_minor_hints() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
+	var result = modifier.modify_level("decrease_minor", 0.9)
 	assert_eq(result.feedback_messages.hints.size(), 1,
 		"decrease_minor: hints reemplazados por 1 hint")
 
 
 func test_decrease_minor_stations() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
+	var result = modifier.modify_level("decrease_minor", 0.9)
 	assert_eq(result.initial_state.stations.bread_dispenser, ["pan"],
 		"decrease_minor: bread_dispenser refill")
 
 
 func test_decrease_minor_environment() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
+	var result = modifier.modify_level("decrease_minor", 0.9)
 	assert_eq(result.environment_data.bread_station, true,
 		"decrease_minor: bread_station visible")
 
 
 func test_decrease_minor_time_limit() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
+	var result = modifier.modify_level("decrease_minor", 0.9)
 	assert_eq(result.execution_rules.time_limit, 0,
 		"decrease_minor: sin time limit")
 
 
 func test_decrease_minor_expected_outputs_removed() -> void:
-	var result := modifier.modify_level("decrease_minor", 0.9)
+	var result = modifier.modify_level("decrease_minor", 0.9)
 	for expected in result.expected_outputs:
 		if expected.has("orders_served"):
 			assert_eq(expected.orders_served.size(), 2,
@@ -196,21 +196,21 @@ func test_decrease_minor_expected_outputs_removed() -> void:
 # =============================================================================
 
 func test_keep_blocks() -> void:
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.execution_rules.max_blocks, 10,
 		"keep: max_blocks sin cambio")
 
 
 func test_keep_inventory() -> void:
 	var original_inv := base_config.initial_state.inventory.duplicate()
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.initial_state.inventory, original_inv,
 		"keep: inventory sin cambio")
 
 
 func test_keep_queue_shuffled() -> void:
 	var original_queue := base_config.initial_state.student_queue.duplicate()
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.initial_state.student_queue.size(), original_queue.size(),
 		"keep: student_queue mismo tamaño")
 	assert_eq(result.version, "1.0.maintained",
@@ -218,13 +218,13 @@ func test_keep_queue_shuffled() -> void:
 
 
 func test_keep_time_limit() -> void:
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.execution_rules.time_limit, 0,
 		"keep: sin time limit")
 
 
 func test_keep_expected_outputs_unchanged() -> void:
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	for expected in result.expected_outputs:
 		if expected.has("orders_served"):
 			assert_eq(expected.orders_served.size(), 3,
@@ -236,37 +236,37 @@ func test_keep_expected_outputs_unchanged() -> void:
 # =============================================================================
 
 func test_increase_minor_blocks() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.execution_rules.max_blocks, 9,
 		"increase_minor: max_blocks -1 → 9")
 
 
 func test_increase_minor_students() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.initial_state.student_queue.size(), 4,
 		"increase_minor: +1 estudiante → 4")
 
 
 func test_increase_minor_inventory_empty() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.initial_state.inventory.size(), 0,
 		"increase_minor: inventory vacío (pop no-op desde vacío)")
 
 
 func test_increase_minor_hints() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.feedback_messages.hints.size(), 3,
 		"increase_minor: hints reemplazados por 3 hints crípticos")
 
 
 func test_increase_minor_stations() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.initial_state.stations.drink_dispenser, [],
 		"increase_minor: drink_dispenser vaciado")
 
 
 func test_increase_minor_environment() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.environment_data.bread_station, true,
 		"increase_minor: bread_station visible")
 	assert_eq(result.environment_data.drink_machine, false,
@@ -276,19 +276,19 @@ func test_increase_minor_environment() -> void:
 
 
 func test_increase_minor_time_limit() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.execution_rules.time_limit, 90,
 		"increase_minor: time limit 90s")
 
 
 func test_increase_minor_distractor_actions() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_gt(result.defined_actions.size(), 2,
 		"increase_minor: debe tener distractors agregados")
 
 
 func test_increase_minor_expected_outputs_added() -> void:
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	for expected in result.expected_outputs:
 		if expected.has("orders_served"):
 			var names := expected.orders_served.map(func(o): return o.nombre)
@@ -303,37 +303,37 @@ func test_increase_minor_expected_outputs_added() -> void:
 # =============================================================================
 
 func test_increase_major_blocks() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.execution_rules.max_blocks, 7,
 		"increase_major: max_blocks -3 → 7")
 
 
 func test_increase_major_students() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.initial_state.student_queue.size(), 5,
 		"increase_major: +2 estudiantes → 5")
 
 
 func test_increase_major_inventory() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.initial_state.inventory, [],
 		"increase_major: inventory vaciado completo")
 
 
 func test_increase_major_hints() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.feedback_messages.hints.size(), 0,
 		"increase_major: hints vacío (tier none)")
 
 
 func test_increase_major_stations() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.initial_state.stations.drink_dispenser, [],
 		"increase_major: drink_dispenser vaciado")
 
 
 func test_increase_major_environment() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.environment_data.bread_station, true,
 		"increase_major: bread_station visible")
 	assert_eq(result.environment_data.drink_machine, false,
@@ -343,19 +343,19 @@ func test_increase_major_environment() -> void:
 
 
 func test_increase_major_time_limit() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.execution_rules.time_limit, 60,
 		"increase_major: time limit 60s")
 
 
 func test_increase_major_distractor_actions() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_gt(result.defined_actions.size(), 5,
 		"increase_major: debe tener distractors agregados")
 
 
 func test_increase_major_expected_outputs_added() -> void:
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	for expected in result.expected_outputs:
 		if expected.has("orders_served"):
 			var names := result.expected_outputs[0].orders_served.map(func(o): return o.nombre)
@@ -378,7 +378,7 @@ func test_blocks_floor_increase_minor() -> void:
 		"segment_id": 0,
 		"configuration": low_config
 	})
-	var result := modifier.modify_level("increase_minor", 1.1)
+	var result = modifier.modify_level("increase_minor", 1.1)
 	assert_eq(result.execution_rules.max_blocks, 6,
 		"increase_minor: max_blocks no debe bajar de 6")
 
@@ -390,7 +390,7 @@ func test_blocks_floor_increase_major() -> void:
 		"segment_id": 0,
 		"configuration": low_config
 	})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.execution_rules.max_blocks, 6,
 		"increase_major: max_blocks no debe bajar de 6 (7-3=6 OK)")
 
@@ -430,7 +430,7 @@ func test_distractors_no_duplicates() -> void:
 		"segment_id": 0,
 		"configuration": single_action_config
 	})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	
 	var value_count := 0
 	for action in result.defined_actions:
@@ -454,7 +454,7 @@ func test_expected_outputs_inventory_format_ignored() -> void:
 		"segment_id": 0,
 		"configuration": inv_config
 	})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.expected_outputs[0].inventory_contains, ["pan"],
 		"inventory_contains: no debe modificarse con estudiantes")
 
@@ -468,7 +468,7 @@ func test_validation_criteria_orders_served() -> void:
 	cfg.segment_type = "bread-only"
 	cfg.expected_outputs = [{"orders_served": [{"nombre": "Ana", "pedido": "pan"}]}]
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.validation_criteria.size(), 1,
 		"validation: debe generar 1 criterio")
 	assert_true(result.validation_criteria[0].condition.contains("Ana"),
@@ -480,7 +480,7 @@ func test_validation_criteria_inventory_contains() -> void:
 	cfg.segment_type = "bread-only"
 	cfg.expected_outputs = [{"inventory_contains": ["pan"]}]
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_true(result.validation_criteria.size() > 0,
 		"validation: debe generar criterio para inventory_contains")
 
@@ -493,9 +493,9 @@ func test_distractor_filtering_bread_only() -> void:
 	var cfg = base_config.duplicate(true)
 	cfg.segment_type = "bread-only"
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	for action in result.defined_actions:
-		var is_drink := action.value in ["prepare_drink", "serve_drink"]
+		var is_drink = action.value in ["prepare_drink", "serve_drink"]
 		assert_false(is_drink,
 			"distractors: bread-only NO debe tener drink actions. Found: %s" % action.value)
 
@@ -504,9 +504,9 @@ func test_distractor_filtering_drink_only() -> void:
 	var cfg = base_config.duplicate(true)
 	cfg.segment_type = "drink-only"
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	for action in result.defined_actions:
-		var is_bread := action.value in ["get_bread", "prepare_bread", "serve_bread"]
+		var is_bread = action.value in ["get_bread", "prepare_bread", "serve_bread"]
 		assert_false(is_bread,
 			"distractors: drink-only NO debe tener bread actions. Found: %s" % action.value)
 
@@ -515,7 +515,7 @@ func test_distractor_filtering_mixed_allows_all() -> void:
 	var cfg = base_config.duplicate(true)
 	cfg.segment_type = "mixed"
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_gt(result.defined_actions.size(), 2,
 		"distractors: mixed debe tener distractors")
 
@@ -529,7 +529,7 @@ func test_environment_bread_only() -> void:
 	cfg.segment_type = "bread-only"
 	cfg.environment_data = {"bread_station": false, "drink_machine": false, "cash_register": false}
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.environment_data.bread_station, true,
 		"env: bread-only bread_station debe ser true")
 	assert_eq(result.environment_data.drink_machine, false,
@@ -541,7 +541,7 @@ func test_environment_drink_only() -> void:
 	cfg.segment_type = "drink-only"
 	cfg.environment_data = {"bread_station": true, "drink_machine": false, "cash_register": true}
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.environment_data.bread_station, false,
 		"env: drink-only bread_station debe ser false")
 	assert_eq(result.environment_data.drink_machine, true,
@@ -553,7 +553,7 @@ func test_environment_mixed() -> void:
 	cfg.segment_type = "mixed"
 	cfg.environment_data = {"bread_station": false, "drink_machine": false, "cash_register": false}
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("decrease_major", 0.8)
+	var result = modifier.modify_level("decrease_major", 0.8)
 	assert_eq(result.environment_data.bread_station, true,
 		"env: mixed bread_station debe ser true")
 	assert_eq(result.environment_data.drink_machine, true,
@@ -569,7 +569,7 @@ func test_inventory_contains_unchanged_by_students() -> void:
 	cfg.segment_type = "bread-only"
 	cfg.expected_outputs = [{"inventory_contains": ["pan"]}]
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("increase_major", 1.2)
+	var result = modifier.modify_level("increase_major", 1.2)
 	assert_eq(result.expected_outputs[0].inventory_contains, ["pan"],
 		"inventory: no debe modificarse por cambios de estudiantes")
 
@@ -582,7 +582,7 @@ func test_backward_compat_no_segment_type() -> void:
 	var cfg = base_config.duplicate(true)
 	cfg.erase("segment_type")
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.execution_rules.max_blocks, 10,
 		"backward: max_blocks unchanged without metadata")
 	assert_eq(result.initial_state.student_queue.size(), 3,
@@ -598,7 +598,7 @@ func test_backward_compat_all_states() -> void:
 	var states = ["decrease_major", "decrease_minor", "keep", "increase_minor", "increase_major"]
 	var difficulties = [0.8, 0.9, 1.0, 1.1, 1.2]
 	for i in range(states.size()):
-		var result := modifier.modify_level(states[i], difficulties[i])
+		var result = modifier.modify_level(states[i], difficulties[i])
 		assert_false(result.is_empty(),
 			"backward: %s debe retornar config no vacia sin metadata" % states[i])
 
@@ -611,7 +611,7 @@ func test_difficulty_bounds_clamps_students() -> void:
 	var cfg = base_config.duplicate(true)
 	cfg.difficulty_bounds = {"min_students": 1, "max_students": 2, "min_blocks": 3, "max_blocks": 5}
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.initial_state.student_queue.size(), 2,
 		"difficulty_bounds: student_queue clamped from 3 to max 2")
 	assert_eq(result.execution_rules.max_blocks, 5,
@@ -623,7 +623,7 @@ func test_difficulty_bounds_pads_students() -> void:
 	cfg.initial_state.student_queue = []
 	cfg.difficulty_bounds = {"min_students": 2, "max_students": 5, "min_blocks": 3, "max_blocks": 10}
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.initial_state.student_queue.size(), 2,
 		"difficulty_bounds: student_queue padded from 0 to min 2")
 
@@ -636,7 +636,7 @@ func test_validation_criteria_string_format_backward_compat() -> void:
 	var cfg = base_config.duplicate(true)
 	cfg.validation_criteria = ["Ana served"]
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.validation_criteria.size(), 2,
 		"string criteria: converts string entry + generates from expected_outputs")
 
@@ -649,7 +649,7 @@ func test_validation_criteria_type_min() -> void:
 	var cfg = base_config.duplicate(true)
 	cfg.expected_outputs = [{"orders_served": [{"nombre": "Ana", "pedido": "pan"}], "type": "min"}]
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.validation_criteria[0].get("type", ""), "min",
 		"type min: criteria has type field set to min")
 
@@ -664,7 +664,7 @@ func test_station_sync_bread_only_clears_drink() -> void:
 	cfg.initial_state.stations.drink_dispenser = ["cafe"]
 	cfg.initial_state.stations.bread_dispenser = []
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.initial_state.stations.drink_dispenser, [],
 		"station_sync: bread-only clears drink_dispenser")
 	assert_eq(result.initial_state.stations.bread_dispenser, ["pan"],
@@ -677,7 +677,7 @@ func test_station_sync_drink_only_clears_bread() -> void:
 	cfg.initial_state.stations.bread_dispenser = ["pan"]
 	cfg.initial_state.stations.drink_dispenser = []
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.initial_state.stations.bread_dispenser, [],
 		"station_sync: drink-only clears bread_dispenser")
 	assert_eq(result.initial_state.stations.drink_dispenser, ["cafe"],
@@ -693,7 +693,7 @@ func test_auto_expected_outputs_with_students() -> void:
 	cfg.erase("expected_outputs")
 	cfg.initial_state.student_queue = [{"nombre": "Ana", "pedido": "pan"}]
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_true(result.has("expected_outputs"),
 		"auto: expected_outputs should be generated")
 	assert_eq(result.expected_outputs[0].orders_served[0].nombre, "Ana",
@@ -706,7 +706,7 @@ func test_auto_expected_outputs_empty_queue_inventory() -> void:
 	cfg.initial_state.student_queue = []
 	cfg.initial_state.stations.bread_dispenser = ["pan"]
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	assert_true(result.has("expected_outputs"),
 		"auto: expected_outputs should be generated for empty queue")
 	assert_true(result.expected_outputs[0].has("inventory_contains"),
@@ -729,7 +729,7 @@ func test_integration_full_flow_bread_only() -> void:
 		}
 	}
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
-	var result := modifier.modify_level("keep", 1.0)
+	var result = modifier.modify_level("keep", 1.0)
 	
 	assert_eq(result.title, "Test 3 estudiantes",
 		"integration: title debe usar template con student_count")
