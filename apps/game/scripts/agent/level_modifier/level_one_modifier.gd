@@ -27,6 +27,114 @@ const KEEP_TIME_LIMIT := 0
 const INCREASE_MINOR_TIME_LIMIT := 90
 const INCREASE_MAJOR_TIME_LIMIT := 60
 
+# Default per-segment_type templates (used when seed data has no templates)
+const DEFAULT_TEMPLATES := {
+	"bread-only": {
+		"decrease_major": {
+			"title": "Sirve pan a {student_count} estudiante{student_plural}",
+			"description": "Prepara y sirve pan a {student_count} estudiante{student_plural}",
+			"learning_objective": "Atender a {student_count} cliente{student_plural}"
+		},
+		"decrease_minor": {
+			"title": "Sirve pan a {student_count} estudiante{student_plural}",
+			"description": "Toma, prepara y sirve pan a {student_count} estudiante{student_plural}",
+			"learning_objective": "Atender a {student_count} cliente{student_plural}"
+		},
+		"keep": {
+			"title": "Nivel - Sirve pan",
+			"description": "Prepara y sirve pan a los estudiantes",
+			"learning_objective": "Practicar secuencia de servicio"
+		},
+		"increase_minor": {
+			"title": "Sirve pan a {student_count} estudiantes",
+			"description": "Atiende a {student_count} estudiantes con pedidos de pan",
+			"learning_objective": "Atender multiples clientes con pan"
+		},
+		"increase_major": {
+			"title": "Sirve pan a {student_count} estudiantes",
+			"description": "Organiza las acciones para servir a {student_count} estudiantes",
+			"learning_objective": "Gestionar multiples pedidos de pan"
+		}
+	},
+	"drink-only": {
+		"decrease_major": {
+			"title": "Sirve bebida a {student_count} estudiante{student_plural}",
+			"description": "Prepara y sirve bebida a {student_count} estudiante{student_plural}",
+			"learning_objective": "Atender a {student_count} cliente{student_plural} con bebidas"
+		},
+		"decrease_minor": {
+			"title": "Sirve bebida a {student_count} estudiante{student_plural}",
+			"description": "Prepara y sirve una bebida a {student_count} estudiante{student_plural}",
+			"learning_objective": "Servir bebidas a {student_count} cliente{student_plural}"
+		},
+		"keep": {
+			"title": "Nivel - Sirve bebida",
+			"description": "Prepara y sirve una bebida a los estudiantes",
+			"learning_objective": "Practicar servicio de bebidas"
+		},
+		"increase_minor": {
+			"title": "Sirve bebidas a {student_count} estudiantes",
+			"description": "Prepara y sirve bebidas a {student_count} estudiantes",
+			"learning_objective": "Atender multiples pedidos de bebida"
+		},
+		"increase_major": {
+			"title": "Sirve bebidas a {student_count} estudiantes",
+			"description": "Organiza las acciones para servir bebidas a {student_count} estudiantes",
+			"learning_objective": "Gestionar multiples pedidos de bebida"
+		}
+	},
+	"mixed": {
+		"decrease_major": {
+			"title": "Atiende a {student_count} estudiante{student_plural}",
+			"description": "Los estudiantes tienen distintos pedidos. Atiende a {student_count} estudiante{student_plural}",
+			"learning_objective": "Atender pedidos mixtos de {student_count} cliente{student_plural}"
+		},
+		"decrease_minor": {
+			"title": "Atiende a {student_count} estudiante{student_plural}",
+			"description": "Cada estudiante tiene un pedido especifico. Sirve a {student_count} estudiante{student_plural}",
+			"learning_objective": "Atender {student_count} cliente{student_plural} correctamente"
+		},
+		"keep": {
+			"title": "Nivel - Atencion multiple",
+			"description": "Atiende a los estudiantes con sus pedidos",
+			"learning_objective": "Practicar atencion multiple"
+		},
+		"increase_minor": {
+			"title": "Atiende a {student_count} estudiantes",
+			"description": "{student_count} estudiantes esperan. Identifica cada pedido y sirve correctamente",
+			"learning_objective": "Gestionar multiples pedidos variados"
+		},
+		"increase_major": {
+			"title": "Atiende a {student_count} estudiantes",
+			"description": "{student_count} estudiantes con pedidos variados. Usa las acciones correctas para cada uno",
+			"learning_objective": "Resolver secuencia compleja de {student_count} pasos"
+		}
+	}
+}
+
+# Distractor allowlist per segment type
+const SEGMENT_TYPE_DISTRACTOR_ALLOWLIST := {
+	"bread-only": [
+		"prepare_bread",
+		"serve_bread",
+		"get_bread",
+		"attend_next_student"
+	],
+	"drink-only": [
+		"prepare_drink",
+		"serve_drink",
+		"attend_next_student"
+	],
+	"mixed": [
+		"prepare_drink",
+		"serve_drink",
+		"prepare_bread",
+		"get_bread",
+		"serve_bread",
+		"attend_next_student"
+	]
+}
+
 var _decrease_major_hints := [
 	"Recuerda revisar el pedido antes de ejecutarlo.",
 	"Piensa en el orden de las acciones.",
@@ -279,3 +387,168 @@ func _apply_increase_major() -> Dictionary:
 	_apply_expected_outputs_for_students(cfg, _extra_students)
 
 	return cfg
+
+
+func _build_template_context(cfg: Dictionary) -> Dictionary:
+	var queue := cfg.get("initial_state", {}).get("student_queue", [])
+	var count := queue.size()
+	var ctx := {
+		"student_count": count,
+		"student_plural": "s" if count != 1 else "",
+	}
+
+	if count > 0:
+		var names := queue.map(func(s): return s.get("nombre", ""))
+		ctx["student_names"] = ", ".join(names)
+	else:
+		ctx["student_names"] = ""
+
+	var has_bread := false
+	var has_drink := false
+	var bread_item := "pan"
+	var drink_item := "cafe"
+	var actions: Array = []
+	var stations: Array = []
+
+	var stations_dict := cfg.get("initial_state", {}).get("stations", {})
+	if stations_dict.has("bread_dispenser"):
+		stations.append("panaderia")
+		has_bread = true
+	if stations_dict.has("drink_dispenser"):
+		stations.append("barra de bebidas")
+		has_drink = true
+
+	for student in queue:
+		var pedido := student.get("pedido", "")
+		if pedido in ["cafe", "te", "chocolate"]:
+			has_drink = true
+			drink_item = pedido
+		elif pedido in ["pan", "pan_con_queso", "tostada"]:
+			has_bread = true
+
+	if has_bread:
+		actions.append("tomar/preparar pan")
+	if has_drink:
+		actions.append("preparar/servir bebida")
+
+	ctx["action_list"] = ", ".join(actions) if not actions.is_empty() else "acciones disponibles"
+	ctx["station_list"] = ", ".join(stations) if not stations.is_empty() else "estaciones"
+	ctx["bread_item"] = bread_item
+	ctx["drink_item"] = drink_item
+
+	return ctx
+
+
+func _generate_title(cfg: Dictionary, tier: String) -> void:
+	var segment_type := cfg.get("segment_type", "mixed")
+	var templates_dict := cfg.get("templates", {})
+	var tier_templates := templates_dict.get(tier, {})
+	var template := tier_templates.get("title", "")
+
+	if template.is_empty():
+		var defaults := DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
+		var tier_default := defaults.get(tier, defaults["keep"])
+		template = tier_default.get("title", "")
+
+	var ctx := _build_template_context(cfg)
+	cfg.title = BaseLevelModifier.resolve_template(template, ctx)
+
+
+func _generate_description(cfg: Dictionary, tier: String) -> void:
+	var segment_type := cfg.get("segment_type", "mixed")
+	var templates_dict := cfg.get("templates", {})
+	var tier_templates := templates_dict.get(tier, {})
+	var template := tier_templates.get("description", "")
+
+	if template.is_empty():
+		var defaults := DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
+		var tier_default := defaults.get(tier, defaults["keep"])
+		template = tier_default.get("description", "")
+
+	var ctx := _build_template_context(cfg)
+	cfg.description = BaseLevelModifier.resolve_template(template, ctx)
+
+
+func _generate_learning_objective(cfg: Dictionary, tier: String) -> void:
+	var segment_type := cfg.get("segment_type", "mixed")
+	var templates_dict := cfg.get("templates", {})
+	var tier_templates := templates_dict.get(tier, {})
+	var template := tier_templates.get("learning_objective", "")
+
+	if template.is_empty():
+		var defaults := DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
+		var tier_default := defaults.get(tier, defaults["keep"])
+		template = tier_default.get("learning_objective", "")
+
+	var ctx := _build_template_context(cfg)
+	cfg.learning_objective = BaseLevelModifier.resolve_template(template, ctx)
+
+
+func _sync_environment_with_segment(cfg: Dictionary) -> void:
+	var segment_type := cfg.get("segment_type", "mixed")
+	if typeof(cfg.get("environment_data")) == TYPE_DICTIONARY:
+		cfg.environment_data.bread_station = (segment_type in ["bread-only", "mixed"])
+		cfg.environment_data.drink_machine = (segment_type in ["drink-only", "mixed"])
+
+
+func _filter_distractors_by_type(cfg: Dictionary) -> void:
+	var segment_type := cfg.get("segment_type", "mixed")
+	var allowlist := SEGMENT_TYPE_DISTRACTOR_ALLOWLIST.get(segment_type, SEGMENT_TYPE_DISTRACTOR_ALLOWLIST["mixed"])
+
+	var filtered: Array = []
+	for action in cfg.defined_actions:
+		if action.value in allowlist:
+			filtered.append(action)
+	cfg.defined_actions = filtered
+
+
+func _generate_validation_criteria(cfg: Dictionary) -> void:
+	var criteria: Array = []
+	for expected in cfg.expected_outputs:
+		if expected.has("orders_served"):
+			var names := expected.orders_served.map(func(o): return o.nombre)
+			var names_str := ", ".join(names)
+			var desc := "Todos los estudiantes deben ser atendidos"
+			if names.size() == 1:
+				desc = "%s debe ser atendido" % names[0]
+			criteria.append({
+				"condition": "%s served" % names_str,
+				"description": desc
+			})
+		elif expected.has("inventory_contains"):
+			var items := expected.inventory_contains
+			criteria.append({
+				"condition": "inventory contains %s" % ", ".join(items),
+				"description": "El inventario debe contener los items requeridos"
+			})
+	cfg.validation_criteria = criteria
+
+
+func _update_inventory_expected_outputs(cfg: Dictionary) -> void:
+	for expected in cfg.expected_outputs:
+		if expected.has("inventory_contains"):
+			var items := _derive_expected_inventory(cfg)
+			if not items.is_empty():
+				expected.inventory_contains = items
+
+
+func _derive_expected_inventory(cfg: Dictionary) -> Array:
+	var items: Array = []
+	var stations := cfg.get("initial_state", {}).get("stations", {})
+	for station_name in stations:
+		var station_items = stations[station_name]
+		if station_items is Array:
+			for item in station_items:
+				if item not in items:
+					items.append(item)
+	return items
+
+
+func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
+	_generate_title(cfg, tier)
+	_generate_description(cfg, tier)
+	_generate_learning_objective(cfg, tier)
+	_sync_environment_with_segment(cfg)
+	_filter_distractors_by_type(cfg)
+	_generate_validation_criteria(cfg)
+	_update_inventory_expected_outputs(cfg)
