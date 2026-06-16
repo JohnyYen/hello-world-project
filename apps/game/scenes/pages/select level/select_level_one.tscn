@@ -12,7 +12,6 @@ shader_parameter/mix_amount = 0.3
 shader_parameter/tint_color = Color(0.06, 0.06, 0.1, 1)
 
 [node name="SelectLevelOne" instance=ExtResource("1_upx5k")]
-theme = null
 previous_scene = "uid://f1phaldnojoi"
 gameplay_scene = "uid://6gr1ei4kgnc8"
 
