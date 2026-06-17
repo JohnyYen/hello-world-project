@@ -57,3 +57,7 @@ func _update_context_with_config() -> CafeteriaProblemContext:
 
 func get_problem_context() -> CafeteriaProblemContext:
 	return _update_context_with_config();
+
+func reset_context() -> CafeteriaProblemContext:
+	self.context = CafeteriaProblemContext.new()
+	return _update_context_with_config()

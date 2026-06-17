@@ -81,14 +81,41 @@ func _on_back_level():
 
 func _on_reset_level():
 	print("[CafeteriaGameplay | _on_reset_level]: Reiniciando nivel - intentos acumulados=%d" % _attempt_count)
+
+	# 1. Incrementar contador de reintentos en el HUD
+	hud.add_attempts()
+
+	# 2. Registrar evento de tracking
 	_GameController.add_tracking_event("level_reset", {"attempt_count": _attempt_count})
 	_GameController.reset_level_tracking()
 	_attempt_count = 0
-	self.hud.hide_hud()
-	self.code_space.hide_code_space()
-	
-	LoadingScreen.change_scene("res://scenes/pages/select level/select_level_one.tscn")
-	#get_tree().call_deferred("change_scene_to_file", scene_path)
+
+	# 3. Limpiar bloques colocados por el usuario en el zone de ejecución
+	code_space.clear_blocks_in_zone()
+
+	# 4. Recargar configuración original del nivel desde la DB (resetea modificaciones del agente adaptativo)
+	controller.get_level_configuration(self.segment_id)
+
+	# 5. Resetear backup del modifier con la config original
+	controller.modifier.original_config = controller.level_configuration.json_data.duplicate(true)
+
+	# 6. Resetear contexto del controlador (nueva instancia de CafeteriaProblemContext)
+	controller.reset_context()
+
+	# 7. Actualizar referencia en code_space para que use la config fresca
+	code_space.level_config = controller.level_configuration
+
+	# 8. Re-aplicar configuración del nivel (limpia estudiantes, re-puebla cola, re-envía bloques)
+	modify_level_by_config(controller.level_configuration)
+
+	# 9. Resetear timer y mostrar HUD de vuelta
+	hud.show_hud()
+
+	# 10. Mostrar instrucciones del nivel
+	var initial_desc := controller.level_configuration.description as String
+	show_instructions(initial_desc if not initial_desc.is_empty() else "Completa el nivel")
+
+	print("[CafeteriaGameplay | _on_reset_level]: Nivel reiniciado exitosamente")
 	
 func _on_execute_solution(blocks : Array[BaseBlock]):
 	print("[CafeteriaGameplay | _on_execute_solution]: Ejecutando solución con %d bloques (intento #%d)" % [blocks.size(), _attempt_count + 1])
@@ -143,6 +170,7 @@ func _on_execute_solution(blocks : Array[BaseBlock]):
 				"success": false,
 				"attempt_number": _attempt_count
 			})
+			hud.lose_controller.show_lose_screen()
 			FeedbackBalloon.show_feedback("Perdiste el Juego")
 	else:
 		print("[CafeteriaGameplay | _on_execute_solution]: CONTEXTO INVÁLIDO (null) - enviando analytics al agente adaptativo")
