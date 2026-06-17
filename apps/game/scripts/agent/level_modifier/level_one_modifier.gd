@@ -27,88 +27,32 @@ const KEEP_TIME_LIMIT := 0
 const INCREASE_MINOR_TIME_LIMIT := 90
 const INCREASE_MAJOR_TIME_LIMIT := 60
 
-# Default per-segment_type templates (used when seed data has no templates)
+# Default templates por dificultad (usan {segment_label} para mostrar bread-only/drink-only/mixed)
 const DEFAULT_TEMPLATES := {
-	"bread-only": {
-		"decrease_major": {
-			"title": "Sirve pan a {student_count} estudiante{student_plural}",
-			"description": "Prepara y sirve pan a {student_count} estudiante{student_plural}",
-			"learning_objective": "Atender a {student_count} cliente{student_plural}"
-		},
-		"decrease_minor": {
-			"title": "Sirve pan a {student_count} estudiante{student_plural}",
-			"description": "Toma, prepara y sirve pan a {student_count} estudiante{student_plural}",
-			"learning_objective": "Atender a {student_count} cliente{student_plural}"
-		},
-		"keep": {
-			"title": "Nivel - Sirve pan",
-			"description": "Prepara y sirve pan a los estudiantes",
-			"learning_objective": "Practicar secuencia de servicio"
-		},
-		"increase_minor": {
-			"title": "Sirve pan a {student_count} estudiantes",
-			"description": "Atiende a {student_count} estudiantes con pedidos de pan",
-			"learning_objective": "Atender multiples clientes con pan"
-		},
-		"increase_major": {
-			"title": "Sirve pan a {student_count} estudiantes",
-			"description": "Organiza las acciones para servir a {student_count} estudiantes",
-			"learning_objective": "Gestionar multiples pedidos de pan"
-		}
+	"decrease_major": {
+		"title": "Sirve {segment_label} a {student_count} estudiante{student_plural}",
+		"description": "Prepara y sirve {segment_label} a {student_count} estudiante{student_plural}",
+		"learning_objective": "Atender a {student_count} cliente{student_plural}"
 	},
-	"drink-only": {
-		"decrease_major": {
-			"title": "Sirve bebida a {student_count} estudiante{student_plural}",
-			"description": "Prepara y sirve bebida a {student_count} estudiante{student_plural}",
-			"learning_objective": "Atender a {student_count} cliente{student_plural} con bebidas"
-		},
-		"decrease_minor": {
-			"title": "Sirve bebida a {student_count} estudiante{student_plural}",
-			"description": "Prepara y sirve una bebida a {student_count} estudiante{student_plural}",
-			"learning_objective": "Servir bebidas a {student_count} cliente{student_plural}"
-		},
-		"keep": {
-			"title": "Nivel - Sirve bebida",
-			"description": "Prepara y sirve una bebida a los estudiantes",
-			"learning_objective": "Practicar servicio de bebidas"
-		},
-		"increase_minor": {
-			"title": "Sirve bebidas a {student_count} estudiantes",
-			"description": "Prepara y sirve bebidas a {student_count} estudiantes",
-			"learning_objective": "Atender multiples pedidos de bebida"
-		},
-		"increase_major": {
-			"title": "Sirve bebidas a {student_count} estudiantes",
-			"description": "Organiza las acciones para servir bebidas a {student_count} estudiantes",
-			"learning_objective": "Gestionar multiples pedidos de bebida"
-		}
+	"decrease_minor": {
+		"title": "Sirve {segment_label} a {student_count} estudiante{student_plural}",
+		"description": "Prepara {segment_label} y sirve a {student_count} estudiante{student_plural}",
+		"learning_objective": "Atender a {student_count} cliente{student_plural}"
 	},
-	"mixed": {
-		"decrease_major": {
-			"title": "Atiende a {student_count} estudiante{student_plural}",
-			"description": "Los estudiantes tienen distintos pedidos. Atiende a {student_count} estudiante{student_plural}",
-			"learning_objective": "Atender pedidos mixtos de {student_count} cliente{student_plural}"
-		},
-		"decrease_minor": {
-			"title": "Atiende a {student_count} estudiante{student_plural}",
-			"description": "Cada estudiante tiene un pedido especifico. Sirve a {student_count} estudiante{student_plural}",
-			"learning_objective": "Atender {student_count} cliente{student_plural} correctamente"
-		},
-		"keep": {
-			"title": "Nivel - Atencion multiple",
-			"description": "Atiende a los estudiantes con sus pedidos",
-			"learning_objective": "Practicar atencion multiple"
-		},
-		"increase_minor": {
-			"title": "Atiende a {student_count} estudiantes",
-			"description": "{student_count} estudiantes esperan. Identifica cada pedido y sirve correctamente",
-			"learning_objective": "Gestionar multiples pedidos variados"
-		},
-		"increase_major": {
-			"title": "Atiende a {student_count} estudiantes",
-			"description": "{student_count} estudiantes con pedidos variados. Usa las acciones correctas para cada uno",
-			"learning_objective": "Resolver secuencia compleja de {student_count} pasos"
-		}
+	"keep": {
+		"title": "Nivel - {segment_label}",
+		"description": "Prepara y sirve {segment_label} a los estudiantes",
+		"learning_objective": "Practica: {segment_label}"
+	},
+	"increase_minor": {
+		"title": "Sirve {segment_label} a {student_count} estudiantes",
+		"description": "Atiende a {student_count} estudiantes con pedidos de {segment_label}",
+		"learning_objective": "Atender multiples pedidos de {segment_label}"
+	},
+	"increase_major": {
+		"title": "Sirve {segment_label} a {student_count} estudiantes",
+		"description": "Organiza las acciones para servir {segment_label} a {student_count} estudiantes",
+		"learning_objective": "Gestionar multiples pedidos de {segment_label}"
 	}
 }
 
@@ -441,49 +385,51 @@ func _build_template_context(cfg: Dictionary) -> Dictionary:
 	ctx["bread_item"] = bread_item
 	ctx["drink_item"] = drink_item
 
+	var segment_type := cfg.get("segment_type", "mixed") as String
+	var segment_labels := {
+		"bread-only": "pan",
+		"drink-only": "bebidas",
+		"mixed": "pedidos mixtos"
+	}
+	ctx["segment_label"] = segment_labels.get(segment_type, "pedidos mixtos")
+
 	return ctx
 
 
 func _generate_title(cfg: Dictionary, tier: String) -> void:
-	var segment_type = cfg.get("segment_type", "mixed")
-	var templates_dict = cfg.get("templates", {})
-	var tier_templates = templates_dict.get(tier, {})
-	var template = tier_templates.get("title", "")
+	var templates_dict := cfg.get("templates", {}) as Dictionary
+	var tier_templates := templates_dict.get(tier, {}) as Dictionary
+	var template := tier_templates.get("title", "") as String
 
 	if template.is_empty():
-		var defaults = DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
-		var tier_default = defaults.get(tier, defaults["keep"])
-		template = tier_default.get("title", "")
+		var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
+		template = tier_default.get("title", "") as String
 
 	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.title = BaseLevelModifier.resolve_template(template, ctx)
 
 
 func _generate_description(cfg: Dictionary, tier: String) -> void:
-	var segment_type = cfg.get("segment_type", "mixed")
-	var templates_dict = cfg.get("templates", {})
-	var tier_templates = templates_dict.get(tier, {})
-	var template = tier_templates.get("description", "")
+	var templates_dict := cfg.get("templates", {}) as Dictionary
+	var tier_templates := templates_dict.get(tier, {}) as Dictionary
+	var template := tier_templates.get("description", "") as String
 
 	if template.is_empty():
-		var defaults = DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
-		var tier_default = defaults.get(tier, defaults["keep"])
-		template = tier_default.get("description", "")
+		var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
+		template = tier_default.get("description", "") as String
 
 	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.description = BaseLevelModifier.resolve_template(template, ctx)
 
 
 func _generate_learning_objective(cfg: Dictionary, tier: String) -> void:
-	var segment_type = cfg.get("segment_type", "mixed")
-	var templates_dict = cfg.get("templates", {})
-	var tier_templates = templates_dict.get(tier, {})
-	var template = tier_templates.get("learning_objective", "")
+	var templates_dict := cfg.get("templates", {}) as Dictionary
+	var tier_templates := templates_dict.get(tier, {}) as Dictionary
+	var template := tier_templates.get("learning_objective", "") as String
 
 	if template.is_empty():
-		var defaults = DEFAULT_TEMPLATES.get(segment_type, DEFAULT_TEMPLATES["mixed"])
-		var tier_default = defaults.get(tier, defaults["keep"])
-		template = tier_default.get("learning_objective", "")
+		var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
+		template = tier_default.get("learning_objective", "") as String
 
 	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.learning_objective = BaseLevelModifier.resolve_template(template, ctx)
