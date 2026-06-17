@@ -14,6 +14,7 @@ signal add_item_inventory(item: String)
 
 @export var inventory: InventoryHUD
 @export var topbar: TopHUDController
+@export var lose_controller: LoseController
 
 var seconds_passed := 0
 var timer_running := false
@@ -124,3 +125,6 @@ func add_coin(coin: int):
 
 func set_active_coin_label(active: bool):
 	self.topbar.set_active_coin(active)
+
+func on_reset_level():
+	emit_signal("reset_level")

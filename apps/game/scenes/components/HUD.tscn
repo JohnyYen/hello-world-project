@@ -1,16 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://5bhqqnu1awir"]
+[gd_scene load_steps=8 format=3 uid="uid://5bhqqnu1awir"]
 
 [ext_resource type="Script" uid="uid://bk7a1xe24lul0" path="res://scenes/components/hud.gd" id="1_3g3a0"]
 [ext_resource type="Script" uid="uid://bo38kurahoh2r" path="res://scenes/components/top_hud.gd" id="3_3g3a0"]
 [ext_resource type="Texture2D" uid="uid://dit158q6lsvlq" path="res://assets/shared/ui/menu_icon.png" id="3_astay"]
 [ext_resource type="Script" uid="uid://bdwadqwy7bt4w" path="res://scenes/components/inventory_hud.gd" id="4_7fcwq"]
+[ext_resource type="Script" uid="uid://dhie1j2c8id32" path="res://scenes/components/lose_controller.gd" id="4_h2lwm"]
 [ext_resource type="Texture2D" uid="uid://dl2dud4xwotwt" path="res://assets/shared/ui/fajo_billetes_pixel_art.png" id="6_h2lwm"]
 [ext_resource type="Texture2D" uid="uid://coe1tosqrkah7" path="res://assets/shared/ui/icon_back.png" id="6_jnqh5"]
 
-[node name="Hud" type="CanvasLayer" node_paths=PackedStringArray("inventory")]
+[node name="Hud" type="CanvasLayer" node_paths=PackedStringArray("inventory", "topbar", "lose_controller")]
 layer = 0
 script = ExtResource("1_3g3a0")
 inventory = NodePath("Node")
+topbar = NodePath("Extra")
+lose_controller = NodePath("LoseController")
 
 [node name="Node" type="Node" parent="." node_paths=PackedStringArray("inventory_container")]
 script = ExtResource("4_7fcwq")
@@ -20,6 +23,11 @@ inventory_container = NodePath("../MarginContainer2/VBoxContainer/InventoryPanel
 script = ExtResource("3_3g3a0")
 coin_label = NodePath("../MarginContainer2/VBoxContainer/TopBar/Cash/Coin")
 attempts_label = NodePath("../MarginContainer2/VBoxContainer/TopBar/AttempsLabel")
+
+[node name="LoseController" type="Node" parent="." node_paths=PackedStringArray("lose_panel", "hud")]
+script = ExtResource("4_h2lwm")
+lose_panel = NodePath("../LoseContainer")
+hud = NodePath("..")
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 y_sort_enabled = true
@@ -138,9 +146,53 @@ text = "Volver atras"
 layout_mode = 2
 text = "Volver al menu"
 
+[node name="LoseContainer" type="PanelContainer" parent="."]
+process_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -130.0
+offset_top = -74.0
+offset_right = 131.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LoseContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="LoseContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "¿Quieres reintentar el nivel?"
+
+[node name="Hint" type="Label" parent="LoseContainer/VBoxContainer"]
+layout_mode = 2
+text = "Pista"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LoseContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 1
+
+[node name="Yes" type="Button" parent="LoseContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Si"
+
+[node name="No" type="Button" parent="LoseContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "No
+"
+
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/TopBar/BtnBack" to="." method="_on_btn_back_pressed"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/TopBar/BtnMenu" to="." method="_on_btn_menu_pressed"]
 [connection signal="timeout" from="MarginContainer2/VBoxContainer/TopBar/Timer" to="." method="_on_timer_timeout"]
 [connection signal="pressed" from="MenuPanel/VBoxContainer/BtnResume" to="." method="_on_btn_resume_pressed"]
 [connection signal="pressed" from="MenuPanel/VBoxContainer/BtnResetLevel" to="." method="_on_btn_reset_level_pressed"]
 [connection signal="pressed" from="MenuPanel/VBoxContainer/BtnExitToMain" to="." method="_on_btn_exit_to_main_pressed"]
+[connection signal="pressed" from="LoseContainer/VBoxContainer/HBoxContainer/Yes" to="LoseController" method="_on_btn_retry_pressed"]
+[connection signal="pressed" from="LoseContainer/VBoxContainer/HBoxContainer/No" to="LoseController" method="_on_btn_exit_to_menu_pressed"]
