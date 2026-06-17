@@ -500,7 +500,7 @@ func _update_inventory_expected_outputs(cfg: Dictionary) -> void:
 		if expected.has("inventory_contains"):
 			var items = _derive_expected_inventory(cfg)
 			if not items.is_empty():
-				expected.inventory_contains = items
+				expected.inventory_contains = _process_expected_items(cfg, items)
 
 
 func _derive_expected_inventory(cfg: Dictionary) -> Array:
@@ -513,6 +513,19 @@ func _derive_expected_inventory(cfg: Dictionary) -> Array:
 				if item not in items:
 					items.append(item)
 	return items
+
+
+# Si el segmento tiene required_actions que procesan items (prepare_bread,
+# prepare_drink), los items de estaciones se transforman a su forma procesada.
+# Ej: "pan" → "pan_preparado", "cafe" → "cafe_preparado"
+func _process_expected_items(cfg: Dictionary, raw_items: Array) -> Array:
+	var required = cfg.get("required_actions", [])
+	if "prepare_bread" in required or "prepare_drink" in required:
+		var processed: Array = []
+		for item in raw_items:
+			processed.append(item + "_preparado")
+		return processed
+	return raw_items
 
 
 func _ensure_expected_outputs(cfg: Dictionary) -> void:

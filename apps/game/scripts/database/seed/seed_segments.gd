@@ -171,7 +171,6 @@ func seed_level_1(_db: SQLite) -> void:
 				}
 			},
 			"defined_actions": [
-				{"name": "Atender estudiante", "value": "attend_next_student"},
 				{"name": "Tomar pan", "value": "get_bread"},
 				{"name": "Preparar pan", "value": "prepare_bread"}
 			]
