@@ -453,6 +453,8 @@ func seed_level_1(_db: SQLite) -> void:
 			]
 		}
 	]
+	fixup_segment_types(_db)
+
 	var i : int = 1
 	# Inserta cada segmento
 	for seg_data in segments_data:
@@ -469,3 +471,20 @@ func seed_level_1(_db: SQLite) -> void:
 		})
 
 	print("Se han insertado todos los segmentos del Nivel 1.")
+
+
+# Agrega segment_type faltante en segmentos existentes (migración para DBs pre-seed actualizado)
+func fixup_segment_types(_db: SQLite) -> void:
+	var updates = {
+		1: "bread-only",
+		2: "bread-only",
+		3: "bread-only",
+		4: "drink-only",
+		5: "mixed"
+	}
+	for segment_id in updates:
+		var type_val = updates[segment_id] as String
+		var sql = "UPDATE Segments SET configuration = json_set(configuration, '$.segment_type', '%s') WHERE segment_id = %d AND json_extract(configuration, '$.segment_type') IS NULL" % [type_val, segment_id]
+		_db.query(sql)
+		if _db.get_affected_rows() > 0:
+			print("  Fixup: segment_id=%d → segment_type=%s" % [segment_id, type_val])

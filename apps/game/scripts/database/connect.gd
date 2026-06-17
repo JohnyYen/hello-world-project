@@ -16,7 +16,10 @@ func _init() -> void:
 		# 3. Siempre crear/actualizar tablas (CREATE TABLE IF NOT EXISTS es seguro)
 		create_tables()
 		
-		# 4. Insertar feedback de introduccion si la tabla esta vacia
+		# 4. Fixup: agregar segment_type faltante en segmentos existentes
+		_fixup_segment_types()
+		
+		# 5. Insertar feedback de introduccion si la tabla esta vacia
 		_seed_intro_feedback_if_empty()
 		
 		if is_first_run:
@@ -57,6 +60,13 @@ func _seed_intro_feedback_if_empty() -> void:
 		db.insert_row("professor_feedback", data)
 		print("Seed: Feedback de introduccion insertado.")
 
+
+# Fixup: agrega segment_type faltante en segmentos existentes
+# Corre siempre (no solo en primera ejecución) y es idempotente
+func _fixup_segment_types() -> void:
+	var SeedScript = load("res://scripts/database/seed/seed_segments.gd")
+	var seed = SeedScript.new()
+	seed.fixup_segment_types(db)
 
 
 # Función para crear las tablas

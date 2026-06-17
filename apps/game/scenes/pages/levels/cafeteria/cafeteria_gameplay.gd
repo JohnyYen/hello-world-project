@@ -53,6 +53,8 @@ func _ready() -> void:
 	
 	controller.modifier.segment_id = self.segment_id
 	controller.modifier.original_config = controller.level_configuration.json_data.duplicate(true)
+	# Garantizar que attend_next_student exista si hay estudiantes en la cola
+	controller.modifier.ensure_attend_action_exists(controller.level_configuration.json_data)
 	
 	level_setup_complete.emit(context)
 	
@@ -98,6 +100,8 @@ func _on_reset_level():
 
 	# 5. Resetear backup del modifier con la config original
 	controller.modifier.original_config = controller.level_configuration.json_data.duplicate(true)
+	# Garantizar que attend_next_student exista si hay estudiantes en la cola
+	controller.modifier.ensure_attend_action_exists(controller.level_configuration.json_data)
 
 	# 6. Resetear contexto del controlador (nueva instancia de CafeteriaProblemContext)
 	controller.reset_context()

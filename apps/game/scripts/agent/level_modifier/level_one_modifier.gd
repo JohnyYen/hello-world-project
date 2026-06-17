@@ -566,6 +566,23 @@ func _sync_stations_with_segment(cfg: Dictionary) -> void:
 				stations.drink_dispenser = ["cafe"]
 
 
+# Garantiza que attend_next_student esté disponible si hay estudiantes en la cola
+func ensure_attend_action_exists(cfg: Dictionary) -> void:
+	var queue = cfg.get("initial_state", {}).get("student_queue", [])
+	if queue.is_empty():
+		return
+
+	var actions = cfg.get("defined_actions", []) as Array
+	for action in actions:
+		if action.get("value", "") == "attend_next_student":
+			return  # ya existe, no hace falta agregar
+
+	# Si llegamos acá: hay estudiantes y NO existe attend_next_student → agregarlo
+	actions.push_front({"name": "Atender estudiante", "value": "attend_next_student"})
+	cfg.defined_actions = actions
+	print("[LevelOneModifier] Attend action auto-agregada porque hay %d estudiantes en la cola" % queue.size())
+
+
 func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
 	var bounds = cfg.get("difficulty_bounds", {})
 	if bounds.is_empty():
@@ -588,6 +605,7 @@ func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
 
 func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
 	_ensure_expected_outputs(cfg)
+	ensure_attend_action_exists(cfg)
 	_generate_title(cfg, tier)
 	_generate_description(cfg, tier)
 	_generate_learning_objective(cfg, tier)
