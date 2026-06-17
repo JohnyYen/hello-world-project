@@ -625,6 +625,6 @@ func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
 	_sync_environment_with_segment(cfg)
 	_filter_distractors_by_type(cfg)
 	_generate_validation_criteria(cfg)
-	_update_inventory_expected_outputs(cfg)
 	_sync_stations_with_segment(cfg)
+	_update_inventory_expected_outputs(cfg)
 	_enforce_difficulty_bounds(cfg)
