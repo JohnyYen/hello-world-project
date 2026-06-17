@@ -30,6 +30,9 @@ func set_level_configuration(config : LevelConfiguration):
 # Method to receive blocks from the level controller
 func receive_allowed_blocks(blocks: Array[Block]) -> void:
 	print("DEBUG: CodeSpace received ", blocks.size(), " blocks")
+	# Limpiar paleta antes de agregar nuevos bloques (evita duplicados en resets)
+	for child in block_list.get_children():
+		child.queue_free()
 	var code_block_factory = CodeBlockFactory.new()
 	for i in range(blocks.size()):
 		var block = blocks[i]
