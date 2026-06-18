@@ -583,12 +583,24 @@ func _process_expected_items(cfg: Dictionary, raw_items: Array) -> Array:
 
 
 func _ensure_expected_outputs(cfg: Dictionary) -> void:
-	var outputs = cfg.get("expected_outputs", [])
-	if not outputs.is_empty():
-		return
-	
 	var segment_type := cfg.get("segment_type", "mixed") as String
 	var queue = cfg.get("initial_state", {}).get("student_queue", [])
+	var outputs = cfg.get("expected_outputs", [])
+	
+	# Si ya hay expected_outputs, verificar si el formato sigue siendo válido
+	if not outputs.is_empty():
+		var has_students = not queue.is_empty()
+		var is_inventory_format = outputs.size() > 0 and outputs[0].has("inventory_contains")
+		var is_orders_format = outputs.size() > 0 and outputs[0].has("orders_served")
+		
+		# Formato actual es inventory_contains pero hay estudiantes → regenerar a orders_served
+		if has_students and is_inventory_format:
+			print("[LevelOneModifier] Regenerando expected_outputs: inventory_contains → orders_served (%d estudiantes)" % queue.size())
+		# Formato actual es orders_served pero no hay estudiantes y es bread-only → regenerar a inventory_contains
+		elif not has_students and is_orders_format and segment_type == "bread-only":
+			print("[LevelOneModifier] Regenerando expected_outputs: orders_served → inventory_contains (sin estudiantes)")
+		else:
+			return  # El formato coincide con el estado actual, mantener
 	
 	if segment_type == "bread-only" and queue.is_empty():
 		var stations = cfg.get("initial_state", {}).get("stations", {})
@@ -681,6 +693,30 @@ func _ensure_required_actions_present(cfg: Dictionary) -> void:
 	cfg.defined_actions = actions
 
 
+func _ensure_student_orders_match_type(cfg: Dictionary) -> void:
+	var segment_type = cfg.get("segment_type", "mixed") as String
+	var queue = cfg.get("initial_state", {}).get("student_queue", [])
+	if queue.is_empty():
+		return
+	
+	match segment_type:
+		"bread-only":
+			var valid_orders := ["pan", "pan_con_queso", "tostada"]
+			var filtered = queue.filter(func(s): return s.get("pedido", "") in valid_orders)
+			if filtered.size() < queue.size():
+				print("[LevelOneModifier] Filtrados %d estudiantes con pedidos no compatibles (bread-only)" % [queue.size() - filtered.size()])
+				cfg.initial_state.student_queue = filtered
+		"drink-only":
+			var valid_orders := ["cafe", "te", "chocolate"]
+			var filtered = queue.filter(func(s): return s.get("pedido", "") in valid_orders)
+			if filtered.size() < queue.size():
+				print("[LevelOneModifier] Filtrados %d estudiantes con pedidos no compatibles (drink-only)" % [queue.size() - filtered.size()])
+				cfg.initial_state.student_queue = filtered
+		"mixed":
+			# Todos los pedidos son válidos
+			pass
+
+
 func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
 	var bounds = cfg.get("difficulty_bounds", {})
 	if bounds.is_empty():
@@ -702,6 +738,7 @@ func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
 
 
 func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
+	_ensure_student_orders_match_type(cfg)
 	_ensure_expected_outputs(cfg)
 	ensure_attend_action_exists(cfg)
 	_ensure_required_actions_present(cfg)
