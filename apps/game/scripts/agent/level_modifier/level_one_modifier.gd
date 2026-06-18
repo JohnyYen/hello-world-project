@@ -173,10 +173,7 @@ func modify_level(state: String, difficulty: float) -> Dictionary:
 			push_error("Invalid difficulty state: ", state)
 
 	if not new_config.is_empty():
-		var result = repo.update_configuration_segment(1, self.segment_id, new_config)
-		print("DEBUG [Level One Modifier]: Result of Query: ", result)
-		if result:
-			print("DEBUG [Level One Modifier]: Guardando nueva configuracion")
+		self.modified_config = new_config
 
 	print("LevelOneModifier.modify_level finished")
 	return new_config
@@ -216,27 +213,6 @@ func _apply_hints(cfg: Dictionary, tier: String) -> void:
 			cfg.feedback_messages.hints = []
 
 
-func _apply_expected_outputs_for_students(cfg: Dictionary, students: Array) -> void:
-	# Add students to expected_outputs so validation expects them
-	for expected in cfg.expected_outputs:
-		if expected.has("orders_served"):
-			for student in students:
-				expected.orders_served.append({
-					"nombre": student.nombre,
-					"pedido": student.pedido
-				})
-
-
-func _remove_students_from_expected_outputs(cfg: Dictionary, count: int) -> void:
-	# Remove students from expected_outputs when they're removed from queue
-	for expected in cfg.expected_outputs:
-		if expected.has("orders_served"):
-			var removed := 0
-			while removed < count and expected.orders_served.size() > 0:
-				expected.orders_served.pop_back()
-				removed += 1
-
-
 func _apply_decrease_major() -> Dictionary:
 	var cfg = self.original_config.duplicate(true)
 
@@ -244,7 +220,6 @@ func _apply_decrease_major() -> Dictionary:
 	print("DECREASE_MAJOR: Blocks +", DECREASE_MAJOR_BLOCKS_INC)
 
 	var remove_count := mini(DECREASE_MAJOR_STUDENTS_REDUCE, maxi(0, cfg.initial_state.student_queue.size() - 1))
-	_remove_students_from_expected_outputs(cfg, remove_count)
 	for i in range(remove_count):
 		cfg.initial_state.student_queue.pop_back()
 
@@ -273,7 +248,6 @@ func _apply_decrease_minor() -> Dictionary:
 	print("DECREASE_MINOR: Blocks +", DECREASE_MINOR_BLOCKS_INC)
 
 	var remove_count := mini(DECREASE_MINOR_STUDENTS_REDUCE, maxi(0, cfg.initial_state.student_queue.size() - 1))
-	_remove_students_from_expected_outputs(cfg, remove_count)
 	for i in range(remove_count):
 		cfg.initial_state.student_queue.pop_back()
 
@@ -298,8 +272,6 @@ func _apply_keep() -> Dictionary:
 
 	cfg.initial_state.student_queue.shuffle()
 	cfg.feedback_messages.hints.shuffle()
-
-	cfg.version = str(cfg.version) + ".maintained"
 
 	cfg.execution_rules.time_limit = KEEP_TIME_LIMIT
 	cfg.environment_data = _decrease_environment.duplicate()
@@ -330,7 +302,6 @@ func _apply_increase_minor() -> Dictionary:
 	cfg.environment_data = _increase_minor_environment.duplicate()
 	cfg.execution_rules.time_limit = INCREASE_MINOR_TIME_LIMIT
 	_apply_actions_with_distractors(cfg, 2)
-	_apply_expected_outputs_for_students(cfg, [_extra_students[0]])
 
 	_enforce_consistency(cfg, "increase_minor")
 	return cfg
@@ -357,7 +328,6 @@ func _apply_increase_major() -> Dictionary:
 	cfg.environment_data = _increase_major_environment.duplicate()
 	cfg.execution_rules.time_limit = INCREASE_MAJOR_TIME_LIMIT
 	_apply_actions_with_distractors(cfg, 5)
-	_apply_expected_outputs_for_students(cfg, _extra_students)
 
 	_enforce_consistency(cfg, "increase_major")
 	return cfg
@@ -585,22 +555,6 @@ func _process_expected_items(cfg: Dictionary, raw_items: Array) -> Array:
 func _ensure_expected_outputs(cfg: Dictionary) -> void:
 	var segment_type := cfg.get("segment_type", "mixed") as String
 	var queue = cfg.get("initial_state", {}).get("student_queue", [])
-	var outputs = cfg.get("expected_outputs", [])
-	
-	# Si ya hay expected_outputs, verificar si el formato sigue siendo válido
-	if not outputs.is_empty():
-		var has_students = not queue.is_empty()
-		var is_inventory_format = outputs.size() > 0 and outputs[0].has("inventory_contains")
-		var is_orders_format = outputs.size() > 0 and outputs[0].has("orders_served")
-		
-		# Formato actual es inventory_contains pero hay estudiantes → regenerar a orders_served
-		if has_students and is_inventory_format:
-			print("[LevelOneModifier] Regenerando expected_outputs: inventory_contains → orders_served (%d estudiantes)" % queue.size())
-		# Formato actual es orders_served pero no hay estudiantes y es bread-only → regenerar a inventory_contains
-		elif not has_students and is_orders_format and segment_type == "bread-only":
-			print("[LevelOneModifier] Regenerando expected_outputs: orders_served → inventory_contains (sin estudiantes)")
-		else:
-			return  # El formato coincide con el estado actual, mantener
 	
 	if segment_type == "bread-only" and queue.is_empty():
 		var stations = cfg.get("initial_state", {}).get("stations", {})

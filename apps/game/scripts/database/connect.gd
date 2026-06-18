@@ -16,14 +16,17 @@ func _init() -> void:
 		# 3. Siempre crear/actualizar tablas (CREATE TABLE IF NOT EXISTS es seguro)
 		create_tables()
 		
-		# 4. Fixup: agregar segment_type faltante en segmentos existentes
+		# 4. Migration: agregar adaptation_state column a Segments existentes
+		_migrate_adaptation_state()
+
+		# 5. Fixup: agregar segment_type faltante en segmentos existentes
 		_fixup_segment_types()
 		
-		# 5. Insertar feedback de introduccion si la tabla esta vacia
+		# 6. Insertar feedback de introduccion si la tabla esta vacia
 		_seed_intro_feedback_if_empty()
 		
 		if is_first_run:
-			# 5. Seeds solo en primera ejecucion
+			# 7. Seeds solo en primera ejecucion
 			print("Primera ejecucion: insertando datos iniciales.")
 			run_seeds();
 		else:
@@ -59,6 +62,24 @@ func _seed_intro_feedback_if_empty() -> void:
 		}
 		db.insert_row("professor_feedback", data)
 		print("Seed: Feedback de introduccion insertado.")
+
+
+# Migration: agrega adaptation_state column a la tabla Segments si no existe
+# Es idempotente: usa sqlite_master para verificar si la columna ya esta presente
+func _migrate_adaptation_state() -> void:
+	var create_sql_rows := db.select_rows("sqlite_master", "type = 'table' AND name = 'Segments'", ["sql"])
+	if create_sql_rows.is_empty():
+		return
+
+	var create_sql: String = create_sql_rows[0].get("sql", "")
+	if "adaptation_state" in create_sql:
+		return
+
+	var alter_sql := "ALTER TABLE Segments ADD COLUMN adaptation_state TEXT"
+	if db.query(alter_sql):
+		print("Migration: Columna 'adaptation_state' agregada a la tabla Segments")
+	else:
+		push_error("Migration: No se pudo agregar la columna 'adaptation_state' a Segments")
 
 
 # Fixup: agrega segment_type faltante en segmentos existentes
@@ -165,7 +186,8 @@ func on_create_segment_table():
 	"goal": {"data_type": "TEXT", "not_null": true},
 	"position": {"data_type": "INTEGER", "not_null": true},
 	"difficulty": {"data_type": "TEXT", "not_null": true},
-	"configuration" : {"data_type": "TEXT", "not_null": true}
+	"configuration" : {"data_type": "TEXT", "not_null": true},
+	"adaptation_state": {"data_type": "TEXT"}
 	}
 	
 	db.create_table("Segments", segments_table)

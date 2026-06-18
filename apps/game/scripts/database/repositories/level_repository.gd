@@ -72,3 +72,37 @@ func get_all_levels() -> Array[Level]:
 func get_level_by_id(level_id: int) -> Level:
 	var level = _db.select_rows("Levels", "level_id = " + str(level_id), ['*']).map(mapper_level)[0];
 	return level
+
+func get_adaptation_state(level_id: int, segment_id: int) -> Dictionary:
+	var rows = _db.select_rows("Segments", "segment_id = %d AND level_id = %d" % [segment_id, level_id], ["adaptation_state"])
+	if rows.is_empty():
+		return {}
+
+	var state_string = rows[0].get("adaptation_state", "")
+	if state_string == "":
+		return {}
+
+	var parsed = JSON.parse_string(state_string)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+
+	return parsed
+
+
+func update_adaptation_state(level_id: int, segment_id: int, state: Dictionary) -> bool:
+	var raw_data = JSON.stringify(state)
+	var query = """
+		UPDATE Segments
+		SET adaptation_state = ?
+		WHERE level_id = ? AND segment_id = ?
+	"""
+	return _db.query_with_bindings(query, [raw_data, level_id, segment_id])
+
+
+func reset_adaptation_state(level_id: int, segment_id: int) -> bool:
+	var query = """
+		UPDATE Segments
+		SET adaptation_state = NULL
+		WHERE level_id = ? AND segment_id = ?
+	"""
+	return _db.query_with_bindings(query, [level_id, segment_id])

@@ -5,6 +5,8 @@ var segment_id : int
 var raw_data := {}
 var level_segment := {}
 var original_config := {}
+var adaptation_state := {}
+var merged_config := {}
 var modified_config := {}
 
 var repo : LevelRepository
@@ -28,7 +30,9 @@ static func resolve_template(template: String, ctx: Dictionary) -> String:
 func set_level_segment(segment: Dictionary):
 	level_segment = segment
 	original_config = segment.get("configuration", {}).duplicate(true)
-	modified_config = original_config.duplicate(true)
+	adaptation_state = segment.get("adaptation_state", {})
+	merged_config = _merge_config(original_config, adaptation_state)
+	modified_config = merged_config.duplicate(true)
 	print("[BaseLevelModifier] Segmento asignado - configuration keys: %s" % original_config.keys())
 
 func get_config(level_id : int, segment_id : int) -> Dictionary:
@@ -54,13 +58,16 @@ func modify_level(state: String, difficulty: float) -> Dictionary:
 
 func apply_modifications():
 	print("[BaseLevelModifier] Aplicando modificaciones al segmento")
-	_update_segment_configurations(level_segment, modified_config)
+	var level_id = level_segment.get("level_id", 1)
+	repo.update_adaptation_state(level_id, segment_id, modified_config)
 	print("[BaseLevelModifier] Modificaciones aplicadas exitosamente")
 
 
-func _update_segment_configurations(segment: Dictionary, new_config: Dictionary):
-	print("[BaseLevelModifier] Actualizando configuración del segmento")
-	segment["configuration"] = new_config
+func reset_to_seed():
+	print("[BaseLevelModifier] Restableciendo configuración a seed")
+	var level_id = level_segment.get("level_id", 1)
+	repo.reset_adaptation_state(level_id, segment_id)
+	print("[BaseLevelModifier] Seed restablecido exitosamente")
 
 
 # ----------------------------------------------------
@@ -68,3 +75,14 @@ func _update_segment_configurations(segment: Dictionary, new_config: Dictionary)
 # ----------------------------------------------------
 func _rand_adjust(min_value: int, max_value: int) -> int:
 	return randi_range(min_value, max_value)
+
+
+static func _merge_config(seed: Dictionary, diff: Dictionary) -> Dictionary:
+	var merged = seed.duplicate(true)
+	for key in diff:
+		var val = diff[key]
+		if typeof(val) in [TYPE_DICTIONARY, TYPE_ARRAY]:
+			merged[key] = val.duplicate(true)
+		else:
+			merged[key] = val
+	return merged

@@ -52,7 +52,7 @@ func _ready() -> void:
 	print("[CafeteriaGameplay | _ready]: level_loaded signal emit - segment_id=%d, level_number=%d, actor=%s" % [self.segment_id, self.level_number, actor_id])
 	
 	controller.modifier.segment_id = self.segment_id
-	controller.modifier.original_config = controller.level_configuration.json_data.duplicate(true)
+	controller.modifier.original_config = controller.level_configuration.seed_data.duplicate(true)
 	# Garantizar que attend_next_student exista si hay estudiantes en la cola
 	controller.modifier.ensure_attend_action_exists(controller.level_configuration.json_data)
 	
@@ -98,8 +98,8 @@ func _on_reset_level():
 	# 4. Recargar configuración original del nivel desde la DB (resetea modificaciones del agente adaptativo)
 	controller.get_level_configuration(self.segment_id)
 
-	# 5. Resetear backup del modifier con la config original
-	controller.modifier.original_config = controller.level_configuration.json_data.duplicate(true)
+	# 5. Resetear backup del modifier con la config original (seed puro)
+	controller.modifier.original_config = controller.level_configuration.seed_data.duplicate(true)
 	# Garantizar que attend_next_student exista si hay estudiantes en la cola
 	controller.modifier.ensure_attend_action_exists(controller.level_configuration.json_data)
 

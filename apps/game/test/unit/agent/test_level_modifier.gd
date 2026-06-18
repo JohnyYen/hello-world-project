@@ -213,8 +213,8 @@ func test_keep_queue_shuffled() -> void:
 	var result = modifier.modify_level("keep", 1.0)
 	assert_eq(result.initial_state.student_queue.size(), original_queue.size(),
 		"keep: student_queue mismo tamaño")
-	assert_eq(result.version, "1.0.maintained",
-		"keep: version debe marcar .maintained")
+	assert_eq(result.version, "1.0",
+		"keep: version debe ser la del seed (sin acumulación)")
 
 
 func test_keep_time_limit() -> void:
