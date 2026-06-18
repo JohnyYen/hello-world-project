@@ -56,6 +56,31 @@ const DEFAULT_TEMPLATES := {
 	}
 }
 
+# Default templates per segment type (used as fallback when segment has no explicit templates)
+const SEGMENT_TYPE_DEFAULT_TEMPLATES := {
+	"bread-only": {
+		"keep": {
+			"title": "Sirve {bread_item} a {student_count} estudiante{student_plural}",
+			"description": "Prepara y sirve {bread_item} a {student_count} estudiante{student_plural}",
+			"learning_objective": "Atender pedidos de {bread_item}"
+		}
+	},
+	"drink-only": {
+		"keep": {
+			"title": "Sirve {drink_item} a {student_count} estudiante{student_plural}",
+			"description": "Prepara y sirve {drink_item} a {student_count} estudiante{student_plural}",
+			"learning_objective": "Atender pedidos de {drink_item}"
+		}
+	},
+	"mixed": {
+		"keep": {
+			"title": "Atiende a {student_count} estudiante{student_plural}",
+			"description": "Atiende pedidos variados de {student_count} estudiante{student_plural}",
+			"learning_objective": "Gestionar pedidos mixtos"
+		}
+	}
+}
+
 # Distractor allowlist per segment type
 const SEGMENT_TYPE_DISTRACTOR_ALLOWLIST := {
 	"bread-only": [
@@ -402,8 +427,17 @@ func _generate_title(cfg: Dictionary, tier: String) -> void:
 	var template := tier_templates.get("title", "") as String
 
 	if template.is_empty():
-		var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
-		template = tier_default.get("title", "") as String
+		var segment_type := cfg.get("segment_type", "mixed") as String
+		var type_defaults := SEGMENT_TYPE_DEFAULT_TEMPLATES.get(segment_type, SEGMENT_TYPE_DEFAULT_TEMPLATES["mixed"]) as Dictionary
+
+		template = type_defaults.get(tier, {}).get("title", "") as String
+
+		if template.is_empty():
+			template = type_defaults.get("keep", {}).get("title", "") as String
+
+			if template.is_empty():
+				var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
+				template = tier_default.get("title", "") as String
 
 	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.title = BaseLevelModifier.resolve_template(template, ctx)
@@ -415,8 +449,17 @@ func _generate_description(cfg: Dictionary, tier: String) -> void:
 	var template := tier_templates.get("description", "") as String
 
 	if template.is_empty():
-		var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
-		template = tier_default.get("description", "") as String
+		var segment_type := cfg.get("segment_type", "mixed") as String
+		var type_defaults := SEGMENT_TYPE_DEFAULT_TEMPLATES.get(segment_type, SEGMENT_TYPE_DEFAULT_TEMPLATES["mixed"]) as Dictionary
+
+		template = type_defaults.get(tier, {}).get("description", "") as String
+
+		if template.is_empty():
+			template = type_defaults.get("keep", {}).get("description", "") as String
+
+			if template.is_empty():
+				var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
+				template = tier_default.get("description", "") as String
 
 	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.description = BaseLevelModifier.resolve_template(template, ctx)
@@ -428,8 +471,17 @@ func _generate_learning_objective(cfg: Dictionary, tier: String) -> void:
 	var template := tier_templates.get("learning_objective", "") as String
 
 	if template.is_empty():
-		var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
-		template = tier_default.get("learning_objective", "") as String
+		var segment_type := cfg.get("segment_type", "mixed") as String
+		var type_defaults := SEGMENT_TYPE_DEFAULT_TEMPLATES.get(segment_type, SEGMENT_TYPE_DEFAULT_TEMPLATES["mixed"]) as Dictionary
+
+		template = type_defaults.get(tier, {}).get("learning_objective", "") as String
+
+		if template.is_empty():
+			template = type_defaults.get("keep", {}).get("learning_objective", "") as String
+
+			if template.is_empty():
+				var tier_default := DEFAULT_TEMPLATES.get(tier, DEFAULT_TEMPLATES["keep"]) as Dictionary
+				template = tier_default.get("learning_objective", "") as String
 
 	var ctx: Dictionary = _build_template_context(cfg)
 	cfg.learning_objective = BaseLevelModifier.resolve_template(template, ctx)
@@ -482,14 +534,16 @@ func _generate_validation_criteria(cfg: Dictionary) -> void:
 			criteria.append({
 				"condition": "%s served" % names_str,
 				"description": desc,
-				"type": expected.get("type", "all")
+				"type": expected.get("type", "all"),
+				"target": expected.orders_served.duplicate()
 			})
 		elif expected.has("inventory_contains"):
 			var items = expected.inventory_contains
 			criteria.append({
 				"condition": "inventory contains %s" % ", ".join(items),
 				"description": "El inventario debe contener los items requeridos",
-				"type": expected.get("type", "all")
+				"type": expected.get("type", "all"),
+				"target": items.duplicate()
 			})
 	
 	cfg.validation_criteria = criteria
@@ -533,10 +587,10 @@ func _ensure_expected_outputs(cfg: Dictionary) -> void:
 	if not outputs.is_empty():
 		return
 	
-	var segment_type = cfg.get("segment_type", "mixed")
+	var segment_type := cfg.get("segment_type", "mixed") as String
 	var queue = cfg.get("initial_state", {}).get("student_queue", [])
 	
-	if queue.is_empty():
+	if segment_type == "bread-only" and queue.is_empty():
 		var stations = cfg.get("initial_state", {}).get("stations", {})
 		var items: Array = []
 		for station_name in stations:
@@ -596,6 +650,37 @@ func ensure_attend_action_exists(cfg: Dictionary) -> void:
 	print("[LevelOneModifier] Attend action auto-agregada porque hay %d estudiantes en la cola" % queue.size())
 
 
+func _ensure_required_actions_present(cfg: Dictionary) -> void:
+	var required = cfg.get("required_actions", [])
+	if required.is_empty():
+		return
+	
+	var actions = cfg.get("defined_actions", []) as Array
+	var existing_values := []
+	for action in actions:
+		existing_values.append(action.get("value", ""))
+	
+	var name_map := {
+		"get_bread": "Tomar pan",
+		"prepare_bread": "Preparar pan",
+		"serve_bread": "Servir pan",
+		"prepare_drink": "Preparar bebida",
+		"serve_drink": "Servir bebida",
+		"attend_next_student": "Atender estudiante"
+	}
+	
+	for required_value in required:
+		if required_value not in existing_values:
+			actions.append({
+				"name": name_map.get(required_value, required_value),
+				"value": required_value
+			})
+			existing_values.append(required_value)
+			print("[LevelOneModifier] Added required action: %s" % required_value)
+	
+	cfg.defined_actions = actions
+
+
 func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
 	var bounds = cfg.get("difficulty_bounds", {})
 	if bounds.is_empty():
@@ -619,6 +704,7 @@ func _enforce_difficulty_bounds(cfg: Dictionary) -> void:
 func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
 	_ensure_expected_outputs(cfg)
 	ensure_attend_action_exists(cfg)
+	_ensure_required_actions_present(cfg)
 	_generate_title(cfg, tier)
 	_generate_description(cfg, tier)
 	_generate_learning_objective(cfg, tier)
