@@ -25,6 +25,7 @@ from src.notification.application.service.email_service import EmailService
 from src.shared.deps import get_current_user
 from src.shared.infrastructure.config import settings
 from src.shared.infrastructure.session import get_db
+from src.users.domain.user import User
 
 logger = logging.getLogger(__name__)
 
@@ -118,60 +119,91 @@ async def create_course(
     background_tasks: BackgroundTasks,
     usecase: CreateCourseUseCase = Depends(get_create_course_usecase),
     email_service: EmailService = Depends(get_email_service),
+    current_user: User = Depends(get_current_user),
+    course_repo: CourseRepository = Depends(get_course_repository),
 ):
     """
     Crea un nuevo curso con asignación de estudiantes y profesores.
     Valida que no exista duplicado de school_year + period_label.
-    Luego de crear, envía email de notificación a cada estudiante
-    si el curso tiene un juego asignado con download_link.
+    Luego de crear, envía email de notificación a cada estudiante y
+    a los profesores asignados (excepto al creador del curso).
     """
     result = await usecase.execute(request)
-
-    # ── Envío de emails de notificación ──
-    if not result.game or not result.game.download_link:
-        logger.info(
-            "Course %s created without game download_link — skipping enrollment emails",
-            result.id,
-        )
-        return result
-
-    if not result.students:
-        logger.info(
-            "Course %s created with no students — skipping enrollment emails",
-            result.id,
-        )
-        return result
 
     professors_list = [
         {"name": p.name, "email": p.email}
         for p in result.professors
     ]
 
-    for student in result.students:
-        student_name = f"{student.name} {student.lastname or ''}".strip()
-        email_service.send_email_async(
-            background_tasks=background_tasks,
-            to_email=student.email,
-            subject=f"Bienvenido al curso: {result.name}",
-            template_name="email/course_enrollment.html",
-            context={
-                "student_name": student_name,
-                "course_name": result.name,
-                "course_description": result.description or "",
-                "school_year": result.school_year,
-                "period_label": result.period_label,
-                "start_date": result.start_date.isoformat(),
-                "end_date": result.end_date.isoformat(),
-                "professors": professors_list,
-                "download_link": result.game.download_link,
-            },
+    # ── Envío de emails a estudiantes ──
+    # NOTA: Se envía el email aunque el juego no tenga download_link.
+    # El template (course_enrollment.html) ya maneja el condicional
+    # {% if download_link %} para mostrar/ocultar el botón de descarga.
+    if result.students:
+        for student in result.students:
+            student_name = f"{student.name} {student.lastname or ''}".strip()
+            email_service.send_email_async(
+                background_tasks=background_tasks,
+                to_email=student.email,
+                subject=f"Bienvenido al curso: {result.name}",
+                template_name="email/course_enrollment.html",
+                context={
+                    "student_name": student_name,
+                    "course_name": result.name,
+                    "course_description": result.description or "",
+                    "school_year": result.school_year,
+                    "period_label": result.period_label,
+                    "start_date": result.start_date.isoformat(),
+                    "end_date": result.end_date.isoformat(),
+                    "professors": professors_list,
+                    "download_link": result.game.download_link if result.game else None,
+                },
+            )
+
+        logger.info(
+            "Queued %d enrollment emails for course %s",
+            len(result.students),
+            result.id,
         )
 
-    logger.info(
-        "Queued %d enrollment emails for course %s",
-        len(result.students),
-        result.id,
-    )
+    # ── Envío de emails a profesores asignados (excluyendo al creador) ──
+    professors_for_course = result.professors
+
+    if professors_for_course:
+        # Obtener el professor_id del usuario actual para excluirlo
+        creator_professor_map = await course_repo.get_professor_profile_ids(
+            [current_user.id]
+        )
+        creator_professor_id = creator_professor_map.get(current_user.id)
+
+        for professor in professors_for_course:
+            # No enviar email al creador del curso
+            if creator_professor_id and professor.professor_id == creator_professor_id:
+                continue
+
+            email_service.send_email_async(
+                background_tasks=background_tasks,
+                to_email=professor.email,
+                subject=f"Has sido asignado al curso: {result.name}",
+                template_name="email/course_invitation_professor.html",
+                context={
+                    "professor_name": professor.name,
+                    "course_name": result.name,
+                    "course_description": result.description or "",
+                    "school_year": result.school_year,
+                    "period_label": result.period_label,
+                    "start_date": result.start_date.isoformat(),
+                    "end_date": result.end_date.isoformat(),
+                    "professors": professors_list,
+                    "dashboard_url": f"{settings.APP_URL or 'http://localhost:3000'}/dashboard/courses/{result.id}",
+                },
+            )
+
+        logger.info(
+            "Queued %d professor invitation emails for course %s",
+            len(professors_for_course) - (1 if creator_professor_id else 0),
+            result.id,
+        )
 
     return result
 
@@ -191,13 +223,74 @@ async def get_course_detail(
 async def update_course(
     course_id: UUID,
     request: CourseUpdateRequest,
+    background_tasks: BackgroundTasks,
     usecase: UpdateCourseUseCase = Depends(get_update_course_usecase),
+    email_service: EmailService = Depends(get_email_service),
+    current_user: User = Depends(get_current_user),
+    course_repo: CourseRepository = Depends(get_course_repository),
 ):
     """
     Actualiza un curso existente. Sincroniza estudiantes y profesores si se proveen.
     Valida unicidad de school_year + period_label si cambian.
+    Si se agregaron nuevos profesores, envía email de notificación.
     """
-    return await usecase.execute(course_id, request)
+    # Capturar IDs de profesores existentes ANTES de la actualización
+    existing_professor_ids = await course_repo.get_existing_professor_ids(course_id)
+
+    # Obtener professor_id del usuario actual (para excluirlo de las notificaciones)
+    creator_professor_map = await course_repo.get_professor_profile_ids(
+        [current_user.id]
+    )
+    creator_professor_id = creator_professor_map.get(current_user.id)
+
+    # Ejecutar la actualización
+    result = await usecase.execute(course_id, request)
+
+    # ── Envío de emails a nuevos profesores ──
+    if request.professor_ids is not None and result.professors:
+        # Detectar profesores NUEVOS (no estaban antes)
+        new_professors = [
+            p
+            for p in result.professors
+            if p.professor_id not in existing_professor_ids
+        ]
+
+        if new_professors:
+            professors_list = [
+                {"name": p.name, "email": p.email}
+                for p in result.professors
+            ]
+
+            for professor in new_professors:
+                # No enviar email al creador del curso
+                if creator_professor_id and professor.professor_id == creator_professor_id:
+                    continue
+
+                email_service.send_email_async(
+                    background_tasks=background_tasks,
+                    to_email=professor.email,
+                    subject=f"Has sido asignado al curso: {result.name}",
+                    template_name="email/course_invitation_professor.html",
+                    context={
+                        "professor_name": professor.name,
+                        "course_name": result.name,
+                        "course_description": result.description or "",
+                        "school_year": result.school_year,
+                        "period_label": result.period_label,
+                        "start_date": result.start_date.isoformat(),
+                        "end_date": result.end_date.isoformat(),
+                        "professors": professors_list,
+                        "dashboard_url": f"{settings.APP_URL}/dashboard/courses/{result.id}",
+                    },
+                )
+
+            logger.info(
+                "Queued %d professor invitation emails for course %s (update)",
+                len([p for p in new_professors if not (creator_professor_id and p.professor_id == creator_professor_id)]),
+                course_id,
+            )
+
+    return result
 
 
 @router.delete("/{course_id}", status_code=204)
@@ -245,13 +338,16 @@ async def enroll_students(
     result = await usecase.enroll_students(course_id, request.student_ids)
 
     # ── Envío de emails a nuevos estudiantes ──
+    # NOTA: Se envía el email aunque el juego no tenga download_link.
+    # El template (course_enrollment.html) ya maneja el condicional
+    # {% if download_link %} para mostrar/ocultar el botón de descarga.
     if not result:
         return result
 
     course = await course_repo.get_course_with_game(course_id)
-    if not course or not course.game or not course.game.download_link:
+    if not course:
         logger.info(
-            "Course %s has no game download_link — skipping enrollment emails",
+            "Course %s not found — skipping enrollment emails",
             course_id,
         )
         return result
@@ -290,7 +386,7 @@ async def enroll_students(
                 "start_date": course.start_date.isoformat(),
                 "end_date": course.end_date.isoformat(),
                 "professors": professors_list,
-                "download_link": course.game.download_link,
+                "download_link": course.game.download_link if course.game else None,
             },
         )
 

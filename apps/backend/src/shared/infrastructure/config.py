@@ -42,6 +42,9 @@ class Settings(BaseSettings):
     SMTP_FROM_NAME: str = "Hello World"
     SMTP_USE_TLS: bool = False
 
+    # Frontend URL (for email links)
+    APP_URL: str = "http://localhost:3000"
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
