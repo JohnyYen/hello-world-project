@@ -126,8 +126,14 @@ class BulkStatsUseCase:
     def _normalize_record(self, record: Dict) -> Dict:
         """
         Normaliza un registro: mapea alias a los campos que espera el service.
+
+        Preserva ``created_at`` si el juego lo envía para evitar que el
+        servidor sobrescriba la fecha/hora real de la actividad con
+        ``datetime.utcnow()``, lo que causaba que actividades realizadas
+        en horario nocturno (ej: 10 PM UTC-5) se registraran con fecha
+        UTC del día siguiente.
         """
-        return {
+        result = {
             "student_id": record.get("student_id"),
             "segment_level_id": record.get("segment_level_id"),
             "attempt_count": record.get("attempt_count", 0),
@@ -137,3 +143,9 @@ class BulkStatsUseCase:
             "objectives_completed": record.get("objectives_completed", 0),
             "efficiency_rating": record.get("efficiency_rating", 0),
         }
+        # Preservar created_at si el juego lo envía, para no perder la
+        # fecha/hora real de la actividad (evita el desfase UTC vs local).
+        created_at = record.get("created_at")
+        if created_at is not None:
+            result["created_at"] = created_at
+        return result

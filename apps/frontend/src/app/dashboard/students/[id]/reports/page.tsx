@@ -130,6 +130,8 @@ export default function StudentReportPage() {
     (a, b) => b.score - a.score,
   );
 
+  // Usamos sortedLevelPerformance directamente. El BarChart custom maneja SVG sin Recharts.
+
   // Color bars by score threshold for instant visual comprehension
   function getScoreColor(score: number): string {
     if (score >= 80) return "#10B981"; // Excelente
@@ -555,6 +557,7 @@ export default function StudentReportPage() {
                   layout="vertical"
                   yAxisDomain={[0, 100]}
                   hideLegend
+                  showAnimation={false}
                   barFill={(entry) =>
                     getScoreColor((entry as { score: number }).score)
                   }

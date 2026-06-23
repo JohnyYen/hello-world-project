@@ -1,6 +1,6 @@
 from typing import List, Optional, Dict, Any
 from uuid import UUID
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta, datetime, timezone
 from sqlalchemy import select, func, and_, text, cast, Date, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.shared.infrastructure.repositories.base_repository import BaseRepository
@@ -266,7 +266,7 @@ class ProgressRepository(BaseRepository[Progress]):
                 existing = result.scalar_one_or_none()
 
                 if existing:
-                    # Actualizar
+                    # Actualizar - usar datetime timezone-aware
                     await self.db.execute(
                         update(Progress)
                         .where(
@@ -282,12 +282,23 @@ class ProgressRepository(BaseRepository[Progress]):
                             errors_details=record.get("errors_details"),
                             objectives_completed=record.get("objectives_completed", 0),
                             efficiency_rating=record.get("efficiency_rating", 0),
-                            updated_at=datetime.utcnow()
+                            updated_at=datetime.now(timezone.utc),
                         )
                     )
                     updated += 1
                 else:
                     # Insertar nuevo
+                    # Usar created_at del juego si se proporcionó, para
+                    # preservar la fecha/hora real de la actividad y evitar
+                    # el desfase UTC vs zona horaria local del estudiante.
+                    record_created_at = record.get("created_at")
+                    if record_created_at is not None:
+                        # Si el juego envió un datetime naive, asumir UTC
+                        if record_created_at.tzinfo is None:
+                            record_created_at = record_created_at.replace(tzinfo=timezone.utc)
+                    else:
+                        record_created_at = datetime.now(timezone.utc)
+
                     new_progress = Progress(
                         student_id=UUID(record["student_id"]),
                         segment_level_id=record["segment_level_id"],
@@ -297,8 +308,8 @@ class ProgressRepository(BaseRepository[Progress]):
                         errors_details=record.get("errors_details"),
                         objectives_completed=record.get("objectives_completed", 0),
                         efficiency_rating=record.get("efficiency_rating", 0),
-                        created_at=datetime.utcnow(),
-                        updated_at=datetime.utcnow(),
+                        created_at=record_created_at,
+                        updated_at=record_created_at,
                     )
                     self.db.add(new_progress)
                     inserted += 1
