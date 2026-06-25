@@ -19,8 +19,8 @@ var max_history_length: int = 5
 var weighted_mode_weights: Array[float] = [0.5, 0.3, 0.15, 0.04, 0.01]
 
 ## Pesos para blend de corto y largo plazo
-const SHORT_TERM_WEIGHT := 0.6
-const LONG_TERM_WEIGHT := 0.4
+const SHORT_TERM_WEIGHT := 0.8
+const LONG_TERM_WEIGHT := 0.2
 
 ## Calcula la tendencia usando el modo especificado
 ## @param attempts_history: Array[AttemptData] con el historial de intentos

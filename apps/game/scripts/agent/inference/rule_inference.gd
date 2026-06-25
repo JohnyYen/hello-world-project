@@ -33,16 +33,21 @@ func _init() -> void:
 ## @param hybrid_metric: float entre 0.0 y 1.0
 ## @return String: acción ("decrease_major", "decrease_minor", "keep", "increase_minor", "increase_major")
 func _calculate_multi_threshold(hybrid_metric: float) -> String:
+	var action: String
 	if hybrid_metric < THRESHOLD_MAJOR_LOW:
-		return "decrease_major"
+		action = "decrease_major"
 	elif hybrid_metric < THRESHOLD_MINOR_LOW:
-		return "decrease_minor"
+		action = "decrease_minor"
 	elif hybrid_metric <= THRESHOLD_KEEP:
-		return "keep"
+		action = "keep"
 	elif hybrid_metric <= THRESHOLD_MINOR_HIGH:
-		return "increase_minor"
+		action = "increase_minor"
 	else:
-		return "increase_major"
+		action = "increase_major"
+	print("[ADAPT_TRACE] multi_threshold: hybrid=%.4f, thresholds=[%.1f, %.1f, %.1f, %.1f] → action='%s'" % [
+		hybrid_metric, THRESHOLD_MAJOR_LOW, THRESHOLD_MINOR_LOW, THRESHOLD_KEEP, THRESHOLD_MINOR_HIGH, action
+	])
+	return action
 
 ## Decides the appropriate action based on the provided performance data
 ## using graduated multi-threshold logic.

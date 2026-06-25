@@ -25,6 +25,7 @@ func _on_enter_pressed() -> void:
 	
 	
 	if result.OK:
+		#FeedbackBalloon.show_feedback("Hola")
 		LoadingScreen.change_scene("res://scenes/pages/menu.tscn")
 	else:
 		var error_msg = result.get("error", "Error desconocido")

@@ -154,6 +154,12 @@ theme = SubResource("Theme_0g4mo")
 theme_type_variation = &"ScreenButton"
 text = "Jugar"
 
+[node name="Login" type="Button" parent="Panel_Button/Main_Buttons"]
+layout_mode = 2
+theme = SubResource("Theme_0g4mo")
+theme_type_variation = &"ScreenButton"
+text = "Auntenticarse"
+
 [node name="Option" type="Button" parent="Panel_Button/Main_Buttons"]
 layout_mode = 2
 theme_type_variation = &"ScreenButton"
@@ -403,6 +409,7 @@ grow_vertical = 2
 layout_mode = 2
 
 [connection signal="pressed" from="Panel_Button/Main_Buttons/Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Panel_Button/Main_Buttons/Login" to="." method="_on_login_pressed"]
 [connection signal="pressed" from="Panel_Button/Main_Buttons/Option" to="." method="_on_option_pressed"]
 [connection signal="pressed" from="Panel_Button/Main_Buttons/Gallery" to="." method="_on_gallery_pressed"]
 [connection signal="pressed" from="Panel_Button/Main_Buttons/Quit" to="." method="_on_quit_pressed"]

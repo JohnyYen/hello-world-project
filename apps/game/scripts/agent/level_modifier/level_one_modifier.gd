@@ -27,6 +27,22 @@ const KEEP_TIME_LIMIT := 0
 const INCREASE_MINOR_TIME_LIMIT := 90
 const INCREASE_MAJOR_TIME_LIMIT := 60
 
+# Action chain constants for dynamic action inference
+# (used by _ensure_chain_actions_present to add missing service actions)
+const BREAD_CHAIN := ["get_bread", "prepare_bread", "serve_bread"]
+const DRINK_CHAIN := ["prepare_drink", "serve_drink"]
+const MIXED_CHAIN := ["get_bread", "prepare_bread", "serve_bread", "prepare_drink", "serve_drink"]
+
+# Action value → display name mapping (for defined_actions)
+const ACTION_NAME_MAP := {
+	"get_bread": "Tomar pan",
+	"prepare_bread": "Preparar pan",
+	"serve_bread": "Servir pan",
+	"prepare_drink": "Preparar bebida",
+	"serve_drink": "Servir bebida",
+	"attend_next_student": "Atender estudiante"
+}
+
 # Default templates por dificultad (usan {segment_label} para mostrar bread-only/drink-only/mixed)
 const DEFAULT_TEMPLATES := {
 	"decrease_major": {
@@ -184,19 +200,33 @@ func _apply_actions_with_distractors(cfg: Dictionary, max_distractors: int) -> v
 	if max_distractors <= 0:
 		return
 	
+	# Pre-filter distractor pool by segment type allowlist
+	# Así no desperdiciamos slots en acciones que serán filtradas después
+	var segment_type: String = cfg.get("segment_type", "mixed")
+	var allowlist = SEGMENT_TYPE_DISTRACTOR_ALLOWLIST.get(segment_type, SEGMENT_TYPE_DISTRACTOR_ALLOWLIST["mixed"])
+	var eligible_distractors := []
+	for d in _distractor_actions:
+		if d.value in allowlist:
+			eligible_distractors.append(d)
+	
 	var existing = cfg.defined_actions
 	var existing_values := []
 	for action in existing:
 		existing_values.append(action.value)
 	
 	var added := 0
-	for distractor in _distractor_actions:
+	for distractor in eligible_distractors:
 		if added >= max_distractors:
 			break
 		if distractor.value not in existing_values:
 			existing.append(distractor)
 			existing_values.append(distractor.value)
 			added += 1
+	
+	if added > 0:
+		print("[ADAPT_TRACE] distractors: solicited=%d, added=%d (de %d elegibles), total_actions=%d" % [
+			max_distractors, added, eligible_distractors.size(), existing.size()
+		])
 
 
 func _apply_hints(cfg: Dictionary, tier: String) -> void:
@@ -215,9 +245,10 @@ func _apply_hints(cfg: Dictionary, tier: String) -> void:
 
 func _apply_decrease_major() -> Dictionary:
 	var cfg = self.original_config.duplicate(true)
+	var prev_students = cfg.initial_state.student_queue.size()
+	var prev_blocks = cfg.execution_rules.max_blocks
 
 	cfg.execution_rules.max_blocks += DECREASE_MAJOR_BLOCKS_INC
-	print("DECREASE_MAJOR: Blocks +", DECREASE_MAJOR_BLOCKS_INC)
 
 	var remove_count := mini(DECREASE_MAJOR_STUDENTS_REDUCE, maxi(0, cfg.initial_state.student_queue.size() - 1))
 	for i in range(remove_count):
@@ -238,14 +269,21 @@ func _apply_decrease_major() -> Dictionary:
 	_apply_actions_with_distractors(cfg, 0)
 
 	_enforce_consistency(cfg, "decrease_major")
+	print("[ADAPT_TRACE] decrease_major: students=%d→%d, blocks=%d→%d, time_limit=%d, hints=%d, stations=[bread,drink], distractors=0" % [
+		prev_students, cfg.initial_state.student_queue.size(),
+		prev_blocks, cfg.execution_rules.max_blocks,
+		cfg.execution_rules.time_limit,
+		cfg.feedback_messages.hints.size()
+	])
 	return cfg
 
 
 func _apply_decrease_minor() -> Dictionary:
 	var cfg = self.original_config.duplicate(true)
+	var prev_students = cfg.initial_state.student_queue.size()
+	var prev_blocks = cfg.execution_rules.max_blocks
 
 	cfg.execution_rules.max_blocks += DECREASE_MINOR_BLOCKS_INC
-	print("DECREASE_MINOR: Blocks +", DECREASE_MINOR_BLOCKS_INC)
 
 	var remove_count := mini(DECREASE_MINOR_STUDENTS_REDUCE, maxi(0, cfg.initial_state.student_queue.size() - 1))
 	for i in range(remove_count):
@@ -262,11 +300,18 @@ func _apply_decrease_minor() -> Dictionary:
 	_apply_actions_with_distractors(cfg, 0)
 
 	_enforce_consistency(cfg, "decrease_minor")
+	print("[ADAPT_TRACE] decrease_minor: students=%d→%d, blocks=%d→%d, time_limit=%d, hints=%d, stations=[bread], distractors=0" % [
+		prev_students, cfg.initial_state.student_queue.size(),
+		prev_blocks, cfg.execution_rules.max_blocks,
+		cfg.execution_rules.time_limit,
+		cfg.feedback_messages.hints.size()
+	])
 	return cfg
 
 
 func _apply_keep() -> Dictionary:
 	var cfg = self.original_config.duplicate(true)
+	var prev_students = cfg.initial_state.student_queue.size()
 
 	cfg.execution_rules.max_blocks += KEEP_BLOCKS_DELTA
 
@@ -278,19 +323,36 @@ func _apply_keep() -> Dictionary:
 	_apply_actions_with_distractors(cfg, 0)
 
 	_enforce_consistency(cfg, "keep")
+	print("[ADAPT_TRACE] keep: students=%d (shuffled), blocks=%d, time_limit=%d, hints=%d, distractors=0" % [
+		prev_students, cfg.execution_rules.max_blocks,
+		cfg.execution_rules.time_limit,
+		cfg.feedback_messages.hints.size()
+	])
 	return cfg
 
 
 func _apply_increase_minor() -> Dictionary:
 	var cfg = self.original_config.duplicate(true)
+	var prev_students = cfg.initial_state.student_queue.size()
+	var prev_blocks = cfg.execution_rules.max_blocks
+	var prev_inventory = cfg.initial_state.inventory.size()
 
 	cfg.execution_rules.max_blocks = max(
 		6,
 		cfg.execution_rules.max_blocks - INCREASE_MINOR_BLOCKS_DEC
 	)
-	print("INCREASE_MINOR: Blocks -", INCREASE_MINOR_BLOCKS_DEC)
 
-	cfg.initial_state.student_queue.append(_extra_students[0])
+	# Agregar estudiante compatible con el segment type
+	var segment_type: String = cfg.get("segment_type", "mixed")
+	var extra_student: Dictionary
+	match segment_type:
+		"bread-only":
+			extra_student = {"nombre": "Nuevo estudiante", "pedido": "pan"}
+		"drink-only":
+			extra_student = {"nombre": "Nuevo estudiante", "pedido": "cafe"}
+		_:
+			extra_student = _extra_students[0]
+	cfg.initial_state.student_queue.append(extra_student)
 
 	if cfg.initial_state.inventory.size() > 0:
 		cfg.initial_state.inventory.pop_back()
@@ -304,19 +366,44 @@ func _apply_increase_minor() -> Dictionary:
 	_apply_actions_with_distractors(cfg, 2)
 
 	_enforce_consistency(cfg, "increase_minor")
+	print("[ADAPT_TRACE] increase_minor: students=%d→%d, blocks=%d→%d, inventory=%d→%d, time_limit=%d, hints=%d, drink_station=disabled, distractors=2" % [
+		prev_students, cfg.initial_state.student_queue.size(),
+		prev_blocks, cfg.execution_rules.max_blocks,
+		prev_inventory, cfg.initial_state.inventory.size(),
+		cfg.execution_rules.time_limit,
+		cfg.feedback_messages.hints.size()
+	])
 	return cfg
 
 
 func _apply_increase_major() -> Dictionary:
 	var cfg = self.original_config.duplicate(true)
+	var prev_students = cfg.initial_state.student_queue.size()
+	var prev_blocks = cfg.execution_rules.max_blocks
+	var prev_inventory = cfg.initial_state.inventory.size()
 
 	cfg.execution_rules.max_blocks = max(
 		6,
 		cfg.execution_rules.max_blocks - INCREASE_MAJOR_BLOCKS_DEC
 	)
-	print("INCREASE_MAJOR: Blocks -", INCREASE_MAJOR_BLOCKS_DEC)
 
-	for student in _extra_students:
+	# Agregar estudiantes compatibles con el segment type
+	var segment_type: String = cfg.get("segment_type", "mixed")
+	var extra_students: Array
+	match segment_type:
+		"bread-only":
+			extra_students = [
+				{"nombre": "Estudiante A", "pedido": "pan"},
+				{"nombre": "Estudiante B", "pedido": "pan"}
+			]
+		"drink-only":
+			extra_students = [
+				{"nombre": "Estudiante A", "pedido": "cafe"},
+				{"nombre": "Estudiante B", "pedido": "cafe"}
+			]
+		_:
+			extra_students = _extra_students.duplicate()
+	for student in extra_students:
 		cfg.initial_state.student_queue.append(student)
 
 	cfg.initial_state.inventory = []
@@ -330,6 +417,13 @@ func _apply_increase_major() -> Dictionary:
 	_apply_actions_with_distractors(cfg, 5)
 
 	_enforce_consistency(cfg, "increase_major")
+	print("[ADAPT_TRACE] increase_major: students=%d→%d, blocks=%d→%d, inventory=%d→%d, time_limit=%d, hints=%d, stations=[bread], distractors=5" % [
+		prev_students, cfg.initial_state.student_queue.size(),
+		prev_blocks, cfg.execution_rules.max_blocks,
+		prev_inventory, cfg.initial_state.inventory.size(),
+		cfg.execution_rules.time_limit,
+		cfg.feedback_messages.hints.size()
+	])
 	return cfg
 
 
@@ -478,22 +572,9 @@ func _filter_distractors_by_type(cfg: Dictionary) -> void:
 func _generate_validation_criteria(cfg: Dictionary) -> void:
 	var criteria: Array = []
 	
-	# Convert existing string-format criteria to structured
-	var existing = cfg.get("validation_criteria", [])
-	for entry in existing:
-		if typeof(entry) == TYPE_STRING:
-			var parts = entry.split(" served", true)
-			if parts.size() > 0 and not parts[0].is_empty():
-				var name = parts[0].strip_edges()
-				criteria.append({
-					"condition": "orders_served",
-					"target": [{"nombre": name, "pedido": ""}],
-					"type": "all"
-				})
-				continue
-		criteria.append(entry)
-	
-	# Generate new criteria from expected_outputs
+	# Generar criteria FRESCO desde expected_outputs.
+	# NO leer validation_criteria existente del cfg porque viene del adaptation_state
+	# persistido y se acumularía infinitamente (cada adaptación appendea sin reemplazar).
 	for expected in cfg.expected_outputs:
 		if expected.has("orders_served"):
 			var names = expected.orders_served.map(func(o): return o.nombre)
@@ -626,25 +707,64 @@ func _ensure_required_actions_present(cfg: Dictionary) -> void:
 	for action in actions:
 		existing_values.append(action.get("value", ""))
 	
-	var name_map := {
-		"get_bread": "Tomar pan",
-		"prepare_bread": "Preparar pan",
-		"serve_bread": "Servir pan",
-		"prepare_drink": "Preparar bebida",
-		"serve_drink": "Servir bebida",
-		"attend_next_student": "Atender estudiante"
-	}
-	
 	for required_value in required:
 		if required_value not in existing_values:
 			actions.append({
-				"name": name_map.get(required_value, required_value),
+				"name": ACTION_NAME_MAP.get(required_value, required_value),
 				"value": required_value
 			})
 			existing_values.append(required_value)
 			print("[LevelOneModifier] Added required action: %s" % required_value)
 	
 	cfg.defined_actions = actions
+
+
+# ---------------------------------------------------------------------
+# Dynamic Action Chain Inference
+# ---------------------------------------------------------------------
+# Cuando la adaptación agrega estudiantes a la cola (increase_minor/major),
+# debemos asegurar que existan TODAS las acciones necesarias para servirlos.
+# 
+# Ej: bread-only + estudiante con pedido "pan" → necesita [get_bread, prepare_bread, serve_bread]
+#     drink-only + estudiante con pedido "cafe" → necesita [prepare_drink, serve_drink]
+# ---------------------------------------------------------------------
+func _ensure_chain_actions_present(cfg: Dictionary) -> void:
+	var segment_type: String = cfg.get("segment_type", "mixed")
+	var queue = cfg.get("initial_state", {}).get("student_queue", [])
+	if queue.is_empty():
+		return  # Sin estudiantes, no hace falta inferir cadena
+	
+	var chain: Array = []
+	match segment_type:
+		"bread-only":
+			chain = BREAD_CHAIN.duplicate()
+		"drink-only":
+			chain = DRINK_CHAIN.duplicate()
+		"mixed":
+			chain = MIXED_CHAIN.duplicate()
+		_:
+			return  # Tipo desconocido, no inferir
+	
+	var actions = cfg.get("defined_actions", []) as Array
+	var existing_values := []
+	for action in actions:
+		existing_values.append(action.get("value", ""))
+	
+	var added := 0
+	for action_value in chain:
+		if action_value not in existing_values:
+			actions.append({
+				"name": ACTION_NAME_MAP.get(action_value, action_value),
+				"value": action_value
+			})
+			existing_values.append(action_value)
+			added += 1
+	
+	cfg.defined_actions = actions
+	if added > 0:
+		print("[LevelOneModifier] Chain actions: added %d missing actions for %s (queue=%d)" % [
+			added, segment_type, queue.size()
+		])
 
 
 func _ensure_student_orders_match_type(cfg: Dictionary) -> void:
@@ -696,6 +816,7 @@ func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
 	_ensure_expected_outputs(cfg)
 	ensure_attend_action_exists(cfg)
 	_ensure_required_actions_present(cfg)
+	_ensure_chain_actions_present(cfg)
 	_generate_title(cfg, tier)
 	_generate_description(cfg, tier)
 	_generate_learning_objective(cfg, tier)
@@ -705,3 +826,9 @@ func _enforce_consistency(cfg: Dictionary, tier: String) -> void:
 	_sync_stations_with_segment(cfg)
 	_update_inventory_expected_outputs(cfg)
 	_enforce_difficulty_bounds(cfg)
+	print("[ADAPT_TRACE] consistency enforced: title='%s', students=%d, expected_outputs=%d, validation_criteria=%d" % [
+		cfg.get("title", "?"),
+		cfg.get("initial_state", {}).get("student_queue", []).size(),
+		cfg.get("expected_outputs", []).size(),
+		cfg.get("validation_criteria", []).size()
+	])

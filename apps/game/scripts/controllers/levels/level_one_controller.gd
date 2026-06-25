@@ -5,8 +5,6 @@ func _init():
 	self.context = CafeteriaProblemContext.new()
 	self.block_repository = BlockRepository.new();
 	self.modifier = LevelOneModifier.new()
-	
-	_GameController.agent.action_decided.connect(Callable(self.modifier, 'modify_level'))
 
 
 func get_avaible_blocks() -> Array[Block]:

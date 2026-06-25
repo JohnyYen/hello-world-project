@@ -146,13 +146,13 @@ func test_agent_with_combined_session_and_long_term() -> void:
 
 func test_action_decided_signal_emitted() -> void:
 	var signal_data := {"received": false, "action": "", "difficulty": 0.0}
-	agent.action_decided.connect(func(a: String, d: float):
+	EventBus.action_decided.connect(func(a: String, d: float):
 		signal_data.received = true
 		signal_data.action = a
 		signal_data.difficulty = d
 	)
 	agent._apply_action("increase_minor")
 
-	assert_eq(signal_data.received, true, "signal action_decided debe emitirse")
-	assert_eq(signal_data.action, "increase_minor", "signal debe tener action correcta")
-	assert_eq(signal_data.difficulty, 1.1, "signal debe tener difficulty correcta")
+	assert_eq(signal_data.received, true, "EventBus.action_decided debe emitirse")
+	assert_eq(signal_data.action, "increase_minor", "EventBus debe tener action correcta")
+	assert_eq(signal_data.difficulty, 1.1, "EventBus debe tener difficulty correcta")

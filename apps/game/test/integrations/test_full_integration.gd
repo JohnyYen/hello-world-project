@@ -178,9 +178,9 @@ func _run_single_level(
 		hints_used, efficiency_rating, objectives_completed, blocks_count
 	)
 
-	# Capturar la accion exacta del agente via signal
+	# Capturar la accion exacta via EventBus (desacoplado del agente)
 	var captured_action := ""
-	var signal_connected := _agent.action_decided.connect(func(a: String, d: float):
+	EventBus.action_decided.connect(func(a: String, d: float):
 		captured_action = a
 	)
 

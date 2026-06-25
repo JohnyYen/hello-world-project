@@ -25,10 +25,18 @@ func load_data() -> LevelOneConfiguration:
 
 	# Store clean seed for the modifier
 	seed_data = seed_dict.duplicate(true)
+	print("[ADAPT_TRACE] load_data semilla: %d keys, title=%s" % [seed_dict.size(), seed_dict.get("title", "?")])
 
 	# Read adaptation_state (diff) and merge with seed
 	var adaptation_state := repo.get_adaptation_state(level_id, self.segment_id)
+	if adaptation_state.is_empty():
+		print("[ADAPT_TRACE] load_data adaptation_state VACÍO - sin datos de adaptación previa")
+	else:
+		print("[ADAPT_TRACE] load_data adaptation_state: %d keys - %s" % [
+			adaptation_state.size(), str(adaptation_state.keys())
+		])
 	var merged_dict := _merge_config(seed_dict, adaptation_state)
+	print("[ADAPT_TRACE] load_data merged_dict: %d keys" % merged_dict.size())
 
 	json_data = merged_dict
 

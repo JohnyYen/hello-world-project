@@ -65,15 +65,19 @@ func _seed_intro_feedback_if_empty() -> void:
 
 
 # Migration: agrega adaptation_state column a la tabla Segments si no existe
-# Es idempotente: usa sqlite_master para verificar si la columna ya esta presente
+# Es idempotente: usa PRAGMA table_info para verificar si la columna ya existe
+# NOTA: NO se puede usar sqlite_master porque el plugin gdsqlite no lo soporta
 func _migrate_adaptation_state() -> void:
-	var create_sql_rows := db.select_rows("sqlite_master", "type = 'table' AND name = 'Segments'", ["sql"])
-	if create_sql_rows.is_empty():
+	var pragma_sql := "PRAGMA table_info('Segments')"
+	if not db.query(pragma_sql):
+		push_error("Migration: No se pudo obtener info de la tabla Segments")
 		return
 
-	var create_sql: String = create_sql_rows[0].get("sql", "")
-	if "adaptation_state" in create_sql:
-		return
+	var columns := db.query_result
+	for col in columns:
+		if col.get("name", "") == "adaptation_state":
+			print("Migration: La columna 'adaptation_state' ya existe en Segments")
+			return
 
 	var alter_sql := "ALTER TABLE Segments ADD COLUMN adaptation_state TEXT"
 	if db.query(alter_sql):

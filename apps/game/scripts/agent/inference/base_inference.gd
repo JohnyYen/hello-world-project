@@ -15,8 +15,8 @@ class_name BaseInference
 ## @return: String representing the action to take
 ##          ("decrease_major", "decrease_minor", "keep", "increase_minor", "increase_major")
 func decide_action(performance_data: Dictionary) -> String:
-    print("DEBUG: BaseInference.decide_action called with data: ", performance_data)
-    # Issue a warning indicating that this method should be implemented by subclasses
-    push_warning("Base inference: implementar en subclase")
-    # Return a default "keep" action as a fallback
-    return "keep"
+	print("DEBUG: BaseInference.decide_action called with data: ", performance_data)
+	# Issue a warning indicating that this method should be implemented by subclasses
+	push_warning("Base inference: implementar en subclase")
+	# Return a default "keep" action as a fallback
+	return "keep"

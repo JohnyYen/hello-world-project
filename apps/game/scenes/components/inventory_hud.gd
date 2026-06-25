@@ -7,7 +7,7 @@ func add_inventory_item(item_name: String, quantity: int = 1):
 	# Busca si el item ya existe para actualizar cantidad
 	for child in inventory_container.get_children():
 		if child.get_meta("item_name") == item_name:
-			var qty_label = child.get_node("Quantity")
+			var qty_label = child.find_child("Quantity", true, false)
 			qty_label.text = "x" + str(int(qty_label.text.substr(1)) + quantity)
 			return
 

@@ -629,16 +629,18 @@ func test_difficulty_bounds_pads_students() -> void:
 
 
 # =============================================================================
-# validation_criteria string format backward compat (Fix 3)
+# validation_criteria se genera FRESCO desde expected_outputs (no acumula)
 # =============================================================================
 
-func test_validation_criteria_string_format_backward_compat() -> void:
+func test_validation_criteria_no_accumulation() -> void:
+	# Los validation_criteria viejos en el cfg (del adaptation_state persistido)
+	# NO deben heredarse — se regeneran completos desde expected_outputs.
 	var cfg = base_config.duplicate(true)
-	cfg.validation_criteria = ["Ana served"]
+	cfg.validation_criteria = ["Ana served"]  # viejo criterio legacy
 	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
 	var result = modifier.modify_level("keep", 1.0)
-	assert_eq(result.validation_criteria.size(), 2,
-		"string criteria: converts string entry + generates from expected_outputs")
+	assert_eq(result.validation_criteria.size(), 1,
+		"validation: ignora criteria legacy, genera 1 fresco desde expected_outputs")
 
 
 # =============================================================================
@@ -746,3 +748,140 @@ func test_integration_full_flow_bread_only() -> void:
 		"integration: title no debe estar vacio")
 	assert_false(result.get("description", "").is_empty(),
 		"integration: description no debe estar vacio")
+
+
+# =============================================================================
+# chain action inference (_ensure_chain_actions_present)
+# =============================================================================
+
+func test_chain_inference_bread_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.defined_actions = [
+		{"name": "Tomar pan", "value": "get_bread"}
+	]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result = modifier.modify_level("keep", 1.0)
+	var values := result.defined_actions.map(func(a): return a.value)
+	assert_true("prepare_bread" in values,
+		"chain: bread-only debe agregar prepare_bread")
+	assert_true("serve_bread" in values,
+		"chain: bread-only debe agregar serve_bread")
+
+
+func test_chain_inference_drink_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "drink-only"
+	cfg.defined_actions = [
+		{"name": "Servir bebida", "value": "serve_drink"}
+	]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result = modifier.modify_level("keep", 1.0)
+	var values := result.defined_actions.map(func(a): return a.value)
+	assert_true("prepare_drink" in values,
+		"chain: drink-only debe agregar prepare_drink")
+
+
+func test_chain_inference_no_duplicates() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.defined_actions = [
+		{"name": "Tomar pan", "value": "get_bread"},
+		{"name": "Preparar pan", "value": "prepare_bread"},
+		{"name": "Servir pan", "value": "serve_bread"}
+	]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result = modifier.modify_level("keep", 1.0)
+	var count := 0
+	for action in result.defined_actions:
+		if action.value == "prepare_bread":
+			count += 1
+	assert_eq(count, 1,
+		"chain: no debe duplicar prepare_bread si ya existe")
+
+
+func test_chain_inference_empty_queue_skips() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	cfg.initial_state.student_queue = []
+	cfg.defined_actions = [
+		{"name": "Tomar pan", "value": "get_bread"}
+	]
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result = modifier.modify_level("keep", 1.0)
+	var count := 0
+	for action in result.defined_actions:
+		if action.value in ["prepare_bread", "serve_bread"]:
+			count += 1
+	assert_eq(count, 0,
+		"chain: sin estudiantes no debe agregar acciones de cadena")
+
+
+# =============================================================================
+# segment-aware student adding
+# =============================================================================
+
+func test_increase_minor_student_bread_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result = modifier.modify_level("increase_minor", 1.1)
+	var queue = result.initial_state.student_queue
+	var last = queue[queue.size() - 1]
+	assert_eq(last.pedido, "pan",
+		"increase_minor bread-only: estudiante agregado debe pedir pan")
+
+
+func test_increase_minor_student_drink_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "drink-only"
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result = modifier.modify_level("increase_minor", 1.1)
+	var queue = result.initial_state.student_queue
+	var last = queue[queue.size() - 1]
+	assert_eq(last.pedido, "cafe",
+		"increase_minor drink-only: estudiante agregado debe pedir cafe")
+
+
+func test_increase_major_students_bread_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result = modifier.modify_level("increase_major", 1.2)
+	var queue = result.initial_state.student_queue
+	# Los últimos 2 son los agregados (increase_major agrega 2)
+	var last = queue[queue.size() - 1]
+	var second_last = queue[queue.size() - 2]
+	assert_eq(last.pedido, "pan",
+		"increase_major bread-only: ultimo estudiante agregado debe pedir pan")
+	assert_eq(second_last.pedido, "pan",
+		"increase_major bread-only: penultimo estudiante agregado debe pedir pan")
+
+
+func test_increase_major_students_drink_only() -> void:
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "drink-only"
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	var result = modifier.modify_level("increase_major", 1.2)
+	var queue = result.initial_state.student_queue
+	var last = queue[queue.size() - 1]
+	var second_last = queue[queue.size() - 2]
+	assert_eq(last.pedido, "cafe",
+		"increase_major drink-only: ultimo estudiante agregado debe pedir cafe")
+	assert_eq(second_last.pedido, "cafe",
+		"increase_major drink-only: penultimo estudiante agregado debe pedir cafe")
+
+
+func test_increase_all_student_count_unchanged() -> void:
+	# Verificar que los count de estudiantes no cambian con los nuevos cambios
+	var cfg = base_config.duplicate(true)
+	cfg.segment_type = "bread-only"
+	modifier.set_level_segment({"segment_id": 0, "configuration": cfg})
+	
+	var minor = modifier.modify_level("increase_minor", 1.1)
+	assert_eq(minor.initial_state.student_queue.size(), 4,
+		"increase_minor bread-only: debe tener 4 estudiantes (3+1)")
+	
+	var major = modifier.modify_level("increase_major", 1.2)
+	assert_eq(major.initial_state.student_queue.size(), 5,
+		"increase_major bread-only: debe tener 5 estudiantes (3+2)")

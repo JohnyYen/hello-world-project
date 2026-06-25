@@ -66,13 +66,14 @@ func _init(
 	error_details = p_error_details
 	custom_events = p_custom_events
 	timestamp = Time.get_datetime_string_from_system()
-	print("[AttemptData] Creado: score=%.2f, errors=%d, time=%.2f, hints=%d, efficiency=%.1f, objectives=%d, blocks=%d" % [
-		score, errors, time, hints_used, efficiency_rating, objectives_completed, blocks_count
-	])
+	# NOTA: Print de Creado eliminado intencionalmente.
+	# from_dictionary() ya imprime un resumen compacto de cada intento,
+	# y tener ambos prints duplica el output para los 110+ intentos históricos,
+	# causando overflow de consola y perdiendo los prints de [ADAPT_TRACE].
 
 ## Crea un AttemptData a partir de un Dictionary (conversión desde XAPIService/GameController)
+## NOTA: Sin print interno para evitar flood. load_history() ya resume "Cargados X intentos".
 static func from_dictionary(data: Dictionary) -> AttemptData:
-	print("[AttemptData] Creando desde dictionary: %s" % data)
 	# Convertir untyped Array a Array[Dictionary] (GDScript 2.0 requiere typing explícito)
 	var raw_events: Array = data.get("custom_events", [])
 	var typed_events: Array[Dictionary] = []

@@ -33,7 +33,11 @@ func set_level_segment(segment: Dictionary):
 	adaptation_state = segment.get("adaptation_state", {})
 	merged_config = _merge_config(original_config, adaptation_state)
 	modified_config = merged_config.duplicate(true)
-	print("[BaseLevelModifier] Segmento asignado - configuration keys: %s" % original_config.keys())
+	print("[BASE_MODIFIER] Segmento asignado - segment_id=%d, has_adaptation=%s, config_keys=%s" % [
+		segment.get("id", 0),
+		"true" if not adaptation_state.is_empty() else "false",
+		original_config.keys()
+	])
 
 func get_config(level_id : int, segment_id : int) -> Dictionary:
 	var repo = LevelRepository.new()
@@ -57,10 +61,22 @@ func modify_level(state: String, difficulty: float) -> Dictionary:
 
 
 func apply_modifications():
-	print("[BaseLevelModifier] Aplicando modificaciones al segmento")
+	print("[ADAPT_TRACE] === apply_modifications INICIO ===")
+	var cfg = modified_config
+	var students = cfg.get("initial_state", {}).get("student_queue", [])
+	var exec_rules = cfg.get("execution_rules", {})
+	print("[ADAPT_TRACE] segment_id=%d, students=%d, max_blocks=%d, time_limit=%d, hints=%d" % [
+		segment_id, students.size(),
+		exec_rules.get("max_blocks", 0),
+		exec_rules.get("time_limit", 0),
+		cfg.get("feedback_messages", {}).get("hints", []).size()
+	])
 	var level_id = level_segment.get("level_id", 1)
-	repo.update_adaptation_state(level_id, segment_id, modified_config)
-	print("[BaseLevelModifier] Modificaciones aplicadas exitosamente")
+	var result := repo.update_adaptation_state(level_id, segment_id, modified_config)
+	if result:
+		print("[ADAPT_TRACE] update_adaptation_state EXITOSO para level=%d, segment=%d" % [level_id, segment_id])
+	else:
+		push_error("[ADAPT_TRACE] update_adaptation_state FALLÓ para level=%d, segment=%d" % [level_id, segment_id])
 
 
 func reset_to_seed():
