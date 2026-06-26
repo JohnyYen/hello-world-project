@@ -41,7 +41,7 @@ func run_seeds():
 
 
 func _seed_intro_feedback_if_empty() -> void:
-	var rows = db.select_rows("professor_feedback", "", ["id"], "1")
+	var rows = db.select_rows("professor_feedback", "", ["id"])
 	if rows.is_empty():
 		var data = {
 			"id": "intro-feedback-001",

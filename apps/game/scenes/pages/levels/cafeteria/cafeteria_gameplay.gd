@@ -205,7 +205,7 @@ func _on_execution_finished(final_context: CafeteriaProblemContext):
 				"attempt_number": _attempt_count
 			})
 			hud.lose_controller.show_lose_screen()
-			FeedbackBalloon.show_feedback("Perdiste el Juego")
+			#FeedbackBalloon.show_feedback("Perdiste el Juego")
 	else:
 		print("[CafeteriaGameplay | _on_execute_solution]: CONTEXTO INVÁLIDO (null) - enviando analytics al agente adaptativo")
 		# Failure path: send analytics to adaptive agent via complete_level
