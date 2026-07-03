@@ -1,0 +1,6737 @@
+{
+  "report_title": "Hello World Platform - Análisis de Rendimiento Estudiantil",
+  "generated_at": "2026-06-24T21:52:04.058862Z",
+  "total_students_analyzed": 10,
+  "excluded_student": "Johny Antonio Pedraza Romero",
+  "summary": {
+    "total_levels_completed": 4621,
+    "total_play_time_hours": 228.1,
+    "average_score_all_students": 78.3,
+    "average_play_time_minutes_per_student": 1368.8,
+    "performance_distribution": {
+      "excellent_80_plus": {
+        "count": 3,
+        "percentage": 30.0
+      },
+      "good_60_79": {
+        "count": 7,
+        "percentage": 70.0
+      },
+      "needs_improvement_below_60": {
+        "count": 0,
+        "percentage": 0.0
+      }
+    }
+  },
+  "comparative_table": [
+    {
+      "name": "Gabriela Ramos",
+      "email": "gabriela.ramos@student.edu",
+      "total_levels_completed": 338,
+      "total_games_played": 3,
+      "total_play_time_minutes": 1065,
+      "total_play_time_hours": 17.8,
+      "average_score": 77.8,
+      "current_streak_days": 1
+    },
+    {
+      "name": "Juan Perez",
+      "email": "juan.perez@example.com",
+      "total_levels_completed": 463,
+      "total_games_played": 3,
+      "total_play_time_minutes": 1638,
+      "total_play_time_hours": 27.3,
+      "average_score": 74.8,
+      "current_streak_days": 2
+    },
+    {
+      "name": "Pedro Ortega",
+      "email": "pedro.ortega@student.edu",
+      "total_levels_completed": 654,
+      "total_games_played": 3,
+      "total_play_time_minutes": 1271,
+      "total_play_time_hours": 21.2,
+      "average_score": 88.9,
+      "current_streak_days": 3
+    },
+    {
+      "name": "María Gil",
+      "email": "maria.gil@student.edu",
+      "total_levels_completed": 378,
+      "total_games_played": 2,
+      "total_play_time_minutes": 1312,
+      "total_play_time_hours": 21.9,
+      "average_score": 75.0,
+      "current_streak_days": 1
+    },
+    {
+      "name": "Sara Herrera",
+      "email": "sara.herrera@student.edu",
+      "total_levels_completed": 530,
+      "total_games_played": 3,
+      "total_play_time_minutes": 2012,
+      "total_play_time_hours": 33.5,
+      "average_score": 71.5,
+      "current_streak_days": 2
+    },
+    {
+      "name": "Elena Ibáñez",
+      "email": "elena.ibanez@student.edu",
+      "total_levels_completed": 647,
+      "total_games_played": 3,
+      "total_play_time_minutes": 1275,
+      "total_play_time_hours": 21.2,
+      "average_score": 87.9,
+      "current_streak_days": 6
+    },
+    {
+      "name": "Alejandro Medina",
+      "email": "alejandro.medina@student.edu",
+      "total_levels_completed": 340,
+      "total_games_played": 2,
+      "total_play_time_minutes": 1174,
+      "total_play_time_hours": 19.6,
+      "average_score": 74.8,
+      "current_streak_days": 1
+    },
+    {
+      "name": "Laura Serrano",
+      "email": "laura.serrano@student.edu",
+      "total_levels_completed": 530,
+      "total_games_played": 4,
+      "total_play_time_minutes": 1989,
+      "total_play_time_hours": 33.1,
+      "average_score": 71.6,
+      "current_streak_days": 3
+    },
+    {
+      "name": "Luis Rivera",
+      "email": "luis.rivera@student.edu",
+      "total_levels_completed": 484,
+      "total_games_played": 3,
+      "total_play_time_minutes": 1080,
+      "total_play_time_hours": 18.0,
+      "average_score": 85.1,
+      "current_streak_days": 2
+    },
+    {
+      "name": "Pepe Jorge",
+      "email": "pepe.student@example.com",
+      "total_levels_completed": 257,
+      "total_games_played": 2,
+      "total_play_time_minutes": 872,
+      "total_play_time_hours": 14.5,
+      "average_score": 75.2,
+      "current_streak_days": 2
+    }
+  ],
+  "rankings": {
+    "by_average_score": [
+      {
+        "rank": 1,
+        "name": "Pedro Ortega",
+        "email": "pedro.ortega@student.edu",
+        "total_levels_completed": 654,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1271,
+        "total_play_time_hours": 21.2,
+        "average_score": 88.9,
+        "current_streak_days": 3
+      },
+      {
+        "rank": 2,
+        "name": "Elena Ibáñez",
+        "email": "elena.ibanez@student.edu",
+        "total_levels_completed": 647,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1275,
+        "total_play_time_hours": 21.2,
+        "average_score": 87.9,
+        "current_streak_days": 6
+      },
+      {
+        "rank": 3,
+        "name": "Luis Rivera",
+        "email": "luis.rivera@student.edu",
+        "total_levels_completed": 484,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1080,
+        "total_play_time_hours": 18.0,
+        "average_score": 85.1,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 4,
+        "name": "Gabriela Ramos",
+        "email": "gabriela.ramos@student.edu",
+        "total_levels_completed": 338,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1065,
+        "total_play_time_hours": 17.8,
+        "average_score": 77.8,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 5,
+        "name": "Pepe Jorge",
+        "email": "pepe.student@example.com",
+        "total_levels_completed": 257,
+        "total_games_played": 2,
+        "total_play_time_minutes": 872,
+        "total_play_time_hours": 14.5,
+        "average_score": 75.2,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 6,
+        "name": "María Gil",
+        "email": "maria.gil@student.edu",
+        "total_levels_completed": 378,
+        "total_games_played": 2,
+        "total_play_time_minutes": 1312,
+        "total_play_time_hours": 21.9,
+        "average_score": 75.0,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 7,
+        "name": "Juan Perez",
+        "email": "juan.perez@example.com",
+        "total_levels_completed": 463,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1638,
+        "total_play_time_hours": 27.3,
+        "average_score": 74.8,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 8,
+        "name": "Alejandro Medina",
+        "email": "alejandro.medina@student.edu",
+        "total_levels_completed": 340,
+        "total_games_played": 2,
+        "total_play_time_minutes": 1174,
+        "total_play_time_hours": 19.6,
+        "average_score": 74.8,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 9,
+        "name": "Laura Serrano",
+        "email": "laura.serrano@student.edu",
+        "total_levels_completed": 530,
+        "total_games_played": 4,
+        "total_play_time_minutes": 1989,
+        "total_play_time_hours": 33.1,
+        "average_score": 71.6,
+        "current_streak_days": 3
+      },
+      {
+        "rank": 10,
+        "name": "Sara Herrera",
+        "email": "sara.herrera@student.edu",
+        "total_levels_completed": 530,
+        "total_games_played": 3,
+        "total_play_time_minutes": 2012,
+        "total_play_time_hours": 33.5,
+        "average_score": 71.5,
+        "current_streak_days": 2
+      }
+    ],
+    "by_play_time": [
+      {
+        "rank": 1,
+        "name": "Sara Herrera",
+        "email": "sara.herrera@student.edu",
+        "total_levels_completed": 530,
+        "total_games_played": 3,
+        "total_play_time_minutes": 2012,
+        "total_play_time_hours": 33.5,
+        "average_score": 71.5,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 2,
+        "name": "Laura Serrano",
+        "email": "laura.serrano@student.edu",
+        "total_levels_completed": 530,
+        "total_games_played": 4,
+        "total_play_time_minutes": 1989,
+        "total_play_time_hours": 33.1,
+        "average_score": 71.6,
+        "current_streak_days": 3
+      },
+      {
+        "rank": 3,
+        "name": "Juan Perez",
+        "email": "juan.perez@example.com",
+        "total_levels_completed": 463,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1638,
+        "total_play_time_hours": 27.3,
+        "average_score": 74.8,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 4,
+        "name": "María Gil",
+        "email": "maria.gil@student.edu",
+        "total_levels_completed": 378,
+        "total_games_played": 2,
+        "total_play_time_minutes": 1312,
+        "total_play_time_hours": 21.9,
+        "average_score": 75.0,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 5,
+        "name": "Elena Ibáñez",
+        "email": "elena.ibanez@student.edu",
+        "total_levels_completed": 647,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1275,
+        "total_play_time_hours": 21.2,
+        "average_score": 87.9,
+        "current_streak_days": 6
+      },
+      {
+        "rank": 6,
+        "name": "Pedro Ortega",
+        "email": "pedro.ortega@student.edu",
+        "total_levels_completed": 654,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1271,
+        "total_play_time_hours": 21.2,
+        "average_score": 88.9,
+        "current_streak_days": 3
+      },
+      {
+        "rank": 7,
+        "name": "Alejandro Medina",
+        "email": "alejandro.medina@student.edu",
+        "total_levels_completed": 340,
+        "total_games_played": 2,
+        "total_play_time_minutes": 1174,
+        "total_play_time_hours": 19.6,
+        "average_score": 74.8,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 8,
+        "name": "Luis Rivera",
+        "email": "luis.rivera@student.edu",
+        "total_levels_completed": 484,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1080,
+        "total_play_time_hours": 18.0,
+        "average_score": 85.1,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 9,
+        "name": "Gabriela Ramos",
+        "email": "gabriela.ramos@student.edu",
+        "total_levels_completed": 338,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1065,
+        "total_play_time_hours": 17.8,
+        "average_score": 77.8,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 10,
+        "name": "Pepe Jorge",
+        "email": "pepe.student@example.com",
+        "total_levels_completed": 257,
+        "total_games_played": 2,
+        "total_play_time_minutes": 872,
+        "total_play_time_hours": 14.5,
+        "average_score": 75.2,
+        "current_streak_days": 2
+      }
+    ],
+    "by_levels_completed": [
+      {
+        "rank": 1,
+        "name": "Pedro Ortega",
+        "email": "pedro.ortega@student.edu",
+        "total_levels_completed": 654,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1271,
+        "total_play_time_hours": 21.2,
+        "average_score": 88.9,
+        "current_streak_days": 3
+      },
+      {
+        "rank": 2,
+        "name": "Elena Ibáñez",
+        "email": "elena.ibanez@student.edu",
+        "total_levels_completed": 647,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1275,
+        "total_play_time_hours": 21.2,
+        "average_score": 87.9,
+        "current_streak_days": 6
+      },
+      {
+        "rank": 3,
+        "name": "Sara Herrera",
+        "email": "sara.herrera@student.edu",
+        "total_levels_completed": 530,
+        "total_games_played": 3,
+        "total_play_time_minutes": 2012,
+        "total_play_time_hours": 33.5,
+        "average_score": 71.5,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 4,
+        "name": "Laura Serrano",
+        "email": "laura.serrano@student.edu",
+        "total_levels_completed": 530,
+        "total_games_played": 4,
+        "total_play_time_minutes": 1989,
+        "total_play_time_hours": 33.1,
+        "average_score": 71.6,
+        "current_streak_days": 3
+      },
+      {
+        "rank": 5,
+        "name": "Luis Rivera",
+        "email": "luis.rivera@student.edu",
+        "total_levels_completed": 484,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1080,
+        "total_play_time_hours": 18.0,
+        "average_score": 85.1,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 6,
+        "name": "Juan Perez",
+        "email": "juan.perez@example.com",
+        "total_levels_completed": 463,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1638,
+        "total_play_time_hours": 27.3,
+        "average_score": 74.8,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 7,
+        "name": "María Gil",
+        "email": "maria.gil@student.edu",
+        "total_levels_completed": 378,
+        "total_games_played": 2,
+        "total_play_time_minutes": 1312,
+        "total_play_time_hours": 21.9,
+        "average_score": 75.0,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 8,
+        "name": "Alejandro Medina",
+        "email": "alejandro.medina@student.edu",
+        "total_levels_completed": 340,
+        "total_games_played": 2,
+        "total_play_time_minutes": 1174,
+        "total_play_time_hours": 19.6,
+        "average_score": 74.8,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 9,
+        "name": "Gabriela Ramos",
+        "email": "gabriela.ramos@student.edu",
+        "total_levels_completed": 338,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1065,
+        "total_play_time_hours": 17.8,
+        "average_score": 77.8,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 10,
+        "name": "Pepe Jorge",
+        "email": "pepe.student@example.com",
+        "total_levels_completed": 257,
+        "total_games_played": 2,
+        "total_play_time_minutes": 872,
+        "total_play_time_hours": 14.5,
+        "average_score": 75.2,
+        "current_streak_days": 2
+      }
+    ],
+    "by_streak": [
+      {
+        "rank": 1,
+        "name": "Elena Ibáñez",
+        "email": "elena.ibanez@student.edu",
+        "total_levels_completed": 647,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1275,
+        "total_play_time_hours": 21.2,
+        "average_score": 87.9,
+        "current_streak_days": 6
+      },
+      {
+        "rank": 2,
+        "name": "Pedro Ortega",
+        "email": "pedro.ortega@student.edu",
+        "total_levels_completed": 654,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1271,
+        "total_play_time_hours": 21.2,
+        "average_score": 88.9,
+        "current_streak_days": 3
+      },
+      {
+        "rank": 3,
+        "name": "Laura Serrano",
+        "email": "laura.serrano@student.edu",
+        "total_levels_completed": 530,
+        "total_games_played": 4,
+        "total_play_time_minutes": 1989,
+        "total_play_time_hours": 33.1,
+        "average_score": 71.6,
+        "current_streak_days": 3
+      },
+      {
+        "rank": 4,
+        "name": "Juan Perez",
+        "email": "juan.perez@example.com",
+        "total_levels_completed": 463,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1638,
+        "total_play_time_hours": 27.3,
+        "average_score": 74.8,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 5,
+        "name": "Sara Herrera",
+        "email": "sara.herrera@student.edu",
+        "total_levels_completed": 530,
+        "total_games_played": 3,
+        "total_play_time_minutes": 2012,
+        "total_play_time_hours": 33.5,
+        "average_score": 71.5,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 6,
+        "name": "Luis Rivera",
+        "email": "luis.rivera@student.edu",
+        "total_levels_completed": 484,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1080,
+        "total_play_time_hours": 18.0,
+        "average_score": 85.1,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 7,
+        "name": "Pepe Jorge",
+        "email": "pepe.student@example.com",
+        "total_levels_completed": 257,
+        "total_games_played": 2,
+        "total_play_time_minutes": 872,
+        "total_play_time_hours": 14.5,
+        "average_score": 75.2,
+        "current_streak_days": 2
+      },
+      {
+        "rank": 8,
+        "name": "Gabriela Ramos",
+        "email": "gabriela.ramos@student.edu",
+        "total_levels_completed": 338,
+        "total_games_played": 3,
+        "total_play_time_minutes": 1065,
+        "total_play_time_hours": 17.8,
+        "average_score": 77.8,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 9,
+        "name": "María Gil",
+        "email": "maria.gil@student.edu",
+        "total_levels_completed": 378,
+        "total_games_played": 2,
+        "total_play_time_minutes": 1312,
+        "total_play_time_hours": 21.9,
+        "average_score": 75.0,
+        "current_streak_days": 1
+      },
+      {
+        "rank": 10,
+        "name": "Alejandro Medina",
+        "email": "alejandro.medina@student.edu",
+        "total_levels_completed": 340,
+        "total_games_played": 2,
+        "total_play_time_minutes": 1174,
+        "total_play_time_hours": 19.6,
+        "average_score": 74.8,
+        "current_streak_days": 1
+      }
+    ]
+  },
+  "game_distribution": [
+    {
+      "game": "Matemáticas Interactivas",
+      "total_time_minutes": 5963,
+      "total_sessions": 2238,
+      "students_playing": 9
+    },
+    {
+      "game": "Programación Visual - Bloques",
+      "total_time_minutes": 3665,
+      "total_sessions": 1330,
+      "students_playing": 6
+    },
+    {
+      "game": "Filosofía y Pensamiento Crítico",
+      "total_time_minutes": 3395,
+      "total_sessions": 834,
+      "students_playing": 8
+    },
+    {
+      "game": "Hello World",
+      "total_time_minutes": 665,
+      "total_sessions": 219,
+      "students_playing": 5
+    }
+  ],
+  "level_performance_summary": [
+    {
+      "level_name": "Bucles",
+      "avg_score": 80.9,
+      "total_attempts": 854,
+      "total_time": 854,
+      "students_played": 6,
+      "students_completed": 6,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Condicionales",
+      "avg_score": 81.3,
+      "total_attempts": 926,
+      "total_time": 926,
+      "students_played": 6,
+      "students_completed": 6,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Epistemología",
+      "avg_score": 65.2,
+      "total_attempts": 876,
+      "total_time": 876,
+      "students_played": 8,
+      "students_completed": 8,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Funciones",
+      "avg_score": 80.0,
+      "total_attempts": 972,
+      "total_time": 972,
+      "students_played": 6,
+      "students_completed": 6,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "La cafeteria infernal",
+      "avg_score": 78.6,
+      "total_attempts": 665,
+      "total_time": 665,
+      "students_played": 5,
+      "students_completed": 5,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Lógica",
+      "avg_score": 66.6,
+      "total_attempts": 685,
+      "total_time": 685,
+      "students_played": 8,
+      "students_completed": 8,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Metafísica",
+      "avg_score": 66.2,
+      "total_attempts": 846,
+      "total_time": 846,
+      "students_played": 8,
+      "students_completed": 8,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Operaciones Básicas",
+      "avg_score": 80.7,
+      "total_attempts": 3076,
+      "total_time": 3076,
+      "students_played": 9,
+      "students_completed": 9,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Variables",
+      "avg_score": 80.0,
+      "total_attempts": 913,
+      "total_time": 913,
+      "students_played": 6,
+      "students_completed": 6,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Álgebra",
+      "avg_score": 81.1,
+      "total_attempts": 2887,
+      "total_time": 2887,
+      "students_played": 9,
+      "students_completed": 9,
+      "completion_rate_pct": 100.0
+    },
+    {
+      "level_name": "Ética",
+      "avg_score": 66.2,
+      "total_attempts": 988,
+      "total_time": 988,
+      "students_played": 8,
+      "students_completed": 8,
+      "completion_rate_pct": 100.0
+    }
+  ],
+  "student_details": [
+    {
+      "student": {
+        "id": "790569fb-1d9e-4c6b-89c6-028877013df2",
+        "name": "Gabriela Ramos",
+        "email": "gabriela.ramos@student.edu"
+      },
+      "kpis": {
+        "total_levels_completed": 338,
+        "total_games_played": 3,
+        "total_play_time": 1065,
+        "average_score": 77.8,
+        "current_streak": 1,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-01",
+          "level": 2,
+          "score": 87,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-02-03",
+          "level": 1,
+          "score": 93,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-02-05",
+          "level": 2,
+          "score": 76,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-02-07",
+          "level": 2,
+          "score": 72,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-02-09",
+          "level": 1,
+          "score": 77,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-02-10",
+          "level": 4,
+          "score": 83,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-02-13",
+          "level": 2,
+          "score": 75,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-02-14",
+          "level": 2,
+          "score": 66,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-02-15",
+          "level": 2,
+          "score": 70,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-18",
+          "level": 2,
+          "score": 73,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-02-24",
+          "level": 2,
+          "score": 71,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-02-25",
+          "level": 2,
+          "score": 76,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-02-27",
+          "level": 1,
+          "score": 98,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-01",
+          "level": 2,
+          "score": 77,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-03-03",
+          "level": 1,
+          "score": 75,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-03-07",
+          "level": 1,
+          "score": 83,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-09",
+          "level": 2,
+          "score": 77,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-03-11",
+          "level": 2,
+          "score": 77,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-12",
+          "level": 2,
+          "score": 89,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-16",
+          "level": 2,
+          "score": 87,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-18",
+          "level": 2,
+          "score": 75,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-19",
+          "level": 2,
+          "score": 73,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-03-20",
+          "level": 2,
+          "score": 77,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-03-22",
+          "level": 1,
+          "score": 75,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-03-24",
+          "level": 2,
+          "score": 71,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-03-30",
+          "level": 1,
+          "score": 63,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-03-31",
+          "level": 1,
+          "score": 71,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-01",
+          "level": 2,
+          "score": 76,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-04-03",
+          "level": 2,
+          "score": 71,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-06",
+          "level": 1,
+          "score": 76,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-04-07",
+          "level": 2,
+          "score": 72,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-04-08",
+          "level": 2,
+          "score": 71,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-13",
+          "level": 1,
+          "score": 62,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-04-15",
+          "level": 2,
+          "score": 79,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-04-17",
+          "level": 2,
+          "score": 70,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-04-19",
+          "level": 2,
+          "score": 72,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-04-21",
+          "level": 1,
+          "score": 73,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-23",
+          "level": 2,
+          "score": 74,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-04-24",
+          "level": 4,
+          "score": 85,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-04-26",
+          "level": 2,
+          "score": 77,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-04-27",
+          "level": 2,
+          "score": 75,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-04-30",
+          "level": 3,
+          "score": 72,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-01",
+          "level": 2,
+          "score": 82,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-02",
+          "level": 2,
+          "score": 78,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-04",
+          "level": 3,
+          "score": 91,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-05-05",
+          "level": 3,
+          "score": 76,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-05-09",
+          "level": 2,
+          "score": 85,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-05-10",
+          "level": 2,
+          "score": 76,
+          "time_spent": 40
+        },
+        {
+          "date": "2026-05-12",
+          "level": 3,
+          "score": 75,
+          "time_spent": 33
+        },
+        {
+          "date": "2026-05-14",
+          "level": 2,
+          "score": 76,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-17",
+          "level": 2,
+          "score": 61,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-18",
+          "level": 2,
+          "score": 74,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-05-21",
+          "level": 1,
+          "score": 94,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-24",
+          "level": 2,
+          "score": 82,
+          "time_spent": 41
+        },
+        {
+          "date": "2026-05-25",
+          "level": 2,
+          "score": 71,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-05-26",
+          "level": 2,
+          "score": 85,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-05-27",
+          "level": 4,
+          "score": 77,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-28",
+          "level": 1,
+          "score": 73,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-06-01",
+          "level": 4,
+          "score": 71,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-06-02",
+          "level": 1,
+          "score": 82,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-06-03",
+          "level": 4,
+          "score": 76,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-06-05",
+          "level": 2,
+          "score": 72,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-06-09",
+          "level": 2,
+          "score": 75,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-06-10",
+          "level": 4,
+          "score": 82,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-06-11",
+          "level": 2,
+          "score": 76,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-06-14",
+          "level": 2,
+          "score": 79,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-06-23",
+          "level": 1,
+          "score": 75,
+          "time_spent": 15
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Ética",
+          "score": 75.5,
+          "attempts": 135,
+          "time_spent": 135,
+          "completed": true
+        },
+        {
+          "level_name": "La cafeteria infernal",
+          "score": 93.1,
+          "attempts": 58,
+          "time_spent": 58,
+          "completed": true
+        },
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 74.5,
+          "attempts": 354,
+          "time_spent": 354,
+          "completed": true
+        },
+        {
+          "level_name": "Álgebra",
+          "score": 76.2,
+          "attempts": 328,
+          "time_spent": 328,
+          "completed": true
+        },
+        {
+          "level_name": "Metafísica",
+          "score": 79.2,
+          "attempts": 76,
+          "time_spent": 76,
+          "completed": true
+        },
+        {
+          "level_name": "Lógica",
+          "score": 78.2,
+          "attempts": 40,
+          "time_spent": 40,
+          "completed": true
+        },
+        {
+          "level_name": "Epistemología",
+          "score": 74.7,
+          "attempts": 74,
+          "time_spent": 74,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Filosofía y Pensamiento Crítico",
+          "time_spent": 325,
+          "sessions": 98
+        },
+        {
+          "game_name": "Hello World",
+          "time_spent": 58,
+          "sessions": 40
+        },
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 682,
+          "sessions": 200
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Filosofía y Pensamiento Crítico",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Hello World",
+          "completed_segments": 5,
+          "total_segments": 6,
+          "completion_percentage": 83.3
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "60b48d6c-1df0-4b1f-b49d-32b6492b271e",
+        "name": "Juan Perez",
+        "email": "juan.perez@example.com"
+      },
+      "kpis": {
+        "total_levels_completed": 463,
+        "total_games_played": 3,
+        "total_play_time": 1638,
+        "average_score": 74.8,
+        "current_streak": 2,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-02",
+          "level": 3,
+          "score": 74,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-02-04",
+          "level": 2,
+          "score": 72,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-02-09",
+          "level": 2,
+          "score": 73,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-02-11",
+          "level": 2,
+          "score": 76,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-02-12",
+          "level": 3,
+          "score": 66,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-02-15",
+          "level": 4,
+          "score": 75,
+          "time_spent": 45
+        },
+        {
+          "date": "2026-02-16",
+          "level": 3,
+          "score": 71,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-02-17",
+          "level": 2,
+          "score": 75,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-18",
+          "level": 4,
+          "score": 73,
+          "time_spent": 37
+        },
+        {
+          "date": "2026-02-22",
+          "level": 2,
+          "score": 77,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-02-24",
+          "level": 2,
+          "score": 78,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-02-26",
+          "level": 2,
+          "score": 73,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-02-27",
+          "level": 4,
+          "score": 78,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-02-28",
+          "level": 1,
+          "score": 82,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-01",
+          "level": 1,
+          "score": 76,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-03-02",
+          "level": 4,
+          "score": 73,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-03",
+          "level": 4,
+          "score": 79,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-03-04",
+          "level": 3,
+          "score": 73,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-03-05",
+          "level": 2,
+          "score": 73,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-08",
+          "level": 4,
+          "score": 73,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-03-09",
+          "level": 4,
+          "score": 78,
+          "time_spent": 44
+        },
+        {
+          "date": "2026-03-10",
+          "level": 4,
+          "score": 71,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-03-11",
+          "level": 3,
+          "score": 73,
+          "time_spent": 62
+        },
+        {
+          "date": "2026-03-15",
+          "level": 2,
+          "score": 75,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-03-16",
+          "level": 1,
+          "score": 77,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-17",
+          "level": 2,
+          "score": 76,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-18",
+          "level": 2,
+          "score": 72,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-20",
+          "level": 4,
+          "score": 79,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-03-21",
+          "level": 3,
+          "score": 70,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-03-23",
+          "level": 2,
+          "score": 67,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-24",
+          "level": 1,
+          "score": 72,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-25",
+          "level": 1,
+          "score": 72,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-03-28",
+          "level": 2,
+          "score": 74,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-03-29",
+          "level": 2,
+          "score": 80,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-30",
+          "level": 2,
+          "score": 72,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-03-31",
+          "level": 3,
+          "score": 80,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-04-02",
+          "level": 1,
+          "score": 67,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-04-05",
+          "level": 1,
+          "score": 66,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-04-07",
+          "level": 2,
+          "score": 74,
+          "time_spent": 45
+        },
+        {
+          "date": "2026-04-08",
+          "level": 3,
+          "score": 75,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-04-15",
+          "level": 4,
+          "score": 80,
+          "time_spent": 39
+        },
+        {
+          "date": "2026-04-16",
+          "level": 1,
+          "score": 68,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-17",
+          "level": 2,
+          "score": 78,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-18",
+          "level": 4,
+          "score": 71,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-19",
+          "level": 3,
+          "score": 75,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-20",
+          "level": 2,
+          "score": 80,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-04-23",
+          "level": 1,
+          "score": 80,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-24",
+          "level": 2,
+          "score": 81,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-04-27",
+          "level": 2,
+          "score": 78,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-28",
+          "level": 4,
+          "score": 77,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-29",
+          "level": 3,
+          "score": 67,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-05-01",
+          "level": 1,
+          "score": 80,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-05-04",
+          "level": 4,
+          "score": 75,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-07",
+          "level": 2,
+          "score": 75,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-05-09",
+          "level": 4,
+          "score": 75,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-10",
+          "level": 1,
+          "score": 79,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-05-12",
+          "level": 1,
+          "score": 76,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-05-13",
+          "level": 1,
+          "score": 67,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-15",
+          "level": 2,
+          "score": 75,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-05-18",
+          "level": 3,
+          "score": 69,
+          "time_spent": 32
+        },
+        {
+          "date": "2026-05-19",
+          "level": 3,
+          "score": 71,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-05-20",
+          "level": 1,
+          "score": 72,
+          "time_spent": 33
+        },
+        {
+          "date": "2026-05-21",
+          "level": 3,
+          "score": 75,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-23",
+          "level": 2,
+          "score": 78,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-24",
+          "level": 1,
+          "score": 72,
+          "time_spent": 36
+        },
+        {
+          "date": "2026-05-25",
+          "level": 2,
+          "score": 67,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-05-26",
+          "level": 1,
+          "score": 67,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-28",
+          "level": 3,
+          "score": 79,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-05-30",
+          "level": 1,
+          "score": 74,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-31",
+          "level": 1,
+          "score": 71,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-06-01",
+          "level": 2,
+          "score": 73,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-06-02",
+          "level": 3,
+          "score": 76,
+          "time_spent": 37
+        },
+        {
+          "date": "2026-06-03",
+          "level": 2,
+          "score": 76,
+          "time_spent": 40
+        },
+        {
+          "date": "2026-06-06",
+          "level": 2,
+          "score": 88,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-06-09",
+          "level": 2,
+          "score": 73,
+          "time_spent": 38
+        },
+        {
+          "date": "2026-06-10",
+          "level": 1,
+          "score": 69,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-06-11",
+          "level": 2,
+          "score": 74,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-06-12",
+          "level": 2,
+          "score": 66,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-06-16",
+          "level": 2,
+          "score": 70,
+          "time_spent": 33
+        },
+        {
+          "date": "2026-06-17",
+          "level": 4,
+          "score": 79,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-06-18",
+          "level": 4,
+          "score": 71,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-06-19",
+          "level": 2,
+          "score": 78,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-06-22",
+          "level": 2,
+          "score": 76,
+          "time_spent": 39
+        },
+        {
+          "date": "2026-06-23",
+          "level": 2,
+          "score": 82,
+          "time_spent": 14
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Bucles",
+          "score": 74.3,
+          "attempts": 135,
+          "time_spent": 135,
+          "completed": true
+        },
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 74.6,
+          "attempts": 421,
+          "time_spent": 421,
+          "completed": true
+        },
+        {
+          "level_name": "Álgebra",
+          "score": 76.3,
+          "attempts": 342,
+          "time_spent": 342,
+          "completed": true
+        },
+        {
+          "level_name": "La cafeteria infernal",
+          "score": 73.9,
+          "attempts": 196,
+          "time_spent": 196,
+          "completed": true
+        },
+        {
+          "level_name": "Variables",
+          "score": 74.6,
+          "attempts": 179,
+          "time_spent": 179,
+          "completed": true
+        },
+        {
+          "level_name": "Condicionales",
+          "score": 75.2,
+          "attempts": 250,
+          "time_spent": 250,
+          "completed": true
+        },
+        {
+          "level_name": "Funciones",
+          "score": 72.7,
+          "attempts": 115,
+          "time_spent": 115,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Programación Visual - Bloques",
+          "time_spent": 679,
+          "sessions": 200
+        },
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 763,
+          "sessions": 211
+        },
+        {
+          "game_name": "Hello World",
+          "time_spent": 196,
+          "sessions": 52
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Hello World",
+          "completed_segments": 5,
+          "total_segments": 6,
+          "completion_percentage": 83.3
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Programación Visual - Bloques",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "bc32f80a-d6ab-45cc-bcdf-c0934a0b382c",
+        "name": "Pedro Ortega",
+        "email": "pedro.ortega@student.edu"
+      },
+      "kpis": {
+        "total_levels_completed": 654,
+        "total_games_played": 3,
+        "total_play_time": 1271,
+        "average_score": 88.9,
+        "current_streak": 3,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-01",
+          "level": 2,
+          "score": 90,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-02-03",
+          "level": 3,
+          "score": 92,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-04",
+          "level": 2,
+          "score": 78,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-02-05",
+          "level": 4,
+          "score": 94,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-08",
+          "level": 2,
+          "score": 90,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-09",
+          "level": 3,
+          "score": 98,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-02-10",
+          "level": 4,
+          "score": 95,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-02-11",
+          "level": 2,
+          "score": 86,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-13",
+          "level": 2,
+          "score": 92,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-02-15",
+          "level": 3,
+          "score": 89,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-17",
+          "level": 4,
+          "score": 83,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-02-18",
+          "level": 4,
+          "score": 91,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-02-19",
+          "level": 3,
+          "score": 84,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-02-20",
+          "level": 4,
+          "score": 93,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-23",
+          "level": 2,
+          "score": 90,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-24",
+          "level": 1,
+          "score": 91,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-02-25",
+          "level": 2,
+          "score": 85,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-02-26",
+          "level": 3,
+          "score": 92,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-28",
+          "level": 2,
+          "score": 93,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-01",
+          "level": 2,
+          "score": 88,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-03",
+          "level": 3,
+          "score": 87,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-03-04",
+          "level": 2,
+          "score": 90,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-05",
+          "level": 2,
+          "score": 80,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-06",
+          "level": 2,
+          "score": 90,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-03-08",
+          "level": 4,
+          "score": 92,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-03-09",
+          "level": 1,
+          "score": 89,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-10",
+          "level": 1,
+          "score": 80,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-03-11",
+          "level": 4,
+          "score": 85,
+          "time_spent": 39
+        },
+        {
+          "date": "2026-03-12",
+          "level": 1,
+          "score": 93,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-15",
+          "level": 4,
+          "score": 91,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-03-16",
+          "level": 2,
+          "score": 91,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-17",
+          "level": 2,
+          "score": 94,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-18",
+          "level": 4,
+          "score": 91,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-03-19",
+          "level": 2,
+          "score": 87,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-03-20",
+          "level": 4,
+          "score": 76,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-03-22",
+          "level": 2,
+          "score": 87,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-03-23",
+          "level": 1,
+          "score": 95,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-03-24",
+          "level": 4,
+          "score": 81,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-03-25",
+          "level": 2,
+          "score": 91,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-03-28",
+          "level": 4,
+          "score": 90,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-29",
+          "level": 3,
+          "score": 97,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-03-30",
+          "level": 2,
+          "score": 92,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-31",
+          "level": 2,
+          "score": 89,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-04-01",
+          "level": 1,
+          "score": 92,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-04-02",
+          "level": 2,
+          "score": 90,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-04-06",
+          "level": 4,
+          "score": 93,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-04-07",
+          "level": 4,
+          "score": 82,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-04-08",
+          "level": 4,
+          "score": 93,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-04-09",
+          "level": 1,
+          "score": 99,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-04-10",
+          "level": 2,
+          "score": 78,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-04-12",
+          "level": 3,
+          "score": 91,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-04-14",
+          "level": 4,
+          "score": 81,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-04-15",
+          "level": 3,
+          "score": 86,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-04-16",
+          "level": 2,
+          "score": 91,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-20",
+          "level": 2,
+          "score": 89,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-22",
+          "level": 2,
+          "score": 92,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-23",
+          "level": 3,
+          "score": 92,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-24",
+          "level": 4,
+          "score": 92,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-04-28",
+          "level": 4,
+          "score": 95,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-04-29",
+          "level": 4,
+          "score": 82,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-04-30",
+          "level": 4,
+          "score": 84,
+          "time_spent": 32
+        },
+        {
+          "date": "2026-05-02",
+          "level": 3,
+          "score": 89,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-05-03",
+          "level": 1,
+          "score": 89,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-05-04",
+          "level": 3,
+          "score": 91,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-05-05",
+          "level": 2,
+          "score": 91,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-06",
+          "level": 4,
+          "score": 78,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-09",
+          "level": 3,
+          "score": 78,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-05-10",
+          "level": 2,
+          "score": 98,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-05-11",
+          "level": 4,
+          "score": 90,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-05-12",
+          "level": 2,
+          "score": 91,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-05-13",
+          "level": 3,
+          "score": 86,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-05-14",
+          "level": 3,
+          "score": 92,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-05-15",
+          "level": 3,
+          "score": 82,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-16",
+          "level": 2,
+          "score": 91,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-05-17",
+          "level": 2,
+          "score": 82,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-05-18",
+          "level": 4,
+          "score": 92,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-05-19",
+          "level": 1,
+          "score": 91,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-05-20",
+          "level": 4,
+          "score": 86,
+          "time_spent": 38
+        },
+        {
+          "date": "2026-05-21",
+          "level": 2,
+          "score": 91,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-05-23",
+          "level": 1,
+          "score": 94,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-05-24",
+          "level": 3,
+          "score": 80,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-05-25",
+          "level": 1,
+          "score": 72,
+          "time_spent": 33
+        },
+        {
+          "date": "2026-05-26",
+          "level": 4,
+          "score": 95,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-05-27",
+          "level": 2,
+          "score": 99,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-31",
+          "level": 2,
+          "score": 92,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-06-01",
+          "level": 3,
+          "score": 90,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-06-02",
+          "level": 2,
+          "score": 79,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-06-03",
+          "level": 4,
+          "score": 73,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-06-04",
+          "level": 3,
+          "score": 93,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-06-05",
+          "level": 1,
+          "score": 92,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-06-08",
+          "level": 1,
+          "score": 92,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-06-10",
+          "level": 2,
+          "score": 93,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-06-11",
+          "level": 2,
+          "score": 93,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-06-13",
+          "level": 2,
+          "score": 92,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-06-14",
+          "level": 2,
+          "score": 96,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-06-15",
+          "level": 4,
+          "score": 86,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-06-16",
+          "level": 3,
+          "score": 94,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-06-17",
+          "level": 4,
+          "score": 89,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-06-19",
+          "level": 4,
+          "score": 90,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-06-21",
+          "level": 2,
+          "score": 97,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-06-22",
+          "level": 3,
+          "score": 92,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-06-23",
+          "level": 3,
+          "score": 84,
+          "time_spent": 16
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Álgebra",
+          "score": 92.5,
+          "attempts": 208,
+          "time_spent": 208,
+          "completed": true
+        },
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 92.4,
+          "attempts": 207,
+          "time_spent": 207,
+          "completed": true
+        },
+        {
+          "level_name": "Bucles",
+          "score": 92.8,
+          "attempts": 87,
+          "time_spent": 87,
+          "completed": true
+        },
+        {
+          "level_name": "Condicionales",
+          "score": 92.3,
+          "attempts": 91,
+          "time_spent": 91,
+          "completed": true
+        },
+        {
+          "level_name": "Lógica",
+          "score": 75.4,
+          "attempts": 109,
+          "time_spent": 109,
+          "completed": true
+        },
+        {
+          "level_name": "Funciones",
+          "score": 92.0,
+          "attempts": 67,
+          "time_spent": 67,
+          "completed": true
+        },
+        {
+          "level_name": "Variables",
+          "score": 91.4,
+          "attempts": 119,
+          "time_spent": 119,
+          "completed": true
+        },
+        {
+          "level_name": "Metafísica",
+          "score": 76.6,
+          "attempts": 137,
+          "time_spent": 137,
+          "completed": true
+        },
+        {
+          "level_name": "Ética",
+          "score": 77.7,
+          "attempts": 129,
+          "time_spent": 129,
+          "completed": true
+        },
+        {
+          "level_name": "Epistemología",
+          "score": 75.0,
+          "attempts": 117,
+          "time_spent": 117,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 415,
+          "sessions": 278
+        },
+        {
+          "game_name": "Programación Visual - Bloques",
+          "time_spent": 364,
+          "sessions": 236
+        },
+        {
+          "game_name": "Filosofía y Pensamiento Crítico",
+          "time_spent": 492,
+          "sessions": 140
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Filosofía y Pensamiento Crítico",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Programación Visual - Bloques",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "e23319bf-3e52-4665-a2cb-cbedbebd94d0",
+        "name": "María Gil",
+        "email": "maria.gil@student.edu"
+      },
+      "kpis": {
+        "total_levels_completed": 378,
+        "total_games_played": 2,
+        "total_play_time": 1312,
+        "average_score": 75.0,
+        "current_streak": 1,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-01",
+          "level": 4,
+          "score": 81,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-03",
+          "level": 4,
+          "score": 75,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-02-08",
+          "level": 4,
+          "score": 73,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-02-10",
+          "level": 3,
+          "score": 79,
+          "time_spent": 41
+        },
+        {
+          "date": "2026-02-12",
+          "level": 2,
+          "score": 73,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-02-13",
+          "level": 4,
+          "score": 76,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-02-16",
+          "level": 4,
+          "score": 74,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-02-18",
+          "level": 4,
+          "score": 70,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-02-19",
+          "level": 4,
+          "score": 77,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-02-20",
+          "level": 4,
+          "score": 77,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-02-22",
+          "level": 2,
+          "score": 75,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-02-23",
+          "level": 1,
+          "score": 71,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-02-25",
+          "level": 2,
+          "score": 68,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-03-02",
+          "level": 4,
+          "score": 70,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-03-03",
+          "level": 3,
+          "score": 72,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-03-04",
+          "level": 3,
+          "score": 75,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-03-07",
+          "level": 4,
+          "score": 68,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-03-09",
+          "level": 4,
+          "score": 69,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-03-10",
+          "level": 4,
+          "score": 81,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-11",
+          "level": 3,
+          "score": 71,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-14",
+          "level": 4,
+          "score": 73,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-15",
+          "level": 1,
+          "score": 89,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-16",
+          "level": 3,
+          "score": 79,
+          "time_spent": 46
+        },
+        {
+          "date": "2026-03-18",
+          "level": 4,
+          "score": 73,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-03-23",
+          "level": 1,
+          "score": 78,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-03-25",
+          "level": 2,
+          "score": 77,
+          "time_spent": 45
+        },
+        {
+          "date": "2026-03-30",
+          "level": 3,
+          "score": 81,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-31",
+          "level": 4,
+          "score": 69,
+          "time_spent": 32
+        },
+        {
+          "date": "2026-04-01",
+          "level": 2,
+          "score": 83,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-04-06",
+          "level": 3,
+          "score": 74,
+          "time_spent": 55
+        },
+        {
+          "date": "2026-04-07",
+          "level": 3,
+          "score": 75,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-04-09",
+          "level": 4,
+          "score": 75,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-04-12",
+          "level": 3,
+          "score": 71,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-13",
+          "level": 4,
+          "score": 71,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-04-15",
+          "level": 3,
+          "score": 77,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-18",
+          "level": 4,
+          "score": 86,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-04-19",
+          "level": 4,
+          "score": 76,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-04-20",
+          "level": 1,
+          "score": 73,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-27",
+          "level": 3,
+          "score": 72,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-28",
+          "level": 2,
+          "score": 87,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-04-30",
+          "level": 3,
+          "score": 78,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-05-02",
+          "level": 1,
+          "score": 81,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-05-04",
+          "level": 4,
+          "score": 72,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-05-05",
+          "level": 4,
+          "score": 78,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-07",
+          "level": 3,
+          "score": 65,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-08",
+          "level": 1,
+          "score": 70,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-05-10",
+          "level": 4,
+          "score": 71,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-11",
+          "level": 3,
+          "score": 75,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-12",
+          "level": 1,
+          "score": 71,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-14",
+          "level": 1,
+          "score": 72,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-17",
+          "level": 3,
+          "score": 69,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-05-18",
+          "level": 4,
+          "score": 73,
+          "time_spent": 32
+        },
+        {
+          "date": "2026-05-20",
+          "level": 3,
+          "score": 87,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-21",
+          "level": 4,
+          "score": 73,
+          "time_spent": 37
+        },
+        {
+          "date": "2026-05-22",
+          "level": 3,
+          "score": 76,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-24",
+          "level": 4,
+          "score": 74,
+          "time_spent": 32
+        },
+        {
+          "date": "2026-05-25",
+          "level": 2,
+          "score": 78,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-05-27",
+          "level": 3,
+          "score": 76,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-05-28",
+          "level": 4,
+          "score": 84,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-06-02",
+          "level": 4,
+          "score": 77,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-06-04",
+          "level": 1,
+          "score": 78,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-06-07",
+          "level": 4,
+          "score": 73,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-06-09",
+          "level": 3,
+          "score": 73,
+          "time_spent": 41
+        },
+        {
+          "date": "2026-06-11",
+          "level": 2,
+          "score": 80,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-06-13",
+          "level": 4,
+          "score": 75,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-06-15",
+          "level": 4,
+          "score": 75,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-06-16",
+          "level": 4,
+          "score": 79,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-06-18",
+          "level": 4,
+          "score": 63,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-06-21",
+          "level": 3,
+          "score": 75,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-06-23",
+          "level": 4,
+          "score": 71,
+          "time_spent": 32
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Bucles",
+          "score": 75.0,
+          "attempts": 182,
+          "time_spent": 182,
+          "completed": true
+        },
+        {
+          "level_name": "Funciones",
+          "score": 74.3,
+          "attempts": 235,
+          "time_spent": 235,
+          "completed": true
+        },
+        {
+          "level_name": "Condicionales",
+          "score": 74.8,
+          "attempts": 222,
+          "time_spent": 222,
+          "completed": true
+        },
+        {
+          "level_name": "Variables",
+          "score": 75.2,
+          "attempts": 203,
+          "time_spent": 203,
+          "completed": true
+        },
+        {
+          "level_name": "Epistemología",
+          "score": 76.5,
+          "attempts": 125,
+          "time_spent": 125,
+          "completed": true
+        },
+        {
+          "level_name": "Ética",
+          "score": 72.3,
+          "attempts": 131,
+          "time_spent": 131,
+          "completed": true
+        },
+        {
+          "level_name": "Metafísica",
+          "score": 74.7,
+          "attempts": 98,
+          "time_spent": 98,
+          "completed": true
+        },
+        {
+          "level_name": "Lógica",
+          "score": 78.2,
+          "attempts": 116,
+          "time_spent": 116,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Programación Visual - Bloques",
+          "time_spent": 842,
+          "sessions": 240
+        },
+        {
+          "game_name": "Filosofía y Pensamiento Crítico",
+          "time_spent": 470,
+          "sessions": 138
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Filosofía y Pensamiento Crítico",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Programación Visual - Bloques",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "99ad20ff-6776-4acf-a6cc-267126c62cfa",
+        "name": "Sara Herrera",
+        "email": "sara.herrera@student.edu"
+      },
+      "kpis": {
+        "total_levels_completed": 530,
+        "total_games_played": 3,
+        "total_play_time": 2012,
+        "average_score": 71.5,
+        "current_streak": 2,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-02",
+          "level": 4,
+          "score": 72,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-02-03",
+          "level": 2,
+          "score": 45,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-02-04",
+          "level": 2,
+          "score": 75,
+          "time_spent": 43
+        },
+        {
+          "date": "2026-02-05",
+          "level": 2,
+          "score": 76,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-02-06",
+          "level": 2,
+          "score": 81,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-02-07",
+          "level": 2,
+          "score": 62,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-02-08",
+          "level": 4,
+          "score": 52,
+          "time_spent": 53
+        },
+        {
+          "date": "2026-02-09",
+          "level": 4,
+          "score": 79,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-02-11",
+          "level": 3,
+          "score": 78,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-02-12",
+          "level": 2,
+          "score": 82,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-16",
+          "level": 2,
+          "score": 80,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-02-17",
+          "level": 3,
+          "score": 75,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-02-18",
+          "level": 2,
+          "score": 74,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-02-19",
+          "level": 3,
+          "score": 72,
+          "time_spent": 36
+        },
+        {
+          "date": "2026-02-23",
+          "level": 2,
+          "score": 72,
+          "time_spent": 38
+        },
+        {
+          "date": "2026-02-26",
+          "level": 2,
+          "score": 58,
+          "time_spent": 51
+        },
+        {
+          "date": "2026-03-01",
+          "level": 3,
+          "score": 70,
+          "time_spent": 60
+        },
+        {
+          "date": "2026-03-02",
+          "level": 2,
+          "score": 74,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-03-03",
+          "level": 1,
+          "score": 86,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-04",
+          "level": 2,
+          "score": 72,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-03-05",
+          "level": 2,
+          "score": 69,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-06",
+          "level": 2,
+          "score": 78,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-03-08",
+          "level": 1,
+          "score": 84,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-09",
+          "level": 1,
+          "score": 52,
+          "time_spent": 37
+        },
+        {
+          "date": "2026-03-10",
+          "level": 4,
+          "score": 71,
+          "time_spent": 36
+        },
+        {
+          "date": "2026-03-15",
+          "level": 4,
+          "score": 81,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-16",
+          "level": 4,
+          "score": 73,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-03-17",
+          "level": 4,
+          "score": 57,
+          "time_spent": 44
+        },
+        {
+          "date": "2026-03-18",
+          "level": 1,
+          "score": 84,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-21",
+          "level": 4,
+          "score": 74,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-03-22",
+          "level": 2,
+          "score": 75,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-03-23",
+          "level": 4,
+          "score": 66,
+          "time_spent": 52
+        },
+        {
+          "date": "2026-03-24",
+          "level": 3,
+          "score": 78,
+          "time_spent": 41
+        },
+        {
+          "date": "2026-03-26",
+          "level": 4,
+          "score": 69,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-03-30",
+          "level": 2,
+          "score": 75,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-03-31",
+          "level": 1,
+          "score": 60,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-04-01",
+          "level": 3,
+          "score": 74,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-02",
+          "level": 4,
+          "score": 60,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-04-03",
+          "level": 4,
+          "score": 73,
+          "time_spent": 44
+        },
+        {
+          "date": "2026-04-07",
+          "level": 3,
+          "score": 68,
+          "time_spent": 47
+        },
+        {
+          "date": "2026-04-08",
+          "level": 4,
+          "score": 73,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-09",
+          "level": 2,
+          "score": 78,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-10",
+          "level": 2,
+          "score": 81,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-04-12",
+          "level": 3,
+          "score": 61,
+          "time_spent": 69
+        },
+        {
+          "date": "2026-04-14",
+          "level": 1,
+          "score": 81,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-04-15",
+          "level": 4,
+          "score": 71,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-16",
+          "level": 1,
+          "score": 76,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-17",
+          "level": 1,
+          "score": 77,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-19",
+          "level": 2,
+          "score": 71,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-20",
+          "level": 3,
+          "score": 75,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-04-24",
+          "level": 2,
+          "score": 79,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-27",
+          "level": 1,
+          "score": 71,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-04-29",
+          "level": 3,
+          "score": 74,
+          "time_spent": 42
+        },
+        {
+          "date": "2026-05-01",
+          "level": 2,
+          "score": 78,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-05-03",
+          "level": 1,
+          "score": 75,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-05-04",
+          "level": 2,
+          "score": 73,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-06",
+          "level": 1,
+          "score": 72,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-05-07",
+          "level": 2,
+          "score": 76,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-05-11",
+          "level": 2,
+          "score": 71,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-05-12",
+          "level": 2,
+          "score": 69,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-05-13",
+          "level": 3,
+          "score": 74,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-05-14",
+          "level": 4,
+          "score": 78,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-05-16",
+          "level": 2,
+          "score": 72,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-05-17",
+          "level": 3,
+          "score": 76,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-05-18",
+          "level": 4,
+          "score": 79,
+          "time_spent": 36
+        },
+        {
+          "date": "2026-05-19",
+          "level": 4,
+          "score": 70,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-05-21",
+          "level": 2,
+          "score": 70,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-05-23",
+          "level": 3,
+          "score": 77,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-05-24",
+          "level": 1,
+          "score": 74,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-05-25",
+          "level": 2,
+          "score": 82,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-05-26",
+          "level": 4,
+          "score": 73,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-05-27",
+          "level": 4,
+          "score": 80,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-29",
+          "level": 2,
+          "score": 74,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-05-30",
+          "level": 2,
+          "score": 51,
+          "time_spent": 42
+        },
+        {
+          "date": "2026-06-01",
+          "level": 4,
+          "score": 68,
+          "time_spent": 75
+        },
+        {
+          "date": "2026-06-03",
+          "level": 4,
+          "score": 75,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-06-07",
+          "level": 2,
+          "score": 72,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-06-08",
+          "level": 4,
+          "score": 73,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-06-09",
+          "level": 2,
+          "score": 73,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-06-10",
+          "level": 3,
+          "score": 59,
+          "time_spent": 50
+        },
+        {
+          "date": "2026-06-14",
+          "level": 4,
+          "score": 70,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-06-15",
+          "level": 3,
+          "score": 74,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-06-16",
+          "level": 2,
+          "score": 81,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-06-18",
+          "level": 4,
+          "score": 58,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-06-21",
+          "level": 3,
+          "score": 72,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-06-22",
+          "level": 2,
+          "score": 73,
+          "time_spent": 17
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Funciones",
+          "score": 73.9,
+          "attempts": 232,
+          "time_spent": 232,
+          "completed": true
+        },
+        {
+          "level_name": "Condicionales",
+          "score": 77.2,
+          "attempts": 140,
+          "time_spent": 140,
+          "completed": true
+        },
+        {
+          "level_name": "Ética",
+          "score": 51.6,
+          "attempts": 115,
+          "time_spent": 115,
+          "completed": true
+        },
+        {
+          "level_name": "Álgebra",
+          "score": 75.7,
+          "attempts": 455,
+          "time_spent": 455,
+          "completed": true
+        },
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 74.4,
+          "attempts": 458,
+          "time_spent": 458,
+          "completed": true
+        },
+        {
+          "level_name": "Variables",
+          "score": 72.7,
+          "attempts": 140,
+          "time_spent": 140,
+          "completed": true
+        },
+        {
+          "level_name": "Metafísica",
+          "score": 51.3,
+          "attempts": 130,
+          "time_spent": 130,
+          "completed": true
+        },
+        {
+          "level_name": "Bucles",
+          "score": 74.3,
+          "attempts": 145,
+          "time_spent": 145,
+          "completed": true
+        },
+        {
+          "level_name": "Epistemología",
+          "score": 51.0,
+          "attempts": 160,
+          "time_spent": 160,
+          "completed": true
+        },
+        {
+          "level_name": "Lógica",
+          "score": 52.8,
+          "attempts": 37,
+          "time_spent": 37,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Programación Visual - Bloques",
+          "time_spent": 657,
+          "sessions": 188
+        },
+        {
+          "game_name": "Filosofía y Pensamiento Crítico",
+          "time_spent": 442,
+          "sessions": 74
+        },
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 913,
+          "sessions": 268
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Filosofía y Pensamiento Crítico",
+          "completed_segments": 11,
+          "total_segments": 12,
+          "completion_percentage": 91.7
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Programación Visual - Bloques",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "064a765d-ff9e-483c-9c0a-9be809481f1f",
+        "name": "Elena Ibáñez",
+        "email": "elena.ibanez@student.edu"
+      },
+      "kpis": {
+        "total_levels_completed": 647,
+        "total_games_played": 3,
+        "total_play_time": 1275,
+        "average_score": 87.9,
+        "current_streak": 6,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-01",
+          "level": 3,
+          "score": 87,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-02-02",
+          "level": 3,
+          "score": 54,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-02-03",
+          "level": 3,
+          "score": 91,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-04",
+          "level": 2,
+          "score": 92,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-02-05",
+          "level": 2,
+          "score": 91,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-06",
+          "level": 2,
+          "score": 91,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-07",
+          "level": 4,
+          "score": 92,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-08",
+          "level": 3,
+          "score": 70,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-02-09",
+          "level": 2,
+          "score": 92,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-10",
+          "level": 4,
+          "score": 93,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-02-12",
+          "level": 2,
+          "score": 90,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-02-15",
+          "level": 4,
+          "score": 91,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-02-16",
+          "level": 2,
+          "score": 95,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-17",
+          "level": 1,
+          "score": 52,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-02-18",
+          "level": 2,
+          "score": 94,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-02-19",
+          "level": 4,
+          "score": 91,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-02-20",
+          "level": 4,
+          "score": 94,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-02-22",
+          "level": 3,
+          "score": 95,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-02-23",
+          "level": 2,
+          "score": 95,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-02-24",
+          "level": 2,
+          "score": 94,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-25",
+          "level": 2,
+          "score": 93,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-02-26",
+          "level": 2,
+          "score": 95,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-02-27",
+          "level": 2,
+          "score": 89,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-02-28",
+          "level": 3,
+          "score": 89,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-03-01",
+          "level": 2,
+          "score": 92,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-02",
+          "level": 3,
+          "score": 92,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-03-03",
+          "level": 4,
+          "score": 94,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-03-04",
+          "level": 2,
+          "score": 94,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-03-05",
+          "level": 2,
+          "score": 92,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-06",
+          "level": 4,
+          "score": 42,
+          "time_spent": 33
+        },
+        {
+          "date": "2026-03-07",
+          "level": 2,
+          "score": 94,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-08",
+          "level": 1,
+          "score": 88,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-03-09",
+          "level": 4,
+          "score": 89,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-03-10",
+          "level": 2,
+          "score": 64,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-12",
+          "level": 1,
+          "score": 93,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-13",
+          "level": 2,
+          "score": 89,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-03-14",
+          "level": 2,
+          "score": 90,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-03-15",
+          "level": 2,
+          "score": 95,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-16",
+          "level": 4,
+          "score": 87,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-17",
+          "level": 2,
+          "score": 78,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-18",
+          "level": 2,
+          "score": 89,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-19",
+          "level": 3,
+          "score": 87,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-03-20",
+          "level": 3,
+          "score": 91,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-03-22",
+          "level": 2,
+          "score": 92,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-23",
+          "level": 1,
+          "score": 97,
+          "time_spent": 1
+        },
+        {
+          "date": "2026-03-24",
+          "level": 4,
+          "score": 77,
+          "time_spent": 55
+        },
+        {
+          "date": "2026-03-25",
+          "level": 4,
+          "score": 98,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-27",
+          "level": 4,
+          "score": 94,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-03-29",
+          "level": 4,
+          "score": 93,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-03-30",
+          "level": 4,
+          "score": 92,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-31",
+          "level": 3,
+          "score": 70,
+          "time_spent": 37
+        },
+        {
+          "date": "2026-04-05",
+          "level": 4,
+          "score": 67,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-04-06",
+          "level": 2,
+          "score": 90,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-04-08",
+          "level": 2,
+          "score": 90,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-04-12",
+          "level": 4,
+          "score": 92,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-04-13",
+          "level": 4,
+          "score": 78,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-04-14",
+          "level": 2,
+          "score": 92,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-04-15",
+          "level": 2,
+          "score": 90,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-04-16",
+          "level": 4,
+          "score": 90,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-04-17",
+          "level": 4,
+          "score": 90,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-04-19",
+          "level": 2,
+          "score": 96,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-04-21",
+          "level": 4,
+          "score": 92,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-04-22",
+          "level": 2,
+          "score": 68,
+          "time_spent": 40
+        },
+        {
+          "date": "2026-04-23",
+          "level": 1,
+          "score": 90,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-04-24",
+          "level": 2,
+          "score": 93,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-04-25",
+          "level": 4,
+          "score": 90,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-04-26",
+          "level": 3,
+          "score": 90,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-27",
+          "level": 4,
+          "score": 62,
+          "time_spent": 60
+        },
+        {
+          "date": "2026-04-29",
+          "level": 3,
+          "score": 95,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-04-30",
+          "level": 4,
+          "score": 88,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-03",
+          "level": 2,
+          "score": 91,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-04",
+          "level": 3,
+          "score": 94,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-06",
+          "level": 3,
+          "score": 93,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-05-07",
+          "level": 3,
+          "score": 93,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-05-10",
+          "level": 2,
+          "score": 95,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-11",
+          "level": 4,
+          "score": 91,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-05-12",
+          "level": 3,
+          "score": 93,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-05-13",
+          "level": 2,
+          "score": 89,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-05-14",
+          "level": 2,
+          "score": 86,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-05-15",
+          "level": 2,
+          "score": 88,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-05-17",
+          "level": 3,
+          "score": 50,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-05-18",
+          "level": 4,
+          "score": 90,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-05-19",
+          "level": 4,
+          "score": 91,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-05-20",
+          "level": 4,
+          "score": 91,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-21",
+          "level": 4,
+          "score": 96,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-23",
+          "level": 4,
+          "score": 94,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-05-24",
+          "level": 2,
+          "score": 94,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-25",
+          "level": 4,
+          "score": 87,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-05-26",
+          "level": 2,
+          "score": 90,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-05-27",
+          "level": 3,
+          "score": 77,
+          "time_spent": 30
+        },
+        {
+          "date": "2026-05-29",
+          "level": 2,
+          "score": 94,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-05-30",
+          "level": 2,
+          "score": 90,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-31",
+          "level": 4,
+          "score": 93,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-06-01",
+          "level": 3,
+          "score": 81,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-06-02",
+          "level": 4,
+          "score": 91,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-06-06",
+          "level": 4,
+          "score": 95,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-06-07",
+          "level": 3,
+          "score": 76,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-06-08",
+          "level": 3,
+          "score": 94,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-06-09",
+          "level": 2,
+          "score": 96,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-06-10",
+          "level": 1,
+          "score": 93,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-06-11",
+          "level": 4,
+          "score": 93,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-06-12",
+          "level": 2,
+          "score": 95,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-06-14",
+          "level": 2,
+          "score": 91,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-06-16",
+          "level": 4,
+          "score": 93,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-06-18",
+          "level": 2,
+          "score": 88,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-06-19",
+          "level": 4,
+          "score": 91,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-06-20",
+          "level": 2,
+          "score": 56,
+          "time_spent": 38
+        },
+        {
+          "date": "2026-06-21",
+          "level": 3,
+          "score": 94,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-06-22",
+          "level": 3,
+          "score": 95,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-06-23",
+          "level": 2,
+          "score": 91,
+          "time_spent": 7
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Variables",
+          "score": 91.6,
+          "attempts": 82,
+          "time_spent": 82,
+          "completed": true
+        },
+        {
+          "level_name": "Bucles",
+          "score": 93.4,
+          "attempts": 100,
+          "time_spent": 100,
+          "completed": true
+        },
+        {
+          "level_name": "Epistemología",
+          "score": 49.9,
+          "attempts": 91,
+          "time_spent": 91,
+          "completed": true
+        },
+        {
+          "level_name": "Álgebra",
+          "score": 92.4,
+          "attempts": 226,
+          "time_spent": 226,
+          "completed": true
+        },
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 92.1,
+          "attempts": 236,
+          "time_spent": 236,
+          "completed": true
+        },
+        {
+          "level_name": "Funciones",
+          "score": 92.5,
+          "attempts": 116,
+          "time_spent": 116,
+          "completed": true
+        },
+        {
+          "level_name": "Condicionales",
+          "score": 93.3,
+          "attempts": 91,
+          "time_spent": 91,
+          "completed": true
+        },
+        {
+          "level_name": "Lógica",
+          "score": 49.9,
+          "attempts": 68,
+          "time_spent": 68,
+          "completed": true
+        },
+        {
+          "level_name": "Metafísica",
+          "score": 47.8,
+          "attempts": 73,
+          "time_spent": 73,
+          "completed": true
+        },
+        {
+          "level_name": "Ética",
+          "score": 52.6,
+          "attempts": 192,
+          "time_spent": 192,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Programación Visual - Bloques",
+          "time_spent": 389,
+          "sessions": 259
+        },
+        {
+          "game_name": "Filosofía y Pensamiento Crítico",
+          "time_spent": 424,
+          "sessions": 71
+        },
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 462,
+          "sessions": 317
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Filosofía y Pensamiento Crítico",
+          "completed_segments": 11,
+          "total_segments": 12,
+          "completion_percentage": 91.7
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Programación Visual - Bloques",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "60ab211c-9b6d-4cb3-86c6-3a638e3ecd8e",
+        "name": "Alejandro Medina",
+        "email": "alejandro.medina@student.edu"
+      },
+      "kpis": {
+        "total_levels_completed": 340,
+        "total_games_played": 2,
+        "total_play_time": 1174,
+        "average_score": 74.8,
+        "current_streak": 1,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-02",
+          "level": 2,
+          "score": 79,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-05",
+          "level": 2,
+          "score": 77,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-02-06",
+          "level": 2,
+          "score": 73,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-02-09",
+          "level": 1,
+          "score": 69,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-02-10",
+          "level": 2,
+          "score": 72,
+          "time_spent": 33
+        },
+        {
+          "date": "2026-02-12",
+          "level": 4,
+          "score": 72,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-02-15",
+          "level": 1,
+          "score": 71,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-02-16",
+          "level": 1,
+          "score": 78,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-02-18",
+          "level": 1,
+          "score": 78,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-02-19",
+          "level": 4,
+          "score": 79,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-02-22",
+          "level": 2,
+          "score": 72,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-02-26",
+          "level": 2,
+          "score": 74,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-02-27",
+          "level": 2,
+          "score": 69,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-01",
+          "level": 2,
+          "score": 68,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-03-03",
+          "level": 2,
+          "score": 71,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-06",
+          "level": 2,
+          "score": 79,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-09",
+          "level": 2,
+          "score": 74,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-03-10",
+          "level": 1,
+          "score": 70,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-03-11",
+          "level": 3,
+          "score": 68,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-03-12",
+          "level": 2,
+          "score": 75,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-13",
+          "level": 1,
+          "score": 75,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-03-18",
+          "level": 1,
+          "score": 79,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-03-19",
+          "level": 2,
+          "score": 71,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-03-23",
+          "level": 2,
+          "score": 69,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-03-24",
+          "level": 2,
+          "score": 76,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-03-26",
+          "level": 2,
+          "score": 75,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-29",
+          "level": 1,
+          "score": 64,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-31",
+          "level": 2,
+          "score": 81,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-04-01",
+          "level": 2,
+          "score": 79,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-04-05",
+          "level": 1,
+          "score": 81,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-04-07",
+          "level": 3,
+          "score": 75,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-04-09",
+          "level": 2,
+          "score": 79,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-12",
+          "level": 2,
+          "score": 75,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-13",
+          "level": 2,
+          "score": 76,
+          "time_spent": 38
+        },
+        {
+          "date": "2026-04-14",
+          "level": 2,
+          "score": 80,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-04-15",
+          "level": 2,
+          "score": 67,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-04-16",
+          "level": 2,
+          "score": 75,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-18",
+          "level": 2,
+          "score": 76,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-19",
+          "level": 2,
+          "score": 80,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-04-21",
+          "level": 2,
+          "score": 69,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-04-22",
+          "level": 2,
+          "score": 76,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-28",
+          "level": 1,
+          "score": 72,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-04-30",
+          "level": 2,
+          "score": 75,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-05-01",
+          "level": 2,
+          "score": 74,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-05-03",
+          "level": 2,
+          "score": 77,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-05-05",
+          "level": 1,
+          "score": 68,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-05-07",
+          "level": 2,
+          "score": 70,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-05-08",
+          "level": 2,
+          "score": 76,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-05-10",
+          "level": 2,
+          "score": 79,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-11",
+          "level": 2,
+          "score": 76,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-05-12",
+          "level": 4,
+          "score": 80,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-13",
+          "level": 1,
+          "score": 71,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-05-19",
+          "level": 1,
+          "score": 67,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-05-20",
+          "level": 2,
+          "score": 75,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-05-24",
+          "level": 1,
+          "score": 77,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-05-26",
+          "level": 2,
+          "score": 69,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-05-27",
+          "level": 1,
+          "score": 81,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-05-28",
+          "level": 2,
+          "score": 73,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-29",
+          "level": 4,
+          "score": 78,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-05-31",
+          "level": 2,
+          "score": 74,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-06-01",
+          "level": 3,
+          "score": 71,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-06-02",
+          "level": 1,
+          "score": 76,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-06-05",
+          "level": 1,
+          "score": 79,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-06-07",
+          "level": 2,
+          "score": 85,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-06-08",
+          "level": 4,
+          "score": 75,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-06-09",
+          "level": 2,
+          "score": 82,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-06-14",
+          "level": 2,
+          "score": 70,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-06-16",
+          "level": 1,
+          "score": 78,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-06-17",
+          "level": 2,
+          "score": 72,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-06-19",
+          "level": 1,
+          "score": 73,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-06-22",
+          "level": 1,
+          "score": 83,
+          "time_spent": 4
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Ética",
+          "score": 75.5,
+          "attempts": 119,
+          "time_spent": 119,
+          "completed": true
+        },
+        {
+          "level_name": "Álgebra",
+          "score": 74.6,
+          "attempts": 422,
+          "time_spent": 422,
+          "completed": true
+        },
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 74.9,
+          "attempts": 373,
+          "time_spent": 373,
+          "completed": true
+        },
+        {
+          "level_name": "Lógica",
+          "score": 75.0,
+          "attempts": 162,
+          "time_spent": 162,
+          "completed": true
+        },
+        {
+          "level_name": "Metafísica",
+          "score": 76.0,
+          "attempts": 51,
+          "time_spent": 51,
+          "completed": true
+        },
+        {
+          "level_name": "Epistemología",
+          "score": 71.0,
+          "attempts": 47,
+          "time_spent": 47,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Filosofía y Pensamiento Crítico",
+          "time_spent": 379,
+          "sessions": 113
+        },
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 795,
+          "sessions": 227
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Filosofía y Pensamiento Crítico",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "8463e290-45e7-443c-9c05-e22859fafada",
+        "name": "Laura Serrano",
+        "email": "laura.serrano@student.edu"
+      },
+      "kpis": {
+        "total_levels_completed": 530,
+        "total_games_played": 4,
+        "total_play_time": 1989,
+        "average_score": 71.6,
+        "current_streak": 3,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-01",
+          "level": 1,
+          "score": 82,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-02-02",
+          "level": 2,
+          "score": 77,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-02-03",
+          "level": 2,
+          "score": 76,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-02-04",
+          "level": 1,
+          "score": 75,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-02-05",
+          "level": 4,
+          "score": 82,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-08",
+          "level": 3,
+          "score": 77,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-02-10",
+          "level": 4,
+          "score": 70,
+          "time_spent": 58
+        },
+        {
+          "date": "2026-02-11",
+          "level": 2,
+          "score": 76,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-02-16",
+          "level": 1,
+          "score": 67,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-17",
+          "level": 3,
+          "score": 77,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-02-19",
+          "level": 2,
+          "score": 78,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-20",
+          "level": 4,
+          "score": 39,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-02-23",
+          "level": 4,
+          "score": 76,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-25",
+          "level": 4,
+          "score": 81,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-02-26",
+          "level": 1,
+          "score": 76,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-02-27",
+          "level": 2,
+          "score": 49,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-03-01",
+          "level": 4,
+          "score": 70,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-03-02",
+          "level": 2,
+          "score": 74,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-03",
+          "level": 1,
+          "score": 70,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-03-04",
+          "level": 2,
+          "score": 63,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-03-05",
+          "level": 4,
+          "score": 74,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-03-08",
+          "level": 1,
+          "score": 72,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-10",
+          "level": 3,
+          "score": 68,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-03-11",
+          "level": 4,
+          "score": 56,
+          "time_spent": 54
+        },
+        {
+          "date": "2026-03-12",
+          "level": 1,
+          "score": 76,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-03-13",
+          "level": 4,
+          "score": 74,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-03-14",
+          "level": 1,
+          "score": 70,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-03-17",
+          "level": 4,
+          "score": 71,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-03-18",
+          "level": 2,
+          "score": 74,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-03-19",
+          "level": 3,
+          "score": 73,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-03-23",
+          "level": 4,
+          "score": 70,
+          "time_spent": 45
+        },
+        {
+          "date": "2026-03-24",
+          "level": 1,
+          "score": 80,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-25",
+          "level": 4,
+          "score": 73,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-03-26",
+          "level": 1,
+          "score": 51,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-03-29",
+          "level": 3,
+          "score": 72,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-03-30",
+          "level": 2,
+          "score": 71,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-31",
+          "level": 2,
+          "score": 74,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-04-01",
+          "level": 2,
+          "score": 45,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-04-02",
+          "level": 2,
+          "score": 71,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-04-04",
+          "level": 1,
+          "score": 71,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-04-05",
+          "level": 4,
+          "score": 69,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-04-06",
+          "level": 4,
+          "score": 82,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-04-07",
+          "level": 4,
+          "score": 72,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-04-08",
+          "level": 3,
+          "score": 49,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-04-12",
+          "level": 2,
+          "score": 72,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-13",
+          "level": 3,
+          "score": 78,
+          "time_spent": 40
+        },
+        {
+          "date": "2026-04-14",
+          "level": 2,
+          "score": 76,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-04-15",
+          "level": 2,
+          "score": 52,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-04-20",
+          "level": 4,
+          "score": 62,
+          "time_spent": 43
+        },
+        {
+          "date": "2026-04-21",
+          "level": 4,
+          "score": 76,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-04-22",
+          "level": 4,
+          "score": 75,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-04-23",
+          "level": 1,
+          "score": 77,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-04-26",
+          "level": 4,
+          "score": 71,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-04-28",
+          "level": 4,
+          "score": 63,
+          "time_spent": 57
+        },
+        {
+          "date": "2026-04-30",
+          "level": 1,
+          "score": 79,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-03",
+          "level": 2,
+          "score": 63,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-05-04",
+          "level": 4,
+          "score": 72,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-05-06",
+          "level": 4,
+          "score": 71,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-05-07",
+          "level": 2,
+          "score": 81,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-10",
+          "level": 2,
+          "score": 79,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-05-11",
+          "level": 4,
+          "score": 78,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-12",
+          "level": 4,
+          "score": 77,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-15",
+          "level": 1,
+          "score": 77,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-05-18",
+          "level": 2,
+          "score": 74,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-05-19",
+          "level": 3,
+          "score": 81,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-20",
+          "level": 3,
+          "score": 77,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-05-21",
+          "level": 2,
+          "score": 40,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-22",
+          "level": 2,
+          "score": 74,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-25",
+          "level": 3,
+          "score": 69,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-05-26",
+          "level": 2,
+          "score": 75,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-05-27",
+          "level": 2,
+          "score": 87,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-05-28",
+          "level": 4,
+          "score": 71,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-05-30",
+          "level": 2,
+          "score": 74,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-31",
+          "level": 2,
+          "score": 80,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-06-01",
+          "level": 4,
+          "score": 76,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-06-02",
+          "level": 4,
+          "score": 64,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-06-04",
+          "level": 4,
+          "score": 77,
+          "time_spent": 62
+        },
+        {
+          "date": "2026-06-05",
+          "level": 2,
+          "score": 77,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-06-07",
+          "level": 4,
+          "score": 73,
+          "time_spent": 43
+        },
+        {
+          "date": "2026-06-08",
+          "level": 1,
+          "score": 48,
+          "time_spent": 50
+        },
+        {
+          "date": "2026-06-09",
+          "level": 2,
+          "score": 67,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-06-10",
+          "level": 3,
+          "score": 72,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-06-14",
+          "level": 3,
+          "score": 73,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-06-15",
+          "level": 3,
+          "score": 72,
+          "time_spent": 41
+        },
+        {
+          "date": "2026-06-16",
+          "level": 2,
+          "score": 76,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-06-17",
+          "level": 2,
+          "score": 70,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-06-18",
+          "level": 1,
+          "score": 57,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-06-19",
+          "level": 2,
+          "score": 76,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-06-21",
+          "level": 1,
+          "score": 89,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-06-22",
+          "level": 3,
+          "score": 82,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-06-23",
+          "level": 3,
+          "score": 58,
+          "time_spent": 62
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 75.3,
+          "attempts": 421,
+          "time_spent": 421,
+          "completed": true
+        },
+        {
+          "level_name": "Condicionales",
+          "score": 75.2,
+          "attempts": 132,
+          "time_spent": 132,
+          "completed": true
+        },
+        {
+          "level_name": "Álgebra",
+          "score": 75.2,
+          "attempts": 303,
+          "time_spent": 303,
+          "completed": true
+        },
+        {
+          "level_name": "Variables",
+          "score": 74.5,
+          "attempts": 190,
+          "time_spent": 190,
+          "completed": true
+        },
+        {
+          "level_name": "Bucles",
+          "score": 75.5,
+          "attempts": 205,
+          "time_spent": 205,
+          "completed": true
+        },
+        {
+          "level_name": "Funciones",
+          "score": 74.8,
+          "attempts": 207,
+          "time_spent": 207,
+          "completed": true
+        },
+        {
+          "level_name": "Metafísica",
+          "score": 49.9,
+          "attempts": 108,
+          "time_spent": 108,
+          "completed": true
+        },
+        {
+          "level_name": "Ética",
+          "score": 49.4,
+          "attempts": 114,
+          "time_spent": 114,
+          "completed": true
+        },
+        {
+          "level_name": "La cafeteria infernal",
+          "score": 73.4,
+          "attempts": 114,
+          "time_spent": 114,
+          "completed": true
+        },
+        {
+          "level_name": "Lógica",
+          "score": 49.6,
+          "attempts": 95,
+          "time_spent": 95,
+          "completed": true
+        },
+        {
+          "level_name": "Epistemología",
+          "score": 49.2,
+          "attempts": 100,
+          "time_spent": 100,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 724,
+          "sessions": 219
+        },
+        {
+          "game_name": "Programación Visual - Bloques",
+          "time_spent": 734,
+          "sessions": 207
+        },
+        {
+          "game_name": "Filosofía y Pensamiento Crítico",
+          "time_spent": 417,
+          "sessions": 70
+        },
+        {
+          "game_name": "Hello World",
+          "time_spent": 114,
+          "sessions": 34
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Filosofía y Pensamiento Crítico",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Hello World",
+          "completed_segments": 5,
+          "total_segments": 6,
+          "completion_percentage": 83.3
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Programación Visual - Bloques",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "9bb33b7f-ebab-4687-af2f-1979826f2dc9",
+        "name": "Luis Rivera",
+        "email": "luis.rivera@student.edu"
+      },
+      "kpis": {
+        "total_levels_completed": 484,
+        "total_games_played": 3,
+        "total_play_time": 1080,
+        "average_score": 85.1,
+        "current_streak": 2,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-01",
+          "level": 3,
+          "score": 83,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-02-02",
+          "level": 2,
+          "score": 82,
+          "time_spent": 31
+        },
+        {
+          "date": "2026-02-03",
+          "level": 2,
+          "score": 87,
+          "time_spent": 1
+        },
+        {
+          "date": "2026-02-04",
+          "level": 2,
+          "score": 92,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-02-05",
+          "level": 1,
+          "score": 77,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-02-09",
+          "level": 2,
+          "score": 91,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-02-10",
+          "level": 2,
+          "score": 84,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-02-11",
+          "level": 4,
+          "score": 82,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-02-14",
+          "level": 2,
+          "score": 91,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-02-16",
+          "level": 2,
+          "score": 85,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-02-17",
+          "level": 4,
+          "score": 82,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-02-20",
+          "level": 2,
+          "score": 91,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-02-21",
+          "level": 4,
+          "score": 72,
+          "time_spent": 25
+        },
+        {
+          "date": "2026-02-23",
+          "level": 4,
+          "score": 83,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-02-25",
+          "level": 4,
+          "score": 66,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-02-26",
+          "level": 2,
+          "score": 92,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-27",
+          "level": 1,
+          "score": 88,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-01",
+          "level": 4,
+          "score": 84,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-03-02",
+          "level": 2,
+          "score": 78,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-03-04",
+          "level": 1,
+          "score": 95,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-03-05",
+          "level": 1,
+          "score": 69,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-03-07",
+          "level": 2,
+          "score": 93,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-03-08",
+          "level": 2,
+          "score": 92,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-03-09",
+          "level": 1,
+          "score": 92,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-10",
+          "level": 2,
+          "score": 91,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-03-11",
+          "level": 3,
+          "score": 81,
+          "time_spent": 29
+        },
+        {
+          "date": "2026-03-12",
+          "level": 2,
+          "score": 92,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-14",
+          "level": 4,
+          "score": 73,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-03-16",
+          "level": 2,
+          "score": 93,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-03-21",
+          "level": 2,
+          "score": 94,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-03-22",
+          "level": 1,
+          "score": 89,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-03-23",
+          "level": 2,
+          "score": 87,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-03-24",
+          "level": 2,
+          "score": 93,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-03-25",
+          "level": 2,
+          "score": 95,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-03-26",
+          "level": 2,
+          "score": 91,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-03-31",
+          "level": 1,
+          "score": 88,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-01",
+          "level": 4,
+          "score": 79,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-04-02",
+          "level": 2,
+          "score": 91,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-04-04",
+          "level": 4,
+          "score": 75,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-04-06",
+          "level": 2,
+          "score": 100,
+          "time_spent": 1
+        },
+        {
+          "date": "2026-04-07",
+          "level": 3,
+          "score": 73,
+          "time_spent": 34
+        },
+        {
+          "date": "2026-04-08",
+          "level": 3,
+          "score": 71,
+          "time_spent": 36
+        },
+        {
+          "date": "2026-04-09",
+          "level": 2,
+          "score": 91,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-04-12",
+          "level": 2,
+          "score": 93,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-04-13",
+          "level": 2,
+          "score": 84,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-04-14",
+          "level": 2,
+          "score": 92,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-04-20",
+          "level": 2,
+          "score": 92,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-04-21",
+          "level": 1,
+          "score": 75,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-04-22",
+          "level": 2,
+          "score": 88,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-04-25",
+          "level": 2,
+          "score": 90,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-04-27",
+          "level": 4,
+          "score": 81,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-28",
+          "level": 2,
+          "score": 86,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-04-29",
+          "level": 2,
+          "score": 92,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-05-04",
+          "level": 3,
+          "score": 74,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-05-05",
+          "level": 2,
+          "score": 94,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-05-06",
+          "level": 2,
+          "score": 86,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-07",
+          "level": 1,
+          "score": 75,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-05-10",
+          "level": 1,
+          "score": 78,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-05-11",
+          "level": 2,
+          "score": 89,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-13",
+          "level": 3,
+          "score": 79,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-05-14",
+          "level": 1,
+          "score": 76,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-05-18",
+          "level": 2,
+          "score": 95,
+          "time_spent": 2
+        },
+        {
+          "date": "2026-05-19",
+          "level": 3,
+          "score": 78,
+          "time_spent": 58
+        },
+        {
+          "date": "2026-05-21",
+          "level": 2,
+          "score": 90,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-05-24",
+          "level": 1,
+          "score": 94,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-05-26",
+          "level": 2,
+          "score": 87,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-05-28",
+          "level": 3,
+          "score": 79,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-30",
+          "level": 1,
+          "score": 86,
+          "time_spent": 1
+        },
+        {
+          "date": "2026-05-31",
+          "level": 2,
+          "score": 82,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-06-01",
+          "level": 2,
+          "score": 92,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-06-02",
+          "level": 4,
+          "score": 70,
+          "time_spent": 27
+        },
+        {
+          "date": "2026-06-03",
+          "level": 3,
+          "score": 77,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-06-06",
+          "level": 2,
+          "score": 94,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-06-07",
+          "level": 3,
+          "score": 78,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-06-08",
+          "level": 4,
+          "score": 85,
+          "time_spent": 26
+        },
+        {
+          "date": "2026-06-09",
+          "level": 2,
+          "score": 94,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-06-10",
+          "level": 2,
+          "score": 94,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-06-12",
+          "level": 1,
+          "score": 72,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-06-14",
+          "level": 2,
+          "score": 91,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-06-15",
+          "level": 1,
+          "score": 86,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-06-16",
+          "level": 2,
+          "score": 92,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-06-17",
+          "level": 2,
+          "score": 91,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-06-18",
+          "level": 2,
+          "score": 96,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-06-22",
+          "level": 2,
+          "score": 89,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-06-23",
+          "level": 2,
+          "score": 92,
+          "time_spent": 14
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Álgebra",
+          "score": 92.2,
+          "attempts": 228,
+          "time_spent": 228,
+          "completed": true
+        },
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 92.5,
+          "attempts": 197,
+          "time_spent": 197,
+          "completed": true
+        },
+        {
+          "level_name": "Epistemología",
+          "score": 74.0,
+          "attempts": 162,
+          "time_spent": 162,
+          "completed": true
+        },
+        {
+          "level_name": "Lógica",
+          "score": 73.7,
+          "attempts": 58,
+          "time_spent": 58,
+          "completed": true
+        },
+        {
+          "level_name": "La cafeteria infernal",
+          "score": 75.5,
+          "attempts": 209,
+          "time_spent": 209,
+          "completed": true
+        },
+        {
+          "level_name": "Metafísica",
+          "score": 73.8,
+          "attempts": 173,
+          "time_spent": 173,
+          "completed": true
+        },
+        {
+          "level_name": "Ética",
+          "score": 75.1,
+          "attempts": 53,
+          "time_spent": 53,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 425,
+          "sessions": 289
+        },
+        {
+          "game_name": "Filosofía y Pensamiento Crítico",
+          "time_spent": 446,
+          "sessions": 130
+        },
+        {
+          "game_name": "Hello World",
+          "time_spent": 209,
+          "sessions": 65
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Filosofía y Pensamiento Crítico",
+          "completed_segments": 12,
+          "total_segments": 12,
+          "completion_percentage": 100.0
+        },
+        {
+          "game_title": "Hello World",
+          "completed_segments": 5,
+          "total_segments": 6,
+          "completion_percentage": 83.3
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        }
+      ]
+    },
+    {
+      "student": {
+        "id": "493d8650-b0df-4e97-8d57-fb40b0055546",
+        "name": "Pepe Jorge",
+        "email": "pepe.student@example.com"
+      },
+      "kpis": {
+        "total_levels_completed": 257,
+        "total_games_played": 2,
+        "total_play_time": 872,
+        "average_score": 75.2,
+        "current_streak": 2,
+        "last_activity": null
+      },
+      "progress_over_time": [
+        {
+          "date": "2026-02-01",
+          "level": 2,
+          "score": 78,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-02-04",
+          "level": 2,
+          "score": 79,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-02-05",
+          "level": 2,
+          "score": 81,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-02-08",
+          "level": 2,
+          "score": 78,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-02-09",
+          "level": 2,
+          "score": 76,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-02-11",
+          "level": 1,
+          "score": 79,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-02-17",
+          "level": 2,
+          "score": 70,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-02-20",
+          "level": 1,
+          "score": 73,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-02-22",
+          "level": 2,
+          "score": 67,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-02-24",
+          "level": 1,
+          "score": 76,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-02-27",
+          "level": 2,
+          "score": 72,
+          "time_spent": 23
+        },
+        {
+          "date": "2026-03-02",
+          "level": 2,
+          "score": 80,
+          "time_spent": 7
+        },
+        {
+          "date": "2026-03-03",
+          "level": 2,
+          "score": 71,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-03-08",
+          "level": 2,
+          "score": 75,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-03-09",
+          "level": 2,
+          "score": 72,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-03-10",
+          "level": 2,
+          "score": 79,
+          "time_spent": 33
+        },
+        {
+          "date": "2026-03-12",
+          "level": 2,
+          "score": 77,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-03-15",
+          "level": 2,
+          "score": 81,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-03-16",
+          "level": 2,
+          "score": 81,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-03-18",
+          "level": 1,
+          "score": 72,
+          "time_spent": 28
+        },
+        {
+          "date": "2026-03-24",
+          "level": 2,
+          "score": 73,
+          "time_spent": 12
+        },
+        {
+          "date": "2026-03-25",
+          "level": 2,
+          "score": 78,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-03-27",
+          "level": 1,
+          "score": 83,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-03-31",
+          "level": 2,
+          "score": 76,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-04-05",
+          "level": 1,
+          "score": 65,
+          "time_spent": 4
+        },
+        {
+          "date": "2026-04-07",
+          "level": 2,
+          "score": 81,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-04-08",
+          "level": 1,
+          "score": 73,
+          "time_spent": 5
+        },
+        {
+          "date": "2026-04-12",
+          "level": 2,
+          "score": 68,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-04-14",
+          "level": 1,
+          "score": 73,
+          "time_spent": 13
+        },
+        {
+          "date": "2026-04-15",
+          "level": 2,
+          "score": 71,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-04-17",
+          "level": 2,
+          "score": 68,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-04-20",
+          "level": 2,
+          "score": 77,
+          "time_spent": 21
+        },
+        {
+          "date": "2026-04-23",
+          "level": 2,
+          "score": 74,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-04-29",
+          "level": 2,
+          "score": 75,
+          "time_spent": 9
+        },
+        {
+          "date": "2026-04-30",
+          "level": 2,
+          "score": 75,
+          "time_spent": 22
+        },
+        {
+          "date": "2026-05-03",
+          "level": 2,
+          "score": 72,
+          "time_spent": 14
+        },
+        {
+          "date": "2026-05-04",
+          "level": 1,
+          "score": 75,
+          "time_spent": 20
+        },
+        {
+          "date": "2026-05-05",
+          "level": 2,
+          "score": 60,
+          "time_spent": 3
+        },
+        {
+          "date": "2026-05-06",
+          "level": 1,
+          "score": 78,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-05-08",
+          "level": 2,
+          "score": 77,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-05-10",
+          "level": 1,
+          "score": 74,
+          "time_spent": 8
+        },
+        {
+          "date": "2026-05-14",
+          "level": 2,
+          "score": 74,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-05-17",
+          "level": 2,
+          "score": 74,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-05-18",
+          "level": 2,
+          "score": 77,
+          "time_spent": 11
+        },
+        {
+          "date": "2026-05-19",
+          "level": 2,
+          "score": 76,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-20",
+          "level": 2,
+          "score": 71,
+          "time_spent": 17
+        },
+        {
+          "date": "2026-05-22",
+          "level": 1,
+          "score": 76,
+          "time_spent": 18
+        },
+        {
+          "date": "2026-05-24",
+          "level": 1,
+          "score": 76,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-05-26",
+          "level": 2,
+          "score": 75,
+          "time_spent": 19
+        },
+        {
+          "date": "2026-06-01",
+          "level": 1,
+          "score": 75,
+          "time_spent": 16
+        },
+        {
+          "date": "2026-06-02",
+          "level": 1,
+          "score": 70,
+          "time_spent": 6
+        },
+        {
+          "date": "2026-06-07",
+          "level": 1,
+          "score": 71,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-06-10",
+          "level": 1,
+          "score": 79,
+          "time_spent": 15
+        },
+        {
+          "date": "2026-06-16",
+          "level": 1,
+          "score": 71,
+          "time_spent": 10
+        },
+        {
+          "date": "2026-06-17",
+          "level": 2,
+          "score": 72,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-06-21",
+          "level": 2,
+          "score": 74,
+          "time_spent": 24
+        },
+        {
+          "date": "2026-06-22",
+          "level": 2,
+          "score": 81,
+          "time_spent": 6
+        }
+      ],
+      "level_performance": [
+        {
+          "level_name": "Álgebra",
+          "score": 74.7,
+          "attempts": 375,
+          "time_spent": 375,
+          "completed": true
+        },
+        {
+          "level_name": "Operaciones Básicas",
+          "score": 75.2,
+          "attempts": 409,
+          "time_spent": 409,
+          "completed": true
+        },
+        {
+          "level_name": "La cafeteria infernal",
+          "score": 77.0,
+          "attempts": 88,
+          "time_spent": 88,
+          "completed": true
+        }
+      ],
+      "activity_distribution": [
+        {
+          "game_name": "Matemáticas Interactivas",
+          "time_spent": 784,
+          "sessions": 229
+        },
+        {
+          "game_name": "Hello World",
+          "time_spent": 88,
+          "sessions": 28
+        }
+      ],
+      "games_progress": [
+        {
+          "game_title": "Hello World",
+          "completed_segments": 5,
+          "total_segments": 6,
+          "completion_percentage": 83.3
+        },
+        {
+          "game_title": "Matemáticas Interactivas",
+          "completed_segments": 6,
+          "total_segments": 6,
+          "completion_percentage": 100.0
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

@@ -9,8 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 
+from wtforms import PasswordField
+
 from src.shared.infrastructure.session import engine
 from src.admin.auth import admin_auth_backend, verify_admin_role, load_user_with_session
+from src.auth.infrastructure.security import get_password_hash
 
 
 async def load_user_with_token(token: Optional[str]) -> Optional[tuple[User, AsyncSession]]:
@@ -186,11 +189,55 @@ class UserAdminView(BaseAdminModelView, model=User):
         User.last_login, User.role_id, User.lms_id
     ]
     column_formatters = {User.hashed_password: lambda m, c: "***"}
-    form_excluded_columns = [User.hashed_password]
+    form_excluded_columns = [
+        "hashed_password",
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "is_deleted",
+        "last_login",
+        "activity_logs",
+        "notifications",
+        "teacher_settings",
+        "student",
+        "professor",
+        "lms_credential",
+    ]
     
     can_edit = True
     can_create = True
     can_delete = True
+
+    # ── Form lifecycle hooks ──────────────────────────────────────────
+
+    async def scaffold_form(self, rules: list[str] | None = None) -> type:
+        """
+        Extiende el formulario generado automáticamente para agregar
+        un campo 'password' donde el admin escribe la contraseña en
+        texto plano.
+
+        La columna 'hashed_password' está excluida del form (no queremos
+        mostrar el hash). En su lugar, este campo 'password' se agrega
+        como un PasswordField de WTForms y luego en on_model_change se
+        hashea antes de persistir.
+        """
+        form = await super().scaffold_form(rules)
+        form.password = PasswordField("Contraseña")
+        return form
+
+    async def on_model_change(
+        self, data: dict, model: User, is_created: bool, request: Request
+    ) -> None:
+        """
+        Intercepta el guardado para hashear la contraseña antes de persistir.
+
+        Toma la contraseña en texto plano del campo 'password',
+        la hashea con bcrypt y la asigna a 'hashed_password' del modelo.
+        Si no se envió password (ej: edit sin cambiar contraseña), no toca nada.
+        """
+        password = data.pop("password", None)
+        if password:
+            model.hashed_password = get_password_hash(password)
 
 
 class RoleAdminView(BaseAdminModelView, model=Role):
@@ -215,7 +262,8 @@ class ProfessorAdminView(BaseAdminModelView, model=Professor):
     
     column_list = [Professor.id, Professor.user_id, Professor.department, Professor.contact_phone]
     column_details_list = [Professor.id, Professor.user_id, Professor.department, Professor.contact_phone]
-    
+
+    form_excluded_columns = ["feedbacks", "course_professors"]
     can_edit = True
     can_create = True
     can_delete = True
@@ -271,7 +319,7 @@ class GameAdminView(BaseAdminModelView, model=Game):
     
     # Exclude relationships from form - they should be created separately
     # Use string names to avoid issues with SQLAlchemy relationship objects
-    form_excluded_columns = ["levels", "instances", "feedbacks"]
+    form_excluded_columns = ["levels", "instances", "feedbacks", "courses"]
     
     can_edit = True
     can_create = True

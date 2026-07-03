@@ -1,0 +1,198 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e17]:
+    - generic [ref=e20]:
+      - list [ref=e22]:
+        - listitem [ref=e23]:
+          - link "Mi Plataforma" [ref=e24] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e25]
+            - generic [ref=e28]: Mi Plataforma
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: Estadísticas
+          - list [ref=e33]:
+            - listitem [ref=e34]:
+              - button "Resumen" [ref=e35]:
+                - img [ref=e36]
+                - link "Resumen" [ref=e40] [cursor=pointer]:
+                  - /url: /dashboard
+            - listitem [ref=e41]:
+              - button "Estudiantes" [ref=e42]:
+                - img [ref=e43]
+                - link "Estudiantes" [ref=e46] [cursor=pointer]:
+                  - /url: /dashboard/students
+            - listitem [ref=e47]:
+              - button "Cursos" [ref=e48]:
+                - img [ref=e49]
+                - link "Cursos" [ref=e52] [cursor=pointer]:
+                  - /url: /dashboard/courses
+            - listitem [ref=e53]:
+              - button "Métricas" [ref=e54]:
+                - img [ref=e55]
+                - link "Métricas" [ref=e59] [cursor=pointer]:
+                  - /url: /dashboard/metrics
+            - listitem [ref=e60]:
+              - button "Reportes" [ref=e61]:
+                - img [ref=e62]
+                - link "Reportes" [ref=e64] [cursor=pointer]:
+                  - /url: /dashboard/reports
+        - generic [ref=e65]:
+          - generic [ref=e66]: Gestión de Juegos y Niveles
+          - list [ref=e67]:
+            - listitem [ref=e68]:
+              - link "Niveles" [ref=e69] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e70]
+                - generic [ref=e73]: Niveles
+            - listitem [ref=e74]:
+              - link "Crear Nivel" [ref=e75] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e76]
+                - generic [ref=e77]: Crear Nivel
+        - list [ref=e80]:
+          - listitem [ref=e81]:
+            - link "Configuración" [ref=e82] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e83]
+              - generic [ref=e86]: Configuración
+          - listitem [ref=e87]:
+            - link "Ayuda" [ref=e88] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e89]
+              - generic [ref=e92]: Ayuda
+    - main [ref=e93]:
+      - generic [ref=e95]:
+        - button "Toggle Sidebar" [ref=e96]:
+          - img
+          - generic [ref=e97]: Toggle Sidebar
+        - generic [ref=e98]:
+          - button "🇪🇸 ES" [ref=e99]:
+            - generic [ref=e100]: 🇪🇸
+            - generic [ref=e101]: ES
+          - button "Toggle theme" [ref=e102]:
+            - img
+            - generic [ref=e103]: Toggle theme
+          - list [ref=e104]:
+            - listitem [ref=e105]:
+              - button "JA Johny Antonio Pedraza Romero Profesor" [ref=e106]:
+                - generic [ref=e109]:
+                  - generic [ref=e112]: JA
+                  - generic [ref=e114]:
+                    - generic [ref=e115]: Johny Antonio Pedraza Romero
+                    - generic [ref=e116]: Profesor
+      - generic [ref=e120]:
+        - generic:
+          - img
+        - generic [ref=e124]:
+          - generic [ref=e125]:
+            - img [ref=e126]
+            - generic [ref=e131]: Gestión
+          - heading "Estudiantes" [level=1] [ref=e132]
+          - paragraph [ref=e133]: Vista general de todos los estudiantes registrados en la plataforma
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e137]:
+              - img [ref=e138]
+              - generic [ref=e143]: 47 estudiantes
+            - button "Crear Nuevo Estudiante" [ref=e144]
+          - generic [ref=e146]:
+            - generic [ref=e148]:
+              - img [ref=e149]
+              - textbox "Buscar estudiantes..." [ref=e152]
+            - generic [ref=e153]:
+              - generic [ref=e154]: "Filas:"
+              - combobox [ref=e155]:
+                - generic: "5"
+                - img
+          - table [ref=e158]:
+            - rowgroup [ref=e159]:
+              - row "Seleccionar todos los estudiantes de esta página Nombre Estado Nivel Correo" [ref=e160]:
+                - columnheader "Seleccionar todos los estudiantes de esta página" [ref=e161]:
+                  - checkbox "Seleccionar todos los estudiantes de esta página" [ref=e162]
+                - columnheader "Nombre" [ref=e163]
+                - columnheader "Estado" [ref=e164]
+                - columnheader "Nivel" [ref=e165]
+                - columnheader "Correo" [ref=e166]
+            - rowgroup [ref=e167]:
+              - button "Ver detalles de Gabriela Ramos" [ref=e168] [cursor=pointer]:
+                - cell "Seleccionar estudiante Gabriela Ramos" [ref=e169]:
+                  - checkbox "Seleccionar estudiante Gabriela Ramos" [ref=e170]
+                - cell "Gabriela Ramos" [ref=e171]
+                - cell "Inactivo" [ref=e172]:
+                  - generic [ref=e173]: Inactivo
+                - cell "Nivel 0" [ref=e174]:
+                  - generic [ref=e175]: Nivel 0
+                - cell "gabriela.ramos@student.edu" [ref=e176]:
+                  - generic [ref=e177]:
+                    - img [ref=e178]
+                    - generic [ref=e181]: gabriela.ramos@student.edu
+              - button "Ver detalles de Juan Perez" [ref=e182] [cursor=pointer]:
+                - cell "Seleccionar estudiante Juan Perez" [ref=e183]:
+                  - checkbox "Seleccionar estudiante Juan Perez" [ref=e184]
+                - cell "Juan Perez" [ref=e185]
+                - cell "Pendiente" [ref=e186]:
+                  - generic [ref=e187]: Pendiente
+                - cell "Nivel 0" [ref=e188]:
+                  - generic [ref=e189]: Nivel 0
+                - cell "juan.perez@example.com" [ref=e190]:
+                  - generic [ref=e191]:
+                    - img [ref=e192]
+                    - generic [ref=e195]: juan.perez@example.com
+              - button "Ver detalles de Pedro Ortega" [ref=e196] [cursor=pointer]:
+                - cell "Seleccionar estudiante Pedro Ortega" [ref=e197]:
+                  - checkbox "Seleccionar estudiante Pedro Ortega" [ref=e198]
+                - cell "Pedro Ortega" [ref=e199]
+                - cell "Inactivo" [ref=e200]:
+                  - generic [ref=e201]: Inactivo
+                - cell "Nivel 0" [ref=e202]:
+                  - generic [ref=e203]: Nivel 0
+                - cell "pedro.ortega@student.edu" [ref=e204]:
+                  - generic [ref=e205]:
+                    - img [ref=e206]
+                    - generic [ref=e209]: pedro.ortega@student.edu
+              - button "Ver detalles de Johny Pedraza Romero" [ref=e210] [cursor=pointer]:
+                - cell "Seleccionar estudiante Johny Pedraza Romero" [ref=e211]:
+                  - checkbox "Seleccionar estudiante Johny Pedraza Romero" [ref=e212]
+                - cell "Johny Pedraza Romero" [ref=e213]
+                - cell "Activo" [ref=e214]:
+                  - generic [ref=e215]: Activo
+                - cell "Nivel 0" [ref=e216]:
+                  - generic [ref=e217]: Nivel 0
+                - cell "student.admin@example.com" [ref=e218]:
+                  - generic [ref=e219]:
+                    - img [ref=e220]
+                    - generic [ref=e223]: student.admin@example.com
+              - button "Ver detalles de María Gil" [ref=e224] [cursor=pointer]:
+                - cell "Seleccionar estudiante María Gil" [ref=e225]:
+                  - checkbox "Seleccionar estudiante María Gil" [ref=e226]
+                - cell "María Gil" [ref=e227]
+                - cell "Inactivo" [ref=e228]:
+                  - generic [ref=e229]: Inactivo
+                - cell "Nivel 0" [ref=e230]:
+                  - generic [ref=e231]: Nivel 0
+                - cell "maria.gil@student.edu" [ref=e232]:
+                  - generic [ref=e233]:
+                    - img [ref=e234]
+                    - generic [ref=e237]: maria.gil@student.edu
+          - generic [ref=e238]:
+            - generic [ref=e239]: Mostrando 1-5 de 47 estudiantes
+            - generic [ref=e240]:
+              - button [disabled]:
+                - img
+              - generic [ref=e241]:
+                - button "1" [ref=e242]
+                - button "2" [ref=e243]
+                - button "3" [ref=e244]
+                - button "4" [ref=e245]
+                - button "5" [ref=e246]
+                - button "6" [ref=e247]
+                - button "7" [ref=e248]
+                - button "8" [ref=e249]
+                - button "9" [ref=e250]
+                - button "10" [ref=e251]
+              - button [ref=e252]:
+                - img
+  - button "Open Next.js Dev Tools" [ref=e12] [cursor=pointer]:
+    - img [ref=e13]
+  - alert [ref=e16]
+  - region "Notifications alt+T"

@@ -1,0 +1,319 @@
+{
+  "meta": {
+    "title": "Hello World Platform - Analytics Dashboard",
+    "generated_at": "2026-06-24T21:52:04.058862Z",
+    "students_count": 10
+  },
+  "chart_student_scores": [
+    {
+      "name": "Gabriela Ramos",
+      "score": 77.8,
+      "levels": 338,
+      "hours": 17.8,
+      "games": 3
+    },
+    {
+      "name": "Juan Perez",
+      "score": 74.8,
+      "levels": 463,
+      "hours": 27.3,
+      "games": 3
+    },
+    {
+      "name": "Pedro Ortega",
+      "score": 88.9,
+      "levels": 654,
+      "hours": 21.2,
+      "games": 3
+    },
+    {
+      "name": "María Gil",
+      "score": 75.0,
+      "levels": 378,
+      "hours": 21.9,
+      "games": 2
+    },
+    {
+      "name": "Sara Herrera",
+      "score": 71.5,
+      "levels": 530,
+      "hours": 33.5,
+      "games": 3
+    },
+    {
+      "name": "Elena Ibáñez",
+      "score": 87.9,
+      "levels": 647,
+      "hours": 21.2,
+      "games": 3
+    },
+    {
+      "name": "Alejandro Medina",
+      "score": 74.8,
+      "levels": 340,
+      "hours": 19.6,
+      "games": 2
+    },
+    {
+      "name": "Laura Serrano",
+      "score": 71.6,
+      "levels": 530,
+      "hours": 33.1,
+      "games": 4
+    },
+    {
+      "name": "Luis Rivera",
+      "score": 85.1,
+      "levels": 484,
+      "hours": 18.0,
+      "games": 3
+    },
+    {
+      "name": "Pepe Jorge",
+      "score": 75.2,
+      "levels": 257,
+      "hours": 14.5,
+      "games": 2
+    }
+  ],
+  "chart_student_playtime": [
+    {
+      "name": "Sara Herrera",
+      "hours": 33.5
+    },
+    {
+      "name": "Laura Serrano",
+      "hours": 33.1
+    },
+    {
+      "name": "Juan Perez",
+      "hours": 27.3
+    },
+    {
+      "name": "María Gil",
+      "hours": 21.9
+    },
+    {
+      "name": "Pedro Ortega",
+      "hours": 21.2
+    },
+    {
+      "name": "Elena Ibáñez",
+      "hours": 21.2
+    },
+    {
+      "name": "Alejandro Medina",
+      "hours": 19.6
+    },
+    {
+      "name": "Luis Rivera",
+      "hours": 18.0
+    },
+    {
+      "name": "Gabriela Ramos",
+      "hours": 17.8
+    },
+    {
+      "name": "Pepe Jorge",
+      "hours": 14.5
+    }
+  ],
+  "chart_performance_distribution": [
+    {
+      "name": "Excelente (80-100)",
+      "value": 3,
+      "color": "#10B981"
+    },
+    {
+      "name": "Bueno (60-79)",
+      "value": 7,
+      "color": "#F59E0B"
+    },
+    {
+      "name": "Necesita mejorar (<60)",
+      "value": 0,
+      "color": "#EF4444"
+    }
+  ],
+  "chart_game_distribution": [
+    {
+      "name": "Matemáticas Interactivas",
+      "value": 5963,
+      "students": 9
+    },
+    {
+      "name": "Programación Visual - Bloques",
+      "value": 3665,
+      "students": 6
+    },
+    {
+      "name": "Filosofía y Pensamiento Crítico",
+      "value": 3395,
+      "students": 8
+    },
+    {
+      "name": "Hello World",
+      "value": 665,
+      "students": 5
+    }
+  ],
+  "chart_level_performance": [
+    {
+      "name": "Condicionales",
+      "score": 81.3,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Álgebra",
+      "score": 81.1,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Bucles",
+      "score": 80.9,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Operaciones Básicas",
+      "score": 80.7,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Funciones",
+      "score": 80.0,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Variables",
+      "score": 80.0,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "La cafeteria infernal",
+      "score": 78.6,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Lógica",
+      "score": 66.6,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Metafísica",
+      "score": 66.2,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Ética",
+      "score": 66.2,
+      "completion_rate": 100.0
+    },
+    {
+      "name": "Epistemología",
+      "score": 65.2,
+      "completion_rate": 100.0
+    }
+  ],
+  "comparison_matrix": [
+    {
+      "rank": 1,
+      "name": "Pedro Ortega",
+      "score": 88.9,
+      "levels_completed": 654,
+      "play_time_hours": 21.2,
+      "games_played": 3,
+      "streak_days": 3
+    },
+    {
+      "rank": 2,
+      "name": "Elena Ibáñez",
+      "score": 87.9,
+      "levels_completed": 647,
+      "play_time_hours": 21.2,
+      "games_played": 3,
+      "streak_days": 6
+    },
+    {
+      "rank": 3,
+      "name": "Luis Rivera",
+      "score": 85.1,
+      "levels_completed": 484,
+      "play_time_hours": 18.0,
+      "games_played": 3,
+      "streak_days": 2
+    },
+    {
+      "rank": 4,
+      "name": "Gabriela Ramos",
+      "score": 77.8,
+      "levels_completed": 338,
+      "play_time_hours": 17.8,
+      "games_played": 3,
+      "streak_days": 1
+    },
+    {
+      "rank": 5,
+      "name": "Pepe Jorge",
+      "score": 75.2,
+      "levels_completed": 257,
+      "play_time_hours": 14.5,
+      "games_played": 2,
+      "streak_days": 2
+    },
+    {
+      "rank": 6,
+      "name": "María Gil",
+      "score": 75.0,
+      "levels_completed": 378,
+      "play_time_hours": 21.9,
+      "games_played": 2,
+      "streak_days": 1
+    },
+    {
+      "rank": 7,
+      "name": "Juan Perez",
+      "score": 74.8,
+      "levels_completed": 463,
+      "play_time_hours": 27.3,
+      "games_played": 3,
+      "streak_days": 2
+    },
+    {
+      "rank": 8,
+      "name": "Alejandro Medina",
+      "score": 74.8,
+      "levels_completed": 340,
+      "play_time_hours": 19.6,
+      "games_played": 2,
+      "streak_days": 1
+    },
+    {
+      "rank": 9,
+      "name": "Laura Serrano",
+      "score": 71.6,
+      "levels_completed": 530,
+      "play_time_hours": 33.1,
+      "games_played": 4,
+      "streak_days": 3
+    },
+    {
+      "rank": 10,
+      "name": "Sara Herrera",
+      "score": 71.5,
+      "levels_completed": 530,
+      "play_time_hours": 33.5,
+      "games_played": 3,
+      "streak_days": 2
+    }
+  ],
+  "summary_kpis": {
+    "total_students": 10,
+    "total_levels_completed": 4621,
+    "total_play_time_hours": 228.1,
+    "avg_score": 78.3,
+    "avg_play_time_minutes": 1368.8,
+    "excellent_count": 3,
+    "good_count": 7,
+    "needs_improvement_count": 0
+  }
+}
