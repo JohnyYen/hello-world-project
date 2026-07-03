@@ -328,6 +328,26 @@ func create_game_instance(game_id: String, student_id: String = "") -> Dictionar
 		print(result)
 		return {"OK": false, "error": result.get("error", "Error"), "status": result.get("status", 0)}
 
+## Obtiene feedback de profesores para un estudiante
+## @param student_id: UUID del estudiante
+## @param skip: Número de registros a saltar (paginación)
+## @param limit: Número máximo de registros a obtener
+## @return: Dictionary con OK, data o error
+func get_professor_feedback(student_id: String, skip: int = 0, limit: int = 100) -> Dictionary:
+	var endpoint = "api/v1/statistic/feedback/%s?skip=%d&limit=%d" % [student_id.uri_encode(), skip, limit]
+	print("DEBUG [ApiClient] get_professor_feedback: llamando a GET ", endpoint)
+	print("DEBUG [ApiClient] get_professor_feedback: jwt_token vacio? ", jwt_token == "")
+	var result = await _make_request(endpoint, HTTPClient.METHOD_GET, {}, true)
+	if result.OK:
+		var items = result.data.get("items", []) if result.data is Dictionary else []
+		print("DEBUG [ApiClient] get_professor_feedback: OK, ", items.size(), " items recibidos")
+		print("DEBUG [ApiClient] get_professor_feedback: DATA CRUDA del backend -> ", JSON.stringify(result.data))
+		return {"OK": true, "data": result.data}
+	else:
+		print("DEBUG [ApiClient] get_professor_feedback: ERROR - ", result.get("error", "desconocido"))
+		return {"OK": false, "error": result.get("error", "")}
+
+
 ## Cierra la sesión eliminando el token
 ## También limpia el cache de session_id para forzar un nuevo game_instance en el próximo sync
 func logout() -> void:

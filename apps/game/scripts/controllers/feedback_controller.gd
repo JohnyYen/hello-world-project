@@ -150,7 +150,7 @@ func show_feedback(feedback_data: Dictionary):
 	var message = feedback_data.get("message", "")
 
 	# Usar el método estático, ya no instanciamos el panel manualmente
-	FeedbackBalloon.show_feedback(message, type_str)
+	FeedbackBalloon.show_feedback(message, "neutral", 1.5)
 
 	# La señal queda para otros sistemas, no para el balloon
 	feedback_generated.emit(feedback_data)

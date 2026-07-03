@@ -13,18 +13,39 @@ extends Control
 
 func _ready() -> void:
 	_set_select_level()
+
+	# Cargar progreso y refrescar todos los botones
+	_LevelProgressManager.load_progress()
+	refresh_all_levels()
+
 	back_button.pressed.connect(_on_back_pressed)
 	var i : int = 0
 	for btn in buttons_panel.get_children():
+		if btn.has_method("refresh_state"):
+			btn.segment_id = i
 		btn.get_child(0).pressed.connect(_on_play_level.bind(i))
-		i += 1 
+		i += 1
 
-func _on_play_level(segment_id : int):
+
+## Refresca el estado visual de todos los botones de nivel.
+func refresh_all_levels() -> void:
+	for level_button in buttons_panel.get_children():
+		if level_button.has_method("refresh_state"):
+			level_button.refresh_state()
+
+
+func _on_play_level(segment_id : int) -> void:
+	# Verificar que el nivel esté desbloqueado
+	if not _LevelProgressManager.is_level_unlocked(segment_id):
+		print("[LevelSelect] Nivel %d bloqueado — ignorando" % segment_id)
+		return
+
 	var packed : PackedScene = load(gameplay_scene)
 
 	if packed.instantiate() is TemplateLevel:
 		if segment_id == 0:
 			DialogueManager.show_dialogue_balloon(load("res://dialogue/C01/C01_E04_Primera_Clase.dialogue"), "start")
+			_LevelProgressManager.complete_level(0)
 		elif segment_id > 0 and segment_id <= 5:
 			var level_instance : TemplateLevel = packed.instantiate()
 			level_instance.segment_id = segment_id
@@ -32,7 +53,7 @@ func _on_play_level(segment_id : int):
 			get_tree().current_scene.queue_free()
 			get_tree().current_scene = level_instance
 	else:
-		print("De pinga")
+		push_error("[LevelSelect] gameplay_scene no es un TemplateLevel")
 
 func _set_select_level():
 	pass

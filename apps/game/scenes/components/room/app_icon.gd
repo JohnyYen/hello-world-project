@@ -1,4 +1,4 @@
-extends TextureButton
+extends Button
 
 # --- Propiedades exportadas para el editor ---
 @export var app_name: String = ""       # Nombre del Panel de la app en ApplicationsContainer
@@ -7,10 +7,10 @@ extends TextureButton
 # Referencias internas
 var is_highlighted: bool = false
 @onready var highlight = highlight_node if highlight_node != null else null
-@onready var applications_container = get_tree().current_scene.get_node("Applications")
+@export var applications_container: Control
 
 func _ready():
-	self.pressed.connect(_on_icon_pressed)
+	self.pressed.connect(_on_pressed)
 	self.mouse_entered.connect(_on_mouse_entered)
 	self.mouse_exited.connect(_on_mouse_exited)
 
@@ -19,18 +19,20 @@ func _ready():
 		highlight.visible = false
 
 
-func _on_icon_pressed():
+func _on_pressed():
+	print("AAAAHHH")
 	if not applications_container:
 		push_warning("ApplicationsContainer no encontrado")
 		return
-
+	
 	var app_panel = applications_container.get_node_or_null(app_name)
 	if app_panel:
+		print("ESTOY ABRIENDO UNA APP")
 		# Alterna visibilidad
 		app_panel.visible = not app_panel.visible
 		# Opcional: traer al frente
-		if app_panel.visible:
-			app_panel.raise_()
+		#if app_panel.visible:
+			#app_panel.raise_()
 	else:
 		push_warning("AppPanel '%s' no encontrado en ApplicationsContainer" % app_name)
 

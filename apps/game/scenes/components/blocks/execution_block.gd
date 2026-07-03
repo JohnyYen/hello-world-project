@@ -103,6 +103,8 @@ func set_actions(actions: Array) -> void:
 	
 	action_slot.select(0)
 	action_selected = ""
+	if self.block != null:
+		(self.block as ExecutionBlock).stored_action = "null"
 	_sync_popup_items()
 
 func _sync_popup_items() -> void:

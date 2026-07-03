@@ -91,7 +91,7 @@ extends Node
 
 # Estado del juego
 var flags: Dictionary = {}
-var player_data: Dictionary = {"name": "Leo", "gender": "male"}
+var player_data: Dictionary = {}
 
 # Componentes (inyectados/instanciados)
 var dialogue_flow: DialogueFlow

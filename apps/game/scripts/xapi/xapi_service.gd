@@ -321,7 +321,8 @@ func end_segment_tracking(success: bool) -> Dictionary:
 		},
 		"attempts": _attempts_history.duplicate(),
 		"custom_events": _custom_events.duplicate(),
-		"retry_count": _attempts_count
+		"retry_count": _attempts_count,
+		"raw_stats": raw_stats
 	}
 	_is_tracking = false
 	print("[XAPIService] Segmento completado - segment_id=%d, score=%.2f, errors=%d, tiempo=%.2fs" % [

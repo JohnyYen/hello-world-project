@@ -4,7 +4,10 @@ extends Action
 func execute(context):
 	var cafeteria_context = context as CafeteriaProblemContext
 	var student = cafeteria_context.current_student
-	
+	if student == null:
+		print("[ServeDrinkAction] No hay estudiante atendido. Usá 'Atender estudiante' primero.")
+		return
+
 	var item := "cafe"
 
 	#

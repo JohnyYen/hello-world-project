@@ -6,4 +6,4 @@
 class_name InferenceEngine
 
 func _init() -> void:
-    print("DEBUG: InferenceEngine initialized")
+	print("DEBUG: InferenceEngine initialized")

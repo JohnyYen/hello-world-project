@@ -8,19 +8,29 @@ var db: SQLite = SQLite.new()
 func _init() -> void:
 	# 1. Especificar la ruta de la base de datos
 	db.path = Env.DATABASE_URL  # Guarda la base de datos en la carpeta del usuario
-	var first_execution = FileAccess.file_exists(Env.DATABASE_URL);
+	var is_first_run = !FileAccess.file_exists(Env.DATABASE_URL);
 	# 2. Abrir la base de datos (se crea si no existe)
 	if db.open_db() == true:
-		print("Conexión a la base de datos establecida.")
+		print("Conexion a la base de datos establecida.")
 		
-		print(first_execution)
-		if !first_execution:
-			# 3. Crear las tablas
-			print("Las tablas no existen")
-			create_tables()
+		# 3. Siempre crear/actualizar tablas (CREATE TABLE IF NOT EXISTS es seguro)
+		create_tables()
+		
+		# 4. Migration: agregar adaptation_state column a Segments existentes
+		_migrate_adaptation_state()
+
+		# 5. Fixup: agregar segment_type faltante en segmentos existentes
+		_fixup_segment_types()
+		
+		# 6. Insertar feedback de introduccion si la tabla esta vacia
+		_seed_intro_feedback_if_empty()
+		
+		if is_first_run:
+			# 7. Seeds solo en primera ejecucion
+			print("Primera ejecucion: insertando datos iniciales.")
 			run_seeds();
 		else:
-			print("Las tablas existen")
+			print("Base de datos existente, tablas actualizadas.")
 	else:
 		print("Error al conectar a la base de datos.")
 
@@ -29,6 +39,59 @@ func run_seeds():
 	var seed_runner = run_all_seeds_script.new()
 	seed_runner.run_all_seeds(db)
 
+
+func _seed_intro_feedback_if_empty() -> void:
+	var rows = db.select_rows("professor_feedback", "", ["id"])
+	if rows.is_empty():
+		var data = {
+			"id": "intro-feedback-001",
+			"student_id": "",
+			"professor_id": "system",
+			"professor_name": "Sistema",
+			"comments": "Fortalezas: Este es tu primer feedback! Aca vas a ver los comentarios que tu profesor te deja sobre tu desempeno.\nAreas de mejora: Revisa esta seccion para identificar en que podes mejorar.\nComentarios adicionales: Presta atencion a las recomendaciones de tu profesor para aprovechar al maximo cada nivel.",
+			"rating": 0,
+			"feedback_type": "message",
+			"course_id": "",
+			"game_id": "",
+			"level_id": "",
+			"display_in_game": 1,
+			"acknowledged_at": "",
+			"is_read": 0,
+			"created_at": "2026-01-01T00:00:00",
+			"updated_at": "2026-01-01T00:00:00"
+		}
+		db.insert_row("professor_feedback", data)
+		print("Seed: Feedback de introduccion insertado.")
+
+
+# Migration: agrega adaptation_state column a la tabla Segments si no existe
+# Es idempotente: usa PRAGMA table_info para verificar si la columna ya existe
+# NOTA: NO se puede usar sqlite_master porque el plugin gdsqlite no lo soporta
+func _migrate_adaptation_state() -> void:
+	var pragma_sql := "PRAGMA table_info('Segments')"
+	if not db.query(pragma_sql):
+		push_error("Migration: No se pudo obtener info de la tabla Segments")
+		return
+
+	var columns := db.query_result
+	for col in columns:
+		if col.get("name", "") == "adaptation_state":
+			print("Migration: La columna 'adaptation_state' ya existe en Segments")
+			return
+
+	var alter_sql := "ALTER TABLE Segments ADD COLUMN adaptation_state TEXT"
+	if db.query(alter_sql):
+		print("Migration: Columna 'adaptation_state' agregada a la tabla Segments")
+	else:
+		push_error("Migration: No se pudo agregar la columna 'adaptation_state' a Segments")
+
+
+# Fixup: agrega segment_type faltante en segmentos existentes
+# Corre siempre (no solo en primera ejecución) y es idempotente
+func _fixup_segment_types() -> void:
+	var SeedScript = load("res://scripts/database/seed/seed_segments.gd")
+	var seed = SeedScript.new()
+	seed.fixup_segment_types(db)
 
 
 # Función para crear las tablas
@@ -60,6 +123,9 @@ func create_tables() -> void:
 
 	# Tabla: Game Session Cache
 	on_create_game_session_table();
+
+	# Tabla: Professor Feedback
+	on_create_professor_feedback_table();
 
 	print("Tablas creadas correctamente.")
 	
@@ -124,7 +190,8 @@ func on_create_segment_table():
 	"goal": {"data_type": "TEXT", "not_null": true},
 	"position": {"data_type": "INTEGER", "not_null": true},
 	"difficulty": {"data_type": "TEXT", "not_null": true},
-	"configuration" : {"data_type": "TEXT", "not_null": true}
+	"configuration" : {"data_type": "TEXT", "not_null": true},
+	"adaptation_state": {"data_type": "TEXT"}
 	}
 	
 	db.create_table("Segments", segments_table)
@@ -154,7 +221,7 @@ func on_create_game_session_table() -> void:
 
 func on_create_xapi_tables() -> void:
 	var migration_script := load("res://scripts/database/migrations/001_create_xapi_tables.gd")
-	var migration := migration_script.new()
+	var migration = migration_script.new()
 	migration.run(db)
 	
 	# Tabla: Raw Stats (for offline-first stats tracking)
@@ -162,11 +229,28 @@ func on_create_xapi_tables() -> void:
 
 func on_create_raw_stats_table() -> void:
 	var migration_script := load("res://scripts/database/migrations/002_create_raw_stats_table.gd")
-	var migration := migration_script.new()
+	var migration = migration_script.new()
 	migration.run(db)
 
-	
-	
 
+func on_create_professor_feedback_table() -> void:
+	var table = {
+		"id": {"data_type": "text", "primary_key": true, "not_null": true},
+		"student_id": {"data_type": "text"},
+		"professor_id": {"data_type": "text"},
+		"professor_name": {"data_type": "text"},
+		"comments": {"data_type": "text", "not_null": true},
+		"rating": {"data_type": "integer"},
+		"feedback_type": {"data_type": "text"},
+		"course_id": {"data_type": "text"},
+		"game_id": {"data_type": "text"},
+		"level_id": {"data_type": "text"},
+		"display_in_game": {"data_type": "integer"},
+		"acknowledged_at": {"data_type": "text"},
+		"is_read": {"data_type": "integer", "not_null": true, "default": 0},
+		"created_at": {"data_type": "text"},
+		"updated_at": {"data_type": "text"}
+	}
 
+	db.create_table("professor_feedback", table)
 	

@@ -90,4 +90,4 @@ func _skip_to_next_scene() -> void:
 	if balloon:
 		balloon.queue_free()
 
-	_GameState.on_dialogue_finished()
+	_GameState.dialogue_flow.force_finish()

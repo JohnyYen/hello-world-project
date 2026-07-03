@@ -1,6 +1,6 @@
 ## AttemptHistoryPersistence.gd
 ## Componente de persistencia del historial de intentos usando JSON.
-## Guarda en user://data/attempt_history.json con metadata + array de AttemptData.
+## Guarda en res://data/attempt_history.json con metadata + array de AttemptData.
 ## Si el JSON está corrupto, reinicia desde cero.
 
 class_name AttemptHistoryPersistence
@@ -8,8 +8,8 @@ class_name AttemptHistoryPersistence
 ## Versión del esquema JSON para migraciones futuras
 const SCHEMA_VERSION := "1"
 
-## Path del archivo de historial
-const HISTORY_FILE_PATH := "user://data/attempt_history.json"
+## Path del archivo de historial (centralizado en env.gd)
+const HISTORY_FILE_PATH := Env.ATTEMPT_HISTORY_PATH
 
 ## Metadata key en el JSON
 const METADATA_KEY := "metadata"

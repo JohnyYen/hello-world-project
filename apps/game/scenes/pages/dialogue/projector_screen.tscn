@@ -3,4 +3,20 @@
 [ext_resource type="Script" uid="uid://doafamq0nsbka" path="res://scenes/pages/dialogue/projector_screen.gd" id="1_jf0m5"]
 
 [node name="ProjectorScreen" type="CanvasLayer"]
+layer = 101
 script = ExtResource("1_jf0m5")
+
+[node name="Skip" type="Button" parent="."]
+visible = false
+z_index = 1000
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -75.0
+offset_top = 9.0
+offset_right = -9.0
+offset_bottom = 52.0
+grow_horizontal = 0
+text = "Saltar"
+
+[connection signal="pressed" from="Skip" to="." method="_on_skip_pressed"]

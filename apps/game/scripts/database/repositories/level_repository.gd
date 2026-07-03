@@ -72,3 +72,42 @@ func get_all_levels() -> Array[Level]:
 func get_level_by_id(level_id: int) -> Level:
 	var level = _db.select_rows("Levels", "level_id = " + str(level_id), ['*']).map(mapper_level)[0];
 	return level
+
+func get_adaptation_state(level_id: int, segment_id: int) -> Dictionary:
+	print("[ADAPT_TRACE] get_adaptation_state level=%d, segment=%d" % [level_id, segment_id])
+	var rows = _db.select_rows("Segments", "segment_id = %d AND level_id = %d" % [segment_id, level_id], ["adaptation_state"])
+	if rows.is_empty():
+		print("[ADAPT_TRACE] get_adaptation_state: NO ROWS - segmento no encontrado")
+		return {}
+
+	var state_string = rows[0].get("adaptation_state", "")
+	if state_string == null or state_string == "":
+		print("[ADAPT_TRACE] get_adaptation_state: valor NULL o vacío")
+		return {}
+
+	var parsed = JSON.parse_string(state_string)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		print("[ADAPT_TRACE] get_adaptation_state: parse falló (no es Dictionary)")
+		return {}
+
+	print("[ADAPT_TRACE] get_adaptation_state: OK - %d keys" % parsed.size())
+	return parsed
+
+
+func update_adaptation_state(level_id: int, segment_id: int, state: Dictionary) -> bool:
+	var raw_data = JSON.stringify(state)
+	var query = """
+		UPDATE Segments
+		SET adaptation_state = ?
+		WHERE level_id = ? AND segment_id = ?
+	"""
+	return _db.query_with_bindings(query, [raw_data, level_id, segment_id])
+
+
+func reset_adaptation_state(level_id: int, segment_id: int) -> bool:
+	var query = """
+		UPDATE Segments
+		SET adaptation_state = NULL
+		WHERE level_id = ? AND segment_id = ?
+	"""
+	return _db.query_with_bindings(query, [level_id, segment_id])

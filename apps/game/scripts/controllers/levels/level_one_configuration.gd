@@ -17,23 +17,49 @@ func load_data() -> LevelOneConfiguration:
 	var level_id = 1
 
 	var repo := LevelRepository.new()
-	var json_dict = repo.get_segment_json(level_id, self.segment_id)
+	var seed_dict = repo.get_segment_json(level_id, self.segment_id)
 
-	if typeof(json_dict) != TYPE_DICTIONARY:
+	if typeof(seed_dict) != TYPE_DICTIONARY:
 		push_error("Invalid JSON data for segment " + str(self.segment_id))
 		return self
 
-	json_data = json_dict
+	# Store clean seed for the modifier
+	seed_data = seed_dict.duplicate(true)
+	print("[ADAPT_TRACE] load_data semilla: %d keys, title=%s" % [seed_dict.size(), seed_dict.get("title", "?")])
+
+	# Read adaptation_state (diff) and merge with seed
+	var adaptation_state := repo.get_adaptation_state(level_id, self.segment_id)
+	if adaptation_state.is_empty():
+		print("[ADAPT_TRACE] load_data adaptation_state VACÍO - sin datos de adaptación previa")
+	else:
+		print("[ADAPT_TRACE] load_data adaptation_state: %d keys - %s" % [
+			adaptation_state.size(), str(adaptation_state.keys())
+		])
+	var merged_dict := _merge_config(seed_dict, adaptation_state)
+	print("[ADAPT_TRACE] load_data merged_dict: %d keys" % merged_dict.size())
+
+	json_data = merged_dict
 
 	# Lógica general definida en la clase base
-	load_from_dict(json_dict)
+	load_from_dict(merged_dict)
 
 	# Propiedades específicas del Nivel 1
-	title = json_dict.get("title", "")
-	description = json_dict.get("description", "")
-	ui_config = json_dict.get("ui_config", {})
+	title = merged_dict.get("title", "")
+	description = merged_dict.get("description", "")
+	ui_config = merged_dict.get("ui_config", {})
 
 	return self
+
+
+static func _merge_config(seed: Dictionary, diff: Dictionary) -> Dictionary:
+	var merged = seed.duplicate(true)
+	for key in diff:
+		var val = diff[key]
+		if typeof(val) in [TYPE_DICTIONARY, TYPE_ARRAY]:
+			merged[key] = val.duplicate(true)
+		else:
+			merged[key] = val
+	return merged
 
 
 ## ===============================================

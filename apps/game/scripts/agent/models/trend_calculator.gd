@@ -18,28 +18,40 @@ var max_history_length: int = 5
 ## Índice 0 = más reciente, con mayor peso
 var weighted_mode_weights: Array[float] = [0.5, 0.3, 0.15, 0.04, 0.01]
 
+## Pesos para blend de corto y largo plazo
+const SHORT_TERM_WEIGHT := 0.8
+const LONG_TERM_WEIGHT := 0.2
+
 ## Calcula la tendencia usando el modo especificado
 ## @param attempts_history: Array[AttemptData] con el historial de intentos
 ## @param mode: TrendMode.SIMPLE o TrendMode.WEIGHTED
 ## @return float: Tendencia entre -1.0 (empeorando) y 1.0 (mejorando)
 func calculate(attempts_history: Array[AttemptData], mode: int = TrendMode.SIMPLE) -> float:
 	if attempts_history.size() < 2:
+		print("[TrendCalculator] Historial insuficiente (%d intentos) - retornando tendencia 0.0" % attempts_history.size())
 		return 0.0
 	
+	var result: float
 	match mode:
 		TrendMode.SIMPLE:
-			return _calculate_simple_trend(attempts_history)
+			print("[TrendCalculator] Modo SIMPLE con %d intentos" % attempts_history.size())
+			result = _calculate_simple_trend(attempts_history)
 		TrendMode.WEIGHTED:
-			return _calculate_weighted_trend(attempts_history)
+			print("[TrendCalculator] Modo WEIGHTED con %d intentos" % attempts_history.size())
+			result = _calculate_weighted_trend(attempts_history)
 		_:
 			push_warning("TrendCalculator: Modo inválido %d, usando SIMPLE" % mode)
-			return _calculate_simple_trend(attempts_history)
+			result = _calculate_simple_trend(attempts_history)
+	
+	print("[TrendCalculator] Resultado: %.4f" % result)
+	return result
 
 ## Calcula tendencia simple: compara último vs penúltimo intento
 ## @param attempts_history: Array[AttemptData]
 ## @return float: score_actual - score_anterior
 func _calculate_simple_trend(attempts_history: Array[AttemptData]) -> float:
 	if attempts_history.size() < 2:
+		print("[TrendCalculator] _calculate_simple_trend: historial insuficiente")
 		return 0.0
 	
 	var recent = attempts_history.slice(-2)
@@ -47,6 +59,7 @@ func _calculate_simple_trend(attempts_history: Array[AttemptData]) -> float:
 	var curr_score = recent[1].score
 	
 	var trend = curr_score - prev_score
+	print("[TrendCalculator] _calculate_simple_trend: prev=%.2f, curr=%.2f, trend=%.2f" % [prev_score, curr_score, trend])
 	return trend
 
 ## Calcula tendencia ponderada: considera últimos N intentos con pesos exponenciales
@@ -55,12 +68,14 @@ func _calculate_simple_trend(attempts_history: Array[AttemptData]) -> float:
 ## @return float: Tendencia ponderada normalizada
 func _calculate_weighted_trend(attempts_history: Array[AttemptData]) -> float:
 	if attempts_history.size() < 2:
+		print("[TrendCalculator] _calculate_weighted_trend: historial insuficiente")
 		return 0.0
 	
 	# Tomar los últimos N intentos (máximo max_history_length)
 	var history_to_use = attempts_history.slice(
 		maxi(0, attempts_history.size() - max_history_length)
 	)
+	print("[TrendCalculator] _calculate_weighted_trend: usando %d intentos (de %d disponibles)" % [history_to_use.size(), attempts_history.size()])
 	
 	# Calcular promedio ponderado de scores
 	var weighted_sum = 0.0
@@ -73,16 +88,20 @@ func _calculate_weighted_trend(attempts_history: Array[AttemptData]) -> float:
 			var weight = weighted_mode_weights[weight_index]
 			weighted_sum += history_to_use[i].score * weight
 			weight_sum += weight
+			print("[TrendCalculator]   intento[%d] score=%.2f * weight=%.2f" % [i, history_to_use[i].score, weight])
 	
 	if weight_sum == 0.0:
 		return 0.0
 	
 	var weighted_avg = weighted_sum / weight_sum
+	print("[TrendCalculator] _calculate_weighted_trend: weighted_avg=%.4f" % weighted_avg)
 	
 	# Calcular tendencia como diferencia entre promedio reciente y más antiguo
 	# Si hay solo 2 intentos, es como SIMPLE
 	if history_to_use.size() == 2:
-		return history_to_use[1].score - history_to_use[0].score
+		var trend = history_to_use[1].score - history_to_use[0].score
+		print("[TrendCalculator] _calculate_weighted_trend (2 intentos): trend=%.2f" % trend)
+		return trend
 	
 	# Para más intentos: comparar promedio de los 2 más recientes vs los 2 más antiguos
 	var recent_avg = (history_to_use[history_to_use.size() - 1].score + 
@@ -90,6 +109,7 @@ func _calculate_weighted_trend(attempts_history: Array[AttemptData]) -> float:
 	var old_avg = (history_to_use[0].score + history_to_use[1].score) / 2.0
 	
 	var trend = recent_avg - old_avg
+	print("[TrendCalculator] _calculate_weighted_trend: recent_avg=%.2f, old_avg=%.2f, trend=%.2f" % [recent_avg, old_avg, trend])
 	return trend
 
 ## Calcula una métrica híbrida combinando score y tendencia
@@ -107,7 +127,51 @@ func calculate_hybrid_metric(current_score: float, trend: float,
 	# Calcular métrica híbrida
 	var hybrid = (normalized_score * score_weight) + (normalized_trend * trend_weight)
 	
+	print("[TrendCalculator] Métrica híbrida: score=%.2f (norm=%.2f), trend=%.2f (norm=%.2f), pesos=(%.2f, %.2f) → hybrid=%.4f" % [
+		current_score, normalized_score, trend, normalized_trend, score_weight, trend_weight, hybrid
+	])
+	
 	return hybrid
+
+## Calcula el baseline de largo plazo a partir de TODO el historial
+## Usa ponderación lineal (más reciente = mayor peso)
+## @param full_history: Array[AttemptData] con todo el historial
+## @return float: Promedio ponderado de scores
+func calculate_long_term_baseline(full_history: Array) -> float:
+	if full_history.is_empty():
+		print("[TrendCalculator] calculate_long_term_baseline: historial vacío, retornando 0.0")
+		return 0.0
+
+	var weighted_sum := 0.0
+	var total_weight := 0.0
+	var n := full_history.size()
+
+	for i in range(n):
+		var weight := float(i + 1)
+		weighted_sum += full_history[i].score * weight
+		total_weight += weight
+
+	var baseline = weighted_sum / total_weight
+	print("[TrendCalculator] Long-term baseline: %.4f (basado en %d intentos)" % [baseline, n])
+	return baseline
+
+
+## Combina score de corto y largo plazo usando pesos configurables
+## Si no hay datos de largo plazo (long_term == 0.0), usa solo short_term
+## @param short_term: Score de corto plazo (últimos N intentos)
+## @param long_term: Score de largo plazo (historial completo)
+## @return float: Score combinado
+func blend_scores(short_term: float, long_term: float) -> float:
+	if long_term == 0.0:
+		print("[TrendCalculator] blend_scores: sin long_term, usando solo short_term=%.2f" % short_term)
+		return short_term
+	
+	var blended = short_term * SHORT_TERM_WEIGHT + long_term * LONG_TERM_WEIGHT
+	print("[TrendCalculator] blend_scores: short=%.2f (%.0f%%), long=%.2f (%.0f%%) → blended=%.4f" % [
+		short_term, SHORT_TERM_WEIGHT * 100, long_term, LONG_TERM_WEIGHT * 100, blended
+	])
+	return blended
+
 
 ## Obtiene descripción textual de la tendencia
 ## @param trend: Valor de tendencia

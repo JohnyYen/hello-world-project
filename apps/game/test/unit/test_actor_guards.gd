@@ -46,8 +46,7 @@ func before_each() -> void:
     _xapi_prev_is_tracking = _XAPIService._is_tracking
     _xapi_prev_segment_id = _XAPIService._current_segment_id
 
-    # --- GameController fixture (matches test_game_controller.gd pattern) ---
-    GameController._instance = null
+    # --- GameController fixture ---
     _controller = GameController.new()
     add_child(_controller)
 
@@ -68,7 +67,6 @@ func after_each() -> void:
     if _controller:
         _controller.queue_free()
         _controller = null
-    GameController._instance = null
 
 
 # ============================================================================

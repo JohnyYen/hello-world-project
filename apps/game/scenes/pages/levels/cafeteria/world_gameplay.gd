@@ -47,7 +47,6 @@ func _track_game_action(
 	)
 
 func _on_attend_student(student: Dictionary) -> void:
-	# student puede tener keys como: "id", "position", "node"
 	var student_node: Node2D = student.get("node", null)
 	if student_node == null:
 		push_error("Student node missing for student: " + str(student))
@@ -56,29 +55,24 @@ func _on_attend_student(student: Dictionary) -> void:
 	print("DEBUG: Atendiendo al estudiante: ", student.get("id", "unknown"))
 	_track_game_action("attend_student", "Atender estudiante", {}, {"student_id": student.get("id", "unknown")})
 
-	# 1️⃣ Mover al jugador frente al estudiante
-	var player_node: CharacterBody2D = $World/PlayerZone/CharacterBody2D
-	var target_position: Vector2 = student_node.global_position + Vector2(-50, 0) # Ajusta offset si quieres
-	player_node.global_position = target_position
+	# Moverse en X hacia el estudiante, manteniendo Y del jugador (detrás del mostrador)
+	var target_position := Vector2(student_node.global_position.x, player_node.global_position.y)
 
-	# 2️⃣ Cambiar animación a "attend" (si la tienes)
 	var anim_sprite: AnimatedSprite2D = player_node.get_node("AnimatedSprite2D")
 	if anim_sprite != null:
-		anim_sprite.animation = "attend"
-		anim_sprite.frame = 0
+		anim_sprite.animation = "walk"
 		anim_sprite.play()
 
-	# 3️⃣ Marcar que el estudiante está siendo atendido
+	var tween = create_tween()
+	tween.tween_property(player_node, "global_position", target_position, 0.6)
+	await tween.finished
+
+	# Idle al llegar
+	if anim_sprite != null:
+		anim_sprite.animation = "idle"
+		anim_sprite.play()
+
 	student["being_attended"] = true
-
-	# 4️⃣ Opcional: disparar una señal si quieres que otros sistemas reaccionen
-	emit_signal("student_attended", student)
-
-	# 5️⃣ Esperar un momento simulando el tiempo de atención (opcional, para animación)
-	await get_tree().create_timer(1.0) # 1 segundo de atención
-
-	# 6️⃣ Finalizar atención
-	student["being_attended"] = false
 	print("DEBUG: Estudiante atendido: ", student.get("id", "unknown"))
 
 
@@ -104,7 +98,7 @@ func _on_get_bread() -> void:
 
 	# 3️⃣ Mover al jugador a la posición de la despensa
 	var target_position: Vector2 = bread_storage.global_position + Vector2(0, -20) # Offset para posicionar delante
-	player_node.global_position = target_position
+	#player_node.global_position = target_position
 
 	# 4️⃣ Cambiar animación a "get_bread" si existe
 	var anim_sprite: AnimatedSprite2D = player_node.get_node("AnimatedSprite2D")
@@ -118,7 +112,10 @@ func _on_get_bread() -> void:
 			anim_sprite.animation = "idle"
 			anim_sprite.frame = 0
 			anim_sprite.play()
-
+	
+	var tween = create_tween()
+	tween.tween_property(player_node, "global_position", target_position, 1.0)
+	await tween.finished
 	# 5️⃣ Opcional: esperar un tiempo simulando que toma el pan
 	await get_tree().create_timer(1.0) # 1 segundo
 	
