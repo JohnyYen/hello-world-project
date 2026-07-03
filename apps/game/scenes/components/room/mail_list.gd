@@ -37,7 +37,12 @@ func _ready():
 
 func _fetch_and_render():
 	print("DEBUG [mail_list] _fetch_and_render: obteniendo feedback del backend...")
-	var result = await _feedback_service.fetch_feedback("023436ff-0b9a-4aa7-b10c-77287c2fc943")
+	var student_id = _GameConfig.user.id
+#	Env.current_user.get("id", "") ||
+	if student_id.is_empty():
+		print("DEBUG [mail_list] _fetch_and_render: NO HAY USUARIO LOGEADO, usando ID hardcodeado como fallback")
+		student_id = "023436ff-0b9a-4aa7-b10c-77287c2fc943"
+	var result = await _feedback_service.fetch_feedback(student_id)
 	print("DEBUG [mail_list] _fetch_and_render: resultado -> ", result)
 	render_emails()
 

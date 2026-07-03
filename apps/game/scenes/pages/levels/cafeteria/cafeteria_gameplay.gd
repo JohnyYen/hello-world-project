@@ -107,7 +107,7 @@ func _ready() -> void:
 	hud.reset_level.connect(Callable(self, "_on_reset_level"))
 	hud.back_pressed.connect(Callable(self, "_on_back_level"))
 
-	_GameController.feedback_controller.hud_node = hud
+	#_GameController.feedback_controller.hud_node = hud
 	
 func _exit_tree() -> void:
 	# Desconectar action_decided del EventBus para evitar conexiones huérfanas
