@@ -17,6 +17,7 @@ var feedback_messages : Dictionary = {}
 var learning_objective : String = ""
 
 var json_data: Dictionary = {}
+var seed_data: Dictionary = {}
 
 func _init(segment_id : int):
 	self.segment_id = segment_id

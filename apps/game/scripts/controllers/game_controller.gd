@@ -13,7 +13,10 @@ var _is_retry_mode: bool = false
 var _level_controller: LevelController
 var _attempts_count: int = 0
 
-static var _instance: GameController = null
+func _init():
+	self.engine = ExecutionEngine.new()
+	self.agent = AdaptiveAgent.new()
+	self.feedback_controller = FeedbackController.new()
 
 func _ready() -> void:
 	EventBus.level_loaded.connect(_on_level_loaded)
@@ -23,27 +26,13 @@ func _on_level_loaded(segment_id: int, level_number: int, actor_id: String) -> v
 	_current_level_number = level_number
 	begin_segment(segment_id, actor_id)
 
-static func create_level_controller(level) -> LevelController:
+func create_level_controller(level) -> LevelController:
 	var controller = LevelStrategy.create_level(level)
-	get_instance()._level_controller = controller
+	_level_controller = controller
 	return controller
 
-static func get_instance():
-	if _instance == null:
-		_instance = GameController.new()
-	return _instance
-
-func _init():
-	if _instance != null:
-		push_error("GameController singleton already exists. Use get_instance() to access the singleton.")
-		return
-	
-	self.engine = ExecutionEngine.new()
-	self.agent = AdaptiveAgent.new()
-	self.feedback_controller = FeedbackController.new()
-
 func execute_solution(blocks : Array[BaseBlock], context : BaseProblemContext) -> BaseProblemContext:
-	return self.engine.execute(blocks, context)
+	return await self.engine.execute(blocks, context)
 
 ## Placeholders rechazados por el guard de actor (REQ-P2-R3).
 ## Coincide con _XAPIService para que ambos límites fallen consistentemente.
@@ -93,9 +82,21 @@ func record_attempt(blocks_executed: Array[String], success: bool, execution_tim
 ## Completa el nivel: registra intento, finaliza tracking y notifica al LevelController.
 ## @param result: Dictionary con keys "blocks", "success", "time"
 func complete_level(result: Dictionary) -> void:
+	print("[GameController | complete_level] ENTRADA - result.success=%s, result.blocks=%s, result.time=%.2f, result.attempt_number=%d" % [
+		result.get("success", false), result.get("blocks", []), result.get("time", 0.0), result.get("attempt_number", 0)
+	])
+	print("[GameController | complete_level] _level_controller is null? %s" % (_level_controller == null))
+	
 	record_attempt(result.blocks, result.success, result.time)
+	print("[GameController | complete_level] record_attempt OK")
+	
 	var analytics = _XAPIService.end_segment_tracking(result.success)
+	print("[GameController | complete_level] analytics recibido: %s" % analytics)
+	
 	var enriched = _enrich_level_data(analytics)
+	print("[GameController | complete_level] enriched data: score=%.2f, errors=%d, level_id=%d, actor_id=%s" % [
+		enriched.get("score", 0.0), enriched.get("errors", 0), enriched.get("level_id", 0), enriched.get("actor_id", "?")
+	])
 	
 	# Crear xAPI statement para sincronización con backend
 	# Captura el evento consolidado de nivel completado con score, errors, duration
@@ -113,16 +114,27 @@ func complete_level(result: Dictionary) -> void:
 		_current_level_number,
 		_current_level_id
 	)
+	print("[GameController | complete_level] track_level_completed OK")
 	
+	print("[GameController | complete_level] _level_controller is null? %s (antes del if)" % (_level_controller == null))
 	if _level_controller:
-		print("[GameController] Enviando analytics al AdaptiveAgent - score=%.2f, errors=%d" % [enriched.get("score", 0.0), enriched.get("errors", 0)])
+		print("[ADAPT_TRACE] === Enviando analytics al agente adaptativo ===")
+		print("[ADAPT_TRACE] Data enriquecida: score=%.2f, errors=%d, time=%.2f, hints=%d, efficiency=%.2f, level_id=%d" % [
+			enriched.get("score", 0.0), enriched.get("errors", 0), enriched.get("time", 0.0),
+			enriched.get("hints_used", 0), enriched.get("efficiency_rating", 0.0), enriched.get("level_id", 0)
+		])
+		print("[GameController | complete_level] _level_controller VÁLIDO - llamando finish_level")
+		print("[GameController | complete_level] Enviando analytics al AdaptiveAgent - score=%.2f, errors=%d" % [enriched.get("score", 0.0), enriched.get("errors", 0)])
 		_level_controller.finish_level(enriched)
+		print("[ADAPT_TRACE] finish_level completado - esperando decisión del agente...")
+		print("[GameController | complete_level] finish_level ejecutado correctamente")
 	else:
-		push_error("GameController: No hay _level_controller asignado")
+		push_error("[GameController | complete_level] _level_controller ES NULL - no se puede llamar finish_level")
 
-## Enriquece datos analíticos con contexto del nivel (level_id, actor_id).
+## Enriquece datos analíticos con contexto del nivel (level_id, actor_id)
+## y datos de raw_stats (hints_used, efficiency_rating, etc.).
 ## @param analytics: Diccionario de analytics desde end_segment_tracking
-## @return Dictionary enriquecido con level_id y actor_id
+## @return Dictionary enriquecido con level_id, actor_id y campos extendidos
 func _enrich_level_data(analytics: Dictionary) -> Dictionary:
 	var enriched := analytics.duplicate()
 	enriched["level_id"] = _current_level_id
@@ -134,6 +146,32 @@ func _enrich_level_data(analytics: Dictionary) -> Dictionary:
 		enriched["score"] = s.get("score", 0.0)
 		enriched["errors"] = s.get("errors", 0)
 		enriched["time"] = s.get("time", 0.0)
+
+	# Extract raw_stats enrichment data (safe access — may not exist)
+	var raw_stats: Dictionary = analytics.get("raw_stats", {})
+	enriched["hints_used"] = raw_stats.get("hints_used_count", 0)
+	enriched["efficiency_rating"] = raw_stats.get("efficiency_rating", 0.0)
+	enriched["objectives_completed"] = raw_stats.get("objectives_completed", 0)
+
+	# Error details — raw_stats uses "errors_details" internally
+	var error_details_key := "errors_details" if raw_stats.has("errors_details") else "error_details"
+	enriched["error_details"] = raw_stats.get(error_details_key, {})
+
+	# Custom events — prefer raw_stats if present, fall back to top-level analytics
+	if raw_stats.has("custom_events"):
+		enriched["custom_events"] = raw_stats["custom_events"]
+	elif analytics.has("custom_events"):
+		enriched["custom_events"] = analytics["custom_events"]
+	else:
+		enriched["custom_events"] = []
+
+	# Blocks count from last attempt
+	var attempts: Array = analytics.get("attempts", [])
+	enriched["blocks_count"] = 0
+	if not attempts.is_empty():
+		var last_attempt: Dictionary = attempts[-1]
+		enriched["blocks_count"] = last_attempt.get("blocks_count", 0)
+
 	return enriched
 
 ## Agrega un evento de tracking personalizado.

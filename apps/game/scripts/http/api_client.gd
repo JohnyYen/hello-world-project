@@ -341,6 +341,7 @@ func get_professor_feedback(student_id: String, skip: int = 0, limit: int = 100)
 	if result.OK:
 		var items = result.data.get("items", []) if result.data is Dictionary else []
 		print("DEBUG [ApiClient] get_professor_feedback: OK, ", items.size(), " items recibidos")
+		print("DEBUG [ApiClient] get_professor_feedback: DATA CRUDA del backend -> ", JSON.stringify(result.data))
 		return {"OK": true, "data": result.data}
 	else:
 		print("DEBUG [ApiClient] get_professor_feedback: ERROR - ", result.get("error", "desconocido"))

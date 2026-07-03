@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://ce0a2mmdts12p"]
+[gd_scene load_steps=7 format=3 uid="uid://ce0a2mmdts12p"]
 
 [ext_resource type="PackedScene" uid="uid://dhxdg3jmuprqq" path="res://scenes/pages/select level/select_level_template.tscn" id="1_upx5k"]
 [ext_resource type="Texture2D" uid="uid://cttrtr2406fx5" path="res://assets/anime/backgrounds/chapter_2/bg_select_level.png" id="2_mhmft"]
 [ext_resource type="Shader" uid="uid://bgg3fnk5b317c" path="res://scenes/pages/select level/blur_effect.gdshader" id="3_1iuov"]
 [ext_resource type="Texture2D" uid="uid://b2pm0dewldbxa" path="res://assets/anime/ui/btn_cafeteria.png" id="3_t17kn"]
+[ext_resource type="Theme" uid="uid://bqowiegrcovax" path="res://theme/hello_world_theme.tres" id="4_l7efj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l7efj"]
 shader = ExtResource("3_1iuov")
@@ -33,6 +34,17 @@ offset_bottom = 170.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0588235, 0.0588235, 0.101961, 0.192157)
+
+[node name="BackContainer" parent="." index="2"]
+offset_right = 122.0
+offset_bottom = 111.0
+
+[node name="Back" parent="BackContainer" index="0"]
+theme = ExtResource("4_l7efj")
+theme_type_variation = &"ScreenButton"
+text = "<"
+icon = null
+flat = false
 
 [node name="BlurEffect" parent="." index="3"]
 visible = false
@@ -65,3 +77,10 @@ icon_texture = ExtResource("3_t17kn")
 segment_id = 5
 level_number = 5
 icon_texture = ExtResource("3_t17kn")
+
+[node name="Title" parent="LabelContainer" index="0"]
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.196703, 0.220623, 0.677892, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 5

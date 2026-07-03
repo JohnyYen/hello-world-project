@@ -4,7 +4,6 @@ extends GutTest
 var controller: GameController
 
 func before_each() -> void:
-    GameController._instance = null
     controller = GameController.new()
     add_child(controller)
 
@@ -14,7 +13,6 @@ func after_each() -> void:
     if controller:
         controller.queue_free()
     controller = null
-    GameController._instance = null
 
 # =============================================================================
 # begin_segment tests

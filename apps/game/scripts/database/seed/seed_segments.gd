@@ -10,6 +10,36 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Aprende a tomar un pan del dispensador",
 			"version": "1.0",
 			"segment_id": 1,
+			"segment_type": "bread-only",
+			"required_actions": ["get_bread"],
+			"difficulty_bounds": {"min_students": 0, "max_students": 3, "min_blocks": 3, "max_blocks": 8},
+			"templates": {
+				"decrease_major": {
+					"title": "Nivel 1 - Aprende a tomar pan",
+					"description": "Usa un bloque Ejecutar con la accion get_bread para tomar pan del dispensador",
+					"learning_objective": "Introduccion a la secuencia de instrucciones"
+				},
+				"decrease_minor": {
+					"title": "Nivel 1 - Toma pan del dispensador",
+					"description": "Usa un bloque Ejecutar con get_bread",
+					"learning_objective": "Ejecutar una accion simple"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 1",
+					"description": "Aprende a tomar un pan del dispensador",
+					"learning_objective": "Introduccion a la secuencia de instrucciones"
+				},
+				"increase_minor": {
+					"title": "Nivel 1 - Sirve pan a {student_count} estudiante{student_plural}",
+					"description": "Atiende a {student_count} estudiante{student_plural} con pedidos de pan",
+					"learning_objective": "Atender pedidos de pan"
+				},
+				"increase_major": {
+					"title": "Nivel 1 - Sirve pan a {student_count} estudiantes",
+					"description": "Organiza las acciones para servir pan a {student_count} estudiantes",
+					"learning_objective": "Gestionar multiples pedidos de pan"
+				}
+			},
 			"initial_state": {
 				"student_queue": [],
 				"menu": {"pan": 1},
@@ -65,62 +95,71 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Preparar pan después de tomarlo",
 			"version": "1.0",
 			"segment_id": 2,
-			"initial_state": {
-				"student_queue": [],
-				"menu": {"pan": 1},
-				"cash_register": 0,
-				"inventory": [],
-				"stations": {
-					"bread_dispenser": ["pan"]
-				}
-			},
-			"expected_outputs": [
-				{"inventory_contains": ["pan_preparado"]}
-			],
-			"available_blocks": ["Start", "Execute", "End"],
-			"learning_objective": "Secuencia de múltiples acciones simples",
-			"environment_data": {
-				"bread_station": true,
-				"drink_machine": false,
-				"cash_register": false
-			},
-			"execution_rules": {
-				"max_blocks": 6
-			},
-			"validation_criteria": [
-				{
-					"condition": "inventory contains pan_preparado",
-					"description": "El jugador debe tomar y preparar el pan"
-				}
-			],
-			"feedback_messages": {
-				"success": "¡Muy bien! Has preparado el pan.",
-				"failure": "Falta preparar el pan después de tomarlo.",
-				"hints": [
-					"Primero get_bread(), luego prepare_bread()."
-				]
-			},
-			"ui_config": {
-				"code_editor": {
-					"syntax_highlighting": true,
-					"line_numbers": true
+			"segment_type": "bread-only",
+			"required_actions": ["get_bread", "prepare_bread"],
+			"difficulty_bounds": {"min_students": 0, "max_students": 3, "min_blocks": 3, "max_blocks": 10},
+			"templates": {
+				"decrease_major": {
+					"title": "Nivel 1 - Prepara pan paso a paso",
+					"description": "Primero get_bread, luego prepare_bread. {student_count} estudiante{student_plural}",
+					"learning_objective": "Secuencia de dos acciones"
 				},
-				"visualization": {
-					"show_state": true,
-					"animation_speed": 1
-				}
+				"decrease_minor": {
+					"title": "Nivel 1 - Prepara pan",
+					"description": "Toma y prepara el pan con get_bread y prepare_bread",
+					"learning_objective": "Secuencia de {student_count} accion{student_plural}"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 2",
+					"description": "Preparar pan despues de tomarlo",
+					"learning_objective": "Secuencia de multiples acciones simples"
+				},
+			"increase_minor": {
+				"title": "Sirve pan a {student_count} estudiante{student_plural}",
+				"description": "Toma, prepara y sirve pan a {student_count} estudiante{student_plural}",
+				"learning_objective": "Atender pedidos de pan"
 			},
-			"defined_actions": [
-				{"name": "Atender estudiante", "value": "attend_next_student"},
-				{"name": "Tomar pan", "value": "get_bread"},
-				{"name": "Preparar pan", "value": "prepare_bread"}
-			]
+			"increase_major": {
+				"title": "Sirve pan a {student_count} estudiantes",
+				"description": "Organiza las acciones para servir pan a {student_count} estudiantes",
+				"learning_objective": "Gestionar multiples pedidos de pan"
+			}
 		},
 		{
 			"title": "Nivel 1 - Segmento 3",
 			"description": "Servir pan preparado a un estudiante",
 			"version": "1.0",
 			"segment_id": 3,
+			"segment_type": "bread-only",
+			"required_actions": ["get_bread", "prepare_bread", "serve_bread"],
+			"difficulty_bounds": {"min_students": 1, "max_students": 5, "min_blocks": 3, "max_blocks": 12},
+			"templates": {
+				"decrease_major": {
+					"title": "Sirve pan a {student_count} estudiante{student_plural}",
+					"description": "Prepara y sirve pan a {student_count} estudiante{student_plural}. Estudiantes: {student_names}",
+					"learning_objective": "Atender a {student_count} cliente{student_plural}"
+				},
+				"decrease_minor": {
+					"title": "Sirve pan a {student_count} estudiante{student_plural}",
+					"description": "Toma, prepara y sirve pan a {student_count} estudiante{student_plural}",
+					"learning_objective": "Atender a {student_count} cliente{student_plural}"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 3",
+					"description": "Servir pan preparado a un estudiante",
+					"learning_objective": "Atender al primer cliente"
+				},
+				"increase_minor": {
+					"title": "Sirve pan a {student_count} estudiantes",
+					"description": "Atiende a {student_count} estudiantes con pedidos de pan",
+					"learning_objective": "Atender multiples clientes"
+				},
+				"increase_major": {
+					"title": "Sirve pan a {student_count} estudiantes",
+					"description": "Organiza las acciones para servir a {student_names}",
+					"learning_objective": "Gestionar multiples pedidos de pan"
+				}
+			},
 			"initial_state": {
 				"student_queue": [
 					{"nombre": "Ana", "pedido": "pan"}
@@ -181,6 +220,36 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Atender a un estudiante que pide bebida",
 			"version": "1.0",
 			"segment_id": 4,
+			"segment_type": "drink-only",
+			"required_actions": ["prepare_drink", "serve_drink"],
+			"difficulty_bounds": {"min_students": 1, "max_students": 5, "min_blocks": 3, "max_blocks": 12},
+			"templates": {
+				"decrease_major": {
+					"title": "Sirve bebida a {student_count} estudiante{student_plural}",
+					"description": "Prepara y sirve {drink_item} a {student_count} estudiante{student_plural}",
+					"learning_objective": "Atender a {student_count} cliente{student_plural} con bebidas"
+				},
+				"decrease_minor": {
+					"title": "Sirve bebida a {student_count} estudiante{student_plural}",
+					"description": "Prepara y sirve una bebida a {student_count} estudiante{student_plural}",
+					"learning_objective": "Servir bebidas a {student_count} cliente{student_plural}"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 4",
+					"description": "Atender a un estudiante que pide bebida",
+					"learning_objective": "Introduccion a acciones con bebidas"
+				},
+				"increase_minor": {
+					"title": "Sirve bebidas a {student_count} estudiantes",
+					"description": "Prepara y sirve {drink_item} a {student_count} estudiantes",
+					"learning_objective": "Atender multiples pedidos de bebida"
+				},
+				"increase_major": {
+					"title": "Sirve bebidas a {student_count} estudiantes",
+					"description": "Organiza las acciones para servir bebidas a {student_count} estudiantes",
+					"learning_objective": "Gestionar multiples pedidos de bebida"
+				}
+			},
 			"initial_state": {
 				"student_queue": [
 					{"nombre": "Luis", "pedido": "cafe"}
@@ -240,6 +309,36 @@ func seed_level_1(_db: SQLite) -> void:
 			"description": "Atender a dos clientes en orden con pedidos distintos",
 			"version": "1.0",
 			"segment_id": 5,
+			"segment_type": "mixed",
+			"required_actions": ["get_bread", "prepare_bread", "serve_bread", "prepare_drink", "serve_drink"],
+			"difficulty_bounds": {"min_students": 2, "max_students": 6, "min_blocks": 4, "max_blocks": 15},
+			"templates": {
+				"decrease_major": {
+					"title": "Atiende a {student_count} estudiante{student_plural}",
+					"description": "Los estudiantes tienen distintos pedidos. Atiende a {student_count} estudiante{student_plural}: {student_names}",
+					"learning_objective": "Atender pedidos mixtos de {student_count} cliente{student_plural}"
+				},
+				"decrease_minor": {
+					"title": "Atiende a {student_count} estudiante{student_plural}",
+					"description": "Cada estudiante tiene un pedido especifico. Sirve a {student_count} estudiante{student_plural}",
+					"learning_objective": "Atender {student_count} cliente{student_plural} correctamente"
+				},
+				"keep": {
+					"title": "Nivel 1 - Segmento 5",
+					"description": "Atender a dos clientes en orden con pedidos distintos",
+					"learning_objective": "Secuencias mas complejas con multiples clientes"
+				},
+				"increase_minor": {
+					"title": "Atiende a {student_count} estudiantes",
+					"description": "{student_count} estudiantes esperan. Identifica cada pedido y sirve correctamente",
+					"learning_objective": "Gestionar multiples pedidos variados"
+				},
+				"increase_major": {
+					"title": "Atiende a {student_count} estudiantes",
+					"description": "{student_count} estudiantes con pedidos variados. Usa las acciones correctas para cada uno",
+					"learning_objective": "Resolver secuencia compleja de {student_count} pasos"
+				}
+			},
 			"initial_state": {
 				"student_queue": [
 					{"nombre": "Ana", "pedido": "pan"},
@@ -303,6 +402,9 @@ func seed_level_1(_db: SQLite) -> void:
 			]
 		}
 	]
+	fixup_segment_types(_db)
+	fixup_difficulty_bounds(_db)
+
 	var i : int = 1
 	# Inserta cada segmento
 	for seg_data in segments_data:
@@ -319,3 +421,40 @@ func seed_level_1(_db: SQLite) -> void:
 		})
 
 	print("Se han insertado todos los segmentos del Nivel 1.")
+
+
+# Agrega segment_type faltante en segmentos existentes (migración para DBs pre-seed actualizado)
+func fixup_segment_types(_db: SQLite) -> void:
+	var updates = {
+		1: "bread-only",
+		2: "bread-only",
+		3: "bread-only",
+		4: "drink-only",
+		5: "mixed"
+	}
+	for segment_id in updates:
+		var type_val = updates[segment_id] as String
+		var sql = "UPDATE Segments SET configuration = json_set(configuration, '$.segment_type', '%s') WHERE segment_id = %d AND json_extract(configuration, '$.segment_type') IS NULL" % [type_val, segment_id]
+		_db.query(sql)
+		if _db.get_affected_rows() > 0:
+			print("  Fixup: segment_id=%d → segment_type=%s" % [segment_id, type_val])
+
+
+func fixup_difficulty_bounds(_db: SQLite) -> void:
+	# Migra segmentos 1 y 2 para que permitan estudiantes en dificultades altas
+	var updates = {
+		1: '{"min_students": 0, "max_students": 3, "min_blocks": 3, "max_blocks": 8}',
+		2: '{"min_students": 0, "max_students": 3, "min_blocks": 3, "max_blocks": 10}'
+	}
+	for segment_id in updates:
+		var new_bounds = updates[segment_id] as String
+		var sql = "UPDATE Segments SET configuration = json_set(configuration, '$.difficulty_bounds', json('%s')) WHERE segment_id = %d AND json_extract(configuration, '$.difficulty_bounds.max_students') = 0" % [new_bounds, segment_id]
+		_db.query(sql)
+		if _db.get_affected_rows() > 0:
+			print("  Fixup: segment_id=%d → difficulty_bounds updated" % [segment_id])
+
+	# Si no habia difficulty_bounds, poner valores por defecto
+	var default_sql = "UPDATE Segments SET configuration = json_set(configuration, '$.difficulty_bounds', json('{\"min_students\": 1, \"max_students\": 10, \"min_blocks\": 3, \"max_blocks\": 10}')) WHERE json_extract(configuration, '$.difficulty_bounds') IS NULL"
+	_db.query(default_sql)
+	if _db.get_affected_rows() > 0:
+		print("  Fixup: %d segments with missing difficulty_bounds → default bounds" % [_db.get_affected_rows()])

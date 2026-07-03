@@ -1,13 +1,22 @@
-## Implementation of a rule-based inference engine for the Adaptive Agent
-## This class extends BaseInference and implements specific logic for
-## deciding actions based on predefined rules with support for hybrid metrics
-## (combining score and trend).
+## Implementation of a graduated multi-threshold inference engine
+## This class extends BaseInference and implements decision logic using
+## multiple threshold levels for granular difficulty adjustment.
+## Replaces the previous 3-action rule system with 5-action graduated inference.
 extends BaseInference
 class_name RuleBasedInference
 
-## Array of rules to be used for decision making
-## Each rule contains a condition, an associated action, and a weight
-var rules = []
+## Umbrales para decisión multi-nivel
+const THRESHOLD_MAJOR_LOW := 0.3
+const THRESHOLD_MINOR_LOW := 0.5
+const THRESHOLD_KEEP := 0.8
+const THRESHOLD_MINOR_HIGH := 0.9
+
+## Deltas asociados a cada acción (usados por LevelModifier)
+const DELTA_DECREASE_MAJOR := -0.2
+const DELTA_DECREASE_MINOR := -0.1
+const DELTA_KEEP := 0.0
+const DELTA_INCREASE_MINOR := 0.1
+const DELTA_INCREASE_MAJOR := 0.2
 
 ## TrendCalculator para calcular métricas híbridas
 var trend_calculator: TrendCalculator
@@ -16,92 +25,58 @@ var trend_calculator: TrendCalculator
 var score_weight: float = 0.7
 var trend_weight: float = 0.3
 
-## Initializes the rule-based inference engine by loading the rules
+## Initializes the inference engine
 func _init() -> void:
-	_load_rules()
 	trend_calculator = TrendCalculator.new()
 
-## Loads the rules for the inference engine
-## These rules define the conditions under which actions should be taken
-func _load_rules() -> void:
-	rules = [
-		{"condition": {"operator": ">", "value": 0.8}, "action": "increase", "weight": 3},
-		{"condition": {"operator": "<", "value": 0.5}, "action": "decrease", "weight": 2},
-		{"condition": {"operator": "<=", "value": 0.8}, "action": "keep", "weight": 1},
-	]
+## Aplica lógica multi-umbral para determinar la acción graduada
+## @param hybrid_metric: float entre 0.0 y 1.0
+## @return String: acción ("decrease_major", "decrease_minor", "keep", "increase_minor", "increase_major")
+func _calculate_multi_threshold(hybrid_metric: float) -> String:
+	var action: String
+	if hybrid_metric < THRESHOLD_MAJOR_LOW:
+		action = "decrease_major"
+	elif hybrid_metric < THRESHOLD_MINOR_LOW:
+		action = "decrease_minor"
+	elif hybrid_metric <= THRESHOLD_KEEP:
+		action = "keep"
+	elif hybrid_metric <= THRESHOLD_MINOR_HIGH:
+		action = "increase_minor"
+	else:
+		action = "increase_major"
+	print("[ADAPT_TRACE] multi_threshold: hybrid=%.4f, thresholds=[%.1f, %.1f, %.1f, %.1f] → action='%s'" % [
+		hybrid_metric, THRESHOLD_MAJOR_LOW, THRESHOLD_MINOR_LOW, THRESHOLD_KEEP, THRESHOLD_MINOR_HIGH, action
+	])
+	return action
 
 ## Decides the appropriate action based on the provided performance data
-## and the loaded rules. Evaluates rules using hybrid metric (70% score + 30% trend).
+## using graduated multi-threshold logic.
 ##
-## @param performance_data: Dictionary containing normalized performance metrics with keys:
-##                         - "score": the normalized performance score (0.0-1.0)
-##                         - "avg_score": the average performance score
-##                         - "trend": the trend value (-1.0 to 1.0), optional
-##                         - "errors": the number of errors made
-##                         - "time": the time taken (if applicable)
-## @return: String representing the action to take ("increase", "decrease", or "keep")
+## @param performance_data: Dictionary with keys:
+##                         - "score": normalized score (0.0-1.0)
+##                         - "trend": trend value (-1.0 to 1.0)
+##                         - "hints_used": number of hints used (optional)
+##                         - "efficiency_rating": efficiency rating (optional)
+##                         - "objectives_completed": objectives completed (optional)
+## @return: String: "decrease_major", "decrease_minor", "keep", "increase_minor", "increase_major"
 func decide_action(performance_data: Dictionary) -> String:
-	var current_score = performance_data.get("avg_score", 0.0)
+	var current_score = performance_data.get("score", 0.0)
 	var trend = performance_data.get("trend", 0.0)
-	
-	# Calcular métrica híbrida: 70% score + 30% tendencia
-	var metric_value = trend_calculator.calculate_hybrid_metric(
-		current_score, 
-		trend, 
-		score_weight, 
+
+	var hybrid_metric = trend_calculator.calculate_hybrid_metric(
+		current_score,
+		trend,
+		score_weight,
 		trend_weight
 	)
-	
-	var best_action = "keep"
-	var max_weight = 0
-	
-	# Calcular desviación del umbral para ajuste de peso
-	var deviation_from_high_threshold = 0.0
-	var deviation_from_low_threshold = 0.0
-	
-	if metric_value > 0.8:
-		deviation_from_high_threshold = metric_value - 0.8
-	elif metric_value < 0.5:
-		deviation_from_low_threshold = 0.5 - metric_value
-	
-	for rule in rules:
-		var condition = rule["condition"]
-		var condition_met = false
-		var adjusted_weight = rule.get("weight", 1)
-		
-		# Evaluar condición
-		if rule == rules[2] and metric_value >= 0.5:
-			condition_met = (metric_value <= condition["value"] and metric_value >= 0.5)
-		else:
-			match condition["operator"]:
-				"<":
-					condition_met = metric_value < condition["value"]
-				">":
-					condition_met = metric_value > condition["value"]
-				"<=":
-					condition_met = metric_value <= condition["value"]
-				">=":
-					condition_met = metric_value >= condition["value"]
-				"==":
-					condition_met = metric_value == condition["value"]
-		
-		# Ajustar peso basado en magnitud de desviación
-		if condition_met:
-			if rule["action"] == "increase" and deviation_from_high_threshold > 0:
-				adjusted_weight += deviation_from_high_threshold * 10
-			elif rule["action"] == "decrease" and deviation_from_low_threshold > 0:
-				adjusted_weight += deviation_from_low_threshold * 10
-			
-			# Actualizar mejor acción si tiene mayor peso
-			if adjusted_weight > max_weight:
-				max_weight = adjusted_weight
-				best_action = rule["action"]
-	
+
+	var action = _calculate_multi_threshold(hybrid_metric)
+
 	print("[RuleBasedInference] score=%.2f, trend=%.2f, hybrid_metric=%.2f, action=%s" % [
-		current_score, trend, metric_value, best_action
+		current_score, trend, hybrid_metric, action
 	])
-	
-	return best_action
+
+	return action
 
 ## Configura los pesos de la métrica híbrida
 ## @param new_score_weight: Peso para el score (0.0 a 1.0)

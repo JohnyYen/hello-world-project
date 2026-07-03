@@ -3,8 +3,13 @@
 extends CanvasLayer
 
 var _current_balloon: Node = null
+@onready var skip_button: Button = $Skip
 
 func _ready() -> void:
+	
+	if Env.ENVIORMENT == "dev":
+		skip_button.visible = true
+	
 	print("HOLAAA desde el screen")
 	_GameState.dialogue_flow.dialogue_show_requested.connect(Callable(self, "_on_dialogue_show_requested"))
 	
@@ -33,3 +38,8 @@ func _on_dialogue_show_requested(dialogue_path: String) -> void:
 func _exit_tree() -> void:
 	if _current_balloon:
 		_current_balloon.queue_free()
+
+
+func _on_skip_pressed() -> void:
+	get_children().pop_back()
+	LoadingScreen.change_scene("res://scenes/pages/select level/select_level_one.tscn")

@@ -2,8 +2,9 @@
 ## Data Transfer Object (DTO) para pasar datos de un intento de nivel
 ## entre capas: XAPIService -> GameController -> LevelController -> AdaptiveAgent
 ## 
-## Encapsula: score, errors, time con type hints explícitos
-## para tener autocompletado y validación de tipos en todas las capas.
+## Encapsula: score, errors, time, hints_used, efficiency_rating,
+## objectives_completed, blocks_count, error_details, custom_events
+## con type hints explícitos y validación.
 
 class_name AttemptData
 
@@ -25,19 +26,71 @@ var actor_id: String = ""
 ## Timestamp del intento (ISO format)
 var timestamp: String = ""
 
-## Constructor con parámetros requeridos
-func _init(p_score: float = 0.0, p_errors: int = 0, p_time: float = 0.0) -> void:
+## Cantidad de ayudas/pistas usadas
+var hints_used: int = 0
+
+## Rating de eficiencia (0.0 a 100.0)
+var efficiency_rating: float = 0.0
+
+## Objetivos completados en el intento
+var objectives_completed: int = 0
+
+## Cantidad de bloques usados
+var blocks_count: int = 0
+
+## Diccionario con detalles de errores por intento
+var error_details: Dictionary = {}
+
+## Eventos personalizados del juego
+var custom_events: Array[Dictionary] = []
+
+## Constructor con todos los parámetros
+func _init(
+	p_score: float = 0.0,
+	p_errors: int = 0,
+	p_time: float = 0.0,
+	p_hints_used: int = 0,
+	p_efficiency_rating: float = 0.0,
+	p_objectives_completed: int = 0,
+	p_blocks_count: int = 0,
+	p_error_details: Dictionary = {},
+	p_custom_events: Array[Dictionary] = []
+) -> void:
 	score = clamp(p_score, 0.0, 1.0)
 	errors = max(0, p_errors)
 	time = max(0.0, p_time)
+	hints_used = max(0, p_hints_used)
+	efficiency_rating = clamp(p_efficiency_rating, 0.0, 100.0)
+	objectives_completed = max(0, p_objectives_completed)
+	blocks_count = max(0, p_blocks_count)
+	error_details = p_error_details
+	custom_events = p_custom_events
 	timestamp = Time.get_datetime_string_from_system()
+	# NOTA: Print de Creado eliminado intencionalmente.
+	# from_dictionary() ya imprime un resumen compacto de cada intento,
+	# y tener ambos prints duplica el output para los 110+ intentos históricos,
+	# causando overflow de consola y perdiendo los prints de [ADAPT_TRACE].
 
 ## Crea un AttemptData a partir de un Dictionary (conversión desde XAPIService/GameController)
+## NOTA: Sin print interno para evitar flood. load_history() ya resume "Cargados X intentos".
 static func from_dictionary(data: Dictionary) -> AttemptData:
+	# Convertir untyped Array a Array[Dictionary] (GDScript 2.0 requiere typing explícito)
+	var raw_events: Array = data.get("custom_events", [])
+	var typed_events: Array[Dictionary] = []
+	for event in raw_events:
+		if event is Dictionary:
+			typed_events.append(event)
+	
 	var attempt := AttemptData.new(
 		data.get("score", 0.0),
 		data.get("errors", 0),
-		data.get("time", 0.0)
+		data.get("time", 0.0),
+		data.get("hints_used", 0),
+		data.get("efficiency_rating", 0.0),
+		data.get("objectives_completed", 0),
+		data.get("blocks_count", 0),
+		data.get("error_details", {}),
+		typed_events
 	)
 	attempt.level_id = data.get("level_id", 0)
 	attempt.actor_id = data.get("actor_id", "")
@@ -52,11 +105,17 @@ func to_dictionary() -> Dictionary:
 		"time": time,
 		"level_id": level_id,
 		"actor_id": actor_id,
-		"timestamp": timestamp
+		"timestamp": timestamp,
+		"hints_used": hints_used,
+		"efficiency_rating": efficiency_rating,
+		"objectives_completed": objectives_completed,
+		"blocks_count": blocks_count,
+		"error_details": error_details,
+		"custom_events": custom_events
 	}
 
 ## String representation para debugging
 func _to_string() -> String:
-	return "AttemptData(score=%.2f, errors=%d, time=%.2fs, level_id=%d, actor_id=%s)" % [
-		score, errors, time, level_id, actor_id
+	return "AttemptData(score=%.2f, errors=%d, time=%.2fs, hints_used=%d, efficiency=%.2f, objectives=%d, blocks=%d, level_id=%d, actor_id=%s)" % [
+		score, errors, time, hints_used, efficiency_rating, objectives_completed, blocks_count, level_id, actor_id
 	]

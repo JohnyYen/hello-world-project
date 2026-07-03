@@ -1,5 +1,6 @@
 # test_full_integration.gd
 # Test de integracion completo: 3 tiraderas de nivel → agente adaptativo → xAPI → login → sync
+# Incluye datos enriquecidos (hints_used, efficiency_rating, objectives_completed) en el pipeline.
 extends Node
 
 # UUID canónico de fixture para actor_id (REQ-P2-R4).
@@ -15,10 +16,38 @@ var _user_data: Dictionary = {}
 var _has_token: bool = false
 var _batch_ids: Array = []
 
+# Agente compartido entre runs para acumular historial de intentos
+var _agent: AdaptiveAgent = null
+
 # =============================================================================
 # _ready() — Entry point principal
 # =============================================================================
 func _ready() -> void:
+	# Limpiar historial persistente y crear agente compartido
+	AttemptHistoryPersistence.clear_history()
+	_agent = AdaptiveAgent.new()
+
+	# Datos enriquecidos: score, errors, time, hints_used, efficiency, objectives, blocks
+	var runs: Array = []
+
+	# Run 1: High score - la dificultad debe aumentar
+	runs.append(_run_single_level("Paso 1 - Alto", 0.9, 1, 30.0, true,
+		1, 90.0, 5, 12, "increase"))
+
+	# Run 2: Low score - la dificultad debe disminuir
+	runs.append(_run_single_level("Paso 2 - Bajo", 0.2, 10, 120.0, true,
+		5, 30.0, 1, 8, "decrease"))
+
+	# Run 3: Medium score - la dificultad debe mantenerse
+	runs.append(_run_single_level("Paso 3 - Medio", 0.65, 3, 90.0, true,
+		2, 65.0, 3, 10, "keep"))
+
+	# Sync flow
+	var sync_data := _sync_flow()
+
+	# Resumen
+	_print_summary(runs, sync_data)
+
 	get_tree().change_scene_to_file("res://scenes/pages/menu.tscn")
 
 
@@ -56,7 +85,32 @@ func _login() -> Dictionary:
 
 
 # =============================================================================
-# _run_single_level() — Una tiradera de nivel completa
+# _build_enriched_data() — Construye data enriquecida para el agente
+# =============================================================================
+func _build_enriched_data(
+	score: float,
+	errors: int,
+	time: float,
+	hints_used: int,
+	efficiency_rating: float,
+	objectives_completed: int,
+	blocks_count: int
+) -> Dictionary:
+	return {
+		"score": score,
+		"errors": errors,
+		"time": time,
+		"hints_used": hints_used,
+		"efficiency_rating": efficiency_rating,
+		"objectives_completed": objectives_completed,
+		"blocks_count": blocks_count,
+		"error_details": {},
+		"custom_events": []
+	}
+
+
+# =============================================================================
+# _run_single_level() — Una tiradera de nivel completa con datos enriquecidos
 # =============================================================================
 func _run_single_level(
 	label: String,
@@ -64,10 +118,15 @@ func _run_single_level(
 	errors: int,
 	time: float,
 	success: bool,
+	hints_used: int,
+	efficiency_rating: float,
+	objectives_completed: int,
+	blocks_count: int,
 	expected_action: String
 ) -> Dictionary:
 	print("\n========== %s ==========" % label)
 	print("Score: %.2f, Errors: %d, Time: %.0fs, Success: %s" % [score, errors, time, str(success)])
+	print("Hints: %d, Efficiency: %.1f, Objetivos: %d, Bloques: %d" % [hints_used, efficiency_rating, objectives_completed, blocks_count])
 	print("Accion esperada: %s" % expected_action)
 
 	# 1. Crear contexto de cafeteria
@@ -109,32 +168,44 @@ func _run_single_level(
 	else:
 		print("Ejecucion retorno NULL")
 
-	# 4. Agente adaptativo
+	# 4. Agente adaptativo (compartido entre runs para acumular historial)
 	print("\n[4/7] Analizando con AdaptiveAgent...")
-	var agent := AdaptiveAgent.new()
-	var initial_diff := agent.difficulty
+	var initial_diff := _agent.difficulty
 
-	agent.analyze_and_decide({"score": score, "errors": errors, "time": time})
+	# Pasar datos enriquecidos: score, errors, time + hints_used, efficiency_rating, etc.
+	var enriched_data := _build_enriched_data(
+		score, errors, time,
+		hints_used, efficiency_rating, objectives_completed, blocks_count
+	)
 
-	# Detectar accion comparando dificultad antes/despues
-	var action: String
-	if agent.difficulty > initial_diff:
-		action = "increase"
-	elif agent.difficulty < initial_diff:
-		action = "decrease"
+	# Capturar la accion exacta via EventBus (desacoplado del agente)
+	var captured_action := ""
+	EventBus.action_decided.connect(func(a: String, d: float):
+		captured_action = a
+	)
+
+	_agent.analyze_and_decide(enriched_data)
+
+	# Detectar accion comparando dificultad antes/despues (direccion)
+	var direction: String
+	if _agent.difficulty > initial_diff:
+		direction = "increase"
+	elif _agent.difficulty < initial_diff:
+		direction = "decrease"
 	else:
-		action = "keep"
+		direction = "keep"
 
-	print("Dificultad: %.1f → %.1f (delta=%.1f)" % [initial_diff, agent.difficulty, agent.difficulty - initial_diff])
-	print("Accion del agente: %s (esperada: %s)" % [action, expected_action])
+	print("Dificultad: %.1f → %.1f (delta=%.1f)" % [initial_diff, _agent.difficulty, _agent.difficulty - initial_diff])
+	print("Accion exacta del agente: %s" % captured_action)
+	print("Direccion detectada: %s (esperada: %s)" % [direction, expected_action])
 
-	var test_passed := (action == expected_action)
+	var test_passed := (direction == expected_action)
 	if test_passed:
-		print(">>> PASS: La accion coincide con la esperada (%s) <<<" % expected_action)
+		print(">>> PASS: La direccion coincide con la esperada (%s) <<<" % expected_action)
 	else:
-		print(">>> FAIL: Se esperaba '%s' pero se obtuvo '%s' <<<" % [expected_action, action])
+		print(">>> FAIL: Se esperaba '%s' pero se obtuvo '%s' <<<" % [expected_action, direction])
 
-	# 5. LevelOneModifier
+	# 5. LevelOneModifier (usa la accion exacta del agente)
 	print("\n[5/7] Aplicando modificador de nivel...")
 	var modifier := LevelOneModifier.new()
 
@@ -160,8 +231,11 @@ func _run_single_level(
 		}
 	})
 
-	modifier.modify_level(action, agent.difficulty)
-	print("Modificador aplicado")
+	if captured_action != "":
+		modifier.modify_level(captured_action, _agent.difficulty)
+		print("Modificador aplicado con accion: %s" % captured_action)
+	else:
+		print("Sin accion (historial insuficiente) - no se aplica modificador")
 
 	# 6. xAPI tracking (nivel completado)
 	print("\n[6/7] Trackeando resultado en xAPI...")
@@ -204,12 +278,14 @@ func _run_single_level(
 	return {
 		"OK": true,
 		"label": label,
-		"action": action,
+		"action": captured_action,
+		"direction": direction,
 		"expected_action": expected_action,
 		"initial_difficulty": initial_diff,
-		"final_difficulty": agent.difficulty,
+		"final_difficulty": _agent.difficulty,
 		"test_passed": test_passed,
-		"batch_id": batch_id
+		"batch_id": batch_id,
+		"total_attempts": _agent.analyzer.get_attempt_count()
 	}
 
 

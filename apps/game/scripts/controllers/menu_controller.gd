@@ -29,7 +29,7 @@ func _go_to_login():
 		3.0
 	)
 	
-	print("aaadasdas")
+	#print("aaadasdas")
 	LoadingScreen.change_scene("res://scenes/pages/login.tscn")
 	
 func _on_play_pressed():
@@ -93,3 +93,7 @@ func _on_lang_options_item_selected(index: int) -> void:
 
 func _on_gallery_pressed() -> void:
 	pass # Replace with function body.
+
+
+func _on_login_pressed() -> void:
+	LoadingScreen.change_scene("res://scenes/pages/login.tscn")

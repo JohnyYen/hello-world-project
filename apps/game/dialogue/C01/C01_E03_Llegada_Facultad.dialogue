@@ -1,14 +1,11 @@
 ~ start
-do _DialogueUiController.set_flag.emit("has_first_time_faculty")
+do _DialogueUiController.set_flag.emit("has_first_time_faculty", true)
 # Escena: Encuentro matutino con Alex y primer día de clases
 
-#do game.fade_in()
-#do game.set_background("backgrounds/chapter_1/hallway_morning.png")
-#do game.play_music("audio/music/morning_campus.mp3")
-#
-# Alex aparece
-#do game.set_character("left", "characters/main_characters/Alex/Smile.png")
-#do game.set_character("right", "")
+do _Util.fade_in()
+do _DialogueUiController.changed_background.emit("backgrounds/chapter_1/hallway_morning.png")
+do _DialogueUiController.played_music.emit("audio/music/morning_campus.mp3")
+do _DialogueUiController.changed_character.emit("left", "characters/main_characters/alex/Happy.png")
 
 Alex: ¡Ey, {{_GameState.player_data.name}}! *Se le ilumina la cara, como si te hubiera estado buscando desde hace rato.*
 Alex: No pensé encontrarte tan temprano, ¿qué tal tu primer día "oficial"?
@@ -32,8 +29,7 @@ Alex: *Ríe por lo bajo, como quien disfruta el ambiente universitario.* Yo te a
 Alex: *Camina a tu lado, observando los pasillos llenarse de estudiantes.*
 Alex: Hm… justo el profesor que te decía está allí adelante. Qué timing.
 
-# Mostrar profesor
-#do game.set_character("right", "characters/professor/main/Normal.png")
+do _DialogueUiController.changed_character.emit("right", "characters/main_characters/professor/Normal.png")
 
 Profesor: *Se gira al escuchar sus pasos, con una sonrisa cálida y sincera.* Buenos días, jóvenes.
 Profesor: Es bueno ver caras nuevas con tanta energía.

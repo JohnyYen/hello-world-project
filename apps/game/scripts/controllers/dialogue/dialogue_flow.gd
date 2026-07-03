@@ -68,6 +68,8 @@ func clear_queue() -> void:
 	_current_dialogue_path = ""
 	print("DialogueFlow: Cola limpiada")
 
+func force_finish() -> void:
+	_on_dialogue_manager_finished(null)
 # =============================================================================
 #                         MANEJADOR DE FINALIZACIONES
 # =============================================================================

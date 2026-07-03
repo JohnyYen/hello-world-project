@@ -13,6 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_cisui")
+segment_id = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -64,5 +65,3 @@ layout_direction = 4
 layout_mode = 2
 
 [node name="Hud" parent="MarginContainer" instance=ExtResource("2_a5p16")]
-layer = 2
-follow_viewport_enabled = true

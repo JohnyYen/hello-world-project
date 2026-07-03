@@ -4,11 +4,14 @@
 extends BaseAnalizer
 class_name PerformanceAnalyzer
 
+## Maximum number of historical entries to retain
+const MAX_HISTORY := 50
+
 ## The current average score based on historical data
 var avg_score := 0.7
 
 ## The maximum number of past scores to keep in history for calculations
-var history_size := 5
+var history_size := MAX_HISTORY
 
 ## Array to store historical scores for calculating moving averages
 var scores := []
@@ -26,37 +29,41 @@ var smooth_alpha := 0.3
 ##             - "score": float between 0.0 and 1.0 representing the raw score
 ##             - "errors": integer number of errors encountered
 ##             - "time": float representing the time taken (optional)
+##             - "hints_used": integer number of hints used (optional)
+##             - "efficiency_rating": float efficiency rating 0.0-100.0 (optional)
+##             - "objectives_completed": integer objectives completed (optional)
+##             - "blocks_count": integer blocks used (optional)
 ## @return: Dictionary containing normalized performance metrics with:
 ##          - "score": the original normalized score
 ##          - "errors": the original error count
 ##          - "avg_score": the calculated average score with smoothing
 ##          - "time": the original time value (if provided)
+##          - "hints_used": the original hints used (if provided)
+##          - "efficiency_rating": the original efficiency rating (if provided)
+##          - "objectives_completed": the original objectives completed (if provided)
+##          - "blocks_count": the original blocks count (if provided)
 func normalize(raw: Dictionary) -> Dictionary:
 	print("[PerformanceAnalyzer | normalize]: Datos recibidos - score=%s, errors=%s" % [raw.get("score", "MISSING"), raw.get("errors", "MISSING")])
-	# Get and clamp the score between 0.0 and 1.0 to ensure valid range
 	var score = clamp(raw.get("score", 0.0), 0.0, 1.0)
-	# Get the number of errors, defaulting to 0 if not provided
 	var errors = int(raw.get("errors", 0))
 
 	print("[PerformanceAnalyzer | normalize]: Score normalizado: %.2f, Errores: %d" % [score, errors])
 
-	# Add the current score to the historical scores array
 	scores.append(score)
-	# Maintain the history size limit by removing the oldest score if needed
 	if scores.size() > history_size:
 		scores.pop_front()
 
-	# Calculate exponentially weighted moving average
-	# This gives more weight to recent scores while considering historical values
-	# Using smooth_alpha = 0.3 means 30% weight to the new score, 70% to the historical average
-	avg_score = _calc_moving_average()  # Alternative: use simple moving average
+	avg_score = _calc_moving_average()
 
-	# Return the normalized performance data including the smoothed average
 	var result = {
 		"score": score,
 		"errors": errors,
 		"avg_score": avg_score,
-		"time": raw.get("time", 0.0)
+		"time": raw.get("time", 0.0),
+		"hints_used": raw.get("hints_used", 0),
+		"efficiency_rating": raw.get("efficiency_rating", 0.0),
+		"objectives_completed": raw.get("objectives_completed", 0),
+		"blocks_count": raw.get("blocks_count", 0)
 	}
 	return result
 
@@ -66,6 +73,7 @@ func normalize(raw: Dictionary) -> Dictionary:
 func _calc_moving_average() -> float:
 	# If there are no scores in history, return the last known average
 	if scores.size() == 0:
+		print("[PerformanceAnalyzer] _calc_moving_average: sin scores, retornando avg_score=%.2f" % avg_score)
 		return avg_score
 
 	# Calculate sum of all scores in history
@@ -74,6 +82,7 @@ func _calc_moving_average() -> float:
 		s += v
 
 	var avg = s / scores.size()
+	print("[PerformanceAnalyzer] _calc_moving_average: avg=%.4f (basado en %d scores)" % [avg, scores.size()])
 	# Return the arithmetic mean
 	return avg
 
@@ -92,21 +101,24 @@ func set_smooth_alpha(new_alpha: float) -> void:
 
 ## === Historial de intentos enriquecido ===
 
-## Registra un intento con datos completos (score, errors, time)
-## @param attempt: AttemptData objeto con score, errors, time
+## Registra un intento con datos completos (score, errors, time, hints_used, efficiency_rating, etc.)
+## @param attempt: AttemptData objeto con score, errors, time, hints_used, efficiency_rating, objectives_completed, blocks_count
 func record_attempt(attempt: AttemptData) -> void:
 	if attempt == null:
 		push_warning("PerformanceAnalyzer.record_attempt: AttemptData es null")
 		return
 	
+	print("[PerformanceAnalyzer] Registrando intento #%d: score=%.2f, errors=%d, time=%.2f, hints=%d" % [
+		attempts_history.size() + 1, attempt.score, attempt.errors, attempt.time, attempt.hints_used
+	])
+	
 	attempts_history.append(attempt)
 
-	# Mantener límite de historial
-	if attempts_history.size() > history_size:
+	if attempts_history.size() > MAX_HISTORY:
 		attempts_history.pop_front()
 	
-	# Persistir en JSON
 	AttemptHistoryPersistence.append_attempt(attempt)
+	print("[PerformanceAnalyzer] Intento registrado - historial actual: %d intentos" % attempts_history.size())
 
 ## Obtiene el historial completo de intentos
 ## @return Array de AttemptData objects
@@ -163,21 +175,65 @@ func get_average_time() -> float:
 	var avg = total_time / attempts_history.size()
 	return avg
 
+## Obtiene el promedio de score de TODO el historial
+## (long-term baseline para blended decisions)
+## @return float: promedio de score (0.0 a 1.0)
+func get_long_term_baseline() -> float:
+	if attempts_history.size() == 0:
+		return 0.0
+
+	var total_score := 0.0
+	for attempt in attempts_history:
+		total_score += attempt.score
+
+	return total_score / attempts_history.size()
+
+## Obtiene el promedio de hints_used en todo el historial
+## @return float: promedio de pistas usadas
+func get_average_hints_used() -> float:
+	if attempts_history.size() == 0:
+		return 0.0
+
+	var total_hints := 0
+	for attempt in attempts_history:
+		total_hints += attempt.hints_used
+
+	return float(total_hints) / attempts_history.size()
+
+## Obtiene el promedio de efficiency_rating en todo el historial
+## @return float: promedio de eficiencia (0.0 a 100.0)
+func get_average_efficiency() -> float:
+	if attempts_history.size() == 0:
+		return 0.0
+
+	var total_efficiency := 0.0
+	for attempt in attempts_history:
+		total_efficiency += attempt.efficiency_rating
+
+	return total_efficiency / attempts_history.size()
+
+## Obtiene la suma total de objectives_completed en todo el historial
+## @return int: total de objetivos completados
+func get_total_objectives() -> int:
+	var total := 0
+	for attempt in attempts_history:
+		total += attempt.objectives_completed
+	return total
+
 ## Reseta completamente el historial de intentos
 func reset_attempts_history() -> void:
 	attempts_history.clear()
 	AttemptHistoryPersistence.clear_history()
+	print("[PerformanceAnalyzer | reset_attempts_history]: Historial de intentos reseteado")
 
 ## Carga el historial desde el archivo JSON persistente
 ## @return true si se cargó exitosamente
 func load_history_from_persistence() -> bool:
 	var loaded_history := AttemptHistoryPersistence.load_history()
 	if loaded_history.size() > 0:
-		# Limitar a history_size
 		if loaded_history.size() > history_size:
 			loaded_history = loaded_history.slice(-history_size)
 		attempts_history = loaded_history
 		print("[PerformanceAnalyzer] Historial cargado: %d intentos" % attempts_history.size())
 		return true
 	return false
-	print("[PerformanceAnalyzer | reset_attempts_history]: Historial de intentos reseteado")

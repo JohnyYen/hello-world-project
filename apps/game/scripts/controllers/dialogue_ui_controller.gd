@@ -8,7 +8,7 @@ signal played_music(path : String)
 signal played_sfx(path : String)
 signal showed_cg(path : String)
 signal showed_title(title: String, duration : float)
-signal clean_character(duration : float)
+signal clean_character(side : String)
 signal set_flag(flag : String, value : bool)
 
 

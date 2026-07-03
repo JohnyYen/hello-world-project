@@ -1,9 +1,11 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from src.sync.api.v1.schemas.sync_event import SyncEventCreate, SyncEventSchema
 from src.sync.application.service.sync_event_service import SyncEventService
 from src.sync.api.v1.dependencies import get_sync_event_service
-from src.shared.domain.exceptions import NotFoundException
+from src.shared.domain.exceptions import NotFoundException, DuplicateEntryException
 from src.shared.infrastructure.session import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.sync.domain.event_types import SyncEventType
@@ -22,6 +24,9 @@ from src.sync.infrastructure.mapper.sync_event_to_xapi_statement_mapper import (
 from src.sync.application.handler.progress_updater import ProgressUpdater
 
 
+logger = logging.getLogger(__name__)
+
+
 router = APIRouter(prefix="/sync-events")
 
 
@@ -37,6 +42,19 @@ async def register_sync_event(
     try:
         event = await service.create(event_data=sync_event)
 
+        # IDEMPOTENCY: If the event was already fully processed (status="processed"),
+        # return it immediately without re-processing xAPI statements or progress.
+        # This handles retries where the client sends the same client_event_id again.
+        if event.status == "processed":
+            return SyncEventSchema(
+                id=str(event.id),
+                sync_session_id=str(event.sync_session_id),
+                event_type=str(event.event_type),
+                payload=event.payload,
+                timestamp=event.timestamp,
+                status=str(event.status),
+            )
+
         # Save event_id before processing
         event_id = str(event.id)
 
@@ -49,15 +67,21 @@ async def register_sync_event(
             xapi_repository = XAPIStatementRepository(db)
             xapi_service = XAPIStatementService(xapi_repository)
 
-            # Use the appropriate mapper based on event type
-            if event.event_type == SyncEventType.XAPI_STATEMENT:
-                mapper = SyncEventToXAPIStatementMapper(db)
-                xapi_statement = await mapper.map(event)
-                await xapi_service.save_statement(xapi_statement)
-            else:
-                mapper = SyncEventToXAPIMapper(db)
-                xapi_statement = await mapper.map(event)
-                await xapi_service.save_statement(xapi_statement)
+            try:
+                # Use the appropriate mapper based on event type
+                if event.event_type == SyncEventType.XAPI_STATEMENT:
+                    mapper = SyncEventToXAPIStatementMapper(db)
+                    xapi_statement = await mapper.map(event)
+                    await xapi_service.save_statement(xapi_statement)
+                else:
+                    mapper = SyncEventToXAPIMapper(db)
+                    xapi_statement = await mapper.map(event)
+                    await xapi_service.save_statement(xapi_statement)
+            except DuplicateEntryException:
+                logger.info(
+                    "xAPI statement for event %s already exists, skipping duplicate",
+                    event_id,
+                )
 
         # Update progress for ALL events (both simple and complex)
         progress_updater = ProgressUpdater(db)
