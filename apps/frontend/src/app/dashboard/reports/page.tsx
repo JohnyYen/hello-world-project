@@ -811,8 +811,8 @@ export default function ReportsPage() {
                   <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-6 mb-6">
                     <h3 className="text-lg font-semibold mb-6">Métricas Comparadas<ChartHelp content="Compara progreso, calificación y completación entre distintos cursos o períodos. Las barras agrupadas facilitan la comparación visual directa." /></h3>
                    <BarChart
-                      data={selectedMetrics.map(m => ({ name: `${m.courseName}\n${m.period || ''}`, Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
-                     xAxisDataKey="name"
+                       data={selectedMetrics.map(m => ({ periodLabel: `${m.courseName}\n${m.period || ''}`, Progreso: m.averageProgress, Calificación: m.averageGrade, Completación: m.completionRate }))}
+                     xAxisDataKey="periodLabel"
                     bars={[
                       { dataKey: "Progreso", name: "Progreso", color: "#10B981" },
                       { dataKey: "Calificación", name: "Calificación", color: "#06B6D4" },

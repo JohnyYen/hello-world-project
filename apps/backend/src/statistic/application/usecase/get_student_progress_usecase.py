@@ -195,11 +195,14 @@ class GetStudentProgressUseCase:
         """
         Calcula evolución del progreso agrupada por día.
 
-        Usa `updated_at` (con fallback a ``created_at``) para determinar la
-        fecha de cada actividad, porque los registros de progreso se actualizan
-        in-situ cuando el estudiante re-juega un mismo segmento (no se crean
-        nuevos registros). Sin esta agrupación, los charts perderían el
-        historial diario al sobrescribirse las fechas.
+        Usa ``created_at`` como fecha de referencia porque ``updated_at``
+        se sobrescribe con el timestamp del último ``bulk_upsert_progress``
+        en TODOS los registros (no es un timestamp por actividad real).
+        ``created_at`` preserva cuándo se registró cada progreso por primera vez.
+
+        Si en el futuro se necesita rastrear "última vez que se jugó cada
+        segmento", habría que agregar un campo ``last_played_at`` al modelo
+        ``Progress`` y usarlo acá.
         """
         from datetime import datetime as dt
 
@@ -207,10 +210,12 @@ class GetStudentProgressUseCase:
 
         for r in enriched_rows:
             p = r["progress"]
-            activity_dt = p.updated_at or p.created_at
-            if activity_dt is None:
+            if p.created_at is None:
                 continue
-            date_key = activity_dt.strftime("%b %d")
+
+            # Usamos YYYY-MM-DD como key para evitar colisiones entre años
+            # y poder ordenar cronológicamente sin hacks de año hardcodeado.
+            date_key = p.created_at.strftime("%Y-%m-%d")
 
             if date_key not in daily:
                 daily[date_key] = {
@@ -218,6 +223,8 @@ class GetStudentProgressUseCase:
                     "max_level": 0,
                     "total_time": 0,
                     "count": 0,
+                    # Guardamos el datetime real para ordenar después
+                    "sort_key": p.created_at,
                 }
 
             daily[date_key]["total_score"] += p.efficiency_rating
@@ -227,10 +234,10 @@ class GetStudentProgressUseCase:
             daily[date_key]["total_time"] += p.attempt_count
             daily[date_key]["count"] += 1
 
-        # Ordenar cronológicamente para mantener el orden en el chart
+        # Ordenar cronológicamente usando el datetime real guardado
         sorted_dates = sorted(
             daily.items(),
-            key=lambda item: dt.strptime(item[0], "%b %d").replace(year=2026),
+            key=lambda item: item[1]["sort_key"],
         )
 
         return [

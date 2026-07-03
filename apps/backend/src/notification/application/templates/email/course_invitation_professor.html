@@ -1,0 +1,74 @@
+{% extends "email/base.html" %}
+
+{% block title %}Asignación a curso - Hello World{% endblock %}
+
+{% block content %}
+<h2 style="color: #333333; margin-top: 0;">Has sido asignado a un nuevo curso</h2>
+
+<p style="color: #555555; font-size: 15px;">
+    Hola <strong>{{ professor_name }}</strong>, te informamos que has sido asignado como 
+    profesor del curso <strong>{{ course_name }}</strong> en la plataforma Hello World. 
+    A continuación encontrarás los detalles del curso.
+</p>
+
+<table class="info-table" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td><strong>Curso:</strong></td>
+        <td>{{ course_name }}</td>
+    </tr>
+    {% if course_description %}
+    <tr>
+        <td><strong>Descripción:</strong></td>
+        <td>{{ course_description }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td><strong>Año Escolar:</strong></td>
+        <td>{{ school_year }}</td>
+    </tr>
+    <tr>
+        <td><strong>Período:</strong></td>
+        <td>{{ period_label }}</td>
+    </tr>
+    <tr>
+        <td><strong>Fecha de inicio:</strong></td>
+        <td>{{ start_date }}</td>
+    </tr>
+    <tr>
+        <td><strong>Fecha de fin:</strong></td>
+        <td>{{ end_date }}</td>
+    </tr>
+</table>
+
+{% if professors %}
+<h3 style="color: #333333; font-size: 16px; margin-top: 25px;">Profesores del curso</h3>
+<ul style="color: #555555; padding-left: 20px; margin: 10px 0;">
+    {% for professor in professors %}
+    <li style="margin-bottom: 5px;">{{ professor.name }} ({{ professor.email }})</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<h3 style="color: #333333; font-size: 16px; margin-top: 25px;">¿Qué puedes hacer ahora?</h3>
+<ul style="color: #555555; padding-left: 20px;">
+    <li style="margin-bottom: 8px;">Revisar la lista de estudiantes inscritos en el curso.</li>
+    <li style="margin-bottom: 8px;">Monitorear el progreso y las métricas de tus estudiantes.</li>
+    <li style="margin-bottom: 8px;">Gestionar los niveles y contenidos educativos.</li>
+    <li style="margin-bottom: 8px;">Generar reportes de rendimiento académico.</li>
+</ul>
+
+<p style="color: #555555; font-size: 14px; margin-top: 25px;">
+    Accede al panel de control para comenzar a gestionar tu curso.
+</p>
+
+<p style="text-align: center;">
+    <a href="{{ dashboard_url }}" class="button" target="_blank" style="color: #ffffff !important;">
+        Ir al Panel de Control
+    </a>
+</p>
+
+<p style="color: #888888; font-size: 12px; text-align: center; margin-top: 5px;">
+    Si el botón no funciona, copia y pega este enlace en tu navegador:<br>
+    <a href="{{ dashboard_url }}" style="color: #667eea; word-break: break-all;">{{ dashboard_url }}</a>
+</p>
+{% endblock %}

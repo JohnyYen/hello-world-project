@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { decodeJWT } from "@/lib/jwt";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export interface SimpleUser {
   id: number;

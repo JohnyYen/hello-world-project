@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, use, useState, useEffect, type ReactNode } from "react";
+import { createContext, use, useState, useEffect, useCallback, type ReactNode } from "react";
 import type { TeacherProfileResponse, UserResponse } from "@/api/types";
 import { authService, type LoginParams, type RegisterParams } from "@/services/auth";
 
@@ -14,6 +14,7 @@ interface AuthContextValue {
   login: (params: LoginParams) => Promise<void>;
   register: (params: RegisterParams) => Promise<void>;
   logout: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -57,6 +58,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return () => { cancelled = true };
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    try {
+      const userData = await authService.getMeFromCookie();
+      if (userData) {
+        setUser(userData);
+        setIsAuthenticated(true);
+      }
+    } catch {
+      // No valid session or profile fetch failed
+      setIsAuthenticated(false);
+    }
+  }, []);
+
   const login = async (params: LoginParams) => {
     await authService.login(params);
     // After login, cookie is set by server, fetch user profile
@@ -87,6 +101,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     register,
     logout,
+    refreshProfile,
   };
 
   return <AuthContext value={value}>{children}</AuthContext>;

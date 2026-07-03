@@ -7,12 +7,11 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
   Legend,
+  ResponsiveContainer,
   Cell,
 } from "recharts";
-import { COLORS, CHART_COLORS_ARRAY, useChartThemeColors } from "@/lib/colors";
-import { cn } from "@/lib/utils";
+import { CHART_COLORS_ARRAY, useChartThemeColors } from "@/lib/colors";
 
 interface BarChartProps<T> {
   data: T[];
@@ -20,25 +19,24 @@ interface BarChartProps<T> {
     dataKey: string;
     name: string;
     color?: string;
-    stackId?: string;
   }[];
   xAxisDataKey: string;
   title?: string;
   subtitle?: string;
   yAxisLabel?: string;
-  xAxisLabel?: string;
   height?: number;
   layout?: "horizontal" | "vertical";
-  stacked?: boolean;
-  showAnimation?: boolean;
-  showGrid?: boolean;
   yAxisDomain?: [number, number];
   tooltipFormatter?: (value: number, name: string) => string;
+  /** Formatea el label del tooltip (recibe el label y el item de datos completo) */
   tooltipLabelFormatter?: (label: string, item: T) => string;
-  /** Optional function to compute fill color per data point. Receives the datum and its index, returns a color string. */
+  /** Función para asignar color por punto de dato. Activa Cells dinámicos en la primera barra. */
   barFill?: (entry: T, index: number) => string;
-  /** When true, the Legend component is not rendered */
   hideLegend?: boolean;
+  xAxisLabel?: string;
+  showAnimation?: boolean;
+  showGrid?: boolean;
+  stacked?: boolean;
 }
 
 export function BarChart<T>({
@@ -48,17 +46,17 @@ export function BarChart<T>({
   title,
   subtitle,
   yAxisLabel,
-  xAxisLabel,
   height = 300,
   layout = "horizontal",
-  stacked = false,
-  showAnimation = true,
-  showGrid = true,
   yAxisDomain,
   tooltipFormatter,
   tooltipLabelFormatter,
   barFill,
   hideLegend = false,
+  showAnimation = true,
+  showGrid = true,
+  stacked = false,
+  xAxisLabel,
 }: BarChartProps<T>) {
   const themeColors = useChartThemeColors();
 
@@ -68,34 +66,24 @@ export function BarChart<T>({
     label,
   }: {
     active?: boolean;
-    payload?: Array<{
-      name: string;
-      value: number;
-      color: string;
-      payload?: T;
-    }>;
+    payload?: Array<{ name: string; value: number; color: string; payload: Record<string, unknown> }>;
     label?: string;
   }) => {
     if (!active || !payload || !payload.length) return null;
 
-    // Find the item in data that matches the label
-    const item = data.find((d) => {
-      const itemAsRecord = d as Record<string, unknown>;
-      return String(itemAsRecord[xAxisDataKey]) === String(label);
-    }) as T | undefined;
-
+    const item = payload[0]?.payload;
+    // Usar xAxisDataKey para obtener el label real del item, en vez de confiar en Recharts
+    const resolvedLabel = item ? String(item[xAxisDataKey] ?? label ?? '') : (label ?? '');
     const displayLabel =
-      item && tooltipLabelFormatter
-        ? tooltipLabelFormatter(label || "", item)
-        : label;
+      tooltipLabelFormatter && item
+        ? tooltipLabelFormatter(resolvedLabel, item as T)
+        : resolvedLabel;
 
     return (
       <div className="rounded-lg border bg-card p-3 shadow-lg">
-        {displayLabel && (
-          <p className="text-sm font-medium text-foreground mb-2">
-            {displayLabel}
-          </p>
-        )}
+        <p className="text-sm font-medium text-foreground mb-2">
+          {displayLabel}
+        </p>
         <div className="space-y-1">
           {payload.map((entry, index) => (
             <div key={index} className="flex items-center gap-2 text-sm">
@@ -131,21 +119,26 @@ export function BarChart<T>({
           data={data}
           layout={layout}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          barCategoryGap={layout === "horizontal" ? "20%" : undefined}
         >
           {showGrid && (
-            <CartesianGrid strokeDasharray="3 3" stroke={themeColors.border} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke={themeColors.border}
+            />
           )}
+
           {layout === "horizontal" ? (
             <>
               <XAxis
-                dataKey={xAxisDataKey}
+                // Sin dataKey — Recharts usa el índice. Con tickFormatter extraemos del array.
+                tickFormatter={(value) => {
+                  const item = data[value as number];
+                  return item ? String((item as Record<string, unknown>)[xAxisDataKey] ?? '') : String(value);
+                }}
                 tick={{ fill: themeColors.text, fontSize: 12 }}
                 axisLine={{ stroke: themeColors.border }}
                 tickLine={{ stroke: themeColors.border }}
-                interval={0}
-                angle={-15}
-                textAnchor="end"
-                height={60}
                 label={
                   xAxisLabel
                     ? {
@@ -162,7 +155,7 @@ export function BarChart<T>({
                 tick={{ fill: themeColors.text, fontSize: 12 }}
                 axisLine={{ stroke: themeColors.border }}
                 tickLine={{ stroke: themeColors.border }}
-                domain={yAxisDomain}
+                domain={yAxisDomain ?? [0, "auto"]}
                 label={
                   yAxisLabel
                     ? {
@@ -183,14 +176,13 @@ export function BarChart<T>({
                 tick={{ fill: themeColors.text, fontSize: 12 }}
                 axisLine={{ stroke: themeColors.border }}
                 tickLine={{ stroke: themeColors.border }}
-                domain={yAxisDomain}
+                domain={yAxisDomain ?? [0, "auto"]}
                 label={
-                  xAxisLabel
+                  yAxisLabel
                     ? {
-                        value: xAxisLabel,
-                        angle: 90,
+                        value: yAxisLabel,
                         position: "insideBottom",
-                        offset: 5,
+                        offset: -5,
                         fill: themeColors.text,
                         fontSize: 12,
                       }
@@ -199,15 +191,20 @@ export function BarChart<T>({
               />
               <YAxis
                 type="category"
-                dataKey={xAxisDataKey}
+                tickFormatter={(value) => {
+                  const item = data[value as number];
+                  return item ? String((item as Record<string, unknown>)[xAxisDataKey] ?? '') : String(value);
+                }}
                 tick={{ fill: themeColors.text, fontSize: 12 }}
                 axisLine={{ stroke: themeColors.border }}
                 tickLine={{ stroke: themeColors.border }}
-                width={120}
+                width={160}
               />
             </>
           )}
+
           <Tooltip content={<CustomTooltip />} />
+
           {!hideLegend && (
             <Legend
               wrapperStyle={{ paddingTop: "10px" }}
@@ -218,31 +215,53 @@ export function BarChart<T>({
               )}
             />
           )}
-          {bars.map((bar, index) => (
-            <Bar
-              key={bar.dataKey}
-              dataKey={bar.dataKey}
-              name={bar.name}
-              fill={
-                barFill
-                  ? undefined
-                  : bar.color ||
-                    CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]
-              }
-              stackId={stacked ? bar.stackId || "stack" : undefined}
-              radius={stacked ? [0, 0, 0, 0] : [4, 4, 0, 0]}
-              animationDuration={1000}
-              animationEasing="ease-out"
-            >
-              {barFill &&
-                data.map((entry, cellIndex) => (
-                  <Cell
-                    key={`cell-${cellIndex}`}
-                    fill={barFill(entry, cellIndex)}
-                  />
-                ))}
-            </Bar>
-          ))}
+
+          {bars.map((bar, index) => {
+            // Si barFill está presente, usar Cells dinámicos en la primera barra
+            if (barFill && index === 0) {
+              return (
+                <Bar
+                  key={bar.dataKey}
+                  dataKey={bar.dataKey}
+                  name={bar.name}
+                  stackId={stacked ? "stack" : undefined}
+                  radius={
+                    layout === "horizontal"
+                      ? [4, 4, 0, 0]
+                      : [0, 4, 4, 0]
+                  }
+                  isAnimationActive={showAnimation}
+                  animationDuration={1000}
+                  animationEasing="ease-out"
+                >
+                  {data.map((entry, i) => (
+                    <Cell key={`cell-${i}`} fill={barFill(entry, i)} />
+                  ))}
+                </Bar>
+              );
+            }
+
+            return (
+              <Bar
+                key={bar.dataKey}
+                dataKey={bar.dataKey}
+                name={bar.name}
+                fill={
+                  bar.color ||
+                  CHART_COLORS_ARRAY[index % CHART_COLORS_ARRAY.length]
+                }
+                stackId={stacked ? "stack" : undefined}
+                radius={
+                  layout === "horizontal"
+                    ? [4, 4, 0, 0]
+                    : [0, 4, 4, 0]
+                }
+                isAnimationActive={showAnimation}
+                animationDuration={1000}
+                animationEasing="ease-out"
+              />
+            );
+          })}
         </RechartsBarChart>
       </ResponsiveContainer>
     </div>

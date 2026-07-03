@@ -1,0 +1,12 @@
+- generic [ref=e4]:
+  - heading "Login to Admin - Hello World" [level=2] [ref=e5]
+  - generic [ref=e6]:
+    - generic [ref=e7]: Username
+    - textbox "Enter username" [ref=e8]
+    - generic [ref=e9]: Invalid credentials.
+  - generic [ref=e10]:
+    - generic [ref=e11]: Password
+    - generic [ref=e12]:
+      - textbox "Password" [ref=e13]
+      - generic [ref=e14]: Invalid credentials.
+  - button "Login" [ref=e16] [cursor=pointer]

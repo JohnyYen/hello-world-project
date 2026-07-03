@@ -322,6 +322,32 @@ export interface SyncResultResponse {
   data?: Record<string, unknown>;
 }
 
+// ─── Notifications ──────────────────────────────────────────────────────────
+
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  type: "info" | "success" | "warning" | "error";
+  read: boolean;
+  date: string;
+  notification_type: string;
+}
+
+export interface NotificationListResponse {
+  success: boolean;
+  message: string;
+  data: NotificationItem[];
+  unread_count: number;
+  total_count: number;
+}
+
+export interface NotificationActionResponse {
+  success: boolean;
+  message: string;
+  data?: Record<string, unknown> | null;
+}
+
 // ─── Sync ──────────────────────────────────────────────────────────────────
 
 export interface SyncSessionCreate {

@@ -43,10 +43,10 @@ function PasswordInput({
       clearTimeout(showTimer);
     }
     
-    // Ocultar después de 3 segundos
+    // Ocultar después de 5 segundos
     const timer = setTimeout(() => {
       setShowPassword(false);
-    }, 3000);
+    }, 5000);
     
     setShowTimer(timer);
   };

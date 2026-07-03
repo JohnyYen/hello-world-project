@@ -1,9 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { 
@@ -14,47 +12,85 @@ import {
   Calendar,
   CheckCircle2,
   Trash2,
-  Filter
+  Loader2
 } from 'lucide-react';
-
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-  read: boolean;
-  date: string;
-}
+import type { NotificationItem } from '@/api/types';
+import { getNotifications, markAsRead as apiMarkAsRead, markAllAsRead as apiMarkAllAsRead, deleteNotification as apiDeleteNotification } from '@/services/notifications';
 
 export default function NotificationPage() {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    { id: '1', title: 'Nuevo estudiante registrado', message: 'Juan Pérez se ha registrado en el curso de Matemáticas I', type: 'info', read: false, date: '2024-03-15' },
-    { id: '2', title: 'Nivel completado', message: 'María García ha completado el nivel 5 de Física', type: 'success', read: false, date: '2024-03-14' },
-    { id: '3', title: 'Alerta de progreso', message: '3 estudiantes no han accedido en los últimos 7 días', type: 'warning', read: true, date: '2024-03-13' },
-    { id: '4', title: 'Reporte de error', message: 'Se reportó un problema con el nivel 3 de Química', type: 'error', read: true, date: '2024-03-12' },
-  ]);
-
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchNotifications = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Always fetch all, filter locally for responsiveness
+      const response = await getNotifications(0, 50, false);
+      if (response.success && Array.isArray(response.data)) {
+        setNotifications(response.data);
+        setUnreadCount(response.unread_count ?? 0);
+      } else {
+        setNotifications([]);
+        setUnreadCount(0);
+      }
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+      setError("Error al cargar notificaciones");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      await apiMarkAsRead(id);
+      // Optimistic update
+      setNotifications(prev => prev.map(n => 
+        n.id === id ? { ...n, read: true } : n
+      ));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error("Error marking as read:", err);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await apiMarkAllAsRead();
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setUnreadCount(0);
+    } catch (err) {
+      console.error("Error marking all as read:", err);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await apiDeleteNotification(id);
+      setNotifications(prev => prev.filter(n => n.id !== id));
+      // Recalculate unread count
+      const wasUnread = notifications.find(n => n.id === id)?.read === false;
+      if (wasUnread) {
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+    } catch (err) {
+      console.error("Error deleting notification:", err);
+    }
+  };
 
   const filteredNotifications = filter === 'unread' 
     ? notifications.filter(n => !n.read) 
     : notifications;
 
-  const markAsRead = (id: string) => {
-    setNotifications(prev => prev.map(n => 
-      n.id === id ? { ...n, read: true } : n
-    ));
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
-
-  const deleteNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
-
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const displayUnreadCount = filter === 'unread' ? filteredNotifications.length : unreadCount;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950/20">
@@ -92,7 +128,7 @@ export default function NotificationPage() {
           
           {unreadCount > 0 && (
             <Button 
-              onClick={markAllAsRead}
+              onClick={handleMarkAllAsRead}
               variant="outline"
               className="hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-400"
             >
@@ -127,73 +163,85 @@ export default function NotificationPage() {
 
             {/* Notifications */}
             <div className="space-y-3">
-              {filteredNotifications.map((notification) => (
-                <div 
-                  key={notification.id}
-                  className={`rounded-xl border transition-all ${
-                    notification.read 
-                      ? 'border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50' 
-                      : 'border-indigo-200 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/20'
-                  }`}
-                >
-                  <div className="p-4 flex items-start gap-4">
-                    <div className={`p-2 rounded-lg ${
-                      notification.type === 'success' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400' :
-                      notification.type === 'warning' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400' :
-                      notification.type === 'error' ? 'bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400' :
-                      'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400'
-                    }`}>
-                      {notification.type === 'success' && <CheckCircle2 className="h-5 w-5" />}
-                      {notification.type === 'warning' && <Bell className="h-5 w-5" />}
-                      {notification.type === 'error' && <Mail className="h-5 w-5" />}
-                      {notification.type === 'info' && <MessageSquare className="h-5 w-5" />}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className={`font-semibold ${!notification.read ? 'text-indigo-700 dark:text-indigo-300' : ''}`}>
-                          {notification.title}
-                        </h3>
-                        {!notification.read && (
-                          <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">{notification.message}</p>
-                      <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {notification.date}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {!notification.read && (
-                        <Button 
-                          size="sm" 
-                          variant="ghost"
-                          onClick={() => markAsRead(notification.id)}
-                          className="hover:bg-indigo-100 dark:hover:bg-indigo-900/50"
-                        >
-                          <CheckCircle2 className="h-4 w-4" />
-                        </Button>
-                      )}
-                      <Button 
-                        size="sm" 
-                        variant="ghost"
-                        onClick={() => deleteNotification(notification.id)}
-                        className="hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-red-600"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+              {loading ? (
+                <div className="flex items-center justify-center py-16">
+                  <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
                 </div>
-              ))}
-
-              {filteredNotifications.length === 0 && (
+              ) : error ? (
+                <div className="text-center py-12">
+                  <Bell className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+                  <p className="text-muted-foreground">{error}</p>
+                  <Button variant="outline" className="mt-4" onClick={fetchNotifications}>
+                    Reintentar
+                  </Button>
+                </div>
+              ) : filteredNotifications.length === 0 ? (
                 <div className="text-center py-12">
                   <Bell className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
                   <p className="text-muted-foreground">No hay notificaciones</p>
                 </div>
+              ) : (
+                filteredNotifications.map((notification) => (
+                  <div 
+                    key={notification.id}
+                    className={`rounded-xl border transition-all ${
+                      notification.read 
+                        ? 'border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50' 
+                        : 'border-indigo-200 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/20'
+                    }`}
+                  >
+                    <div className="p-4 flex items-start gap-4">
+                      <div className={`p-2 rounded-lg ${
+                        notification.type === 'success' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400' :
+                        notification.type === 'warning' ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400' :
+                        notification.type === 'error' ? 'bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-400' :
+                        'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400'
+                      }`}>
+                        {notification.type === 'success' && <CheckCircle2 className="h-5 w-5" />}
+                        {notification.type === 'warning' && <Bell className="h-5 w-5" />}
+                        {notification.type === 'error' && <Mail className="h-5 w-5" />}
+                        {notification.type === 'info' && <MessageSquare className="h-5 w-5" />}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className={`font-semibold ${!notification.read ? 'text-indigo-700 dark:text-indigo-300' : ''}`}>
+                            {notification.title}
+                          </h3>
+                          {!notification.read && (
+                            <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground">{notification.message}</p>
+                        <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {notification.date}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {!notification.read && (
+                          <Button 
+                            size="sm" 
+                            variant="ghost"
+                            onClick={() => handleMarkAsRead(notification.id)}
+                            className="hover:bg-indigo-100 dark:hover:bg-indigo-900/50"
+                          >
+                            <CheckCircle2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => handleDelete(notification.id)}
+                          className="hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-red-600"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
           </div>

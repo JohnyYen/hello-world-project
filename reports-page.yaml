@@ -1,0 +1,270 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e17]:
+    - generic [ref=e20]:
+      - list [ref=e22]:
+        - listitem [ref=e23]:
+          - link "Mi Plataforma" [ref=e24] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e25]
+            - generic [ref=e28]: Mi Plataforma
+      - generic [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: Estadísticas
+          - list [ref=e33]:
+            - listitem [ref=e34]:
+              - button "Resumen" [ref=e35]:
+                - img [ref=e36]
+                - link "Resumen" [ref=e40] [cursor=pointer]:
+                  - /url: /dashboard
+            - listitem [ref=e41]:
+              - button "Estudiantes" [ref=e42]:
+                - img [ref=e43]
+                - link "Estudiantes" [ref=e46] [cursor=pointer]:
+                  - /url: /dashboard/students
+            - listitem [ref=e47]:
+              - button "Cursos" [ref=e48]:
+                - img [ref=e49]
+                - link "Cursos" [ref=e52] [cursor=pointer]:
+                  - /url: /dashboard/courses
+            - listitem [ref=e53]:
+              - button "Métricas" [ref=e54]:
+                - img [ref=e55]
+                - link "Métricas" [ref=e59] [cursor=pointer]:
+                  - /url: /dashboard/metrics
+            - listitem [ref=e60]:
+              - button "Reportes" [ref=e61]:
+                - img [ref=e62]
+                - link "Reportes" [ref=e64] [cursor=pointer]:
+                  - /url: /dashboard/reports
+        - generic [ref=e65]:
+          - generic [ref=e66]: Gestión de Juegos y Niveles
+          - list [ref=e67]:
+            - listitem [ref=e68]:
+              - link "Niveles" [ref=e69] [cursor=pointer]:
+                - /url: /dashboard/levels
+                - img [ref=e70]
+                - generic [ref=e73]: Niveles
+            - listitem [ref=e74]:
+              - link "Crear Nivel" [ref=e75] [cursor=pointer]:
+                - /url: /dashboard/levels/create
+                - img [ref=e76]
+                - generic [ref=e77]: Crear Nivel
+        - list [ref=e80]:
+          - listitem [ref=e81]:
+            - link "Configuración" [ref=e82] [cursor=pointer]:
+              - /url: /dashboard/settings
+              - img [ref=e83]
+              - generic [ref=e86]: Configuración
+          - listitem [ref=e87]:
+            - link "Ayuda" [ref=e88] [cursor=pointer]:
+              - /url: /dashboard/help
+              - img [ref=e89]
+              - generic [ref=e92]: Ayuda
+    - main [ref=e93]:
+      - generic [ref=e95]:
+        - button "Toggle Sidebar" [ref=e96]:
+          - img
+          - generic [ref=e97]: Toggle Sidebar
+        - generic [ref=e98]:
+          - button "🇪🇸 ES" [ref=e99]:
+            - generic [ref=e100]: 🇪🇸
+            - generic [ref=e101]: ES
+          - button "Toggle theme" [ref=e102]:
+            - img
+            - generic [ref=e103]: Toggle theme
+          - list [ref=e104]:
+            - listitem [ref=e105]:
+              - button "JA Johny Antonio Pedraza Romero Profesor" [ref=e106]:
+                - generic [ref=e109]:
+                  - generic [ref=e112]: JA
+                  - generic [ref=e114]:
+                    - generic [ref=e115]: Johny Antonio Pedraza Romero
+                    - generic [ref=e116]: Profesor
+      - generic [ref=e120]:
+        - generic:
+          - img
+        - generic [ref=e121]:
+          - generic [ref=e122]:
+            - link "Volver al perfil" [ref=e123] [cursor=pointer]:
+              - /url: /dashboard/students/60b48d6c-1df0-4b1f-b49d-32b6492b271e
+              - button "Volver al perfil" [ref=e124]:
+                - img
+                - text: Volver al perfil
+            - generic [ref=e125]:
+              - generic [ref=e126]:
+                - heading "Reportes de Progreso" [level=1] [ref=e127]
+                - paragraph [ref=e128]: Análisis detallado del rendimiento académico
+              - generic [ref=e129]:
+                - button "Exportar PDF" [ref=e131]:
+                  - img [ref=e132]
+                  - generic [ref=e136]: Exportar PDF
+                - generic [ref=e137]:
+                  - generic [ref=e139]: Datos actualizados
+                  - generic [ref=e140]: •
+                  - generic [ref=e141]: Sin actividad
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - img [ref=e146]
+                - heading "Métricas Principales" [level=2] [ref=e148]
+              - paragraph [ref=e149]: Indicadores clave de rendimiento del estudiante
+            - generic [ref=e150]:
+              - generic [ref=e152]:
+                - img [ref=e154]
+                - generic [ref=e156]:
+                  - generic [ref=e157]:
+                    - paragraph [ref=e158]: Niveles Completados
+                    - paragraph [ref=e159]: "0"
+                    - paragraph [ref=e160]: Niveles terminados exitosamente
+                  - img [ref=e162]
+              - generic [ref=e170]:
+                - img [ref=e172]
+                - generic [ref=e174]:
+                  - generic [ref=e175]:
+                    - paragraph [ref=e176]: Partidas Jugadas
+                    - paragraph [ref=e177]: "0"
+                    - paragraph [ref=e178]: Total de sesiones de juego
+                  - img [ref=e180]
+              - generic [ref=e184]:
+                - img [ref=e186]
+                - generic [ref=e188]:
+                  - generic [ref=e189]:
+                    - paragraph [ref=e190]: Tiempo de Juego
+                    - paragraph [ref=e191]: 0m
+                    - paragraph [ref=e192]: Tiempo total activo
+                  - img [ref=e194]
+              - generic [ref=e199]:
+                - img [ref=e201]
+                - generic [ref=e203]:
+                  - generic [ref=e204]:
+                    - paragraph [ref=e205]: Racha Actual
+                    - paragraph [ref=e206]: 0 días
+                    - paragraph [ref=e207]: "Última actividad: Sin actividad"
+                  - img [ref=e209]
+          - generic [ref=e212]:
+            - generic [ref=e213]:
+              - generic [ref=e214]:
+                - img [ref=e216]
+                - heading "Análisis Temporal" [level=2] [ref=e219]
+              - paragraph [ref=e220]: Evolución del rendimiento a lo largo del tiempo
+            - generic [ref=e221]:
+              - generic [ref=e223]:
+                - generic [ref=e224]:
+                  - heading "Evolución de puntuación y nivel Más información sobre este gráfico" [level=3] [ref=e225]:
+                    - text: Evolución de puntuación y nivel
+                    - button "Más información sobre este gráfico" [ref=e226]:
+                      - img [ref=e227]
+                  - paragraph [ref=e229]: Rendimiento semanal del estudiante
+                - generic [ref=e230]:
+                  - generic [ref=e233]: Puntuación
+                  - generic [ref=e236]: Nivel
+              - generic [ref=e240]:
+                - img [ref=e241]:
+                  - generic [ref=e245]:
+                    - generic [ref=e246]:
+                      - generic [ref=e248]: "0"
+                      - generic [ref=e250]: "25"
+                      - generic [ref=e252]: "50"
+                      - generic [ref=e254]: "75"
+                      - generic [ref=e256]: "100"
+                    - generic [ref=e257]: Puntuación / Nivel
+                - list [ref=e259]:
+                  - listitem [ref=e260]:
+                    - img [ref=e261]
+                    - generic [ref=e263]: Puntuación
+                  - listitem [ref=e264]:
+                    - img [ref=e265]
+                    - generic [ref=e267]: Nivel
+            - generic [ref=e268]:
+              - generic [ref=e269]:
+                - heading "Puntuación Acumulada Más información sobre este gráfico" [level=3] [ref=e270]:
+                  - text: Puntuación Acumulada
+                  - button "Más información sobre este gráfico" [ref=e271]:
+                    - img [ref=e272]
+                - paragraph [ref=e274]: Evolución de la puntuación total a lo largo del tiempo
+              - generic [ref=e278]:
+                - img [ref=e279]
+                - list [ref=e284]:
+                  - listitem [ref=e285]:
+                    - img [ref=e286]
+                    - generic [ref=e288]: Puntuación Acumulada
+            - generic [ref=e289]:
+              - generic [ref=e290]:
+                - heading "Tiempo Acumulado Más información sobre este gráfico" [level=3] [ref=e291]:
+                  - text: Tiempo Acumulado
+                  - button "Más información sobre este gráfico" [ref=e292]:
+                    - img [ref=e293]
+                - paragraph [ref=e295]: Evolución del tiempo total invertido (minutos)
+              - generic [ref=e299]:
+                - img [ref=e300]
+                - list [ref=e305]:
+                  - listitem [ref=e306]:
+                    - img [ref=e307]
+                    - generic [ref=e309]: Tiempo Acumulado
+          - generic [ref=e310]:
+            - generic [ref=e311]:
+              - generic [ref=e312]:
+                - img [ref=e314]
+                - heading "Patrón de Actividad" [level=2] [ref=e316]
+              - paragraph [ref=e317]: Distribución temporal del tiempo de estudio
+            - generic [ref=e318]:
+              - generic [ref=e319]:
+                - heading "Mapa de Actividad Semanal Más información sobre este gráfico" [level=3] [ref=e320]:
+                  - text: Mapa de Actividad Semanal
+                  - button "Más información sobre este gráfico" [ref=e321]:
+                    - img [ref=e322]
+                - paragraph [ref=e324]: Distribución de tiempo de juego por día y hora
+              - generic [ref=e326]:
+                - generic [ref=e330]:
+                  - generic [ref=e331]: 12am
+                  - generic [ref=e332]: 3am
+                  - generic [ref=e333]: 6am
+                  - generic [ref=e334]: 9am
+                  - generic [ref=e335]: 12pm
+                  - generic [ref=e336]: 3pm
+                  - generic [ref=e337]: 6pm
+                  - generic [ref=e338]: 9pm
+                - generic [ref=e340]:
+                  - generic [ref=e342]: Lun
+                  - generic [ref=e369]: Mar
+                  - generic [ref=e396]: Mié
+                  - generic [ref=e423]: Jue
+                  - generic [ref=e450]: Vie
+                  - generic [ref=e477]: Sáb
+                  - generic [ref=e504]: Dom
+                - generic [ref=e530]:
+                  - generic [ref=e531]: Menos
+                  - generic [ref=e540]: Más
+          - generic [ref=e541]:
+            - generic [ref=e542]:
+              - generic [ref=e543]:
+                - img [ref=e545]
+                - heading "Desempeño por Área" [level=2] [ref=e548]
+              - paragraph [ref=e549]: Análisis detallado por nivel y tipo de actividad
+            - generic [ref=e550]:
+              - generic [ref=e551]:
+                - generic [ref=e552]:
+                  - heading "Desempeño por Nivel Más información sobre este gráfico" [level=3] [ref=e553]:
+                    - text: Desempeño por Nivel
+                    - button "Más información sobre este gráfico" [ref=e554]:
+                      - img [ref=e555]
+                  - paragraph [ref=e557]: Puntuación obtenida en cada nivel (ordenado de mejor a peor)
+                  - generic [ref=e558]:
+                    - generic [ref=e559]: Excelente (80+)
+                    - generic [ref=e561]: En progreso (50-79)
+                    - generic [ref=e563]: Necesita mejorar (<50)
+                - generic [ref=e567]: Sin datos para mostrar
+              - generic [ref=e568]:
+                - generic [ref=e569]:
+                  - heading "Distribución de Actividades Más información sobre este gráfico" [level=3] [ref=e570]:
+                    - text: Distribución de Actividades
+                    - button "Más información sobre este gráfico" [ref=e571]:
+                      - img [ref=e572]
+                  - paragraph [ref=e574]: Tiempo dedicado a cada juego
+                - img [ref=e579]
+          - paragraph [ref=e582]: 📊 Reporte generado automáticamente • Hello World Platform
+  - button "Open Next.js Dev Tools" [ref=e12] [cursor=pointer]:
+    - img [ref=e13]
+  - alert [ref=e16]
+  - region "Notifications alt+T"
+  - generic [ref=e583]: "0"
